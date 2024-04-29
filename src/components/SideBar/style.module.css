@@ -1,2 +1,9 @@
 .SideBar {
+  width: var(--sideBarWidth);
+  border-right: var(--borderLine);
+  height: calc(100vh - var(--mainHeaderHeight) - 1px);
+}
+.icon {
+  width: 20px;
+  color: var(--darkBlue);
 }

@@ -16,15 +16,17 @@ const MainHeader = observer((props: IMainHeader) => {
 
   return (
     <div className={style.MainHeader}>
-      <div className={style.mainTitle}>{t("mainTitle")}</div>
-        <div className={style.flexRow}>
-            <SimpleSearch
-                value={props.searchValue}
-                handleInput={props.handleInput}
-                handleClearSearchValue={props.handleClearSearchValue}
-            />
-            <AuthControl name={"Иван Иванов"} description={"информация"} />
-        </div>
+      <div className={style.mainTitle}>
+        <span className={style.mainTitleContent}>{t("mainTitle")}</span>{" "}
+      </div>
+      <div className={style.flexRow}>
+        <SimpleSearch
+          value={props.searchValue}
+          handleInput={props.handleInput}
+          handleClearSearchValue={props.handleClearSearchValue}
+        />
+        <AuthControl name={"Иван Иванов"} description={"информация"} />
+      </div>
     </div>
   );
 });

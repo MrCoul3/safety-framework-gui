@@ -1,0 +1,38 @@
+.SideBarSubGroup {
+  width: 100%;
+
+}
+
+.groupTitle {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 13px;
+  color: var(--gray30);
+  letter-spacing: 0.003em;
+  text-align: left;
+  padding: 15px;
+  text-transform: uppercase;
+}
+.icon {
+  width: 20px;
+}
+
+.menuElement {
+  text-transform: none;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 22.4px;
+  text-align: left;
+}
+.button {
+  display: flex;
+  justify-content: start!important;
+  gap: 10px;
+  border: none!important;
+  border-radius: 0!important;
+  width: 100% !important;
+  padding: 15px!important;
+}
+.buttonGroup {
+  width: 100%;
+}

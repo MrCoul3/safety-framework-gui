@@ -14,5 +14,10 @@ code {
 
 :root {
   --gray: #002033;
+  --gray30: #0020334D;
+  --darkBlue: #00395CCC;
   --border: #00416633;
+  --borderLine: 1px solid var(--border);
+  --sideBarWidth: 244px;
+  --mainHeaderHeight: 76px;
 }

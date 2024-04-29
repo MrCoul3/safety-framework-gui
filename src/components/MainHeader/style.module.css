@@ -2,17 +2,16 @@
     display: flex;
     align-items: center;
     gap: 5px;
-    height: 76px;
-    border-bottom: 1px solid var(--border);
+    height: var(--mainHeaderHeight);
+    border-bottom: var(--borderLine);
 
 }
 .mainTitle {
     display: flex;
     align-items: center;
-    justify-content: center;
-    width: 244px;
+    min-width: var(--sideBarWidth);
     height: 76px;
-    border-right: 1px solid var(--border);
+    border-right: var(--borderLine);
     font-size: 18px;
     font-weight: 700;
     line-height: 25px;
@@ -25,4 +24,8 @@
     justify-content: space-between;
     align-items: center;
     padding: 0 24px 0 16px;
+}
+
+.mainTitleContent {
+    margin-left: 15px;
 }

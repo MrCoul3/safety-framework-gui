@@ -1,23 +1,27 @@
 import React from "react";
 import { observer } from "mobx-react-lite";
-import MainHeader from "../../components/MainHeader/MainHeader";
-import { useTranslation } from "react-i18next";
+import SideBar from "components/SideBar/SideBar";
+import MainHeader from "components/MainHeader/MainHeader";
+import MainPageLayout from "layouts/MainPageLayout/MainPageLayout";
 
 interface IMainPage {}
 
 const MainPage = observer((props: IMainPage) => {
-    const { t } = useTranslation('dict');
-
   const handleClearSearchValue = () => {};
   const handleSearch = () => {};
   return (
-    <div>
-      <MainHeader
-        searchValue={""}
-        handleInput={handleSearch}
-        handleClearSearchValue={handleClearSearchValue}
-      />
-    </div>
+    <MainPageLayout
+      header={
+        <MainHeader
+          searchValue={""}
+          handleInput={handleSearch}
+          handleClearSearchValue={handleClearSearchValue}
+        />
+      }
+      sideBar={<SideBar />}
+      contentHeader={""}
+      content={""}
+    />
   );
 });
 
