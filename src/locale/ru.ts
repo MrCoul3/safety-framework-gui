@@ -15,5 +15,9 @@ export const ru = {
         selected: "Выбрано: ",
         selectAll: "Выбрать все",
         unselectAll: "Снять выделение",
+
+
+        searchPlaceholder: "Я ищу",
+        mainTitle: "Каркас безопасности",
     },
 };

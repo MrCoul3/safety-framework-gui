@@ -1,17 +1,32 @@
-import React from 'react';
-import {observer} from "mobx-react-lite";
-import style from './style.module.css';
+import React from "react";
+import { observer } from "mobx-react-lite";
+import style from "./style.module.css";
+import SimpleSearch from "../shared/SimpleSearch/SimpleSearch";
+import { useTranslation } from "react-i18next";
+import AuthControl from "../AuthControl/AuthControl";
 
 interface IMainHeader {
-
+  handleClearSearchValue(): void;
+  handleInput(str: string): void;
+  searchValue: string | null;
 }
 
 const MainHeader = observer((props: IMainHeader) => {
-    return (
-        <div className={style.MainHeader}>
-            MainHeader
+  const { t } = useTranslation("dict");
+
+  return (
+    <div className={style.MainHeader}>
+      <div className={style.mainTitle}>{t("mainTitle")}</div>
+        <div className={style.flexRow}>
+            <SimpleSearch
+                value={props.searchValue}
+                handleInput={props.handleInput}
+                handleClearSearchValue={props.handleClearSearchValue}
+            />
+            <AuthControl name={"Иван Иванов"} description={"информация"} />
         </div>
-    );
+    </div>
+  );
 });
 
 export default MainHeader;

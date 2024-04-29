@@ -1,2 +1,28 @@
 .MainHeader {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    height: 76px;
+    border-bottom: 1px solid var(--border);
+
+}
+.mainTitle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 244px;
+    height: 76px;
+    border-right: 1px solid var(--border);
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 25px;
+    text-align: left;
+}
+
+.flexRow {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 24px 0 16px;
 }
