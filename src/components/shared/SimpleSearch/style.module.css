@@ -8,9 +8,7 @@
 
 .input {
     background-color: white;
-    border: 1px solid #e1e1e1;
     border-radius: 8px;
-    padding-left: 30px;
     font-size: 14px!important;
     color: gray;
     width: 100%;
@@ -25,6 +23,7 @@
     z-index: 100;
     padding-left: 5px;
     top: 8px;
+    left: 30px;
     position: absolute;
 }
 .closeIcon {

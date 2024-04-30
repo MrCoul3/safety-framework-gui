@@ -8,7 +8,6 @@ import { IconBento } from "@consta/icons/IconBento";
 import { IconList } from "@consta/icons/IconList";
 import { IconMail } from "@consta/icons/IconMail";
 import { IconTrash } from "@consta/icons/IconTrash";
-import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 
 interface ISideBar {}
 
@@ -20,8 +19,9 @@ const SideBar = observer((props: ISideBar) => {
       name: SubGroupsTypes.Statistic,
       actions: [
         {
-          name: SubGroupsActionsTypes.MainList,
-          icon: <IconBento className={style.icon} />,
+          label: t(SubGroupsActionsTypes.MainList),
+          icon: IconBento,
+          active: true,
         },
       ],
     },
@@ -29,16 +29,16 @@ const SideBar = observer((props: ISideBar) => {
       name: SubGroupsTypes.Inspections,
       actions: [
         {
-          name: SubGroupsActionsTypes.Completed,
-          icon: <IconList className={style.icon} />,
+          label: t(SubGroupsActionsTypes.Completed),
+          icon: IconList,
         },
         {
-          name: SubGroupsActionsTypes.Sent,
-          icon: <IconMail className={style.icon} />,
+          label: t(SubGroupsActionsTypes.Sent),
+          icon: IconMail,
         },
         {
-          name: SubGroupsActionsTypes.Deleted,
-          icon: <IconTrash className={style.icon} />,
+          label: t(SubGroupsActionsTypes.Deleted),
+          icon: IconTrash,
         },
       ],
     },
@@ -46,38 +46,29 @@ const SideBar = observer((props: ISideBar) => {
       name: SubGroupsTypes.Information,
       actions: [
         {
-          name: SubGroupsActionsTypes.BarriersCarts,
-          icon: <IconList className={style.icon} />,
+          label: t(SubGroupsActionsTypes.BarriersCarts),
+          icon: IconList,
         },
 
         {
-          name: SubGroupsActionsTypes.BarriersApps,
-          icon: <IconMail className={style.icon} />,
+          label: t(SubGroupsActionsTypes.BarriersApps),
+          icon: IconMail,
         },
       ],
     },
   ];
   const [view, setView] = React.useState(SubGroupsActionsTypes.MainList);
   const handleChange = (
-      event: React.MouseEvent<HTMLElement>,
-      nextView: SubGroupsActionsTypes,
+    event: React.MouseEvent<HTMLElement>,
+    nextView: SubGroupsActionsTypes,
   ) => {
     setView(nextView);
   };
   return (
     <div className={style.SideBar}>
-      <ToggleButtonGroup
-          className={style.buttonGroup}
-          orientation="vertical"
-          value={view}
-          exclusive
-          onChange={handleChange}
-      >
-        {subGroups.map((group) => (
-            <SideBarSubGroup groupTitle={group.name} actions={group.actions} />
-        ))}
-      </ToggleButtonGroup>
-
+      {subGroups.map((group) => (
+        <SideBarSubGroup groupTitle={group.name} actions={group.actions} />
+      ))}
     </div>
   );
 });

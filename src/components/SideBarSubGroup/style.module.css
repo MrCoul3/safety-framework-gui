@@ -21,18 +21,11 @@
   text-transform: none;
   font-size: 16px;
   font-weight: 400;
-  line-height: 22.4px;
   text-align: left;
-}
-.button {
   display: flex;
   justify-content: start!important;
-  gap: 10px;
-  border: none!important;
-  border-radius: 0!important;
-  width: 100% !important;
-  padding: 15px!important;
 }
+
 .buttonGroup {
   width: 100%;
 }

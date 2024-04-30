@@ -1,5 +1,6 @@
 .SideBar {
   max-width: var(--sideBarWidth);
+  min-width: var(--sideBarWidth);
   border-right: var(--borderLine);
   height: calc(100vh - var(--mainHeaderHeight) - 1px);
 }

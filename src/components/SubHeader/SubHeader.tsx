@@ -5,8 +5,9 @@ import { SubGroupsTypes } from "enums/SubGroupsTypes";
 import { Button } from "@consta/uikit/Button";
 import { IconAdd } from "@consta/icons/IconAdd";
 import { useTranslation } from "react-i18next";
-import Autocomplete from "@mui/material/Autocomplete";
-import TextField from "@mui/material/TextField";
+import { TextField } from "@consta/uikit/TextField";
+
+import { IconSearchStroked } from "@consta/icons/IconSearchStroked";
 
 interface ISubHeader {}
 
@@ -31,6 +32,7 @@ const SubHeader = observer((props: ISubHeader) => {
       id: 2,
     },
   ];
+  const onInput = (e: React.ChangeEvent<HTMLInputElement>) => {};
 
   return (
     <div className={style.SubHeader}>
@@ -42,18 +44,13 @@ const SubHeader = observer((props: ISubHeader) => {
           label={t("addInspection")}
           iconLeft={IconAdd}
         />
-        <Autocomplete
-          classes={{ input: style.textField }}
-          fullWidth
-          className={style.autocomplete}
-          size={"small"}
-          multiple
-          id="fast-search"
-          options={items}
-          noOptionsText={t("noOptions")}
-          renderInput={(params) => (
-            <TextField placeholder={t("fastSearch")} {...params} />
-          )}
+        <TextField
+          rightSide={IconSearchStroked}
+          className={style.input}
+          onInput={onInput}
+          // value={props.value ?? ""}
+          autoFocus
+          placeholder={t("fastSearch")}
         />
       </div>
     </div>

@@ -1,11 +1,18 @@
-import React, { ReactNode } from "react";
+import React from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
 import { useTranslation } from "react-i18next";
-import ToggleButton from "@mui/material/ToggleButton";
+import { IconComponent } from "@consta/icons/Icon";
+import { Navbar } from "@consta/header/Navbar";
+
+interface IAction {
+  label: string;
+  active?: boolean;
+  icon: IconComponent;
+}
 interface ISideBarSubGroup {
   groupTitle: string;
-  actions: { name: string; icon: ReactNode }[];
+  actions: IAction[];
 }
 
 const SideBarSubGroup = observer((props: ISideBarSubGroup) => {
@@ -14,16 +21,7 @@ const SideBarSubGroup = observer((props: ISideBarSubGroup) => {
   return (
     <div className={style.SideBarSubGroup}>
       <div className={style.groupTitle}>{t(props.groupTitle)}</div>
-        {props.actions.map((action) => (
-          <ToggleButton
-            className={style.button}
-            value={action.name}
-            aria-label="list"
-          >
-            {action.icon}
-            <span className={style.menuElement}>{t(action.name)}</span>
-          </ToggleButton>
-        ))}
+      <Navbar items={props.actions} />
     </div>
   );
 });

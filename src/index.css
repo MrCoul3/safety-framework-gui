@@ -16,6 +16,7 @@ code {
   --gray: #002033;
   --gray30: #0020334D;
   --darkBlue: #00395CCC;
+  --lightGray: #ECF1F4;
   --border: #00416633;
   --borderLine: 1px solid var(--border);
   --sideBarWidth: 244px;

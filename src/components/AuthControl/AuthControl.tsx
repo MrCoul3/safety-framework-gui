@@ -1,11 +1,11 @@
 import React from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
-import NotificationsIcon from "@mui/icons-material/Notifications";
 import { IconBento } from "@consta/icons/IconBento";
-import { IconButton } from "@mui/material";
+import { IconRing } from "@consta/icons/IconRing";
 import { Avatar } from "@consta/uikit/Avatar";
 import { avatar } from "assets/img";
+import {Button} from "@consta/uikit/Button";
 interface IAuthControl {
   name: string;
   description: string;
@@ -17,12 +17,9 @@ const AuthControl = observer((props: IAuthControl) => {
   return (
     <div className={style.AuthControl}>
       <div>
-        <IconButton>
-          <NotificationsIcon />
-        </IconButton>
-        <IconButton className={style.button} size={"small"}>
-          <IconBento size={"xs"} />
-        </IconButton>
+          <Button view="clear" form="round" iconRight={IconRing} onlyIcon />
+          <Button view="clear" form="round" iconRight={IconBento} onlyIcon />
+
       </div>
 
       <div className={style.flexRow}>
