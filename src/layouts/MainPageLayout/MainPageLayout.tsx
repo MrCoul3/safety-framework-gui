@@ -13,7 +13,13 @@ const MainPageLayout = observer((props: IMainPageLayout) => {
     return (
         <div className={style.MainPageLayout}>
             {props.header}
-            {props.sideBar}
+            <div className={style.flexRow}>
+                {props.sideBar}
+                <div className={style.flexCol}>
+                    {props.contentHeader}
+                    {props.content}
+                </div>
+            </div>
         </div>
     );
 });

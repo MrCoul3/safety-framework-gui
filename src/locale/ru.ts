@@ -30,5 +30,8 @@ export const ru = {
 
         searchPlaceholder: "Я ищу",
         mainTitle: "Каркас безопасности",
+        addInspection: "Добавить инспекцию",
+        noOptions: "Не найдено",
+        fastSearch: "Быстрый поиск",
     },
 };
