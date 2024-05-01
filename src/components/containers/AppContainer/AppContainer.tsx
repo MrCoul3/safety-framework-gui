@@ -8,18 +8,22 @@ import { routes } from "routes";
 import { mapRoutes } from "utils";
 import { createBrowserHistory } from "history";
 import { Theme, presetGpnDefault } from "@consta/uikit/Theme";
+import { Provider } from "mobx-react";
+import { AppStore } from "stores/AppStore";
 
 const history = createBrowserHistory();
 export const AppContainer = observer(() => {
   return (
-    <Theme preset={presetGpnDefault}>
-      <I18nextProvider i18n={i18n}>
-        <Suspense fallback={<Loader size="m" />}>
-          <Router history={history}>
-            <Switch>{mapRoutes(routes)}</Switch>
-          </Router>
-        </Suspense>
-      </I18nextProvider>
-    </Theme>
+    <Provider appStore={AppStore}>
+      <Theme preset={presetGpnDefault}>
+        <I18nextProvider i18n={i18n}>
+          <Suspense fallback={<Loader size="m" />}>
+            <Router history={history}>
+              <Switch>{mapRoutes(routes)}</Switch>
+            </Router>
+          </Suspense>
+        </I18nextProvider>
+      </Theme>
+    </Provider>
   );
 });

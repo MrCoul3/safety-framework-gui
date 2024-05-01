@@ -14,7 +14,9 @@ code {
 
 :root {
   --gray: #002033;
+  --lightGray7: #00426912;
   --gray30: #0020334D;
+  --gray60: #00203399;
   --darkBlue: #00395CCC;
   --lightGray: #ECF1F4;
   --lightText: #FAFAFA;

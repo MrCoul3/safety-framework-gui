@@ -10,7 +10,7 @@ export const language = window.navigator.language.split("-")[0];
 
 export const nodeEnv = process.env.NODE_ENV;
 
-export const DEVELOPMENT_DOMAIN = "develop-opo";
+export const DEVELOPMENT_DOMAIN = "";
 
 export const upperLevelDomain = UtilsFunctions.getUpperLevelDomain();
 
