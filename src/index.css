@@ -17,6 +17,11 @@ code {
   --gray30: #0020334D;
   --darkBlue: #00395CCC;
   --lightGray: #ECF1F4;
+  --lightText: #FAFAFA;
+  --blue: #32B4FF;
+  --awaitOrange: #F38B00;
+  --successGreen: #22C38E;
+  --errorRed: #EB5757;
   --border: #00416633;
   --borderLine: 1px solid var(--border);
   --sideBarWidth: 244px;

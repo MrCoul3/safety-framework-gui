@@ -5,9 +5,7 @@ import { SubGroupsTypes } from "enums/SubGroupsTypes";
 import { Button } from "@consta/uikit/Button";
 import { IconAdd } from "@consta/icons/IconAdd";
 import { useTranslation } from "react-i18next";
-import { TextField } from "@consta/uikit/TextField";
-
-import { IconSearchStroked } from "@consta/icons/IconSearchStroked";
+import { Combobox } from "@consta/uikit/Combobox";
 
 interface ISubHeader {}
 
@@ -19,7 +17,8 @@ type Item = {
 
 const SubHeader = observer((props: ISubHeader) => {
   const { t } = useTranslation("dict");
-  const [value, setValue] = useState<string | null>(null);
+  const [value, setValue] = useState<Item[] | null>();
+
   const items: Item[] = [
     {
       label: "Барьеры",
@@ -44,13 +43,12 @@ const SubHeader = observer((props: ISubHeader) => {
           label={t("addInspection")}
           iconLeft={IconAdd}
         />
-        <TextField
-          rightSide={IconSearchStroked}
-          className={style.input}
-          onInput={onInput}
-          // value={props.value ?? ""}
-          autoFocus
-          placeholder={t("fastSearch")}
+        <Combobox
+          placeholder="Выберите вариант"
+          items={items}
+          value={value}
+          onChange={setValue}
+          multiple
         />
       </div>
     </div>

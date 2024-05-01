@@ -1,0 +1,45 @@
+.await {
+  border-top: 8px solid var(--awaitOrange);
+}
+.error {
+  border-top: 8px solid var(--errorRed);
+}
+.success {
+  border-top: 8px solid var(--successGreen);
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 25.2px;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.separator {
+  height: 1px;
+  width: 100%;
+  background-color: var(--border);
+}
+.checkDate {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 18px;
+  text-align: left;
+
+}
+.blueColor {
+  color: var(--blue);
+}
+
+.checkDetailsTitle {
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 18px;
+  text-align: left;
+}
+.badgeGroup {
+  display: flex;
+  gap: 8px;
+}

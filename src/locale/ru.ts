@@ -1,4 +1,6 @@
 import {SubGroupsActionsTypes, SubGroupsTypes} from "../enums/SubGroupsTypes";
+import {InspectionStatusesTypes} from "../enums/InspectionStatusesTypes";
+import {CheckEntityTypes} from "../enums/CheckEntityTypes";
 
 export const ru = {
     dict: {
@@ -28,10 +30,21 @@ export const ru = {
         [SubGroupsActionsTypes.BarriersCarts]: "Корзины барьеров",
         [SubGroupsActionsTypes.BarriersApps]: "Приложения к барьерам",
 
+        [InspectionStatusesTypes.Success]: "Успешно отправлено",
+        [InspectionStatusesTypes.Error]: "Ошибка отправки",
+        [InspectionStatusesTypes.Warning]: "Инспекция не заполнена",
+
+        [CheckEntityTypes.Barriers]: "Барьеры",
+        [CheckEntityTypes.FreeForms]: "Свободные формы",
+
         searchPlaceholder: "Я ищу",
         mainTitle: "Каркас безопасности",
         addInspection: "Добавить инспекцию",
         noOptions: "Не найдено",
         fastSearch: "Быстрый поиск",
+        checkVerifyDate: "Дата выполнения проверки",
+        checkEditedDate: "Дата редактирования проверки",
+        checkDetails: "Детали проверки",
+        doObject: "Структурное подразделение ДО",
     },
 };
