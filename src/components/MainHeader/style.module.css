@@ -1,2 +1,31 @@
 .MainHeader {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    height: var(--mainHeaderHeight);
+    border-bottom: var(--borderLine);
+
+}
+.mainTitle {
+    display: flex;
+    align-items: center;
+    min-width: var(--sideBarWidth);
+    height: 76px;
+    border-right: var(--borderLine);
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 25px;
+    text-align: left;
+}
+
+.flexRow {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 24px 0 16px;
+}
+
+.mainTitleContent {
+    margin-left: 15px;
 }
