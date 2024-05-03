@@ -4,10 +4,10 @@ export enum SubGroupsTypes {
   Information = "information",
 }
 export enum SubGroupsActionsTypes {
-    MainList = "mainList",
-    Completed = "completed",
-    Sent = "sent",
-    Deleted = "deleted",
-    BarriersCarts = "barriersCarts",
-    BarriersApps = "barriersApps",
+    MainList = "Общий список",
+    Completed = "Заполненные",
+    Sent = "Отправленные",
+    Deleted = "Удаленные",
+    BarriersCarts = "Корзины барьеров",
+    BarriersApps = "Приложения к барьерам",
 }

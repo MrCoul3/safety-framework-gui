@@ -6,6 +6,11 @@ import MainPageLayout from "layouts/MainPageLayout/MainPageLayout";
 import SubHeader from "components/SubHeader/SubHeader";
 import DashBoard from "components/DashBoard/DashBoard";
 import { useStore } from "hooks/useStore";
+import { IAction } from "../../interfaces/IAction";
+import { Route, Switch } from "react-router";
+import { IBrowserRoute } from "../../interfaces/common/IBrowserRoute";
+import { mapRoutes } from "../../utils";
+import { routes } from "../../routes";
 
 interface IMainPage {}
 
@@ -20,6 +25,22 @@ const MainPage = observer((props: IMainPage) => {
   }, []);
   const handleClearSearchValue = () => {};
   const handleSearch = () => {};
+
+  const onItemClick = (item: IAction) => {
+    store.mainPageStore.updateSubGroupsState(item.label);
+  };
+
+  const routes = () => (
+    <>
+      <Route exact path="/">
+        <DashBoard data={store.mainPageStore.inspections} />
+      </Route>
+      <Route path="/table">
+        <div>table</div>
+      </Route>
+    </>
+  );
+
   return (
     <MainPageLayout
       header={
@@ -29,9 +50,14 @@ const MainPage = observer((props: IMainPage) => {
           handleClearSearchValue={handleClearSearchValue}
         />
       }
-      sideBar={<SideBar />}
+      sideBar={
+        <SideBar
+          onItemClick={onItemClick}
+          subGroupsState={store.mainPageStore.subGroupsState}
+        />
+      }
       contentHeader={<SubHeader />}
-      content={<DashBoard data={store.mainPageStore.inspections} />}
+      content={routes()}
     />
   );
 });
