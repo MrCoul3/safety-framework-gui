@@ -1,4 +1,4 @@
-import React, {ReactNode} from 'react';
+import React, {ReactNode, useEffect} from 'react';
 import {observer} from "mobx-react-lite";
 import style from './style.module.css';
 

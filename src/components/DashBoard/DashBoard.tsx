@@ -19,9 +19,8 @@ const DashBoard = observer((props: IDashBoard) => {
   const { t } = useTranslation("dict");
 
   const subGroups = [
-    SubGroupsActionsTypes.Completed,
+    SubGroupsActionsTypes.NewInspections,
     SubGroupsActionsTypes.Sent,
-    SubGroupsActionsTypes.Deleted,
   ];
 
   return (
@@ -37,7 +36,7 @@ const DashBoard = observer((props: IDashBoard) => {
                 iconRight={IconMeatball}
                 onlyIcon
               />
-              {subGroup === SubGroupsActionsTypes.Completed && (
+              {subGroup === SubGroupsActionsTypes.NewInspections && (
                 <Button size="s" form="round" iconRight={IconAdd} onlyIcon />
               )}
             </div>

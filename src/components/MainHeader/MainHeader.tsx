@@ -20,11 +20,6 @@ const MainHeader = observer((props: IMainHeader) => {
         <span className={style.mainTitleContent}>{t("mainTitle")}</span>{" "}
       </div>
       <div className={style.flexRow}>
-        <SimpleSearch
-          value={props.searchValue}
-          handleInput={props.handleInput}
-          handleClearSearchValue={props.handleClearSearchValue}
-        />
         <AuthControl name={"Иван Иванов"} description={"информация"} />
       </div>
     </div>
