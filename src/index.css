@@ -5,6 +5,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
 }
 
 code {
@@ -28,4 +29,8 @@ code {
   --borderLine: 1px solid var(--border);
   --sideBarWidth: 244px;
   --mainHeaderHeight: 76px;
+  --paginatorHeight: 75px;
+  --subHeaderHeight: 40px;
+  --contentPaddingTopBottom: 24px;
+  --contentPaddingLeftRight: 20px;
 }
