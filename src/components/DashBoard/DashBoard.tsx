@@ -7,8 +7,6 @@ import { IconMeatball } from "@consta/icons/IconMeatball";
 import { IconAdd } from "@consta/icons/IconAdd";
 import { Button } from "@consta/uikit/Button";
 import InspectionCard from "../InspectionCard/InspectionCard";
-import { InspectionStatusesTypes } from "../../enums/InspectionStatusesTypes";
-import { CheckEntityTypes } from "../../enums/CheckEntityTypes";
 import { IInspection } from "../../interfaces/IInspection";
 
 interface IDashBoard {

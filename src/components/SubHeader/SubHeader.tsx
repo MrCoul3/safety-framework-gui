@@ -7,7 +7,9 @@ import { IconAdd } from "@consta/icons/IconAdd";
 import { useTranslation } from "react-i18next";
 import { Combobox } from "@consta/uikit/Combobox";
 
-interface ISubHeader {}
+interface ISubHeader {
+  handleAddInspection(): void;
+}
 
 type Item = {
   label: string;
@@ -17,6 +19,7 @@ type Item = {
 
 const SubHeader = observer((props: ISubHeader) => {
   const { t } = useTranslation("dict");
+
   const [value, setValue] = useState<Item[] | null>();
 
   const items: Item[] = [
@@ -26,7 +29,7 @@ const SubHeader = observer((props: ISubHeader) => {
       id: 1,
     },
     {
-      label: "Что то",
+      label: "Свободные формы",
       groupId: 1,
       id: 2,
     },
@@ -39,6 +42,7 @@ const SubHeader = observer((props: ISubHeader) => {
 
       <div className={style.flexRow}>
         <Button
+          onClick={props.handleAddInspection}
           className={style.button}
           label={t("addInspection")}
           iconLeft={IconAdd}

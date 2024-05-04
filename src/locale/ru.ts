@@ -22,6 +22,14 @@ export const ru = {
         selected: "Выбрано: ",
         selectAll: "Выбрать все",
         unselectAll: "Снять выделение",
+        clearAll: "Очистить все",
+        description: "Описание",
+
+
+        createInspection: "Создать инспекцию",
+
+
+        toHome: "На главную",
 
         [SubGroupsTypes.Statistic]: "Статистика",
         [SubGroupsActionsTypes.MainList]: "Общий список",
@@ -53,5 +61,8 @@ export const ru = {
         inspectionType: "Тип проверки",
         field: "Месторождение",
         doObject: "Структурное подразделение ДО",
+
+        addInspectionTitle: "Подготовка данных инспекции",
+        addInspectionDescription: "Заполните все ключевые поля, чтобы перейти дальше по структуре заполнения",
     },
 };

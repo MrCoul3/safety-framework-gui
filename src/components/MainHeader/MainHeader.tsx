@@ -1,17 +1,11 @@
 import React from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
-import SimpleSearch from "../shared/SimpleSearch/SimpleSearch";
 import { useTranslation } from "react-i18next";
 import AuthControl from "../AuthControl/AuthControl";
 
-interface IMainHeader {
-  handleClearSearchValue(): void;
-  handleInput(str: string): void;
-  searchValue: string | null;
-}
 
-const MainHeader = observer((props: IMainHeader) => {
+const MainHeader = observer(() => {
   const { t } = useTranslation("dict");
 
   return (

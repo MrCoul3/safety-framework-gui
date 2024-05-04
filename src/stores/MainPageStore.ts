@@ -59,7 +59,9 @@ export class MainPageStore {
       ],
     },
   ];
-
+  resetSideBarToHome() {
+    this.updateSubGroupsState(SubGroupsActionsTypes.MainList);
+  }
   updateSubGroupsState(value: SubGroupsActionsTypes) {
     this.subGroupsState = this.subGroupsState.map((item) => {
       const foundAction = item.actions.find((action) => action.label === value);

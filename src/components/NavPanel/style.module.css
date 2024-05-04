@@ -1,0 +1,35 @@
+.NavPanel {
+  padding: 24px;
+}
+.flexCol {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 32px;
+  text-align: left;
+  color: var(--gray);
+}
+.description {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 16.8px;
+  text-align: left;
+  color: var(--gray60);
+}
+.buttonsGroup {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 24px 0;
+
+}
+.rightBorder {
+  border-right: 1px solid var(--border);
+  padding-right: 8px;
+  height: 24px;
+}

@@ -10,11 +10,18 @@ import { SubGroupsActionsTypes } from "enums/SubGroupsTypes";
 import { Route, Routes, useNavigate } from "react-router";
 import DashBoard from "../components/DashBoard/DashBoard";
 import InspectionsTable from "../components/InspectionsTable/InspectionsTable";
+import { ResponsesEmptyBox } from "@consta/uikit/ResponsesEmptyBox";
+import { Button } from "@consta/uikit/Button";
+import { useTranslation } from "react-i18next";
+import {RoutesTypes} from "../enums/RoutesTypes";
 
 interface IMainPage {}
 
 export const MainPage = observer((props: IMainPage) => {
   const store = useStore();
+
+  const { t } = useTranslation("dict");
+
   const navigate = useNavigate();
   const init = () => {
     store.mainPageStore.getInspectionsDev();
@@ -34,6 +41,19 @@ export const MainPage = observer((props: IMainPage) => {
     navigate(`/${item.label}`);
   };
 
+  const toHome = () => {
+    store.mainPageStore.resetSideBarToHome();
+    navigate(`/`);
+  };
+
+  const renderEmptyBoxPage = () => {
+    return (
+      <ResponsesEmptyBox
+        actions={<Button onClick={toHome} view="ghost" label={t("toHome")} />}
+      />
+    );
+  };
+
   const contentRoutes = () => {
     return (
       <Routes>
@@ -47,27 +67,36 @@ export const MainPage = observer((props: IMainPage) => {
           }
           path={SubGroupsActionsTypes.NewInspections}
         />
+        <Route
+          element={renderEmptyBoxPage()}
+          path={SubGroupsActionsTypes.Sent}
+        />
+        <Route
+          element={renderEmptyBoxPage()}
+          path={SubGroupsActionsTypes.BarriersCarts}
+        />
+        <Route
+          element={renderEmptyBoxPage()}
+          path={SubGroupsActionsTypes.BarriersApps}
+        />
       </Routes>
     );
   };
 
+  const handleAddInspection = () => {
+    navigate(RoutesTypes.NewInspection)
+  }
+
   return (
     <div>
       <MainPageLayout
-        header={
-          <MainHeader
-            searchValue={""}
-            handleInput={handleSearch}
-            handleClearSearchValue={handleClearSearchValue}
-          />
-        }
         sideBar={
           <SideBar
             onItemClick={onItemClick}
             subGroupsState={store.mainPageStore.subGroupsState}
           />
         }
-        contentHeader={<SubHeader />}
+        contentHeader={<SubHeader handleAddInspection={handleAddInspection} />}
         content={contentRoutes()}
       />
     </div>
