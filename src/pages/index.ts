@@ -1,4 +1,3 @@
-export { MainPageLazy as MainPage } from "./MainPage/MainPage.lazy";
 export { InspectionListPageLazy as InspectionListPage } from "./InspectionListPage/InspectionListPage.lazy";
 export { NewInspectionPageLazy as NewInspectionPage } from "./NewInspectionPage/NewInspectionPage.lazy";
 export { BarrierPassportSelectPageLazy as BarrierPassportSelectPage } from "./BarrierPassportSelectPage/BarrierPassportSelectPage.lazy";

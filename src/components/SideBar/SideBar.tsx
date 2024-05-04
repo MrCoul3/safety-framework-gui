@@ -18,22 +18,6 @@ interface ISideBar {
 }
 
 const SideBar = observer((props: ISideBar) => {
-  const { t } = useTranslation("dict");
-
-
-
-
-  // const [subGroupsState, setSubGroupsState] = useState(subGroups);
-
-
-  const [view, setView] = React.useState(SubGroupsActionsTypes.MainList);
-  const handleChange = (
-    event: React.MouseEvent<HTMLElement>,
-    nextView: SubGroupsActionsTypes,
-  ) => {
-    setView(nextView);
-  };
-
   return (
     <div className={style.SideBar}>
       {props.subGroupsState.map((group: ISubGroupState) => (

@@ -1,0 +1,17 @@
+.InspectionsTable {
+  margin-top: 10px;
+}
+
+.pagination {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  height: var(--paginatorHeight);
+}
+.table {
+  overflow: scroll;
+  height: calc(
+    100vh - var(--mainHeaderHeight) - var(--subHeaderHeight) -
+      var(--contentPaddingTopBottom) - var(--paginatorHeight)
+  );
+}

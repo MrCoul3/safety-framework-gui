@@ -12,3 +12,4 @@ export interface IInspection {
     "checkEntity": CheckEntityTypes,
     "status": InspectionStatusesTypes
 }
+

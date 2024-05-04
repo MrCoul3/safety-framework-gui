@@ -84,7 +84,7 @@ const InspectionCard = observer((props: IInspectionCard) => {
         </div>
         <div className={style.extraInfo}>
           <div className={style.extraInfoValue}>
-            {t("checkType")}
+            {t("inspectionType")}
             <span className={style.value}> {props.inspectionType}</span>
           </div>
           <div className={style.extraInfoValue}>

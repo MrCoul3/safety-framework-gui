@@ -5,8 +5,8 @@ export enum SubGroupsTypes {
 }
 export enum SubGroupsActionsTypes {
     MainList = "Общий список",
-    Completed = "Заполненные",
-    Sent = "Отправленные",
+    NewInspections = "Новые инспекции",
+    Sent = "Мои инспекции",
     Deleted = "Удаленные",
     BarriersCarts = "Корзины барьеров",
     BarriersApps = "Приложения к барьерам",

@@ -35,16 +35,12 @@ export class MainPageStore {
       name: SubGroupsTypes.Inspections,
       actions: [
         {
-          label: SubGroupsActionsTypes.Completed,
+          label: SubGroupsActionsTypes.NewInspections,
           icon: IconList,
         },
         {
           label: SubGroupsActionsTypes.Sent,
           icon: IconMail,
-        },
-        {
-          label: SubGroupsActionsTypes.Deleted,
-          icon: IconTrash,
         },
       ],
     },
@@ -88,7 +84,6 @@ export class MainPageStore {
     try {
       const response = await instance.get("inspections");
       if (!response.data.error) {
-        console.log(response.data);
         this.setInspections(response.data);
       }
     } catch (e) {}
