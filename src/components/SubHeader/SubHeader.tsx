@@ -34,12 +34,10 @@ const SubHeader = observer((props: ISubHeader) => {
       id: 2,
     },
   ];
-  const onInput = (e: React.ChangeEvent<HTMLInputElement>) => {};
 
   return (
     <div className={style.SubHeader}>
       <span className={style.title}>{t(SubGroupsTypes.Inspections)}</span>
-
       <div className={style.flexRow}>
         <Button
           onClick={props.handleAddInspection}
@@ -48,6 +46,7 @@ const SubHeader = observer((props: ISubHeader) => {
           iconLeft={IconAdd}
         />
         <Combobox
+          className={style.combobox}
           placeholder="Выберите вариант"
           items={items}
           value={value}

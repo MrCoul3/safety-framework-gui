@@ -1,6 +1,7 @@
 import {SubGroupsActionsTypes, SubGroupsTypes} from "../enums/SubGroupsTypes";
 import {InspectionStatusesTypes} from "../enums/InspectionStatusesTypes";
 import {CheckEntityTypes} from "../enums/CheckEntityTypes";
+import {InspectionFormTypes} from "../enums/InspectionFormTypes";
 
 export const ru = {
     dict: {
@@ -10,6 +11,7 @@ export const ru = {
         reset: "Сбросить",
         cancel: "Отмена",
         next: "Продолжить",
+        farther: "Дальше",
         edit: "Редактировать",
         recover: "Восстановить",
         delete: "Удалить",
@@ -58,11 +60,22 @@ export const ru = {
         checkEditedDate: "Дата редактирования проверки",
         checkDetails: "Детали проверки",
         inspectionNumber: "Номер инспекции",
-        inspectionType: "Тип проверки",
-        field: "Месторождение",
-        doObject: "Структурное подразделение ДО",
+
+        // Данные формы
+        [InspectionFormTypes.AuditDate]: "Дата проверки",
+        [InspectionFormTypes.InspectionForm]: "Форма проверки",
+        [InspectionFormTypes.InspectionType]: "Тип проверки",
+        [InspectionFormTypes.Function]: "Функция",
+        [InspectionFormTypes.OilField]: "Месторождение",
+        [InspectionFormTypes.DoStructs]: "Структурное подразделение ДО",
+        [InspectionFormTypes.DoObjects]: "Объект ДО, где проводилась проверка",
+        [InspectionFormTypes.Contractors]: "Наименование ПО",
+        [InspectionFormTypes.TeamNumber]: "Номер бригады ПО",
+        [InspectionFormTypes.SubContractors]: "Наименование субподрядной организации",
 
         addInspectionTitle: "Подготовка данных инспекции",
         addInspectionDescription: "Заполните все ключевые поля, чтобы перейти дальше по структуре заполнения",
+
+        inspectionFormPlaceHolder: "Выберите форму проверки",
     },
 };

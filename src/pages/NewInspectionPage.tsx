@@ -4,11 +4,23 @@ import NewInspectionPageLayout from "../layouts/NewInspectionPageLayout/NewInspe
 import NavPanel from "../components/NavPanel/NavPanel";
 import InspectionForm from "../components/InspectionForm/InspectionForm";
 import { useTranslation } from "react-i18next";
+import { InspectionFormTypes } from "../enums/InspectionFormTypes";
+import { useStore } from "../hooks/useStore";
 
 interface INewInspectionPage {}
 
 const NewInspectionPage = observer((props: INewInspectionPage) => {
   const { t } = useTranslation("dict");
+
+  const store = useStore();
+  const handleOpenField = (type: InspectionFormTypes) => {
+    const foundField = !!store.inspectionStore.fieldsData.find((data) =>
+      Object.keys(data).includes(type),
+    );
+    if (!foundField) {
+      store.inspectionStore.getFieldData(type);
+    }
+  };
 
   return (
     <NewInspectionPageLayout
@@ -19,7 +31,12 @@ const NewInspectionPage = observer((props: INewInspectionPage) => {
           title={t("addInspectionTitle")}
         />
       }
-      content={<InspectionForm />}
+      content={
+        <InspectionForm
+          fieldsData={store.inspectionStore.fieldsData}
+          handleOpenField={handleOpenField}
+        />
+      }
     />
   );
 });

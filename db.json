@@ -1,114 +1,124 @@
 {
-    "inspections": [
-        {
-            "id": 1,
-            "inspectionType": "ЦП - проверка транспорта",
-            "field": "Валынтойское",
-            "inspectionNumber": "1",
-            "doObject": "614 ПО - К. 614",
-            "auditDate": 1714474944000,
-            "editDate": 1714574944000,
-            "checkEntity": "barriers",
-            "status": "success"
-        },
-        {
-            "id": 1,
-            "inspectionType": "Транспортные Компании",
-            "field": "Еты-Пуровское",
-            "inspectionNumber": "2",
-            "doObject": "ЦТОиРТ - №4",
-            "auditDate": 1714474944000,
-            "editDate": 1714574944000,
-            "checkEntity": "freeForms",
-            "status": "warning"
-        },
-        {
-            "id": 1,
-            "inspectionType": "ЦП - проверка транспорта",
-            "field": "Валынтойское",
-            "inspectionNumber": "3",
-            "doObject": "614 ПО - К. 614",
-            "auditDate": 1714474944000,
-            "editDate": 1714574944000,
-            "checkEntity": "barriers",
-            "status": "error"
-        },
-        {
-            "id": 1,
-            "inspectionType": "ЦП - проверка транспорта",
-            "field": "Валынтойское",
-            "inspectionNumber": "1",
-            "doObject": "614 ПО - К. 614",
-            "auditDate": 1714474944000,
-            "editDate": 1714574944000,
-            "checkEntity": "barriers",
-            "status": "success"
-        },
-        {
-            "id": 1,
-            "inspectionType": "Транспортные Компании",
-            "field": "Еты-Пуровское",
-            "inspectionNumber": "2",
-            "doObject": "ЦТОиРТ - №4",
-            "auditDate": 1714474944000,
-            "editDate": 1714574944000,
-            "checkEntity": "freeForms",
-            "status": "warning"
-        },
-        {
-            "id": 1,
-            "inspectionType": "ЦП - проверка транспорта",
-            "field": "Валынтойское",
-            "inspectionNumber": "3",
-            "doObject": "614 ПО - К. 614",
-            "auditDate": 1714474944000,
-            "editDate": 1714574944000,
-            "checkEntity": "barriers",
-            "status": "error"
-        },
-        {
-            "id": 1,
-            "inspectionType": "ЦП - проверка транспорта",
-            "field": "Валынтойское",
-            "inspectionNumber": "1",
-            "doObject": "614 ПО - К. 614",
-            "auditDate": 1714474944000,
-            "editDate": 1714574944000,
-            "checkEntity": "barriers",
-            "status": "success"
-        },
-        {
-            "id": 1,
-            "inspectionType": "Транспортные Компании",
-            "field": "Еты-Пуровское",
-            "inspectionNumber": "2",
-            "doObject": "ЦТОиРТ - №4",
-            "auditDate": 1714474944000,
-            "editDate": 1714574944000,
-            "checkEntity": "freeForms",
-            "status": "warning"
-        },
-        {
-            "id": 1,
-            "inspectionType": "ЦП - проверка транспорта",
-            "field": "Валынтойское",
-            "inspectionNumber": "3",
-            "doObject": "614 ПО - К. 614",
-            "auditDate": 1714474944000,
-            "editDate": 1714574944000,
-            "checkEntity": "barriers",
-            "status": "error"
-        },
-        {
-            "id": 10,
-            "inspectionType": "ЦП - проверка транспорта",
-            "field": "Валынтойское",
-            "inspectionNumber": "3",
-            "doObject": "614 ПО - К. 614",
-            "auditDate": 1714474944000,
-            "editDate": 1714574944000,
-            "checkEntity": "barriers",
-            "status": "error"
-        }
-    ]
+  "inspections": [
+    {
+      "id": 1,
+      "inspectionType": "ЦП - проверка транспорта",
+      "oilField": "Валынтойское",
+      "inspectionNumber": "1",
+      "doStructs": "614 ПО - К. 614",
+      "auditDate": 1714474944000,
+      "editDate": 1714574944000,
+      "checkEntity": "barriers",
+      "status": "success"
+    },
+    {
+      "id": 1,
+      "inspectionType": "Транспортные Компании",
+      "oilField": "Еты-Пуровское",
+      "inspectionNumber": "2",
+      "doStructs": "ЦТОиРТ - №4",
+      "auditDate": 1714474944000,
+      "editDate": 1714574944000,
+      "checkEntity": "freeForms",
+      "status": "warning"
+    },
+    {
+      "id": 1,
+      "inspectionType": "ЦП - проверка транспорта",
+      "oilField": "Валынтойское",
+      "inspectionNumber": "3",
+      "doStructs": "614 ПО - К. 614",
+      "auditDate": 1714474944000,
+      "editDate": 1714574944000,
+      "checkEntity": "barriers",
+      "status": "error"
+    },
+    {
+      "id": 1,
+      "inspectionType": "ЦП - проверка транспорта",
+      "oilField": "Валынтойское",
+      "inspectionNumber": "1",
+      "doStructs": "614 ПО - К. 614",
+      "auditDate": 1714474944000,
+      "editDate": 1714574944000,
+      "checkEntity": "barriers",
+      "status": "success"
+    },
+    {
+      "id": 1,
+      "inspectionType": "Транспортные Компании",
+      "oilField": "Еты-Пуровское",
+      "inspectionNumber": "2",
+      "doStructs": "ЦТОиРТ - №4",
+      "auditDate": 1714474944000,
+      "editDate": 1714574944000,
+      "checkEntity": "freeForms",
+      "status": "warning"
+    },
+    {
+      "id": 1,
+      "inspectionType": "ЦП - проверка транспорта",
+      "oilField": "Валынтойское",
+      "inspectionNumber": "3",
+      "doStructs": "614 ПО - К. 614",
+      "auditDate": 1714474944000,
+      "editDate": 1714574944000,
+      "checkEntity": "barriers",
+      "status": "error"
+    },
+    {
+      "id": 1,
+      "inspectionType": "ЦП - проверка транспорта",
+      "oilField": "Валынтойское",
+      "inspectionNumber": "1",
+      "doStructs": "614 ПО - К. 614",
+      "auditDate": 1714474944000,
+      "editDate": 1714574944000,
+      "checkEntity": "barriers",
+      "status": "success"
+    },
+    {
+      "id": 1,
+      "inspectionType": "Транспортные Компании",
+      "oilField": "Еты-Пуровское",
+      "inspectionNumber": "2",
+      "doStructs": "ЦТОиРТ - №4",
+      "auditDate": 1714474944000,
+      "editDate": 1714574944000,
+      "checkEntity": "freeForms",
+      "status": "warning"
+    },
+    {
+      "id": 1,
+      "inspectionType": "ЦП - проверка транспорта",
+      "oilField": "Валынтойское",
+      "inspectionNumber": "3",
+      "doStructs": "614 ПО - К. 614",
+      "auditDate": 1714474944000,
+      "editDate": 1714574944000,
+      "checkEntity": "barriers",
+      "status": "error"
+    },
+    {
+      "id": 10,
+      "inspectionType": "ЦП - проверка транспорта",
+      "oilField": "Валынтойское",
+      "inspectionNumber": "3",
+      "doStructs": "614 ПО - К. 614",
+      "auditDate": 1714474944000,
+      "editDate": 1714574944000,
+      "checkEntity": "barriers",
+      "status": "error"
+    }
+  ],
+  "inspectionForm": [
+    {
+      "label": "Барьеры",
+      "id": 1
+    },
+    {
+      "label": "Свободная форма",
+      "id": 2
+    }
+  ]
 }
