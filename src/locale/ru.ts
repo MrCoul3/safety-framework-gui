@@ -76,6 +76,14 @@ export const ru = {
         addInspectionTitle: "Подготовка данных инспекции",
         addInspectionDescription: "Заполните все ключевые поля, чтобы перейти дальше по структуре заполнения",
 
-        inspectionFormPlaceHolder: "Выберите форму проверки",
+        [InspectionFormTypes.InspectionForm + 'Placeholder']: "Введите форму проверки",
+        [InspectionFormTypes.InspectionType + 'Placeholder']: "Введите тип проверки",
+        [InspectionFormTypes.Function + 'Placeholder']: "Введите функция",
+        [InspectionFormTypes.OilField + 'Placeholder']: "Введите месторождение",
+        [InspectionFormTypes.DoStructs + 'Placeholder']: "Введите структурное подразделение ДО",
+        [InspectionFormTypes.DoObjects + 'Placeholder']: "Введите объект ДО, где проводилась проверка",
+        [InspectionFormTypes.Contractors + 'Placeholder']: "Введите наименование ПО",
+        [InspectionFormTypes.TeamNumber + 'Placeholder']: "Введите номер бригады ПО",
+        [InspectionFormTypes.SubContractors + 'Placeholder']: "Введите наименование субподрядной организации",
     },
 };

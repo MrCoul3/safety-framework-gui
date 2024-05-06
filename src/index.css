@@ -28,9 +28,22 @@ code {
   --border: #00416633;
   --borderLine: 1px solid var(--border);
   --sideBarWidth: 244px;
+  --fieldWidth: 610px;
+  --navPanelHeight: 198px;
   --mainHeaderHeight: 76px;
   --paginatorHeight: 75px;
   --subHeaderHeight: 40px;
   --contentPaddingTopBottom: 24px;
   --contentPaddingLeftRight: 20px;
+}
+
+.Select-Body {
+  width: var(--fieldWidth) !important;
+
+}
+.TextField-Body {
+  width: var(--fieldWidth) !important;
+}
+
+.TextField-Label {
 }

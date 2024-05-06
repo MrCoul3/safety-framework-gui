@@ -113,12 +113,54 @@
   ],
   "inspectionForm": [
     {
-      "label": "Барьеры",
+      "Title": "Барьеры",
       "id": 1
     },
     {
-      "label": "Свободная форма",
+      "Title": "Свободная форма",
       "id": 2
+    }
+  ],
+  "inspectionType": [
+    {
+      "Title": "Плановая проверка",
+      "UniqueId": "1e0c6ce6-aa28-4f2a-bcbf-6f5890889df8",
+      "IsActual": true,
+      "DateCreated": "2023-08-03T12:06:00.13+05:00",
+      "DateModified": "2023-08-03T12:06:00.13+05:00",
+      "Id": 1
+    },
+    {
+      "Title": "Целевая проверка - проверка пусковой комиссией",
+      "UniqueId": "d1848e8a-08b3-4d7d-bef6-9b96cfa915a7",
+      "IsActual": true,
+      "DateCreated": "2023-08-03T12:06:00.13+05:00",
+      "DateModified": "2023-08-03T12:06:00.13+05:00",
+      "Id": 2
+    },
+    {
+      "Title": "Целевая проверка - проверка транспорта",
+      "UniqueId": "340445e9-9eb7-4270-8797-239bb2a52897",
+      "IsActual": true,
+      "DateCreated": "2023-08-03T12:06:00.13+05:00",
+      "DateModified": "2023-08-03T12:06:00.13+05:00",
+      "Id": 3
+    },
+    {
+      "Title": "Целевая проверка - на базе ПО",
+      "UniqueId": "fa8556d7-2007-434f-b230-2febcd59ba97",
+      "IsActual": true,
+      "DateCreated": "2023-08-03T12:06:00.13+05:00",
+      "DateModified": "2023-08-03T12:06:00.13+05:00",
+      "Id": 4
+    },
+    {
+      "Title": "ЦСИР",
+      "UniqueId": "3e5d8bb3-2907-4416-b3ca-e960ba3b0b1e",
+      "IsActual": true,
+      "DateCreated": "2023-10-18T14:42:04.477+05:00",
+      "DateModified": "2023-10-18T14:42:04.477+05:00",
+      "Id": 5
     }
   ]
 }

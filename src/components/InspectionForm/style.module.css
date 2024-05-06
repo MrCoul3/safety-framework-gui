@@ -1,44 +1,50 @@
 .InspectionForm {
-    background-color: var(--lightGray);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding-top: 32px;
+  background-color: var(--lightGray);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  height: calc(100vh - var(--navPanelHeight) - var(--mainHeaderHeight) - 32px);
+  overflow: auto;
+  padding-top: 32px;
 }
 
 .form {
-    width: 1200px;
-    border-radius: 8px;
-    background-color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    padding: 29px 50px 17px;
+  width: 1200px;
+  border-radius: 8px;
+  background-color: white;
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  flex-direction: column;
+  padding: 29px 50px 17px;
 }
 
 .textField {
-    width: 468px;
+  width: 468px;
 }
 
-.formikForm {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-}
-
-.combobox  {
-    max-width: 468px;
+.combobox {
+  max-width: 468px;
 }
 
 label {
-    white-space: nowrap;
+  white-space: nowrap;
 }
 .buttonsGroup {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-    justify-content: end;
-    padding-top: 64px;
-    width: 100%;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: end;
+  padding-top: 64px;
+  width: 100%;
+}
+.field {
+  justify-content: end;
+}
+.fields {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-end;
+  gap: 16px;
 }

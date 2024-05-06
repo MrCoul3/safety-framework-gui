@@ -7,7 +7,7 @@ export interface IFieldsData {
     [key: string]: Item[]
 }
 export type Item = {
-    label: string;
+    Title: string;
     id: string | number;
 };
 export class InspectionStore {
@@ -17,7 +17,6 @@ export class InspectionStore {
 
   setFieldsData(value: IFieldsData) {
       this.fieldsData = [...this.fieldsData, value];
-      console.log('this.fieldsData', toJS(this.fieldsData))
   }
 
   async getFieldData(type: InspectionFormTypes) {
@@ -25,7 +24,6 @@ export class InspectionStore {
       const response = await instance.get(type);
       if (!response.data.error) {
           this.setFieldsData({[type]: response.data})
-        // this.setInspections(response.data);
       }
     } catch (e) {}
   }
