@@ -19,6 +19,10 @@ export interface IFormDateFieldValue {
 export class InspectionStore {
   private store: AppStore;
 
+  constructor(store: AppStore) {
+    this.store = store;
+    makeAutoObservable(this);
+  }
   fieldsData: IFieldsData[] = [];
 
   formFieldsValues: (IFormFieldValue | IFormDateFieldValue)[] = [];
@@ -46,8 +50,9 @@ export class InspectionStore {
       }
     } catch (e) {}
   }
-  constructor(store: AppStore) {
-    this.store = store;
-    makeAutoObservable(this);
+
+  clearInspectionForm() {
+    this.formFieldsValues = []
   }
+
 }

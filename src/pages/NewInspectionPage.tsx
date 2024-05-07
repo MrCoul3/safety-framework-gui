@@ -33,6 +33,10 @@ const NewInspectionPage = observer((props: INewInspectionPage) => {
     <NewInspectionPageLayout
       navPanel={
         <NavPanel
+            formFieldsValuesLength={!!store.inspectionStore.formFieldsValues.length}
+          handleClearInspectionForm={() =>
+            store.inspectionStore.clearInspectionForm()
+          }
           actionText={t("createInspection")}
           description={t("addInspectionDescription")}
           title={t("addInspectionTitle")}

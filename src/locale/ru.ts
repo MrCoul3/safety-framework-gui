@@ -12,7 +12,7 @@ export const ru = {
     from: "с",
     to: "по",
     reset: "Сбросить",
-    cancel: "Отмена",
+    cancel: "Отменить",
     next: "Продолжить",
     farther: "Дальше",
     edit: "Редактировать",
@@ -28,7 +28,13 @@ export const ru = {
     selectAll: "Выбрать все",
     unselectAll: "Снять выделение",
     clearAll: "Очистить все",
+    clear: "Очистить",
     description: "Описание",
+
+
+    // breadcrumbs
+    mainPage: "Главная",
+    inspectionData: "Данные инспекции",
 
     createInspection: "Создать инспекцию",
 
