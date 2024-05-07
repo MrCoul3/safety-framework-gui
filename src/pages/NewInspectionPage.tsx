@@ -6,6 +6,10 @@ import InspectionForm from "../components/InspectionForm/InspectionForm";
 import { useTranslation } from "react-i18next";
 import { InspectionFormTypes } from "../enums/InspectionFormTypes";
 import { useStore } from "../hooks/useStore";
+import {
+  IFormDateFieldValue,
+  IFormFieldValue,
+} from "../stores/InspectionStore";
 
 interface INewInspectionPage {}
 
@@ -21,6 +25,9 @@ const NewInspectionPage = observer((props: INewInspectionPage) => {
       store.inspectionStore.getFieldData(type);
     }
   };
+  const handleChange = (value: IFormFieldValue | IFormDateFieldValue) => {
+    store.inspectionStore.setFormFieldsValues(value as IFormFieldValue);
+  };
 
   return (
     <NewInspectionPageLayout
@@ -33,6 +40,9 @@ const NewInspectionPage = observer((props: INewInspectionPage) => {
       }
       content={
         <InspectionForm
+          handleDateChange={handleChange}
+          formFieldsValues={store.inspectionStore.formFieldsValues}
+          handleChange={handleChange}
           fieldsData={store.inspectionStore.fieldsData}
           handleOpenField={handleOpenField}
         />

@@ -4,14 +4,20 @@ import style from "./style.module.css";
 import { InspectionFormTypes } from "../../enums/InspectionFormTypes";
 import { Combobox } from "@consta/uikit/Combobox";
 import { useFlag } from "@consta/uikit/useFlag";
-import { IFieldsData, Item } from "../../stores/InspectionStore";
+import {
+  IFieldsData,
+  IFormDateFieldValue,
+  IFormFieldValue,
+  Item,
+} from "../../stores/InspectionStore";
 import { useTranslation } from "react-i18next";
 
 interface IFieldInspectionType {
   handleOpenField(type: InspectionFormTypes): void;
+  handleChange(value: IFormFieldValue): void;
 
   fieldsData: IFieldsData[];
-
+  value?: IFormFieldValue | IFormDateFieldValue;
   inspectionType: InspectionFormTypes;
 }
 
@@ -19,8 +25,6 @@ const InspectionTextField = observer((props: IFieldInspectionType) => {
   const { t } = useTranslation("dict");
 
   const [open, setOpen] = useFlag();
-
-  const [value, setValue] = useState<Item | null>(null);
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -34,6 +38,9 @@ const InspectionTextField = observer((props: IFieldInspectionType) => {
     if (!open) {
       props.handleOpenField(type);
     }
+  };
+  const handleChange = (value: Item | null) => {
+    props.handleChange({ [props.inspectionType]: value });
   };
 
   const getItems = (type: InspectionFormTypes) => {
@@ -57,9 +64,10 @@ const InspectionTextField = observer((props: IFieldInspectionType) => {
       onDropdownOpen={onDropdownOpen}
       placeholder={t(`${props.inspectionType}Placeholder`)}
       required
-      value={value}
+      value={Object.values(props.value ?? {})[0]}
       items={getItems(props.inspectionType)}
-      onChange={setValue}
+      onChange={handleChange}
+      getItemKey={(item: Item) => item.Title}
     />
   );
 });
