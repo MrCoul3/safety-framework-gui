@@ -9,7 +9,8 @@ import { useTranslation } from "react-i18next";
 import { Button } from "@consta/uikit/Button";
 import { IconForward } from "@consta/icons/IconForward";
 import {
-  IFieldsData, IFormDateFieldValue,
+  IFieldsData,
+  IFormDateFieldValue,
   IFormFieldValue,
 } from "../../stores/InspectionStore";
 import InspectionTextField from "../InspectionTextField/InspectionTextField";
@@ -19,6 +20,9 @@ import ItemGroupTitle from "../ItemGroupTitle/ItemGroupTitle";
 interface IInspectionForm {
   handleOpenField(type: InspectionFormTypes): void;
   fieldsData: IFieldsData[];
+  isValidate: boolean;
+
+  setIsValidate(value: boolean): void ;
   handleChange(value: IFormFieldValue): void;
   handleDateChange(value: IFormDateFieldValue): void;
   formFieldsValues: (IFormFieldValue | IFormDateFieldValue)[];
@@ -49,10 +53,26 @@ const InspectionForm = observer((props: IInspectionForm) => {
     [InspectionFormGroups.InspectionParticipants]: [],
   };
 
+
   const getValue = (inspectionFormType: InspectionFormTypes) => {
     return props.formFieldsValues.find((value) =>
       Object.keys(value).includes(inspectionFormType),
     );
+  };
+  const getStatus = (inspectionFormType: InspectionFormTypes) => {
+    const condition = props.formFieldsValues.find(
+      (value) =>
+        Object.keys(value).includes(inspectionFormType) &&
+        !Object.values(value).includes(null),
+    );
+    if (!condition) {
+      return "alert";
+    }
+    return "success";
+  };
+
+  const handleApplyForm = () => {
+    props.setIsValidate(true);
   };
 
   return (
@@ -66,18 +86,21 @@ const InspectionForm = observer((props: IInspectionForm) => {
                 if (value === InspectionFormTypes.AuditDate) {
                   return (
                     <InspectionDataField
-                      inspectionType={InspectionFormTypes.AuditDate}
+                      inspectionType={value}
                       handleChange={props.handleDateChange}
+                      value={getValue(value)}
+                      status={props.isValidate ? getStatus(value) : undefined}
                     />
                   );
                 }
                 return (
                   <InspectionTextField
-                    value={getValue(value)}
-                    handleChange={props.handleChange}
                     inspectionType={value}
-                    handleOpenField={props.handleOpenField}
+                    value={getValue(value)}
                     fieldsData={props.fieldsData}
+                    handleChange={props.handleChange}
+                    handleOpenField={props.handleOpenField}
+                    status={props.isValidate ? getStatus(value) : undefined}
                   />
                 );
               })}
@@ -87,7 +110,12 @@ const InspectionForm = observer((props: IInspectionForm) => {
 
         <div className={style.buttonsGroup}>
           <Button view="clear" label={t("reset")} />
-          <Button type="submit" label={t("farther")} iconRight={IconForward} />
+          <Button
+            onClick={handleApplyForm}
+            type="submit"
+            label={t("farther")}
+            iconRight={IconForward}
+          />
         </div>
       </div>
     </div>

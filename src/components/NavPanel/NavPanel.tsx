@@ -15,6 +15,7 @@ interface INavPanel {
   actionText: string;
 
   handleClearInspectionForm(): void;
+  handleCreateInspection(): void;
   formFieldsValuesLength?: boolean;
 }
 
@@ -54,7 +55,7 @@ const NavPanel = observer((props: INavPanel) => {
       </div>
 
       <div className={style.buttonsGroup}>
-        <Button label={props.actionText} />
+        <Button onClick={props.handleCreateInspection} label={props.actionText} />
         <Button
           onClick={() => props.formFieldsValuesLength && setIsModalOpen(true)}
           view="ghost"
@@ -64,6 +65,9 @@ const NavPanel = observer((props: INavPanel) => {
         <Button iconRight={IconSelect} view="clear" label={t("description")} />
       </div>
       <ConfirmDialog
+        cancelActionLabel={t("cancel")}
+        confirmActionLabel={t("clear")}
+        title={t("dialogClearFields")}
         action={props.handleClearInspectionForm}
         onClose={() => setIsModalOpen(false)}
         open={isModalOpen}

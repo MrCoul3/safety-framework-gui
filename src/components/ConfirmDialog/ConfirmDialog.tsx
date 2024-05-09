@@ -3,11 +3,13 @@ import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
 import { Modal } from "@consta/uikit/Modal";
 import { Button } from "@consta/uikit/Button";
-import { Text } from "@consta/uikit/Text";
 import { useTranslation } from "react-i18next";
 
 interface IConfirmDialog {
   open: boolean;
+  title: string;
+  cancelActionLabel?: string;
+  confirmActionLabel: string;
   onClose(): void;
   action(): void;
 }
@@ -22,33 +24,27 @@ const ConfirmDialog = observer((props: IConfirmDialog) => {
 
   return (
     <div className={style.ConfirmDialog}>
-      <Modal
+      <Modal className={style.modal}
         onClose={props.onClose}
         isOpen={isModalOpen}
         hasOverlay
         onClickOutside={() => setIsModalOpen(false)}
         onEsc={() => setIsModalOpen(false)}
       >
-        <Text as="p" size="l" view="secondary" lineHeight="m">
-          Этозаголовок модального окна
-        </Text>
-        <Text as="p" size="s" view="secondary" lineHeight="m">
-          Это содержимое модального окна. Здесь может быть что угодно: текст,
-          изображение, форма или таблица. Всё, что хочется вынести из контекста
-          и показать поверх основной страницы.
-        </Text>
-        <div>
+         <span className={style.title}>{props.title}</span>
+
+        <div className={style.buttonGroup}>
           <Button
             size="m"
-            view="primary"
-            label={t("cancel")}
+            view="ghost"
+            label={props.cancelActionLabel}
             width="default"
             onClick={() => setIsModalOpen(false)}
           />
           <Button
             size="m"
             view="primary"
-            label={t("clear")}
+            label={props.confirmActionLabel}
             width="default"
             onClick={() => {
               props.action();

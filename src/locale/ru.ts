@@ -35,7 +35,6 @@ export const ru = {
     // breadcrumbs
     mainPage: "Главная",
     inspectionData: "Данные инспекции",
-
     createInspection: "Создать инспекцию",
 
     toHome: "На главную",
@@ -106,5 +105,7 @@ export const ru = {
       "Введите номер бригады ПО",
     [InspectionFormTypes.SubContractors + "Placeholder"]:
       "Введите наименование субподрядной организации",
+
+    dialogClearFields: "Очистить все заполненные поля?"
   },
 };

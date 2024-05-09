@@ -27,16 +27,24 @@ const NewInspectionPage = observer((props: INewInspectionPage) => {
   };
   const handleChange = (value: IFormFieldValue | IFormDateFieldValue) => {
     store.inspectionStore.setFormFieldsValues(value as IFormFieldValue);
+    store.inspectionStore.checkIsFormSuccess();
+  };
+  const handleCreateInspection = () => {
+
+    store.inspectionStore.setIsValidate(true);
   };
 
   return (
     <NewInspectionPageLayout
       navPanel={
-        <NavPanel
-            formFieldsValuesLength={!!store.inspectionStore.formFieldsValues.length}
-          handleClearInspectionForm={() =>
-            store.inspectionStore.clearInspectionForm()
+        <NavPanel handleCreateInspection={handleCreateInspection}
+          formFieldsValuesLength={
+            !!store.inspectionStore.formFieldsValues.length
           }
+          handleClearInspectionForm={() => {
+            store.inspectionStore.clearInspectionForm();
+            store.inspectionStore.setIsValidate(false);
+          }}
           actionText={t("createInspection")}
           description={t("addInspectionDescription")}
           title={t("addInspectionTitle")}
@@ -44,6 +52,8 @@ const NewInspectionPage = observer((props: INewInspectionPage) => {
       }
       content={
         <InspectionForm
+          setIsValidate={() => store.inspectionStore.setIsValidate(true)}
+          isValidate={store.inspectionStore.isValidate}
           handleDateChange={handleChange}
           formFieldsValues={store.inspectionStore.formFieldsValues}
           handleChange={handleChange}

@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
 import { InspectionFormTypes } from "../../enums/InspectionFormTypes";
@@ -11,11 +11,12 @@ import {
   Item,
 } from "../../stores/InspectionStore";
 import { useTranslation } from "react-i18next";
+import { PropStatus } from "@consta/uikit/__internal__/src/components/SelectComponents/types";
 
 interface IFieldInspectionType {
   handleOpenField(type: InspectionFormTypes): void;
   handleChange(value: IFormFieldValue): void;
-
+  status: PropStatus | undefined;
   fieldsData: IFieldsData[];
   value?: IFormFieldValue | IFormDateFieldValue;
   inspectionType: InspectionFormTypes;
@@ -34,12 +35,17 @@ const InspectionTextField = observer((props: IFieldInspectionType) => {
       inputRef.current?.focus();
     }
   }, []);
-  const onClick = (type: InspectionFormTypes) => {
+  const onClick = () => {
     if (!open) {
-      props.handleOpenField(type);
+      props.handleOpenField(props.inspectionType);
     }
   };
-  const handleChange = (value: Item | null) => {
+  useEffect(() => {
+    if (open) {
+      props.handleOpenField(props.inspectionType);
+    }
+  }, [open])
+  const handleChange = (value: Item | null | string) => {
     props.handleChange({ [props.inspectionType]: value });
   };
 
@@ -55,9 +61,10 @@ const InspectionTextField = observer((props: IFieldInspectionType) => {
 
   return (
     <Combobox
+      status={props.status ?? props.status}
       getItemLabel={(item) => item.Title}
       className={style.field}
-      onClick={() => onClick(props.inspectionType)}
+      onClick={onClick}
       dropdownOpen={open}
       labelPosition="left"
       label={t(props.inspectionType)}

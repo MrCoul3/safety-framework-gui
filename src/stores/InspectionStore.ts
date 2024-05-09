@@ -11,7 +11,7 @@ export type Item = {
 };
 
 export interface IFormFieldValue {
-  [key: string]: Item  | null;
+  [key: string]: Item | null | string;
 }
 export interface IFormDateFieldValue {
   [key: string]: [Date?, Date?] | null;
@@ -24,6 +24,10 @@ export class InspectionStore {
     makeAutoObservable(this);
   }
   fieldsData: IFieldsData[] = [];
+  isValidate: boolean = false;
+  setIsValidate(value: boolean) {
+    this.isValidate = value;
+  }
 
   formFieldsValues: (IFormFieldValue | IFormDateFieldValue)[] = [];
 
@@ -52,7 +56,10 @@ export class InspectionStore {
   }
 
   clearInspectionForm() {
-    this.formFieldsValues = []
+    this.formFieldsValues = [];
   }
 
+  checkIsFormSuccess() {
+    // все поля из списка InspectionFormTypes  имеются в formFieldsValues и меют значения;
+  }
 }
