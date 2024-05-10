@@ -1,5 +1,6 @@
 .card {
   padding: 16px;
+  max-height: 330px;
 }
 .await {
   border-top: 8px solid var(--awaitOrange);

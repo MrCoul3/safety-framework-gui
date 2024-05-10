@@ -6,6 +6,7 @@
 .flexCol {
   display: flex;
   flex-direction: column;
-  width: 100%;
+  width: 100vw;
+  overflow-x: auto;
   padding: var(--contentPaddingTopBottom) var(--contentPaddingLeftRight);
 }

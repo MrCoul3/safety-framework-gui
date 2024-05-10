@@ -17,6 +17,7 @@ export class MainPageStore {
   }
 
   inspections: IInspection[] = [];
+  localInspections: IInspection[] = [];
   sideBarItemValue: SubGroupsActionsTypes | null =
     SubGroupsActionsTypes.MainList;
 
@@ -77,6 +78,9 @@ export class MainPageStore {
 
   setInspections(value: IInspection[]) {
     this.inspections = value;
+  }
+  setLocalInspections(value: IInspection[]) {
+    this.localInspections = value;
   }
   setSideBarItemValue(value: SubGroupsActionsTypes) {
     this.sideBarItemValue = value;

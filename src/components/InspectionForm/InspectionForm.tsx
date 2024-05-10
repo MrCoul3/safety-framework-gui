@@ -73,11 +73,11 @@ const InspectionForm = observer((props: IInspectionForm) => {
         <form className={style.fields}>
           {Object.keys(fields).map((key: string) => (
             <>
-              <ItemGroupTitle groupTitle={key} />
+              <ItemGroupTitle key={key} groupTitle={key} />
               {fields[key].map((value) => {
                 if (value === InspectionFormTypes.AuditDate) {
                   return (
-                    <InspectionDataField
+                    <InspectionDataField key={value}
                       inspectionType={value}
                       handleChange={props.handleDateChange}
                       value={getValue(value) as [Date?, Date?] | null}

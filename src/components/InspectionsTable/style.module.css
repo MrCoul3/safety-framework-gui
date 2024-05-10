@@ -9,9 +9,16 @@
   height: var(--paginatorHeight);
 }
 .table {
-  overflow: scroll;
+  overflow: auto;
   height: calc(
     100vh - var(--mainHeaderHeight) - var(--subHeaderHeight) -
       var(--contentPaddingTopBottom) - var(--paginatorHeight)
   );
+}
+
+.colTitle {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 200px;
+  overflow: hidden;
 }

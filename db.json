@@ -109,6 +109,61 @@
       "editDate": "2024-04-30T21:00:00.000Z",
       "inspectionForm": "barriers",
       "status": "error"
+    },
+    {
+      "id": 11,
+      "inspectionType": "ЦП - проверка транспорта",
+      "oilField": "Валынтойское",
+      "inspectionNumber": "3",
+      "doStructs": "614 ПО - К. 614",
+      "auditDate": "2024-04-30T21:00:00.000Z",
+      "editDate": "2024-04-30T21:00:00.000Z",
+      "inspectionForm": "barriers",
+      "status": "error"
+    },
+    {
+      "id": 12,
+      "inspectionType": "ЦП - проверка транспорта",
+      "oilField": "Валынтойское",
+      "inspectionNumber": "3",
+      "doStructs": "614 ПО - К. 614",
+      "auditDate": "2024-04-30T21:00:00.000Z",
+      "editDate": "2024-04-30T21:00:00.000Z",
+      "inspectionForm": "barriers",
+      "status": "error"
+    },
+    {
+      "id": 13,
+      "inspectionType": "ЦП - проверка транспорта",
+      "oilField": "Валынтойское",
+      "inspectionNumber": "3",
+      "doStructs": "614 ПО - К. 614",
+      "auditDate": "2024-04-30T21:00:00.000Z",
+      "editDate": "2024-04-30T21:00:00.000Z",
+      "inspectionForm": "barriers",
+      "status": "error"
+    },
+    {
+      "id": 14,
+      "inspectionType": "ЦП - проверка транспорта",
+      "oilField": "Валынтойское",
+      "inspectionNumber": "3",
+      "doStructs": "614 ПО - К. 614",
+      "auditDate": "2024-04-30T21:00:00.000Z",
+      "editDate": "2024-04-30T21:00:00.000Z",
+      "inspectionForm": "barriers",
+      "status": "error"
+    },
+    {
+      "id": 15,
+      "inspectionType": "ЦП - проверка транспорта",
+      "oilField": "Валынтойское",
+      "inspectionNumber": "3",
+      "doStructs": "614 ПО - К. 614",
+      "auditDate": "2024-04-30T21:00:00.000Z",
+      "editDate": "2024-04-30T21:00:00.000Z",
+      "inspectionForm": "barriers",
+      "status": "error"
     }
   ],
   "inspectionForm": [

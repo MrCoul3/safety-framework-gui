@@ -67,6 +67,7 @@ export const ru = {
     checkDetails: "Детали проверки",
     inspectionNumber: "Номер инспекции",
     inspectionName: "Инспекция № ",
+    emptyNewInspections: "Нет новых инспекций",
 
     // Данные формы
     [InspectionFormGroups.Common]: "Общее",
@@ -85,6 +86,7 @@ export const ru = {
     [InspectionFormTypes.SubContractors]:
       "Наименование субподрядной организации",
     [InspectionFormGroups.InspectionParticipants]: "Участники инспекции",
+    editDate: "Дата редактирования",
 
     addInspectionTitle: "Подготовка данных инспекции",
     addInspectionDescription:

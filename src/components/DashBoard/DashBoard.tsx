@@ -9,10 +9,10 @@ import { Button } from "@consta/uikit/Button";
 import InspectionCard from "../InspectionCard/InspectionCard";
 import { IInspection } from "../../interfaces/IInspection";
 import classNames from "classnames";
-import { LOCAL_STORE_INSPECTIONS } from "../../constants/config";
 
 interface IDashBoard {
   data: IInspection[];
+  localInspections: IInspection[];
 }
 
 interface IInspectionGroupHeader {
@@ -38,8 +38,6 @@ const InspectionGroupHeader = (props: IInspectionGroupHeader) => {
 const DashBoard = observer((props: IDashBoard) => {
   const { t } = useTranslation("dict");
 
-  const [localInspections, setLocalInspections] = useState<IInspection[]>([]);
-
   const subGroups = [
     SubGroupsActionsTypes.NewInspections,
     SubGroupsActionsTypes.Sent,
@@ -50,28 +48,10 @@ const DashBoard = observer((props: IDashBoard) => {
   const newInspectionCondition = (subGroup: SubGroupsActionsTypes) =>
     subGroup === SubGroupsActionsTypes.NewInspections;
 
-  const getNewInspections = () => {
-    let localInspectionsParsed = [];
-    const localInspections = localStorage.getItem(LOCAL_STORE_INSPECTIONS);
-    if (localInspections) {
-      localInspectionsParsed = JSON.parse(localInspections);
-    }
-    setLocalInspections(localInspectionsParsed);
-    return localInspectionsParsed;
-  };
-
-  useEffect(() => {
-    getNewInspections();
-  }, []);
-
-  useEffect(() => {
-    console.log("localInspections", localInspections);
-  }, [localInspections]);
-
   return (
     <div className={style.DashBoard}>
       {subGroups.map((subGroup) => (
-        <div
+        <div key={subGroup}
           className={classNames(style.inspectionGroup, {
             [style.newGroup]: newInspectionCondition(subGroup),
             [style.sentGroup]: sentCondition(subGroup),
@@ -84,7 +64,7 @@ const DashBoard = observer((props: IDashBoard) => {
                 newInspectionCondition(subGroup),
             })}
           >
-            {(sentCondition(subGroup) ? props.data : localInspections).map(
+            {(sentCondition(subGroup) ? props.data : props.localInspections).map(
               (item, index) => (
                 <InspectionCard
                   id={item.id}

@@ -1,7 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
 import SideBar from "components/SideBar/SideBar";
-import MainHeader from "components/MainHeader/MainHeader";
 import MainPageLayout from "layouts/MainPageLayout/MainPageLayout";
 import SubHeader from "components/SubHeader/SubHeader";
 import { useStore } from "hooks/useStore";
@@ -13,7 +12,9 @@ import InspectionsTable from "../components/InspectionsTable/InspectionsTable";
 import { ResponsesEmptyBox } from "@consta/uikit/ResponsesEmptyBox";
 import { Button } from "@consta/uikit/Button";
 import { useTranslation } from "react-i18next";
-import {RoutesTypes} from "../enums/RoutesTypes";
+import { RoutesTypes } from "../enums/RoutesTypes";
+import { LOCAL_STORE_INSPECTIONS } from "../constants/config";
+import { ResponsesNothingFound } from "@consta/uikit/ResponsesNothingFound";
 
 interface IMainPage {}
 
@@ -23,8 +24,10 @@ export const MainPage = observer((props: IMainPage) => {
   const { t } = useTranslation("dict");
 
   const navigate = useNavigate();
+
   const init = () => {
     store.mainPageStore.getInspectionsDev();
+    getNewInspections();
   };
   useEffect(() => {
     init();
@@ -54,21 +57,47 @@ export const MainPage = observer((props: IMainPage) => {
     );
   };
 
+  const getNewInspections = () => {
+    let localInspectionsParsed = [];
+    const localInspections = localStorage.getItem(LOCAL_STORE_INSPECTIONS);
+    if (localInspections) {
+      localInspectionsParsed = JSON.parse(localInspections);
+    }
+    store.mainPageStore.setLocalInspections(localInspectionsParsed);
+  };
+
   const contentRoutes = () => {
     return (
       <Routes>
         <Route
-          element={<DashBoard data={store.mainPageStore.inspections} />}
+          element={
+            <DashBoard
+              localInspections={store.mainPageStore.localInspections}
+              data={store.mainPageStore.inspections}
+            />
+          }
           path="/"
+        />
+        <Route
+          element={
+            store.mainPageStore.localInspections.length ? (
+              <InspectionsTable
+                inspections={store.mainPageStore.localInspections}
+              />
+            ) : (
+              <ResponsesNothingFound
+                title={t('emptyNewInspections')}
+                description={" "}
+                actions={<Button onClick={toHome} view="ghost" label={t("toHome")} />}
+              />
+            )
+          }
+          path={SubGroupsActionsTypes.NewInspections}
         />
         <Route
           element={
             <InspectionsTable inspections={store.mainPageStore.inspections} />
           }
-          path={SubGroupsActionsTypes.NewInspections}
-        />
-        <Route
-          element={renderEmptyBoxPage()}
           path={SubGroupsActionsTypes.Sent}
         />
         <Route
@@ -84,8 +113,8 @@ export const MainPage = observer((props: IMainPage) => {
   };
 
   const handleAddInspection = () => {
-    navigate(RoutesTypes.NewInspection)
-  }
+    navigate(RoutesTypes.NewInspection);
+  };
 
   return (
     <div>
