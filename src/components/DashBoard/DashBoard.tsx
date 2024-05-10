@@ -38,12 +38,17 @@ const InspectionGroupHeader = (props: IInspectionGroupHeader) => {
 const DashBoard = observer((props: IDashBoard) => {
   const { t } = useTranslation("dict");
 
-  const [localInspections, setLocalInspections] = useState([]);
+  const [localInspections, setLocalInspections] = useState<IInspection[]>([]);
 
   const subGroups = [
     SubGroupsActionsTypes.NewInspections,
     SubGroupsActionsTypes.Sent,
   ];
+
+  const sentCondition = (subGroup: SubGroupsActionsTypes) =>
+    subGroup === SubGroupsActionsTypes.Sent;
+  const newInspectionCondition = (subGroup: SubGroupsActionsTypes) =>
+    subGroup === SubGroupsActionsTypes.NewInspections;
 
   const getNewInspections = () => {
     let localInspectionsParsed = [];
@@ -68,25 +73,34 @@ const DashBoard = observer((props: IDashBoard) => {
       {subGroups.map((subGroup) => (
         <div
           className={classNames(style.inspectionGroup, {
-            [style.newGroup]: subGroup === SubGroupsActionsTypes.NewInspections,
-            [style.sentGroup]: subGroup === SubGroupsActionsTypes.Sent,
+            [style.newGroup]: newInspectionCondition(subGroup),
+            [style.sentGroup]: sentCondition(subGroup),
           })}
         >
           <InspectionGroupHeader subGroup={subGroup} />
-          <div className={style.cardContainer}>
-            {subGroup === SubGroupsActionsTypes.Sent &&
-              props.data.map((item) => (
+          <div
+            className={classNames(style.cardContainer, {
+              [style.cardContainerForNewGroup]:
+                newInspectionCondition(subGroup),
+            })}
+          >
+            {(sentCondition(subGroup) ? props.data : localInspections).map(
+              (item, index) => (
                 <InspectionCard
+                  id={item.id}
+                  key={item.id}
                   subGroup={subGroup}
-                  oilField={item.oilField}
-                  inspectionType={item.inspectionType}
-                  doObject={item.doStructs}
-                  checkVerifyDate={item.auditDate}
-                  checkEditedDate={item.editDate}
-                  inspectionForm={item.inspectionForm}
                   status={item.status}
+                  oilField={item.oilField}
+                  doObject={item.doStructs}
+                  checkEditedDate={item.editDate}
+                  checkVerifyDate={item.auditDate}
+                  inspectionType={item.inspectionType}
+                  inspectionForm={item.inspectionForm}
+                  index={newInspectionCondition(subGroup) && index + 1}
                 />
-              ))}
+              ),
+            )}
           </div>
         </div>
       ))}

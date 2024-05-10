@@ -40,6 +40,7 @@ const NewInspectionPage = observer((props: INewInspectionPage) => {
     const isFormValid = store.inspectionStore.checkIsFormSuccess()
     if (isFormValid) {
       store.inspectionStore.setInspectionToLocalStorage();
+      store.inspectionStore.setIsValidate(false);
       navigate(-1);
       store.inspectionStore.clearInspectionForm();
     }

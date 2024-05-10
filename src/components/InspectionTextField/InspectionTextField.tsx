@@ -17,7 +17,7 @@ interface IFieldInspectionType {
   handleChange(value: IFormFieldValue): void;
   status: PropStatus | undefined;
   fieldsData: IFieldsData[];
-  value?: IFormFieldValue | IFormDateFieldValue;
+  value?: string;
   inspectionType: InspectionFormTypes;
 }
 
@@ -41,13 +41,9 @@ const InspectionTextField = observer((props: IFieldInspectionType) => {
     }
   }, [open]);
 
-  useEffect(() => {
-    console.log('props.value', props.value)
-  }, [props.value]);
-
   const handleChange = (value: Item | null) => {
     if (value) {
-      props.handleChange({ [props.inspectionType]: value });
+      props.handleChange({ [props.inspectionType]: value.Title });
     }
   };
 
@@ -72,7 +68,7 @@ const InspectionTextField = observer((props: IFieldInspectionType) => {
       onDropdownOpen={onDropdownOpen}
       placeholder={t(`${props.inspectionType}Placeholder`)}
       required
-      value={Object.values(props.value ?? {})[0]}
+      value={ props.value ? {Title: props.value} : null}
       items={getItems(props.inspectionType)}
       onChange={handleChange}
       getItemKey={(item: Item) => item.Title}

@@ -30,7 +30,7 @@ export class InspectionStore {
     this.isValidate = value;
   }
 
-  formFieldsValues: (IFormFieldValue | IFormDateFieldValue)[] = [];
+  formFieldsValues: (IFormFieldValue | IFormDateFieldValue) = {};
 
   setFieldsData(value: IFieldsData) {
     this.fieldsData = [...this.fieldsData, value];
@@ -38,14 +38,7 @@ export class InspectionStore {
   }
 
   setFormFieldsValues(value: IFormFieldValue | IFormDateFieldValue) {
-    const keyCondition = (field: IFormFieldValue | IFormDateFieldValue) =>
-      Object.keys(field)[0] === Object.keys(value)[0];
-    if (this.formFieldsValues.find((field) => keyCondition(field))) {
-      this.formFieldsValues = this.formFieldsValues.filter(
-        (field) => !keyCondition(field),
-      );
-    }
-    this.formFieldsValues = [...this.formFieldsValues, value];
+    Object.assign(this.formFieldsValues, value);
     console.debug("formFieldsValues: ", toJS(this.formFieldsValues));
   }
 
@@ -59,7 +52,7 @@ export class InspectionStore {
   }
 
   clearInspectionForm() {
-    this.formFieldsValues = [];
+    this.formFieldsValues = {};
   }
 
   checkIsFormSuccess() {

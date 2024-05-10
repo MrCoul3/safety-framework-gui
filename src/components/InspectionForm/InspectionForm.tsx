@@ -24,7 +24,7 @@ interface IInspectionForm {
   setIsValidate(value: boolean): void;
   handleChange(value: IFormFieldValue): void;
   handleDateChange(value: IFormDateFieldValue): void;
-  formFieldsValues: (IFormFieldValue | IFormDateFieldValue)[];
+  formFieldsValues: IFormFieldValue | IFormDateFieldValue;
 }
 
 const InspectionForm = observer((props: IInspectionForm) => {
@@ -53,16 +53,10 @@ const InspectionForm = observer((props: IInspectionForm) => {
   };
 
   const getValue = (inspectionFormType: InspectionFormTypes) => {
-    return props.formFieldsValues.find((value) =>
-      Object.keys(value).includes(inspectionFormType),
-    );
+    return   props.formFieldsValues[inspectionFormType]
   };
   const getStatus = (inspectionFormType: InspectionFormTypes) => {
-    const condition = props.formFieldsValues.find(
-      (value) =>
-        Object.keys(value).includes(inspectionFormType) &&
-        !Object.values(value).includes(null),
-    );
+    const condition = props.formFieldsValues[inspectionFormType]
     if (!condition) {
       return "alert";
     }
@@ -86,7 +80,7 @@ const InspectionForm = observer((props: IInspectionForm) => {
                     <InspectionDataField
                       inspectionType={value}
                       handleChange={props.handleDateChange}
-                      value={getValue(value)}
+                      value={getValue(value) as [Date?, Date?] | null}
                       status={props.isValidate ? getStatus(value) : undefined}
                     />
                   );
@@ -94,7 +88,7 @@ const InspectionForm = observer((props: IInspectionForm) => {
                 return (
                   <InspectionTextField
                     inspectionType={value}
-                    value={getValue(value) as IFormFieldValue}
+                    value={getValue(value) as string}
                     fieldsData={props.fieldsData}
                     handleChange={props.handleChange}
                     handleOpenField={props.handleOpenField}

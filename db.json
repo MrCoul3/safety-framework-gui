@@ -12,7 +12,7 @@
       "status": "success"
     },
     {
-      "id": 1,
+      "id": 2,
       "inspectionType": "Транспортные Компании",
       "oilField": "Еты-Пуровское",
       "inspectionNumber": "2",
@@ -23,7 +23,7 @@
       "status": "warning"
     },
     {
-      "id": 1,
+      "id": 3,
       "inspectionType": "ЦП - проверка транспорта",
       "oilField": "Валынтойское",
       "inspectionNumber": "3",
@@ -34,7 +34,7 @@
       "status": "error"
     },
     {
-      "id": 1,
+      "id": 4,
       "inspectionType": "ЦП - проверка транспорта",
       "oilField": "Валынтойское",
       "inspectionNumber": "1",
@@ -45,7 +45,7 @@
       "status": "success"
     },
     {
-      "id": 1,
+      "id": 5,
       "inspectionType": "Транспортные Компании",
       "oilField": "Еты-Пуровское",
       "inspectionNumber": "2",
@@ -56,7 +56,7 @@
       "status": "warning"
     },
     {
-      "id": 1,
+      "id": 6,
       "inspectionType": "ЦП - проверка транспорта",
       "oilField": "Валынтойское",
       "inspectionNumber": "3",
@@ -67,7 +67,7 @@
       "status": "error"
     },
     {
-      "id": 1,
+      "id": 7,
       "inspectionType": "ЦП - проверка транспорта",
       "oilField": "Валынтойское",
       "inspectionNumber": "1",
@@ -78,7 +78,7 @@
       "status": "success"
     },
     {
-      "id": 1,
+      "id": 8,
       "inspectionType": "Транспортные Компании",
       "oilField": "Еты-Пуровское",
       "inspectionNumber": "2",
@@ -89,7 +89,7 @@
       "status": "warning"
     },
     {
-      "id": 1,
+      "id": 9,
       "inspectionType": "ЦП - проверка транспорта",
       "oilField": "Валынтойское",
       "inspectionNumber": "3",

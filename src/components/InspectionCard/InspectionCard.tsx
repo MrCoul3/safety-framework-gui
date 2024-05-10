@@ -17,12 +17,14 @@ import moment from "moment";
 import { SubGroupsActionsTypes } from "../../enums/SubGroupsTypes";
 
 interface IInspectionCard {
+  id: string;
   name?: string;
   doObject?: string;
   checkVerifyDate?: number;
   checkEditedDate?: number;
   inspectionType?: string;
   oilField?: string;
+  index?: number | boolean;
   inspectionForm?: CheckEntityTypes;
   status?: InspectionStatusesTypes;
   subGroup?: SubGroupsActionsTypes;
@@ -35,7 +37,6 @@ const InspectionCard = observer((props: IInspectionCard) => {
   const errorCond = () => props.status === InspectionStatusesTypes.Error;
   const getDate = (date?: number) => moment(date).format("DD.MM.YYYY");
 
-
   return (
     <Card
       className={classNames(style.card, {
@@ -46,14 +47,18 @@ const InspectionCard = observer((props: IInspectionCard) => {
       verticalSpace="xs"
       horizontalSpace="xs"
     >
-      <Badge
-        form="round"
-        iconLeft={IconAllDone}
-        status={props.status}
-        label={t(props.status ?? "")}
-      />
+      {props.status && (
+        <Badge
+          form="round"
+          iconLeft={IconAllDone}
+          status={props.status}
+          label={t(props.status ?? "")}
+        />
+      )}
+
       <div className={style.title}>
-        {props.name}
+        {props.index && t("inspectionName") + props.index}
+        {props.id && t("inspectionName") + props.id}
         <Button
           iconSize="s"
           form="round"
@@ -114,7 +119,8 @@ const InspectionCard = observer((props: IInspectionCard) => {
           </>
         )}
         {props.subGroup === SubGroupsActionsTypes.Deleted && (
-          <Button width='full'
+          <Button
+            width="full"
             size={"s"}
             iconSize="s"
             view="secondary"

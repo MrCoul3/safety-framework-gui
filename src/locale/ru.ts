@@ -66,6 +66,7 @@ export const ru = {
     checkEditedDate: "Дата редактирования проверки",
     checkDetails: "Детали проверки",
     inspectionNumber: "Номер инспекции",
+    inspectionName: "Инспекция № ",
 
     // Данные формы
     [InspectionFormGroups.Common]: "Общее",

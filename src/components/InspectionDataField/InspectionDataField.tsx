@@ -14,7 +14,7 @@ import { PropStatus } from "@consta/uikit/__internal__/src/components/SelectComp
 interface IInspectionDataField {
   inspectionType: InspectionFormTypes;
   status: PropStatus | undefined;
-  value?: IFormFieldValue | IFormDateFieldValue;
+  value?: [Date?, Date?] | null;
   handleChange(value: IFormDateFieldValue): void;
 }
 
@@ -35,7 +35,7 @@ const InspectionDataField = observer((props: IInspectionDataField) => {
       type="date"
       rightSide={IconCalendar}
       labelPosition="left"
-      value={Object.values(props.value ?? {})[0]}
+      value={props.value}
     />
   );
 });

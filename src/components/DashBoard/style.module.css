@@ -28,6 +28,9 @@
   overflow-y: auto;
   padding: 0 4px;
 }
+.cardContainerForNewGroup {
+  grid-template-columns:  1fr;
+}
 .inspectionGroupHeader {
   height: var(--inspectionGroupHeader);
   display: flex;
