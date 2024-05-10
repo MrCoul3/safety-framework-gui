@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { observer } from "mobx-react-lite";
 import NewInspectionPageLayout from "../layouts/NewInspectionPageLayout/NewInspectionPageLayout";
 import NavPanel from "../components/NavPanel/NavPanel";
@@ -10,7 +10,7 @@ import {
   IFormDateFieldValue,
   IFormFieldValue,
 } from "../stores/InspectionStore";
-import {useNavigate} from "react-router";
+import {useNavigate, useParams} from "react-router";
 
 
 interface INewInspectionPage {}
@@ -18,19 +18,20 @@ interface INewInspectionPage {}
 const NewInspectionPage = observer((props: INewInspectionPage) => {
   const { t } = useTranslation("dict");
 
+  let { id } = useParams();
+
   const navigate = useNavigate();
 
   const store = useStore();
   const handleOpenField = (type: InspectionFormTypes) => {
-    console.log('handleOpenField')
     const foundField = !!store.inspectionStore.fieldsData.find((data) =>
       Object.keys(data).includes(type),
     );
     if (!foundField) {
       store.inspectionStore.getFieldData(type);
     }
-
   };
+
   const handleChange = (value: IFormFieldValue | IFormDateFieldValue) => {
     store.inspectionStore.setFormFieldsValues(value as IFormFieldValue);
     store.inspectionStore.checkIsFormSuccess();

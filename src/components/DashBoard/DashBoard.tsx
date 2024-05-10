@@ -13,6 +13,8 @@ import classNames from "classnames";
 interface IDashBoard {
   data: IInspection[];
   localInspections: IInspection[];
+  handleEditButtonClick(id: string): void;
+  handleDeleteButtonClick(id: string): void;
 }
 
 interface IInspectionGroupHeader {
@@ -25,12 +27,12 @@ const InspectionGroupHeader = (props: IInspectionGroupHeader) => {
   return (
     <div className={style.inspectionGroupHeader}>
       {t(props.subGroup)}
-      <div className={style.flexRow}>
+      {/*<div className={style.flexRow}>
         <Button view="clear" form="round" iconRight={IconMeatball} onlyIcon />
         {props.subGroup === SubGroupsActionsTypes.NewInspections && (
           <Button size="s" form="round" iconRight={IconAdd} onlyIcon />
         )}
-      </div>
+      </div>*/}
     </div>
   );
 };
@@ -51,36 +53,40 @@ const DashBoard = observer((props: IDashBoard) => {
   return (
     <div className={style.DashBoard}>
       {subGroups.map((subGroup) => (
-        <div key={subGroup}
+        <div
+          key={subGroup}
           className={classNames(style.inspectionGroup, {
             [style.newGroup]: newInspectionCondition(subGroup),
             [style.sentGroup]: sentCondition(subGroup),
           })}
         >
-          <InspectionGroupHeader subGroup={subGroup} />
+          <InspectionGroupHeader  key={subGroup} subGroup={subGroup} />
           <div
             className={classNames(style.cardContainer, {
               [style.cardContainerForNewGroup]:
                 newInspectionCondition(subGroup),
             })}
           >
-            {(sentCondition(subGroup) ? props.data : props.localInspections).map(
-              (item, index) => (
-                <InspectionCard
-                  id={item.id}
-                  key={item.id}
-                  subGroup={subGroup}
-                  status={item.status}
-                  oilField={item.oilField}
-                  doObject={item.doStructs}
-                  checkEditedDate={item.editDate}
-                  checkVerifyDate={item.auditDate}
-                  inspectionType={item.inspectionType}
-                  inspectionForm={item.inspectionForm}
-                  index={newInspectionCondition(subGroup) && index + 1}
-                />
-              ),
-            )}
+            {(sentCondition(subGroup)
+              ? props.data
+              : props.localInspections
+            ).map((item, index) => (
+              <InspectionCard
+                handleDeleteButtonClick={props.handleDeleteButtonClick}
+                handleEditButtonClick={props.handleEditButtonClick}
+                id={item.id}
+                key={item.id}
+                subGroup={subGroup}
+                status={item.status}
+                oilField={item.oilField}
+                doObject={item.doStructs}
+                checkEditedDate={item.editDate}
+                checkVerifyDate={item.auditDate}
+                inspectionType={item.inspectionType}
+                inspectionForm={item.inspectionForm}
+                index={newInspectionCondition(subGroup) && index + 1}
+              />
+            ))}
           </div>
         </div>
       ))}

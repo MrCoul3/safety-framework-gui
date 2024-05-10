@@ -28,6 +28,9 @@ interface IInspectionCard {
   inspectionForm?: CheckEntityTypes;
   status?: InspectionStatusesTypes;
   subGroup?: SubGroupsActionsTypes;
+
+  handleEditButtonClick(id: string): void;
+  handleDeleteButtonClick(id: string): void;
 }
 
 const InspectionCard = observer((props: IInspectionCard) => {
@@ -60,6 +63,11 @@ const InspectionCard = observer((props: IInspectionCard) => {
         {props.index && t("inspectionName") + props.index}
         {props.id && t("inspectionName") + props.id}
         <Button
+          onClick={() =>
+            props.handleDeleteButtonClick(
+              props.index ? props.index.toString() : props.id.toString(),
+            )
+          }
           iconSize="s"
           form="round"
           view="clear"
@@ -110,6 +118,11 @@ const InspectionCard = observer((props: IInspectionCard) => {
               iconLeft={IconMail}
             />
             <Button
+              onClick={() =>
+                props.handleEditButtonClick(
+                  props.index ? props.index.toString() : props.id.toString(),
+                )
+              }
               size={"s"}
               className={style.editButton}
               iconSize="s"

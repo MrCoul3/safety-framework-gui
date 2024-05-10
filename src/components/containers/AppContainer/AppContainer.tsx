@@ -33,6 +33,7 @@ export const AppContainer = observer(() => {
         <Route path="/*" element={<MainPage />} />
         <Route path="*" element={render404()} />
         <Route path={RoutesTypes.NewInspection} element={<NewInspectionPage />} />
+        <Route path={RoutesTypes.NewInspection + '/:id'} element={<NewInspectionPage />} />
       </Routes>
     </>
   );

@@ -32,8 +32,6 @@ export const MainPage = observer((props: IMainPage) => {
   useEffect(() => {
     init();
   }, []);
-  const handleClearSearchValue = () => {};
-  const handleSearch = () => {};
 
   const onItemClick = (item: IAction) => {
     store.mainPageStore.updateSubGroupsState(item.label);
@@ -65,6 +63,13 @@ export const MainPage = observer((props: IMainPage) => {
     }
     store.mainPageStore.setLocalInspections(localInspectionsParsed);
   };
+  const handleEditInspection = (id: string) => {
+    console.log("handleEditButtonClick", id);
+    navigate(RoutesTypes.NewInspection + "/" + id);
+  };
+  const handleDeleteInspection = (id: string) => {
+    console.log("handleDeleteInspection", id);
+  };
 
   const contentRoutes = () => {
     return (
@@ -72,6 +77,8 @@ export const MainPage = observer((props: IMainPage) => {
         <Route
           element={
             <DashBoard
+              handleDeleteButtonClick={handleDeleteInspection}
+              handleEditButtonClick={handleEditInspection}
               localInspections={store.mainPageStore.localInspections}
               data={store.mainPageStore.inspections}
             />
@@ -86,9 +93,11 @@ export const MainPage = observer((props: IMainPage) => {
               />
             ) : (
               <ResponsesNothingFound
-                title={t('emptyNewInspections')}
+                title={t("emptyNewInspections")}
                 description={" "}
-                actions={<Button onClick={toHome} view="ghost" label={t("toHome")} />}
+                actions={
+                  <Button onClick={toHome} view="ghost" label={t("toHome")} />
+                }
               />
             )
           }
