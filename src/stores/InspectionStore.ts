@@ -2,6 +2,7 @@ import { AppStore } from "./AppStore";
 import { makeAutoObservable, toJS } from "mobx";
 import { InspectionFormTypes } from "../enums/InspectionFormTypes";
 import { instance } from "../api/endpoints";
+import {LOCAL_STORE_INSPECTIONS} from "../constants/config";
 
 export interface IFieldsData {
   [key: string]: Item[];
@@ -33,7 +34,9 @@ export class InspectionStore {
 
   setFieldsData(value: IFieldsData) {
     this.fieldsData = [...this.fieldsData, value];
+    console.log('this.fieldsData', toJS(this.fieldsData))
   }
+
   setFormFieldsValues(value: IFormFieldValue | IFormDateFieldValue) {
     const keyCondition = (field: IFormFieldValue | IFormDateFieldValue) =>
       Object.keys(field)[0] === Object.keys(value)[0];
@@ -60,6 +63,28 @@ export class InspectionStore {
   }
 
   checkIsFormSuccess() {
-    // все поля из списка InspectionFormTypes  имеются в formFieldsValues и меют значения;
+    return (
+      Object.keys(InspectionFormTypes).length ===
+        Object.keys(this.formFieldsValues).length &&
+      !Object.values(this.formFieldsValues).some((field) =>
+          field === null,
+      )
+    );
+  }
+
+
+  setInspectionToLocalStorage() {
+    const localInspections = localStorage.getItem(LOCAL_STORE_INSPECTIONS);
+    if (localInspections) {
+      const localInspectionsParsed = JSON.parse(localInspections)
+      if (localInspectionsParsed) {
+        localInspectionsParsed.push(this.formFieldsValues);
+      }
+      const newInspectionsJson = JSON.stringify(localInspectionsParsed);
+      localStorage.setItem(LOCAL_STORE_INSPECTIONS, newInspectionsJson)
+    } else {
+      const newInspectionJson = JSON.stringify([this.formFieldsValues]);
+      localStorage.setItem(LOCAL_STORE_INSPECTIONS, newInspectionJson)
+    }
   }
 }

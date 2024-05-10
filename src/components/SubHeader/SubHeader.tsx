@@ -20,20 +20,6 @@ type Item = {
 const SubHeader = observer((props: ISubHeader) => {
   const { t } = useTranslation("dict");
 
-  const [value, setValue] = useState<Item[] | null>();
-
-  const items: Item[] = [
-    {
-      label: "Барьеры",
-      groupId: 1,
-      id: 1,
-    },
-    {
-      label: "Свободные формы",
-      groupId: 1,
-      id: 2,
-    },
-  ];
 
   return (
     <div className={style.SubHeader}>
@@ -44,14 +30,6 @@ const SubHeader = observer((props: ISubHeader) => {
           className={style.button}
           label={t("addInspection")}
           iconLeft={IconAdd}
-        />
-        <Combobox
-          className={style.combobox}
-          placeholder="Выберите вариант"
-          items={items}
-          value={value}
-          onChange={setValue}
-          multiple
         />
       </div>
     </div>

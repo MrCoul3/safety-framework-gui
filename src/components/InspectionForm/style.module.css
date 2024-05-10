@@ -44,5 +44,5 @@ label {
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
-  /*gap: 16px;*/
+  /*gap: var(--normalGap);*/
 }

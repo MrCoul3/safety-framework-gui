@@ -1,5 +1,5 @@
 
 .field {
-    justify-content: end;
+    justify-content: end !important;
     padding: 8px 0;
 }

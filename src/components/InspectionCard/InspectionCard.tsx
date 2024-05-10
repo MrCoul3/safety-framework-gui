@@ -22,8 +22,8 @@ interface IInspectionCard {
   checkVerifyDate?: number;
   checkEditedDate?: number;
   inspectionType?: string;
-  field?: string;
-  checkEntity?: CheckEntityTypes;
+  oilField?: string;
+  inspectionForm?: CheckEntityTypes;
   status?: InspectionStatusesTypes;
   subGroup?: SubGroupsActionsTypes;
 }
@@ -34,6 +34,7 @@ const InspectionCard = observer((props: IInspectionCard) => {
   const awaitCond = () => props.status === InspectionStatusesTypes.Warning;
   const errorCond = () => props.status === InspectionStatusesTypes.Error;
   const getDate = (date?: number) => moment(date).format("DD.MM.YYYY");
+
 
   return (
     <Card
@@ -75,7 +76,7 @@ const InspectionCard = observer((props: IInspectionCard) => {
       <div className={style.checkDetails}>
         <span className={style.checkDetailsTitle}>{t("checkDetails")}</span>
         <div className={style.badgeGroup}>
-          <Badge status="system" label={t(props.checkEntity ?? "")} />
+          <Badge status="system" label={t(props.inspectionForm ?? "")} />
           <Badge
             view="stroked"
             status="system"
@@ -88,8 +89,8 @@ const InspectionCard = observer((props: IInspectionCard) => {
             <span className={style.value}> {props.inspectionType}</span>
           </div>
           <div className={style.extraInfoValue}>
-            {t("field")}
-            <span className={style.value}> {props.field}</span>
+            {t("oilField")}
+            <span className={style.value}> {props.oilField}</span>
           </div>
         </div>
       </div>

@@ -10,28 +10,39 @@ import {
   IFormDateFieldValue,
   IFormFieldValue,
 } from "../stores/InspectionStore";
+import {useNavigate} from "react-router";
+
 
 interface INewInspectionPage {}
 
 const NewInspectionPage = observer((props: INewInspectionPage) => {
   const { t } = useTranslation("dict");
 
+  const navigate = useNavigate();
+
   const store = useStore();
   const handleOpenField = (type: InspectionFormTypes) => {
+    console.log('handleOpenField')
     const foundField = !!store.inspectionStore.fieldsData.find((data) =>
       Object.keys(data).includes(type),
     );
     if (!foundField) {
       store.inspectionStore.getFieldData(type);
     }
+
   };
   const handleChange = (value: IFormFieldValue | IFormDateFieldValue) => {
     store.inspectionStore.setFormFieldsValues(value as IFormFieldValue);
     store.inspectionStore.checkIsFormSuccess();
   };
   const handleCreateInspection = () => {
-
     store.inspectionStore.setIsValidate(true);
+    const isFormValid = store.inspectionStore.checkIsFormSuccess()
+    if (isFormValid) {
+      store.inspectionStore.setInspectionToLocalStorage();
+      navigate(-1);
+      store.inspectionStore.clearInspectionForm();
+    }
   };
 
   return (

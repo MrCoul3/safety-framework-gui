@@ -81,6 +81,6 @@
 
 .controlButtonGroup {
   display: flex;
-  gap: 16px;
+  gap: var(--normalGap);
   margin-top: 24px;
 }

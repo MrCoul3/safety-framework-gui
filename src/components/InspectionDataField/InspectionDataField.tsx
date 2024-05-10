@@ -7,7 +7,7 @@ import { DatePicker, DatePickerPropOnChange } from "@consta/uikit/DatePicker";
 import { IconCalendar } from "@consta/icons/IconCalendar";
 import {
   IFormDateFieldValue,
-  IFormFieldValue,
+  IFormFieldValue, Item,
 } from "../../stores/InspectionStore";
 import { PropStatus } from "@consta/uikit/__internal__/src/components/SelectComponents/types";
 

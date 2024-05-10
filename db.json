@@ -1,14 +1,14 @@
 {
   "inspections": [
     {
+      "auditDate": "2024-04-30T21:00:00.000Z",
+      "doStructs": "614 ПО - К. 614",
       "id": 1,
       "inspectionType": "ЦП - проверка транспорта",
       "oilField": "Валынтойское",
       "inspectionNumber": "1",
-      "doStructs": "614 ПО - К. 614",
-      "auditDate": 1714474944000,
-      "editDate": 1714574944000,
-      "checkEntity": "barriers",
+      "editDate": "2024-04-30T21:00:00.000Z",
+      "inspectionForm": "barriers",
       "status": "success"
     },
     {
@@ -17,9 +17,9 @@
       "oilField": "Еты-Пуровское",
       "inspectionNumber": "2",
       "doStructs": "ЦТОиРТ - №4",
-      "auditDate": 1714474944000,
-      "editDate": 1714574944000,
-      "checkEntity": "freeForms",
+      "auditDate": "2024-04-30T21:00:00.000Z",
+      "editDate": "2024-04-30T21:00:00.000Z",
+      "inspectionForm": "freeForms",
       "status": "warning"
     },
     {
@@ -28,9 +28,9 @@
       "oilField": "Валынтойское",
       "inspectionNumber": "3",
       "doStructs": "614 ПО - К. 614",
-      "auditDate": 1714474944000,
-      "editDate": 1714574944000,
-      "checkEntity": "barriers",
+      "auditDate": "2024-04-30T21:00:00.000Z",
+      "editDate": "2024-04-30T21:00:00.000Z",
+      "inspectionForm": "barriers",
       "status": "error"
     },
     {
@@ -39,9 +39,9 @@
       "oilField": "Валынтойское",
       "inspectionNumber": "1",
       "doStructs": "614 ПО - К. 614",
-      "auditDate": 1714474944000,
-      "editDate": 1714574944000,
-      "checkEntity": "barriers",
+      "auditDate": "2024-04-30T21:00:00.000Z",
+      "editDate": "2024-04-30T21:00:00.000Z",
+      "inspectionForm": "barriers",
       "status": "success"
     },
     {
@@ -50,9 +50,9 @@
       "oilField": "Еты-Пуровское",
       "inspectionNumber": "2",
       "doStructs": "ЦТОиРТ - №4",
-      "auditDate": 1714474944000,
-      "editDate": 1714574944000,
-      "checkEntity": "freeForms",
+      "auditDate": "2024-04-30T21:00:00.000Z",
+      "editDate": "2024-04-30T21:00:00.000Z",
+      "inspectionForm": "freeForms",
       "status": "warning"
     },
     {
@@ -61,9 +61,9 @@
       "oilField": "Валынтойское",
       "inspectionNumber": "3",
       "doStructs": "614 ПО - К. 614",
-      "auditDate": 1714474944000,
-      "editDate": 1714574944000,
-      "checkEntity": "barriers",
+      "auditDate": "2024-04-30T21:00:00.000Z",
+      "editDate": "2024-04-30T21:00:00.000Z",
+      "inspectionForm": "barriers",
       "status": "error"
     },
     {
@@ -72,9 +72,9 @@
       "oilField": "Валынтойское",
       "inspectionNumber": "1",
       "doStructs": "614 ПО - К. 614",
-      "auditDate": 1714474944000,
-      "editDate": 1714574944000,
-      "checkEntity": "barriers",
+      "auditDate": "2024-04-30T21:00:00.000Z",
+      "editDate": "2024-04-30T21:00:00.000Z",
+      "inspectionForm": "barriers",
       "status": "success"
     },
     {
@@ -83,9 +83,9 @@
       "oilField": "Еты-Пуровское",
       "inspectionNumber": "2",
       "doStructs": "ЦТОиРТ - №4",
-      "auditDate": 1714474944000,
-      "editDate": 1714574944000,
-      "checkEntity": "freeForms",
+      "auditDate": "2024-04-30T21:00:00.000Z",
+      "editDate": "2024-04-30T21:00:00.000Z",
+      "inspectionForm": "freeForms",
       "status": "warning"
     },
     {
@@ -94,9 +94,9 @@
       "oilField": "Валынтойское",
       "inspectionNumber": "3",
       "doStructs": "614 ПО - К. 614",
-      "auditDate": 1714474944000,
-      "editDate": 1714574944000,
-      "checkEntity": "barriers",
+      "auditDate": "2024-04-30T21:00:00.000Z",
+      "editDate": "2024-04-30T21:00:00.000Z",
+      "inspectionForm": "barriers",
       "status": "error"
     },
     {
@@ -105,9 +105,9 @@
       "oilField": "Валынтойское",
       "inspectionNumber": "3",
       "doStructs": "614 ПО - К. 614",
-      "auditDate": 1714474944000,
-      "editDate": 1714574944000,
-      "checkEntity": "barriers",
+      "auditDate": "2024-04-30T21:00:00.000Z",
+      "editDate": "2024-04-30T21:00:00.000Z",
+      "inspectionForm": "barriers",
       "status": "error"
     }
   ],

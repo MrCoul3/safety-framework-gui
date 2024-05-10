@@ -11,7 +11,7 @@ import { IconForward } from "@consta/icons/IconForward";
 import {
   IFieldsData,
   IFormDateFieldValue,
-  IFormFieldValue,
+  IFormFieldValue, Item,
 } from "../../stores/InspectionStore";
 import InspectionTextField from "../InspectionTextField/InspectionTextField";
 import InspectionDataField from "../InspectionDataField/InspectionDataField";
@@ -21,8 +21,7 @@ interface IInspectionForm {
   handleOpenField(type: InspectionFormTypes): void;
   fieldsData: IFieldsData[];
   isValidate: boolean;
-
-  setIsValidate(value: boolean): void ;
+  setIsValidate(value: boolean): void;
   handleChange(value: IFormFieldValue): void;
   handleDateChange(value: IFormDateFieldValue): void;
   formFieldsValues: (IFormFieldValue | IFormDateFieldValue)[];
@@ -52,7 +51,6 @@ const InspectionForm = observer((props: IInspectionForm) => {
     ],
     [InspectionFormGroups.InspectionParticipants]: [],
   };
-
 
   const getValue = (inspectionFormType: InspectionFormTypes) => {
     return props.formFieldsValues.find((value) =>
@@ -96,7 +94,7 @@ const InspectionForm = observer((props: IInspectionForm) => {
                 return (
                   <InspectionTextField
                     inspectionType={value}
-                    value={getValue(value)}
+                    value={getValue(value) as IFormFieldValue}
                     fieldsData={props.fieldsData}
                     handleChange={props.handleChange}
                     handleOpenField={props.handleOpenField}

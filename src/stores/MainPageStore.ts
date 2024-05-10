@@ -35,12 +35,12 @@ export class MainPageStore {
       name: SubGroupsTypes.Inspections,
       actions: [
         {
-          label: SubGroupsActionsTypes.NewInspections,
-          icon: IconList,
-        },
-        {
           label: SubGroupsActionsTypes.Sent,
           icon: IconMail,
+        },
+        {
+          label: SubGroupsActionsTypes.NewInspections,
+          icon: IconList,
         },
       ],
     },

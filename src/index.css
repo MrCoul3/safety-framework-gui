@@ -13,6 +13,12 @@ code {
     monospace;
 }
 
+* {
+  scrollbar-color: #e8e8e8 #fafafa;
+  scrollbar-width: thin;
+}
+
+
 :root {
   --gray: #002033;
   --lightGray7: #00426912;
@@ -30,8 +36,10 @@ code {
   --sideBarWidth: 244px;
   --fieldWidth: 610px;
   --navPanelHeight: 198px;
+  --normalGap: 16px;
   --mainHeaderHeight: 76px;
   --paginatorHeight: 75px;
+  --inspectionGroupHeader: 48px;
   --subHeaderHeight: 40px;
   --contentPaddingTopBottom: 24px;
   --contentPaddingLeftRight: 20px;
