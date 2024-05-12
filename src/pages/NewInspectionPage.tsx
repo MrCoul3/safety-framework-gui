@@ -28,8 +28,15 @@ const NewInspectionPage = observer((props: INewInspectionPage) => {
   }, [editInspectionId]);
 
   useEffect(() => {
+    window.addEventListener("keydown", handleKeyBoardEvent);
     return () => store.inspectionStore.clearInspectionForm();
   }, []);
+
+  const handleKeyBoardEvent = (e: KeyboardEvent) => {
+    if (e.ctrlKey && e.keyCode === 13) {
+      handleCreateInspection();
+    }
+  };
 
   const navigate = useNavigate();
 
@@ -58,8 +65,7 @@ const NewInspectionPage = observer((props: INewInspectionPage) => {
     }
   };
 
-  const handleEditPassports = () => {
-  };
+  const handleEditPassports = () => {};
 
   return (
     <NewInspectionPageLayout

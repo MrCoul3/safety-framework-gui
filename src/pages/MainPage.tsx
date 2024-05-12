@@ -82,6 +82,13 @@ export const MainPage = observer((props: IMainPage) => {
   const handleAddInspection = () => {
     navigate(RoutesTypes.NewInspection);
   };
+  const handleDelete = (id: string, type: SubGroupsActionsTypes) => {
+    setIsModalOpen(true);
+    setDeletingInspectionType({
+      type: type,
+      id: id,
+    });
+  };
 
   const [isModalOpen, setIsModalOpen] = React.useState(false);
 
@@ -93,22 +100,15 @@ export const MainPage = observer((props: IMainPage) => {
   const contentRoutes = () => {
     return (
       <Routes>
+        {/*Main page dashboard*/}
         <Route
           element={
             <DashBoard
               handleDeleteSentButtonClick={(id: string) => {
-                setIsModalOpen(true);
-                setDeletingInspectionType({
-                  type: SubGroupsActionsTypes.Sent,
-                  id: id,
-                });
+                handleDelete(id, SubGroupsActionsTypes.Sent);
               }}
               handleDeleteNewInspectionButtonClick={(id: string) => {
-                setIsModalOpen(true);
-                setDeletingInspectionType({
-                  type: SubGroupsActionsTypes.NewInspections,
-                  id: id,
-                });
+                handleDelete(id, SubGroupsActionsTypes.NewInspections);
               }}
               handleEditButtonClick={handleEditInspection}
               localInspections={store.mainPageStore.localInspections}
@@ -117,10 +117,18 @@ export const MainPage = observer((props: IMainPage) => {
           }
           path="/"
         />
+        {/*Sent and new inspections table on main page*/}
         <Route
           element={
             store.mainPageStore.localInspections.length ? (
               <InspectionsTable
+                handleDeleteSentButtonClick={(id: string) => {
+                  handleDelete(id, SubGroupsActionsTypes.Sent);
+                }}
+                handleDeleteNewInspectionButtonClick={(id: string) => {
+                  handleDelete(id, SubGroupsActionsTypes.NewInspections);
+                }}
+                handleEditButtonClick={handleEditInspection}
                 inspections={store.mainPageStore.localInspections}
               />
             ) : (
@@ -135,10 +143,20 @@ export const MainPage = observer((props: IMainPage) => {
           }
           path={SubGroupsActionsTypes.NewInspections}
         />
+        {/*Sent and new inspections table on main page*/}
         <Route
           element={
             store.mainPageStore.inspections.length ? (
-              <InspectionsTable inspections={store.mainPageStore.inspections} />
+              <InspectionsTable
+                handleDeleteSentButtonClick={(id: string) => {
+                  handleDelete(id, SubGroupsActionsTypes.Sent);
+                }}
+                handleDeleteNewInspectionButtonClick={(id: string) => {
+                  handleDelete(id, SubGroupsActionsTypes.NewInspections);
+                }}
+                handleEditButtonClick={handleEditInspection}
+                inspections={store.mainPageStore.inspections}
+              />
             ) : (
               <ResponsesNothingFound
                 title={t("emptySentInspections")}
@@ -151,6 +169,7 @@ export const MainPage = observer((props: IMainPage) => {
           }
           path={SubGroupsActionsTypes.Sent}
         />
+        {/*BarriersCarts and BarriersApps on main page*/}
         <Route
           element={renderEmptyBoxPage()}
           path={SubGroupsActionsTypes.BarriersCarts}

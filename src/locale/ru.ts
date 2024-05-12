@@ -92,6 +92,7 @@ export const ru = {
       "Наименование субподрядной организации",
     [InspectionFormGroups.InspectionParticipants]: "Участники инспекции",
     editDate: "Дата редактирования",
+    actions: "Действия",
 
     addInspectionTitle: "Подготовка данных инспекции",
     addInspectionDescription:
