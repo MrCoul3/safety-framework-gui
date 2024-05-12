@@ -64,11 +64,11 @@ export const MainPage = observer((props: IMainPage) => {
     store.mainPageStore.setLocalInspections(localInspectionsParsed);
   };
   const handleEditInspection = (id: string) => {
-    console.log("handleEditButtonClick", id);
     navigate(RoutesTypes.NewInspection + "/" + id);
   };
   const handleDeleteInspection = (id: string) => {
-    console.log("handleDeleteInspection", id);
+    store.inspectionStore.deleteInspectionFromLocalStorage(id);
+    getNewInspections();
   };
 
   const contentRoutes = () => {
@@ -105,7 +105,17 @@ export const MainPage = observer((props: IMainPage) => {
         />
         <Route
           element={
-            <InspectionsTable inspections={store.mainPageStore.inspections} />
+            store.mainPageStore.inspections.length ? (
+              <InspectionsTable inspections={store.mainPageStore.inspections} />
+            ) : (
+              <ResponsesNothingFound
+                title={t("emptySentInspections")}
+                description={" "}
+                actions={
+                  <Button onClick={toHome} view="ghost" label={t("toHome")} />
+                }
+              />
+            )
           }
           path={SubGroupsActionsTypes.Sent}
         />

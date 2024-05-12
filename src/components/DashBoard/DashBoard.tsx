@@ -1,14 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
 import { SubGroupsActionsTypes } from "enums/SubGroupsTypes";
 import { useTranslation } from "react-i18next";
-import { IconMeatball } from "@consta/icons/IconMeatball";
-import { IconAdd } from "@consta/icons/IconAdd";
-import { Button } from "@consta/uikit/Button";
 import InspectionCard from "../InspectionCard/InspectionCard";
 import { IInspection } from "../../interfaces/IInspection";
 import classNames from "classnames";
+import { ResponsesNothingFound } from "@consta/uikit/ResponsesNothingFound";
 
 interface IDashBoard {
   data: IInspection[];
@@ -60,33 +58,46 @@ const DashBoard = observer((props: IDashBoard) => {
             [style.sentGroup]: sentCondition(subGroup),
           })}
         >
-          <InspectionGroupHeader  key={subGroup} subGroup={subGroup} />
+          <InspectionGroupHeader key={subGroup} subGroup={subGroup} />
           <div
             className={classNames(style.cardContainer, {
               [style.cardContainerForNewGroup]:
-                newInspectionCondition(subGroup),
+                newInspectionCondition(subGroup) || !props.data.length,
             })}
           >
-            {(sentCondition(subGroup)
-              ? props.data
-              : props.localInspections
-            ).map((item, index) => (
-              <InspectionCard
-                handleDeleteButtonClick={props.handleDeleteButtonClick}
-                handleEditButtonClick={props.handleEditButtonClick}
-                id={item.id}
-                key={item.id}
-                subGroup={subGroup}
-                status={item.status}
-                oilField={item.oilField}
-                doObject={item.doStructs}
-                checkEditedDate={item.editDate}
-                checkVerifyDate={item.auditDate}
-                inspectionType={item.inspectionType}
-                inspectionForm={item.inspectionForm}
-                index={newInspectionCondition(subGroup) && index + 1}
+            {(sentCondition(subGroup) ? props.data : props.localInspections)
+              .length ? (
+              (sentCondition(subGroup)
+                ? props.data
+                : props.localInspections
+              ).map((item, index) => (
+                <InspectionCard
+                  handleDeleteButtonClick={props.handleDeleteButtonClick}
+                  handleEditButtonClick={props.handleEditButtonClick}
+                  id={item.id}
+                  key={item.id}
+                  subGroup={subGroup}
+                  status={item.status}
+                  oilField={item.oilField}
+                  doObject={item.doStructs}
+                  checkEditedDate={item.editDate}
+                  checkVerifyDate={item.auditDate}
+                  inspectionType={item.inspectionType}
+                  inspectionForm={item.inspectionForm}
+                  index={newInspectionCondition(subGroup) && index + 1}
+                />
+              ))
+            ) : (
+              <ResponsesNothingFound
+                title={
+                  sentCondition(subGroup)
+                    ? t("emptySentInspections")
+                    : t("emptyNewInspections")
+                }
+                description={" "}
+                actions={" "}
               />
-            ))}
+            )}
           </div>
         </div>
       ))}

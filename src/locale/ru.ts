@@ -71,6 +71,8 @@ export const ru = {
     inspectionNumber: "Номер инспекции",
     inspectionName: "Инспекция № ",
     emptyNewInspections: "Нет новых инспекций",
+    emptySentInspections: "Нет отправленных инспекций",
+    emptyInspections: "Нет инспекций",
 
     // Данные формы
     [InspectionFormGroups.Common]: "Общее",
