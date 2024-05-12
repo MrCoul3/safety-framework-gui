@@ -1,11 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
-import {
-  Table,
-  TableColumn,
-  TableFilters,
-} from "@consta/uikit/Table";
+import { Table, TableColumn, TableFilters } from "@consta/uikit/Table";
 import { IInspection } from "../../interfaces/IInspection";
 import { useTranslation } from "react-i18next";
 import { Pagination } from "@consta/uikit/Pagination";
@@ -16,37 +12,13 @@ import { IconTrash } from "@consta/icons/IconTrash";
 import { IconMail } from "@consta/icons/IconMail";
 import { InspectionFormTypes } from "../../enums/InspectionFormTypes";
 import { onCellClick } from "@consta/uikit/__internal__/src/components/Table/Table";
-import {Combobox} from "@consta/uikit/Combobox";
+import { Combobox } from "@consta/uikit/Combobox";
+import CustomFilter from "../CustomFilter/CustomFilter";
 interface IInspectionsTable {
   inspections: IInspection[];
   handleEditButtonClick(id: string): void;
   handleDeleteSentButtonClick(id: string): void;
   handleDeleteNewInspectionButtonClick(id: string): void;
-}
-type Item = {
-    label: string;
-    id: number;
-};
-
-const items: Item[] = [
-    {
-        label: 'Первый',
-        id: 1,
-    },
-    {
-        label: 'Второй',
-        id: 2,
-    },
-    {
-        label: 'Третий',
-        id: 3,
-    },
-];
-const CustomFilter = () => {
-    const onChange = () => {}
-    return <div>
-        <Combobox items={items} onChange={onChange} />
-    </div>
 }
 
 
@@ -115,21 +87,9 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
         );
       },
       field: InspectionFormTypes.InspectionForm,
-    /*  component: {
-        name: TableTextFilter,
-        props: {
-          withSearch: true,
-          items: [
-            { name: "Северное", value: "Северное" },
-            { name: "Южное", value: "Южное" },
-          ],
-        },
-      },*/
       component: {
         name: CustomFilter,
-        props: {
-
-        },
+        props: {},
       },
     },
   ];
@@ -139,7 +99,7 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
   };
   const handleCellClick: onCellClick = ({ e, type, rowId, columnIdx, ref }) => {
     e.preventDefault();
-      console.log('handleCellClick', type, rowId, ref, columnIdx)
+    console.log("handleCellClick", type, rowId, ref, columnIdx);
   };
 
   return (
