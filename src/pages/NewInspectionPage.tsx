@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import { observer } from "mobx-react-lite";
 import NewInspectionPageLayout from "../layouts/NewInspectionPageLayout/NewInspectionPageLayout";
 import NavPanel from "../components/NavPanel/NavPanel";
@@ -10,19 +10,25 @@ import {
   IFormDateFieldValue,
   IFormFieldValue,
 } from "../stores/InspectionStore";
-import {useNavigate, useParams} from "react-router";
-
+import { useNavigate, useParams } from "react-router";
 
 interface INewInspectionPage {}
 
 const NewInspectionPage = observer((props: INewInspectionPage) => {
   const { t } = useTranslation("dict");
 
+  const store = useStore();
+
   let { id } = useParams();
+
+  useEffect(() => {
+    if (id) {
+      store.inspectionStore.loadInspectionFromLocalStorage(id);
+    }
+  }, [id]);
 
   const navigate = useNavigate();
 
-  const store = useStore();
   const handleOpenField = (type: InspectionFormTypes) => {
     const foundField = !!store.inspectionStore.fieldsData.find((data) =>
       Object.keys(data).includes(type),
@@ -38,7 +44,7 @@ const NewInspectionPage = observer((props: INewInspectionPage) => {
   };
   const handleCreateInspection = () => {
     store.inspectionStore.setIsValidate(true);
-    const isFormValid = store.inspectionStore.checkIsFormSuccess()
+    const isFormValid = store.inspectionStore.checkIsFormSuccess();
     if (isFormValid) {
       store.inspectionStore.setInspectionToLocalStorage();
       store.inspectionStore.setIsValidate(false);
@@ -50,7 +56,8 @@ const NewInspectionPage = observer((props: INewInspectionPage) => {
   return (
     <NewInspectionPageLayout
       navPanel={
-        <NavPanel handleCreateInspection={handleCreateInspection}
+        <NavPanel
+          handleCreateInspection={handleCreateInspection}
           formFieldsValuesLength={
             !!store.inspectionStore.formFieldsValues.length
           }

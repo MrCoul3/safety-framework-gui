@@ -3,6 +3,7 @@ import { makeAutoObservable, toJS } from "mobx";
 import { InspectionFormTypes } from "../enums/InspectionFormTypes";
 import { instance } from "../api/endpoints";
 import {LOCAL_STORE_INSPECTIONS} from "../constants/config";
+import moment from "moment/moment";
 
 export interface IFieldsData {
   [key: string]: Item[];
@@ -42,6 +43,7 @@ export class InspectionStore {
     console.debug("formFieldsValues: ", toJS(this.formFieldsValues));
   }
 
+
   async getFieldData(type: InspectionFormTypes) {
     try {
       const response = await instance.get(type);
@@ -78,6 +80,18 @@ export class InspectionStore {
     } else {
       const newInspectionJson = JSON.stringify([this.formFieldsValues]);
       localStorage.setItem(LOCAL_STORE_INSPECTIONS, newInspectionJson)
+    }
+  }
+
+  loadInspectionFromLocalStorage(id: string) {
+    const localInspections = localStorage.getItem(LOCAL_STORE_INSPECTIONS);
+    if (localInspections) {
+      const localInspectionsParsed = JSON.parse(localInspections);
+      const inspection = {
+        ...localInspectionsParsed[+id - 1],
+        auditDate: moment(localInspectionsParsed[+id - 1].auditDate).toDate(),
+      };
+      this.setFormFieldsValues(inspection);
     }
   }
 }
