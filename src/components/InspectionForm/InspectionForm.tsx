@@ -11,11 +11,12 @@ import { IconForward } from "@consta/icons/IconForward";
 import {
   IFieldsData,
   IFormDateFieldValue,
-  IFormFieldValue, Item,
+  IFormFieldValue,
 } from "../../stores/InspectionStore";
 import InspectionTextField from "../InspectionTextField/InspectionTextField";
 import InspectionDataField from "../InspectionDataField/InspectionDataField";
 import ItemGroupTitle from "../ItemGroupTitle/ItemGroupTitle";
+import { useParams } from "react-router";
 
 interface IInspectionForm {
   handleOpenField(type: InspectionFormTypes): void;
@@ -29,6 +30,8 @@ interface IInspectionForm {
 
 const InspectionForm = observer((props: IInspectionForm) => {
   const { t } = useTranslation("dict");
+
+  let { editInspectionId } = useParams();
 
   const fields: {
     [key: string | InspectionFormGroups]: InspectionFormTypes[];
@@ -53,10 +56,10 @@ const InspectionForm = observer((props: IInspectionForm) => {
   };
 
   const getValue = (inspectionFormType: InspectionFormTypes) => {
-    return   props.formFieldsValues[inspectionFormType]
+    return props.formFieldsValues[inspectionFormType];
   };
   const getStatus = (inspectionFormType: InspectionFormTypes) => {
-    const condition = props.formFieldsValues[inspectionFormType]
+    const condition = props.formFieldsValues[inspectionFormType];
     if (!condition) {
       return "alert";
     }
@@ -77,7 +80,8 @@ const InspectionForm = observer((props: IInspectionForm) => {
               {fields[key].map((value) => {
                 if (value === InspectionFormTypes.AuditDate) {
                   return (
-                    <InspectionDataField key={value}
+                    <InspectionDataField
+                      key={value}
                       inspectionType={value}
                       handleChange={props.handleDateChange}
                       value={getValue(value) as [Date?, Date?] | null}
@@ -99,16 +103,17 @@ const InspectionForm = observer((props: IInspectionForm) => {
             </>
           ))}
         </form>
-
-        <div className={style.buttonsGroup}>
-          <Button view="clear" label={t("reset")} />
-          <Button
-            onClick={handleApplyForm}
-            type="submit"
-            label={t("farther")}
-            iconRight={IconForward}
-          />
-        </div>
+        {!editInspectionId && (
+          <div className={style.buttonsGroup}>
+            <Button view="clear" label={t("reset")} />
+            <Button
+              onClick={handleApplyForm}
+              type="submit"
+              label={t("farther")}
+              iconRight={IconForward}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

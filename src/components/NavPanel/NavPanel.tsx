@@ -2,25 +2,29 @@ import React from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
 import { Breadcrumbs } from "@consta/uikit/Breadcrumbs";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { IconSelect } from "@consta/icons/IconSelect";
 import { IBreadCrumbs } from "interfaces/IBreadCrumbs";
 import { Button } from "@consta/uikit/Button";
 import { useTranslation } from "react-i18next";
 import ConfirmDialog from "../ConfirmDialog/ConfirmDialog";
+import { IconEdit } from "@consta/icons/IconEdit";
 
 interface INavPanel {
   title: string;
   description: string;
-  actionText: string;
+  actionText?: string;
 
   handleClearInspectionForm(): void;
   handleCreateInspection(): void;
+  handleEditPassports(): void;
   formFieldsValuesLength?: boolean;
 }
 
 const NavPanel = observer((props: INavPanel) => {
   const { t } = useTranslation("dict");
+
+  let { editInspectionId } = useParams();
 
   const navigate = useNavigate();
 
@@ -31,7 +35,7 @@ const NavPanel = observer((props: INavPanel) => {
       href: "#",
     },
     {
-      label: t("inspectionData"),
+      label: editInspectionId ? t("editInspectionData") : t("inspectionData"),
     },
   ];
   const onItemClick = (item: IBreadCrumbs) => {
@@ -55,7 +59,25 @@ const NavPanel = observer((props: INavPanel) => {
       </div>
 
       <div className={style.buttonsGroup}>
-        <Button onClick={props.handleCreateInspection} label={props.actionText} />
+        {editInspectionId ? (
+          <>
+            <Button view="secondary"
+              onClick={props.handleEditPassports}
+              label={t("editPassports")}
+                    iconLeft={IconEdit}
+            />
+            <Button
+              onClick={props.handleCreateInspection}
+              label={t("saveChanges")}
+            />
+          </>
+        ) : (
+          <Button
+            onClick={() => props.handleCreateInspection()}
+            label={t("createInspection")}
+          />
+        )}
+
         <Button
           onClick={() => props.formFieldsValuesLength && setIsModalOpen(true)}
           view="ghost"

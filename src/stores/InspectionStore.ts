@@ -82,6 +82,19 @@ export class InspectionStore {
       localStorage.setItem(LOCAL_STORE_INSPECTIONS, newInspectionJson)
     }
   }
+  updateInspectionToLocalStorage(editInspectionId: string) {
+    const index = +editInspectionId - 1;
+    const localInspections = localStorage.getItem(LOCAL_STORE_INSPECTIONS);
+    if (localInspections) {
+      const localInspectionsParsed = JSON.parse(localInspections);
+      if (localInspectionsParsed.length) {
+        localInspectionsParsed.splice(index, 1);
+        localInspectionsParsed.push(this.formFieldsValues)
+        const newInspectionsJson = JSON.stringify(localInspectionsParsed);
+        localStorage.setItem(LOCAL_STORE_INSPECTIONS, newInspectionsJson)
+      }
+    }
+  }
 
   loadInspectionFromLocalStorage(id: string) {
     const localInspections = localStorage.getItem(LOCAL_STORE_INSPECTIONS);

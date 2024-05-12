@@ -19,13 +19,17 @@ const NewInspectionPage = observer((props: INewInspectionPage) => {
 
   const store = useStore();
 
-  let { id } = useParams();
+  let { editInspectionId } = useParams();
 
   useEffect(() => {
-    if (id) {
-      store.inspectionStore.loadInspectionFromLocalStorage(id);
+    if (editInspectionId) {
+      store.inspectionStore.loadInspectionFromLocalStorage(editInspectionId);
     }
-  }, [id]);
+  }, [editInspectionId]);
+
+  useEffect(() => {
+    return () => store.inspectionStore.clearInspectionForm();
+  }, []);
 
   const navigate = useNavigate();
 
@@ -46,26 +50,30 @@ const NewInspectionPage = observer((props: INewInspectionPage) => {
     store.inspectionStore.setIsValidate(true);
     const isFormValid = store.inspectionStore.checkIsFormSuccess();
     if (isFormValid) {
-      store.inspectionStore.setInspectionToLocalStorage();
+      editInspectionId
+        ? store.inspectionStore.updateInspectionToLocalStorage(editInspectionId)
+        : store.inspectionStore.setInspectionToLocalStorage();
       store.inspectionStore.setIsValidate(false);
       navigate(-1);
-      store.inspectionStore.clearInspectionForm();
     }
+  };
+
+  const handleEditPassports = () => {
   };
 
   return (
     <NewInspectionPageLayout
       navPanel={
         <NavPanel
+          handleEditPassports={handleEditPassports}
           handleCreateInspection={handleCreateInspection}
           formFieldsValuesLength={
-            !!store.inspectionStore.formFieldsValues.length
+            !!Object.values(store.inspectionStore.formFieldsValues).length
           }
           handleClearInspectionForm={() => {
             store.inspectionStore.clearInspectionForm();
             store.inspectionStore.setIsValidate(false);
           }}
-          actionText={t("createInspection")}
           description={t("addInspectionDescription")}
           title={t("addInspectionTitle")}
         />

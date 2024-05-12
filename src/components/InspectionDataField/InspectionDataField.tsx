@@ -1,14 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
 import { InspectionFormTypes } from "../../enums/InspectionFormTypes";
 import { useTranslation } from "react-i18next";
 import { DatePicker, DatePickerPropOnChange } from "@consta/uikit/DatePicker";
 import { IconCalendar } from "@consta/icons/IconCalendar";
-import {
-  IFormDateFieldValue,
-  IFormFieldValue, Item,
-} from "../../stores/InspectionStore";
+import { IFormDateFieldValue } from "../../stores/InspectionStore";
 import { PropStatus } from "@consta/uikit/__internal__/src/components/SelectComponents/types";
 
 interface IInspectionDataField {
@@ -29,10 +26,9 @@ const InspectionDataField = observer((props: IInspectionDataField) => {
     <DatePicker
       status={props.status}
       className={style.field}
-      label={t(InspectionFormTypes.AuditDate)}
+      label={t(props.inspectionType)}
       onChange={onChange}
       required
-      type="date"
       rightSide={IconCalendar}
       labelPosition="left"
       value={props.value}

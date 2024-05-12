@@ -35,7 +35,10 @@ export const ru = {
     // breadcrumbs
     mainPage: "Главная",
     inspectionData: "Данные инспекции",
+    editInspectionData: "Редактировать данные инспекции",
     createInspection: "Создать инспекцию",
+    saveChanges: "Сохранить изменения",
+    editPassports: "Редактировать паспорта инспекции",
 
     toHome: "На главную",
 
