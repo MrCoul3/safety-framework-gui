@@ -17,6 +17,7 @@ export class MainPageStore {
   }
 
   inspections: IInspection[] = [];
+  localInspections: IInspection[] = [];
   sideBarItemValue: SubGroupsActionsTypes | null =
     SubGroupsActionsTypes.MainList;
 
@@ -35,12 +36,12 @@ export class MainPageStore {
       name: SubGroupsTypes.Inspections,
       actions: [
         {
-          label: SubGroupsActionsTypes.NewInspections,
-          icon: IconList,
-        },
-        {
           label: SubGroupsActionsTypes.Sent,
           icon: IconMail,
+        },
+        {
+          label: SubGroupsActionsTypes.NewInspections,
+          icon: IconList,
         },
       ],
     },
@@ -59,7 +60,9 @@ export class MainPageStore {
       ],
     },
   ];
-
+  resetSideBarToHome() {
+    this.updateSubGroupsState(SubGroupsActionsTypes.MainList);
+  }
   updateSubGroupsState(value: SubGroupsActionsTypes) {
     this.subGroupsState = this.subGroupsState.map((item) => {
       const foundAction = item.actions.find((action) => action.label === value);
@@ -75,6 +78,9 @@ export class MainPageStore {
 
   setInspections(value: IInspection[]) {
     this.inspections = value;
+  }
+  setLocalInspections(value: IInspection[]) {
+    this.localInspections = value;
   }
   setSideBarItemValue(value: SubGroupsActionsTypes) {
     this.sideBarItemValue = value;

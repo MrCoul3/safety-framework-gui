@@ -17,15 +17,20 @@ import moment from "moment";
 import { SubGroupsActionsTypes } from "../../enums/SubGroupsTypes";
 
 interface IInspectionCard {
+  id: string;
   name?: string;
   doObject?: string;
   checkVerifyDate?: number;
   checkEditedDate?: number;
   inspectionType?: string;
-  field?: string;
-  checkEntity?: CheckEntityTypes;
+  oilField?: string;
+  index?: number | boolean;
+  inspectionForm?: CheckEntityTypes;
   status?: InspectionStatusesTypes;
   subGroup?: SubGroupsActionsTypes;
+
+  handleEditButtonClick(id: string): void;
+  handleDeleteButtonClick(id: string): void;
 }
 
 const InspectionCard = observer((props: IInspectionCard) => {
@@ -45,15 +50,24 @@ const InspectionCard = observer((props: IInspectionCard) => {
       verticalSpace="xs"
       horizontalSpace="xs"
     >
-      <Badge
-        form="round"
-        iconLeft={IconAllDone}
-        status={props.status}
-        label={t(props.status ?? "")}
-      />
+      {props.status && (
+        <Badge
+          form="round"
+          iconLeft={IconAllDone}
+          status={props.status}
+          label={t(props.status ?? "")}
+        />
+      )}
+
       <div className={style.title}>
-        {props.name}
+        {props.index && t("inspectionName") + props.index}
+        {props.id && t("inspectionName") + props.id}
         <Button
+          onClick={() =>
+            props.handleDeleteButtonClick(
+              props.index ? props.index.toString() : props.id.toString(),
+            )
+          }
           iconSize="s"
           form="round"
           view="clear"
@@ -75,7 +89,7 @@ const InspectionCard = observer((props: IInspectionCard) => {
       <div className={style.checkDetails}>
         <span className={style.checkDetailsTitle}>{t("checkDetails")}</span>
         <div className={style.badgeGroup}>
-          <Badge status="system" label={t(props.checkEntity ?? "")} />
+          <Badge status="system" label={t(props.inspectionForm ?? "")} />
           <Badge
             view="stroked"
             status="system"
@@ -88,8 +102,8 @@ const InspectionCard = observer((props: IInspectionCard) => {
             <span className={style.value}> {props.inspectionType}</span>
           </div>
           <div className={style.extraInfoValue}>
-            {t("field")}
-            <span className={style.value}> {props.field}</span>
+            {t("oilField")}
+            <span className={style.value}> {props.oilField}</span>
           </div>
         </div>
       </div>
@@ -104,6 +118,11 @@ const InspectionCard = observer((props: IInspectionCard) => {
               iconLeft={IconMail}
             />
             <Button
+              onClick={() =>
+                props.handleEditButtonClick(
+                  props.index ? props.index.toString() : props.id.toString(),
+                )
+              }
               size={"s"}
               className={style.editButton}
               iconSize="s"
@@ -113,7 +132,8 @@ const InspectionCard = observer((props: IInspectionCard) => {
           </>
         )}
         {props.subGroup === SubGroupsActionsTypes.Deleted && (
-          <Button width='full'
+          <Button
+            width="full"
             size={"s"}
             iconSize="s"
             view="secondary"

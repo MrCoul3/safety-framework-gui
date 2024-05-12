@@ -1,5 +1,9 @@
 .InspectionsTable {
   margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
 }
 
 .pagination {
@@ -9,9 +13,16 @@
   height: var(--paginatorHeight);
 }
 .table {
-  overflow: scroll;
+  overflow: auto;
   height: calc(
     100vh - var(--mainHeaderHeight) - var(--subHeaderHeight) -
       var(--contentPaddingTopBottom) - var(--paginatorHeight)
   );
+}
+
+.colTitle {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 200px;
+  overflow: hidden;
 }

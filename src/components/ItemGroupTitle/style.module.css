@@ -1,0 +1,10 @@
+.groupTitle {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 13px;
+  color: var(--gray30);
+  letter-spacing: 0.003em;
+  text-align: left;
+  padding: 15px;
+  text-transform: uppercase;
+}

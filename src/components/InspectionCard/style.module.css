@@ -1,5 +1,6 @@
 .card {
   padding: 16px;
+  max-height: 330px;
 }
 .await {
   border-top: 8px solid var(--awaitOrange);
@@ -12,7 +13,6 @@
 }
 
 .title {
-  margin-top: 24px;
   font-size: 18px;
   font-weight: 600;
   line-height: 25.2px;
@@ -81,6 +81,6 @@
 
 .controlButtonGroup {
   display: flex;
-  gap: 16px;
+  gap: var(--normalGap);
   margin-top: 24px;
 }

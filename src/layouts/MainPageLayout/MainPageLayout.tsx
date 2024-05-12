@@ -3,7 +3,6 @@ import {observer} from "mobx-react-lite";
 import style from './style.module.css';
 
 interface IMainPageLayout {
-    header: ReactNode;
     sideBar: ReactNode;
     contentHeader: ReactNode;
     content: ReactNode;
@@ -12,7 +11,6 @@ interface IMainPageLayout {
 const MainPageLayout = observer((props: IMainPageLayout) => {
     return (
         <div className={style.MainPageLayout}>
-            {props.header}
             <div className={style.flexRow}>
                 {props.sideBar}
                 <div className={style.flexCol}>
