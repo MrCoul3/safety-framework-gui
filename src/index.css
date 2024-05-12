@@ -45,13 +45,7 @@ code {
   --contentPaddingLeftRight: 20px;
 }
 
-.Select-Body {
-  width: var(--fieldWidth) !important;
 
-}
-.TextField-Body {
+.customField {
   width: var(--fieldWidth) !important;
-}
-
-.TextField-Label {
 }

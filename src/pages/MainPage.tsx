@@ -6,7 +6,7 @@ import SubHeader from "components/SubHeader/SubHeader";
 import { useStore } from "hooks/useStore";
 import { IAction } from "interfaces/IAction";
 import { SubGroupsActionsTypes } from "enums/SubGroupsTypes";
-import { Route, Routes, useNavigate } from "react-router";
+import { Route, Routes, useLocation, useNavigate } from "react-router";
 import DashBoard from "../components/DashBoard/DashBoard";
 import InspectionsTable from "../components/InspectionsTable/InspectionsTable";
 import { ResponsesEmptyBox } from "@consta/uikit/ResponsesEmptyBox";
@@ -35,7 +35,9 @@ export const MainPage = observer((props: IMainPage) => {
   }, []);
 
   const onItemClick = (item: IAction) => {
-    store.mainPageStore.updateSubGroupsState(item.label);
+    store.mainPageStore.updateSubGroupsState(
+      item.label as SubGroupsActionsTypes,
+    );
     if (item.label === SubGroupsActionsTypes.MainList) {
       navigate(`/`);
       return;

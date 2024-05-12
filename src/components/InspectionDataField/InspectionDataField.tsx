@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
 import { InspectionFormTypes } from "../../enums/InspectionFormTypes";
@@ -22,8 +22,16 @@ const InspectionDataField = observer((props: IInspectionDataField) => {
     props.handleChange({ [props.inspectionType]: value });
   };
 
+  const picker = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const fieldBody = picker.current?.parentElement;
+    fieldBody?.classList.add('customField')
+  }, [picker]);
+
   return (
     <DatePicker
+      ref={picker}
       status={props.status}
       className={style.field}
       label={t(props.inspectionType)}

@@ -57,8 +57,15 @@ const InspectionTextField = observer((props: IFieldInspectionType) => {
     return [];
   };
 
+  const combobox = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const fieldBody = combobox.current?.parentElement;
+    fieldBody?.classList.add('customField')
+  }, [combobox]);
+
   return (
-    <Combobox
+    <Combobox ref={combobox}
       status={props.status ?? props.status}
       getItemLabel={(item) => item.Title}
       className={style.field}
