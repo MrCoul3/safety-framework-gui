@@ -12,7 +12,8 @@ interface IDashBoard {
   data: IInspection[];
   localInspections: IInspection[];
   handleEditButtonClick(id: string): void;
-  handleDeleteButtonClick(id: string): void;
+  handleDeleteSentButtonClick(id: string): void;
+  handleDeleteNewInspectionButtonClick(id: string): void;
 }
 
 interface IInspectionGroupHeader {
@@ -42,6 +43,17 @@ const DashBoard = observer((props: IDashBoard) => {
     SubGroupsActionsTypes.NewInspections,
     SubGroupsActionsTypes.Sent,
   ];
+  const handleDeleteButtonClick = (
+    subGroup: SubGroupsActionsTypes,
+    id: string,
+  ) => {
+    if (sentCondition(subGroup)) {
+      props.handleDeleteSentButtonClick(id);
+    }
+    if (newInspectionCondition(subGroup)) {
+      props.handleDeleteNewInspectionButtonClick(id);
+    }
+  };
 
   const sentCondition = (subGroup: SubGroupsActionsTypes) =>
     subGroup === SubGroupsActionsTypes.Sent;
@@ -72,7 +84,9 @@ const DashBoard = observer((props: IDashBoard) => {
                 : props.localInspections
               ).map((item, index) => (
                 <InspectionCard
-                  handleDeleteButtonClick={props.handleDeleteButtonClick}
+                  handleDeleteButtonClick={(id: string) =>
+                    handleDeleteButtonClick(subGroup, id)
+                  }
                   handleEditButtonClick={props.handleEditButtonClick}
                   id={item.id}
                   key={item.id}

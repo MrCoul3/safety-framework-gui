@@ -15,6 +15,7 @@ import { useTranslation } from "react-i18next";
 import { RoutesTypes } from "../enums/RoutesTypes";
 import { LOCAL_STORE_INSPECTIONS } from "../constants/config";
 import { ResponsesNothingFound } from "@consta/uikit/ResponsesNothingFound";
+import ConfirmDialog from "../components/ConfirmDialog/ConfirmDialog";
 
 interface IMainPage {}
 
@@ -66,10 +67,28 @@ export const MainPage = observer((props: IMainPage) => {
   const handleEditInspection = (id: string) => {
     navigate(RoutesTypes.NewInspection + "/" + id);
   };
-  const handleDeleteInspection = (id: string) => {
-    store.inspectionStore.deleteInspectionFromLocalStorage(id);
-    getNewInspections();
+  const handleDeleteNewInspection = () => {
+    if (deletingInspectionType) {
+      store.inspectionStore.deleteInspectionFromLocalStorage(
+        deletingInspectionType?.id,
+      );
+      getNewInspections();
+    }
   };
+  const handleDeleteSentInspection = () => {
+    store.mainPageStore.getInspectionsDev();
+  };
+
+  const handleAddInspection = () => {
+    navigate(RoutesTypes.NewInspection);
+  };
+
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
+
+  const [deletingInspectionType, setDeletingInspectionType] = React.useState<{
+    type: SubGroupsActionsTypes;
+    id: string;
+  }>();
 
   const contentRoutes = () => {
     return (
@@ -77,7 +96,20 @@ export const MainPage = observer((props: IMainPage) => {
         <Route
           element={
             <DashBoard
-              handleDeleteButtonClick={handleDeleteInspection}
+              handleDeleteSentButtonClick={(id: string) => {
+                setIsModalOpen(true);
+                setDeletingInspectionType({
+                  type: SubGroupsActionsTypes.Sent,
+                  id: id,
+                });
+              }}
+              handleDeleteNewInspectionButtonClick={(id: string) => {
+                setIsModalOpen(true);
+                setDeletingInspectionType({
+                  type: SubGroupsActionsTypes.NewInspections,
+                  id: id,
+                });
+              }}
               handleEditButtonClick={handleEditInspection}
               localInspections={store.mainPageStore.localInspections}
               data={store.mainPageStore.inspections}
@@ -131,10 +163,6 @@ export const MainPage = observer((props: IMainPage) => {
     );
   };
 
-  const handleAddInspection = () => {
-    navigate(RoutesTypes.NewInspection);
-  };
-
   return (
     <div>
       <MainPageLayout
@@ -146,6 +174,22 @@ export const MainPage = observer((props: IMainPage) => {
         }
         contentHeader={<SubHeader handleAddInspection={handleAddInspection} />}
         content={contentRoutes()}
+      />
+      <ConfirmDialog
+        cancelActionLabel={t("cancel")}
+        confirmActionLabel={t("delete")}
+        title={
+          deletingInspectionType?.type === SubGroupsActionsTypes.Sent
+            ? t("dialogDeleteSentInspection")
+            : t("dialogDeleteNewInspection")
+        }
+        action={() =>
+          deletingInspectionType?.type === SubGroupsActionsTypes.Sent
+            ? handleDeleteSentInspection()
+            : handleDeleteNewInspection()
+        }
+        onClose={() => setIsModalOpen(false)}
+        open={isModalOpen}
       />
     </div>
   );

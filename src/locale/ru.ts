@@ -114,6 +114,8 @@ export const ru = {
     [InspectionFormTypes.SubContractors + "Placeholder"]:
       "Введите наименование субподрядной организации",
 
-    dialogClearFields: "Очистить все заполненные поля?"
+    dialogClearFields: "Очистить все заполненные поля?",
+    dialogDeleteNewInspection: "Удалить новую инспекцию?",
+    dialogDeleteSentInspection: "Удалить отправленную инспекцию?"
   },
 };
