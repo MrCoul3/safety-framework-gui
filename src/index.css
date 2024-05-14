@@ -56,6 +56,7 @@ code {
     100vh - var(--mainHeaderHeight) - var(--contentPaddingTopBottom) -
       var(--paginatorHeight)
   );
+  --inspectionCardWidth: 368px;
 }
 
 .customField {
