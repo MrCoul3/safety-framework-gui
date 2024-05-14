@@ -57,6 +57,7 @@ code {
       var(--paginatorHeight)
   );
   --inspectionCardWidth: 368px;
+  --inspectionCardHeight: 330px;
 }
 
 .customField {

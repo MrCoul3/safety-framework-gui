@@ -139,7 +139,7 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
       />
       {props.inspections.length > INSPECTIONS_ON_PAGE && (
         <Pagination
-          className={classNames(style.pagination, "pagination")}
+          className={(style.pagination)}
           items={5}
           value={page}
           onChange={setPage}

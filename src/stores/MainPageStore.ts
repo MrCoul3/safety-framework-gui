@@ -6,7 +6,8 @@ import { SubGroupsActionsTypes, SubGroupsTypes } from "../enums/SubGroupsTypes";
 import { IconBento } from "@consta/icons/IconBento";
 import { IconList } from "@consta/icons/IconList";
 import { IconMail } from "@consta/icons/IconMail";
-import { IconTrash } from "@consta/icons/IconTrash";
+import { IconDocFilled } from "@consta/icons/IconDocFilled";
+import { IconStorage } from "@consta/icons/IconStorage";
 import { ISubGroupState } from "../interfaces/ISubGroupState";
 export class MainPageStore {
   private store: AppStore;
@@ -50,12 +51,12 @@ export class MainPageStore {
       actions: [
         {
           label: SubGroupsActionsTypes.BarriersCarts,
-          icon: IconList,
+          icon: IconStorage,
         },
 
         {
           label: SubGroupsActionsTypes.BarriersApps,
-          icon: IconMail,
+          icon: IconDocFilled,
         },
       ],
     },

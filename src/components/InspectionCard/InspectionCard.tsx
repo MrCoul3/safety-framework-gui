@@ -73,7 +73,6 @@ const InspectionCard = observer((props: IInspectionCard) => {
           onlyIcon
         />
       </div>
-      <div className={style.separator} />
       <div className={style.checkDates}>
         <div className={style.checkDate}>
           <span className={style.blueColor}>{t("checkVerifyDate")} </span>
