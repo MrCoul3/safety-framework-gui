@@ -13,6 +13,7 @@ interface ICustomFilter {
   onConfirm: (value: unknown) => void;
   onCancel: () => void;
   filterValue?: unknown;
+  onOpen(): void
 }
 type Item = {
   label: string;
@@ -34,18 +35,16 @@ const items: Item[] = [
   },
 ];
 
-const CustomFilter = observer((props: ICustomFilter) => {
+const CustomFilter = (props: ICustomFilter) => {
+
   useEffect(() => {
-    console.log("CustomFilter", props);
+    props.onOpen()
   }, []);
 
   const onChange = () => {};
+
   const [value, setValue] = useState<[Date?, Date?] | null>(null);
 
-  useEffect(() => {
-    console.log("value", value);
-    // props.onConfirm(value)
-  }, [value]);
 
   return (
     <div className={style.CustomFilter}>
@@ -66,6 +65,6 @@ const CustomFilter = observer((props: ICustomFilter) => {
       )}
     </div>
   );
-});
+};
 
 export default CustomFilter;

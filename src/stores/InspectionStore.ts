@@ -2,7 +2,7 @@ import { AppStore } from "./AppStore";
 import { makeAutoObservable, toJS } from "mobx";
 import { InspectionFormTypes } from "../enums/InspectionFormTypes";
 import { instance } from "../api/endpoints";
-import {LOCAL_STORE_INSPECTIONS} from "../constants/config";
+import { LOCAL_STORE_INSPECTIONS } from "../constants/config";
 import moment from "moment/moment";
 
 export interface IFieldsData {
@@ -31,18 +31,17 @@ export class InspectionStore {
     this.isValidate = value;
   }
 
-  formFieldsValues: (IFormFieldValue | IFormDateFieldValue) = {};
+  formFieldsValues: IFormFieldValue | IFormDateFieldValue = {};
 
   setFieldsData(value: IFieldsData) {
     this.fieldsData = [...this.fieldsData, value];
-    console.log('this.fieldsData', toJS(this.fieldsData))
+    console.log("this.fieldsData", toJS(this.fieldsData));
   }
 
   setFormFieldsValues(value: IFormFieldValue | IFormDateFieldValue) {
     Object.assign(this.formFieldsValues, value);
     console.debug("formFieldsValues: ", toJS(this.formFieldsValues));
   }
-
 
   async getFieldData(type: InspectionFormTypes) {
     try {
@@ -61,25 +60,22 @@ export class InspectionStore {
     return (
       Object.keys(InspectionFormTypes).length ===
         Object.keys(this.formFieldsValues).length &&
-      !Object.values(this.formFieldsValues).some((field) =>
-          field === null,
-      )
+      !Object.values(this.formFieldsValues).some((field) => field === null)
     );
   }
-
 
   setInspectionToLocalStorage() {
     const localInspections = localStorage.getItem(LOCAL_STORE_INSPECTIONS);
     if (localInspections) {
-      const localInspectionsParsed = JSON.parse(localInspections)
+      const localInspectionsParsed = JSON.parse(localInspections);
       if (localInspectionsParsed) {
         localInspectionsParsed.push(this.formFieldsValues);
       }
       const newInspectionsJson = JSON.stringify(localInspectionsParsed);
-      localStorage.setItem(LOCAL_STORE_INSPECTIONS, newInspectionsJson)
+      localStorage.setItem(LOCAL_STORE_INSPECTIONS, newInspectionsJson);
     } else {
       const newInspectionJson = JSON.stringify([this.formFieldsValues]);
-      localStorage.setItem(LOCAL_STORE_INSPECTIONS, newInspectionJson)
+      localStorage.setItem(LOCAL_STORE_INSPECTIONS, newInspectionJson);
     }
   }
   updateInspectionToLocalStorage(editInspectionId: string) {
@@ -89,9 +85,9 @@ export class InspectionStore {
       const localInspectionsParsed = JSON.parse(localInspections);
       if (localInspectionsParsed.length) {
         localInspectionsParsed.splice(index, 1);
-        localInspectionsParsed.push(this.formFieldsValues)
+        localInspectionsParsed.push(this.formFieldsValues);
         const newInspectionsJson = JSON.stringify(localInspectionsParsed);
-        localStorage.setItem(LOCAL_STORE_INSPECTIONS, newInspectionsJson)
+        localStorage.setItem(LOCAL_STORE_INSPECTIONS, newInspectionsJson);
       }
     }
   }
@@ -104,7 +100,7 @@ export class InspectionStore {
       if (localInspectionsParsed.length) {
         localInspectionsParsed.splice(index, 1);
         const newInspectionsJson = JSON.stringify(localInspectionsParsed);
-        localStorage.setItem(LOCAL_STORE_INSPECTIONS, newInspectionsJson)
+        localStorage.setItem(LOCAL_STORE_INSPECTIONS, newInspectionsJson);
       }
     }
   }
@@ -118,6 +114,15 @@ export class InspectionStore {
         auditDate: moment(localInspectionsParsed[+id - 1].auditDate).toDate(),
       };
       this.setFormFieldsValues(inspection);
+    }
+  }
+
+  handleOpenField(type: InspectionFormTypes) {
+    const foundField = !!this.fieldsData.find((data) =>
+      Object.keys(data).includes(type),
+    );
+    if (!foundField) {
+      this.getFieldData(type);
     }
   }
 }

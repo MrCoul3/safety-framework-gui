@@ -41,12 +41,7 @@ const NewInspectionPage = observer((props: INewInspectionPage) => {
   const navigate = useNavigate();
 
   const handleOpenField = (type: InspectionFormTypes) => {
-    const foundField = !!store.inspectionStore.fieldsData.find((data) =>
-      Object.keys(data).includes(type),
-    );
-    if (!foundField) {
-      store.inspectionStore.getFieldData(type);
-    }
+    store.inspectionStore.handleOpenField(type)
   };
 
   const handleChange = (value: IFormFieldValue | IFormDateFieldValue) => {

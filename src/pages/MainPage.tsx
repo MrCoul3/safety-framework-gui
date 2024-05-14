@@ -16,6 +16,7 @@ import { RoutesTypes } from "../enums/RoutesTypes";
 import { LOCAL_STORE_INSPECTIONS } from "../constants/config";
 import { ResponsesNothingFound } from "@consta/uikit/ResponsesNothingFound";
 import ConfirmDialog from "../components/ConfirmDialog/ConfirmDialog";
+import { InspectionFormTypes } from "../enums/InspectionFormTypes";
 
 interface IMainPage {}
 
@@ -30,6 +31,7 @@ export const MainPage = observer((props: IMainPage) => {
     store.mainPageStore.getInspectionsDev();
     getNewInspections();
   };
+
   useEffect(() => {
     init();
   }, []);
@@ -99,6 +101,10 @@ export const MainPage = observer((props: IMainPage) => {
     id: string;
   }>();
 
+  const handleOpenFilter = (field: InspectionFormTypes) => {
+    store.inspectionStore.handleOpenField(field);
+  };
+
   const contentRoutes = () => {
     return (
       <Routes>
@@ -124,6 +130,7 @@ export const MainPage = observer((props: IMainPage) => {
           element={
             store.mainPageStore.localInspections.length ? (
               <InspectionsTable
+                handleOpenFilter={handleOpenFilter}
                 handleDeleteSentButtonClick={(id: string) => {
                   handleDelete(id, SubGroupsActionsTypes.Sent);
                 }}
@@ -150,6 +157,7 @@ export const MainPage = observer((props: IMainPage) => {
           element={
             store.mainPageStore.inspections.length ? (
               <InspectionsTable
+                handleOpenFilter={handleOpenFilter}
                 handleDeleteSentButtonClick={(id: string) => {
                   handleDelete(id, SubGroupsActionsTypes.Sent);
                 }}

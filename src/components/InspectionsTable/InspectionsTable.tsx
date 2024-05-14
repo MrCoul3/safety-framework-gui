@@ -18,6 +18,7 @@ import { INSPECTIONS_ON_PAGE } from "../../constants/config";
 interface IInspectionsTable {
   inspections: IInspection[];
   handleEditButtonClick(id: string): void;
+  handleOpenFilter(field: InspectionFormTypes): void;
   handleDeleteSentButtonClick(id: string): void;
   handleDeleteNewInspectionButtonClick(id: string): void;
 }
@@ -93,6 +94,11 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
       maxWidth: 200,
     }));
 
+  const handleOpenFilter = (field: InspectionFormTypes) => {
+    console.log("onopen", field);
+    props.handleOpenFilter(field);
+  };
+
   const filters: any = Object.values(InspectionFormTypes).map((field) => ({
     id: field,
     name: t(field) + ": ",
@@ -100,7 +106,7 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
       cellValue: string,
       filterValues: Array<{ value: string; name: string }>,
     ) => {
-      console.log("filterer", cellValue, filterValues);
+      // console.log("filterer", cellValue, filterValues);
       /* return filterValues.some(
         (filterValue) => filterValue && filterValue.value === cellValue,
       );*/
@@ -109,14 +115,11 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
     component: {
       name: CustomFilter,
       props: {
-        type: field,
+        onOpen: () => handleOpenFilter(field),
       },
     },
   }));
 
-  const onFiltersUpdated = () => {
-    console.log("onFiltersUpdated");
-  };
   const handleCellClick: onCellClick = ({ e, type, rowId, columnIdx, ref }) => {
     e.preventDefault();
     console.log("handleCellClick", type, rowId, ref, columnIdx);
@@ -127,7 +130,6 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
       <Table
         ref={tableRef}
         onCellClick={handleCellClick}
-        onFiltersUpdated={onFiltersUpdated}
         filters={filters}
         isResizable
         zebraStriped="odd"
@@ -139,7 +141,7 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
       />
       {props.inspections.length > INSPECTIONS_ON_PAGE && (
         <Pagination
-          className={(style.pagination)}
+          className={style.pagination}
           items={5}
           value={page}
           onChange={setPage}

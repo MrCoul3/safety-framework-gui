@@ -71,7 +71,7 @@ const DashBoard = observer((props: IDashBoard) => {
           })}
         >
           <InspectionGroupHeader key={subGroup} subGroup={subGroup} />
-          <div
+          <div key={subGroup}
             className={classNames(style.cardContainer, {
               [style.cardContainerForNewGroup]:
                 newInspectionCondition(subGroup) || !props.data.length,
