@@ -1,12 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
-import {
-  Table,
-  TableColumn,
-  TableFilters,
-  TableRow,
-} from "@consta/uikit/Table";
+import { Table, TableColumn } from "@consta/uikit/Table";
 import { IInspection } from "../../interfaces/IInspection";
 import { useTranslation } from "react-i18next";
 import { Pagination } from "@consta/uikit/Pagination";
@@ -19,6 +14,7 @@ import { InspectionFormTypes } from "../../enums/InspectionFormTypes";
 import { onCellClick } from "@consta/uikit/__internal__/src/components/Table/Table";
 import CustomFilter from "../CustomFilter/CustomFilter";
 import classNames from "classnames";
+import { INSPECTIONS_ON_PAGE } from "../../constants/config";
 interface IInspectionsTable {
   inspections: IInspection[];
   handleEditButtonClick(id: string): void;
@@ -37,10 +33,9 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
 
   const getTableSize = () => {
     const tableContainerHeight = tableContainerRef.current?.clientHeight;
-    const paginationHeight =
-      document.querySelector(".pagination")?.clientHeight;
+    const paginationHeight = 75;
     const tableHeight = tableContainerRef.current?.clientHeight;
-    if (tableHeight && tableContainerHeight && paginationHeight) {
+    if (tableHeight && tableContainerHeight) {
       if (tableHeight > tableContainerHeight - paginationHeight) {
         tableContainerRef.current.classList.add(style.tableHeight);
       }
@@ -143,23 +138,25 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
         rows={rows}
         columns={columns}
       />
-      <Pagination
-        className={classNames(style.pagination, "pagination")}
-        items={5}
-        value={page}
-        onChange={setPage}
-        arrows={[{ label: t("back") }, { label: t("forward") }]}
-        hotKeys={[
-          {
-            label: "← Shift",
-            keys: ["Shift", "ArrowLeft"],
-          },
-          {
-            label: "Shift →",
-            keys: ["Shift", "ArrowRight"],
-          },
-        ]}
-      />
+      {props.inspections.length > INSPECTIONS_ON_PAGE && (
+        <Pagination
+          className={classNames(style.pagination, "pagination")}
+          items={5}
+          value={page}
+          onChange={setPage}
+          arrows={[{ label: t("back") }, { label: t("forward") }]}
+          hotKeys={[
+            {
+              label: "← Shift",
+              keys: ["Shift", "ArrowLeft"],
+            },
+            {
+              label: "Shift →",
+              keys: ["Shift", "ArrowRight"],
+            },
+          ]}
+        />
+      )}
     </div>
   );
 });
