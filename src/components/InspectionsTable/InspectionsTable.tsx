@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
 import {
@@ -17,8 +17,8 @@ import { IconTrash } from "@consta/icons/IconTrash";
 import { IconMail } from "@consta/icons/IconMail";
 import { InspectionFormTypes } from "../../enums/InspectionFormTypes";
 import { onCellClick } from "@consta/uikit/__internal__/src/components/Table/Table";
-import { Combobox } from "@consta/uikit/Combobox";
 import CustomFilter from "../CustomFilter/CustomFilter";
+import classNames from "classnames";
 interface IInspectionsTable {
   inspections: IInspection[];
   handleEditButtonClick(id: string): void;
@@ -31,7 +31,25 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
 
   const [page, setPage] = useState(1);
 
-  const table = useRef<HTMLDivElement>(null);
+  const tableContainerRef = useRef<HTMLDivElement>(null);
+
+  const tableRef = useRef<HTMLDivElement>(null);
+
+  const getTableSize = () => {
+    const tableContainerHeight = tableContainerRef.current?.clientHeight;
+    const paginationHeight =
+      document.querySelector(".pagination")?.clientHeight;
+    const tableHeight = tableContainerRef.current?.clientHeight;
+    if (tableHeight && tableContainerHeight && paginationHeight) {
+      if (tableHeight > tableContainerHeight - paginationHeight) {
+        tableContainerRef.current.classList.add(style.tableHeight);
+      }
+    }
+  };
+
+  useEffect(() => {
+    getTableSize();
+  }, [tableRef, tableContainerRef]);
 
   const excludeFields = ["id"];
 
@@ -89,7 +107,7 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
       filterValues: Array<{ value: string; name: string }>,
     ) => {
       console.log("filterer", cellValue, filterValues);
-     /* return filterValues.some(
+      /* return filterValues.some(
         (filterValue) => filterValue && filterValue.value === cellValue,
       );*/
     },
@@ -97,7 +115,7 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
     component: {
       name: CustomFilter,
       props: {
-          type: field
+        type: field,
       },
     },
   }));
@@ -111,9 +129,9 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
   };
 
   return (
-    <div className={style.InspectionsTable}>
+    <div ref={tableContainerRef} className={style.InspectionsTable}>
       <Table
-        ref={table}
+        ref={tableRef}
         onCellClick={handleCellClick}
         onFiltersUpdated={onFiltersUpdated}
         filters={filters}
@@ -121,15 +139,16 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
         zebraStriped="odd"
         className={style.table}
         stickyHeader
+        stickyColumns={1}
         rows={rows}
         columns={columns}
       />
       <Pagination
-        className={style.pagination}
+        className={classNames(style.pagination, "pagination")}
         items={5}
         value={page}
         onChange={setPage}
-        arrows={[{ label: "Назад" }, { label: "Вперёд" }]}
+        arrows={[{ label: t("back") }, { label: t("forward") }]}
         hotKeys={[
           {
             label: "← Shift",

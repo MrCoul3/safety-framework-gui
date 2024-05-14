@@ -12,12 +12,13 @@
   justify-content: center;
   height: var(--paginatorHeight);
 }
+
 .table {
   overflow: auto;
-  height: calc(
-    100vh - var(--mainHeaderHeight) - var(--subHeaderHeight) -
-      var(--contentPaddingTopBottom) - var(--paginatorHeight)
-  );
+}
+
+.tableHeight {
+  height: var(--tableHeight);
 }
 
 .colTitle {
