@@ -91,10 +91,8 @@ const DashBoard = observer((props: IDashBoard) => {
                   id={item.id}
                   key={item.id}
                   subGroup={subGroup}
-                  status={item.status}
                   oilField={item.oilField}
                   doObject={item.doStructs}
-                  checkEditedDate={item.editDate}
                   checkVerifyDate={item.auditDate}
                   inspectionType={item.inspectionType}
                   inspectionForm={item.inspectionForm}

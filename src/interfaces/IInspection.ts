@@ -1,15 +1,11 @@
-import {InspectionStatusesTypes} from "../enums/InspectionStatusesTypes";
-import {CheckEntityTypes} from "../enums/CheckEntityTypes";
+import { CheckEntityTypes } from "../enums/CheckEntityTypes";
+import { InspectionFormTypes } from "../enums/InspectionFormTypes";
 
 export interface IInspection {
-    "id": string,
-    "inspectionType": string,
-    "oilField": string,
-    "inspectionNumber": string,
-    "doStructs": string,
-    "auditDate": number,
-    "editDate": number,
-    "inspectionForm": CheckEntityTypes,
-    "status": InspectionStatusesTypes
+  id: string;
+  [InspectionFormTypes.InspectionType]: string;
+  [InspectionFormTypes.OilField]: string;
+  [InspectionFormTypes.DoStructs]: string;
+  [InspectionFormTypes.AuditDate]: number;
+  [InspectionFormTypes.InspectionForm]: CheckEntityTypes;
 }
-

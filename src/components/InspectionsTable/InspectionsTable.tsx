@@ -1,7 +1,12 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
-import { Table, TableColumn, TableFilters } from "@consta/uikit/Table";
+import {
+  Table,
+  TableColumn,
+  TableFilters,
+  TableRow,
+} from "@consta/uikit/Table";
 import { IInspection } from "../../interfaces/IInspection";
 import { useTranslation } from "react-i18next";
 import { Pagination } from "@consta/uikit/Pagination";
@@ -21,11 +26,14 @@ interface IInspectionsTable {
   handleDeleteNewInspectionButtonClick(id: string): void;
 }
 
-
 const InspectionsTable = observer((props: IInspectionsTable) => {
   const { t } = useTranslation("dict");
 
   const [page, setPage] = useState(1);
+
+  const table = useRef<HTMLDivElement>(null);
+
+  const excludeFields = ["id"];
 
   const renderActions = (index: string) => (
     <>
@@ -52,7 +60,9 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
       props.inspections.map((item, index) => ({
         ...item,
         actions: renderActions((index + 1).toString()),
-        auditDate: moment(item.auditDate).format("DD.MM.YYYY"),
+        [InspectionFormTypes.AuditDate]: moment(item.auditDate).format(
+          "DD.MM.YYYY",
+        ),
       })),
     [props.inspections],
   );
@@ -60,8 +70,6 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
   const keys = Object.keys(props.inspections[0]);
 
   keys.unshift("actions");
-
-  const excludeFields = ["id", "status"];
 
   const columns: TableColumn<(typeof rows)[number]>[] = keys
     .filter((key) => !excludeFields.includes(key))
@@ -73,26 +81,26 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
       maxWidth: 200,
     }));
 
-  const filters: TableFilters<(typeof rows)[number]> = [
-    {
-      id: InspectionFormTypes.InspectionForm,
-      name: t(InspectionFormTypes.InspectionForm) + ": ",
-      filterer: (
-        cellValue,
-        filterValues: Array<{ value: string; name: string }>,
-      ) => {
-        console.log("filterer", cellValue, filterValues);
-        return filterValues.some(
-          (filterValue) => filterValue && filterValue.value === cellValue,
-        );
-      },
-      field: InspectionFormTypes.InspectionForm,
-      component: {
-        name: CustomFilter,
-        props: {},
+  const filters: any = Object.values(InspectionFormTypes).map((field) => ({
+    id: field,
+    name: t(field) + ": ",
+    filterer: (
+      cellValue: string,
+      filterValues: Array<{ value: string; name: string }>,
+    ) => {
+      console.log("filterer", cellValue, filterValues);
+     /* return filterValues.some(
+        (filterValue) => filterValue && filterValue.value === cellValue,
+      );*/
+    },
+    field: field,
+    component: {
+      name: CustomFilter,
+      props: {
+          type: field
       },
     },
-  ];
+  }));
 
   const onFiltersUpdated = () => {
     console.log("onFiltersUpdated");
@@ -105,6 +113,7 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
   return (
     <div className={style.InspectionsTable}>
       <Table
+        ref={table}
         onCellClick={handleCellClick}
         onFiltersUpdated={onFiltersUpdated}
         filters={filters}

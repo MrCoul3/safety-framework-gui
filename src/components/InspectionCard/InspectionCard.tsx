@@ -21,12 +21,10 @@ interface IInspectionCard {
   name?: string;
   doObject?: string;
   checkVerifyDate?: number;
-  checkEditedDate?: number;
   inspectionType?: string;
   oilField?: string;
   index?: number | boolean;
   inspectionForm?: CheckEntityTypes;
-  status?: InspectionStatusesTypes;
   subGroup?: SubGroupsActionsTypes;
 
   handleEditButtonClick(id: string): void;
@@ -35,29 +33,29 @@ interface IInspectionCard {
 
 const InspectionCard = observer((props: IInspectionCard) => {
   const { t } = useTranslation("dict");
-  const successCond = () => props.status === InspectionStatusesTypes.Success;
-  const awaitCond = () => props.status === InspectionStatusesTypes.Warning;
-  const errorCond = () => props.status === InspectionStatusesTypes.Error;
+  // const successCond = () => props.status === InspectionStatusesTypes.Success;
+  // const awaitCond = () => props.status === InspectionStatusesTypes.Warning;
+  // const errorCond = () => props.status === InspectionStatusesTypes.Error;
   const getDate = (date?: number) => moment(date).format("DD.MM.YYYY");
 
   return (
     <Card
       className={classNames(style.card, {
-        [style.success]: successCond(),
-        [style.await]: awaitCond(),
-        [style.error]: errorCond(),
+        // [style.success]: successCond(),
+        // [style.await]: awaitCond(),
+        // [style.error]: errorCond(),
       })}
       verticalSpace="xs"
       horizontalSpace="xs"
     >
-      {props.status && (
+     {/* {props.status && (
         <Badge
           form="round"
           iconLeft={IconAllDone}
           status={props.status}
           label={t(props.status ?? "")}
         />
-      )}
+      )}*/}
 
       <div className={style.title}>
         {props.index && t("inspectionName") + props.index}
@@ -81,10 +79,10 @@ const InspectionCard = observer((props: IInspectionCard) => {
           <span className={style.blueColor}>{t("checkVerifyDate")} </span>
           <span className={style.value}>{getDate(props.checkVerifyDate)}</span>
         </div>
-        <div className={style.checkDate}>
+        {/*<div className={style.checkDate}>
           {t("checkEditedDate")}
           <span className={style.value}> {getDate(props.checkEditedDate)}</span>
-        </div>
+        </div>*/}
       </div>
       <div className={style.checkDetails}>
         <span className={style.checkDetailsTitle}>{t("checkDetails")}</span>
@@ -108,7 +106,7 @@ const InspectionCard = observer((props: IInspectionCard) => {
         </div>
       </div>
       <div className={style.controlButtonGroup}>
-        {!successCond() && props.subGroup !== SubGroupsActionsTypes.Deleted && (
+        {props.subGroup !== SubGroupsActionsTypes.Deleted && (
           <>
             <Button
               size={"s"}
