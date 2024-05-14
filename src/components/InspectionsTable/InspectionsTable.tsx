@@ -34,9 +34,8 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
   const getTableSize = () => {
     const tableContainerHeight = tableContainerRef.current?.clientHeight;
     const paginationHeight = 75;
-    const tableHeight = tableContainerRef.current?.clientHeight;
-    if (tableHeight && tableContainerHeight) {
-      if (tableHeight > tableContainerHeight - paginationHeight) {
+    if (tableContainerHeight) {
+      if (tableContainerHeight > tableContainerHeight - paginationHeight) {
         tableContainerRef.current.classList.add(style.tableHeight);
       }
     }

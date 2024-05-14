@@ -58,7 +58,7 @@ const CustomFilter = observer((props: ICustomFilter) => {
           value={value}
         />
       ) : (
-        <Combobox
+        <Combobox multiple
           className={style.combobox}
           items={items}
           onChange={onChange}
