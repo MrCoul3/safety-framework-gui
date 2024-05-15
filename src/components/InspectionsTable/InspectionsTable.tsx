@@ -13,10 +13,12 @@ import { IconMail } from "@consta/icons/IconMail";
 import { InspectionFormTypes } from "../../enums/InspectionFormTypes";
 import { onCellClick } from "@consta/uikit/__internal__/src/components/Table/Table";
 import CustomFilter from "../CustomFilter/CustomFilter";
-import classNames from "classnames";
 import { INSPECTIONS_ON_PAGE } from "../../constants/config";
+import { IFieldsData } from "../../stores/InspectionStore";
+import { toJS } from "mobx";
 interface IInspectionsTable {
   inspections: IInspection[];
+  fieldsData: IFieldsData[];
   handleEditButtonClick(id: string): void;
   handleOpenFilter(field: InspectionFormTypes): void;
   handleDeleteSentButtonClick(id: string): void;
@@ -106,7 +108,7 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
       cellValue: string,
       filterValues: Array<{ value: string; name: string }>,
     ) => {
-      // console.log("filterer", cellValue, filterValues);
+      console.log("filterer", cellValue, filterValues);
       /* return filterValues.some(
         (filterValue) => filterValue && filterValue.value === cellValue,
       );*/
@@ -115,6 +117,8 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
     component: {
       name: CustomFilter,
       props: {
+        type: field,
+        fieldData: props.fieldsData.find((data) => data[field]),
         onOpen: () => handleOpenFilter(field),
       },
     },

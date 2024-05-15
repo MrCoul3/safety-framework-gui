@@ -1,50 +1,50 @@
-import React, { useEffect, useState } from "react";
-import { observer } from "mobx-react-lite";
+import React, { useCallback, useEffect, useState } from "react";
 import style from "./style.module.css";
 import { Combobox } from "@consta/uikit/Combobox";
-import InspectionDataField from "../InspectionDataField/InspectionDataField";
 import { InspectionFormTypes } from "../../enums/InspectionFormTypes";
 import { DatePicker } from "@consta/uikit/DatePicker";
 import { IconCalendar } from "@consta/icons/IconCalendar";
+import { IFieldsData, Item } from "../../stores/InspectionStore";
+import { useFlag } from "@consta/uikit/useFlag";
+import {useTranslation} from "react-i18next";
 
 interface ICustomFilter {
   type: InspectionFormTypes;
-
+  fieldData: IFieldsData;
   onConfirm: (value: unknown) => void;
   onCancel: () => void;
   filterValue?: unknown;
-  onOpen(): void
+  onOpen(): void;
 }
-type Item = {
-  label: string;
-  id: number;
-};
-
-const items: Item[] = [
-  {
-    label: "Первый",
-    id: 1,
-  },
-  {
-    label: "Второй",
-    id: 2,
-  },
-  {
-    label: "Третий",
-    id: 3,
-  },
-];
 
 const CustomFilter = (props: ICustomFilter) => {
+  const { t } = useTranslation("dict");
 
-  useEffect(() => {
-    props.onOpen()
+  useEffect(() => {}, []);
+
+  const [open, setOpen] = useFlag();
+
+  const onDropdownOpen = useCallback((open: boolean) => {
+    setOpen.set(open);
   }, []);
 
-  const onChange = () => {};
+  useEffect(() => {
+    if (open) {
+      props.onOpen();
+    }
+  }, [open]);
+
+  const getItems = () => {
+    if (props.fieldData && props.type) {
+      return props.fieldData[props.type];
+    }
+    return [];
+  };
+
+  const onChange = () => {
+  };
 
   const [value, setValue] = useState<[Date?, Date?] | null>(null);
-
 
   return (
     <div className={style.CustomFilter}>
@@ -57,10 +57,15 @@ const CustomFilter = (props: ICustomFilter) => {
           value={value}
         />
       ) : (
-        <Combobox multiple
+        <Combobox
+          placeholder={t(`${props.type}Placeholder`)}
+          onDropdownOpen={onDropdownOpen}
+          getItemLabel={(item) => item.Title}
+          getItemKey={(item: Item) => item.Title}
+          multiple
           className={style.combobox}
-          items={items}
-          onChange={onChange}
+          items={getItems()}
+          onChange={props.onConfirm}
         />
       )}
     </div>
