@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
 import NewInspectionPageLayout from "../layouts/NewInspectionPageLayout/NewInspectionPageLayout";
 import NavPanel from "../components/NavPanel/NavPanel";
@@ -10,7 +10,8 @@ import {
   IFormDateFieldValue,
   IFormFieldValue,
 } from "../stores/InspectionStore";
-import { useNavigate, useParams } from "react-router";
+import { Outlet, useNavigate, useParams } from "react-router";
+import { RoutesTypes } from "../enums/RoutesTypes";
 
 interface INewInspectionPage {}
 
@@ -18,10 +19,11 @@ const NewInspectionPage = observer((props: INewInspectionPage) => {
   const { t } = useTranslation("dict");
 
   const store = useStore();
+  const navigate = useNavigate();
 
   let { editInspectionId } = useParams();
 
-  const [savingState, setSavingState] = useState(false)
+  const [savingState, setSavingState] = useState(false);
 
   useEffect(() => {
     if (editInspectionId) {
@@ -35,7 +37,7 @@ const NewInspectionPage = observer((props: INewInspectionPage) => {
   }, []);
 
   const handleKeyBoardEvent = (e: KeyboardEvent) => {
-    if (e.ctrlKey && e.keyCode === 83) {
+    if (e.altKey && e.keyCode === 83) {
       handleSaveInspection();
     }
   };
@@ -45,12 +47,12 @@ const NewInspectionPage = observer((props: INewInspectionPage) => {
   };
 
   const handleChange = (value: IFormFieldValue | IFormDateFieldValue) => {
-    setSavingState(true)
+    setSavingState(true);
     store.inspectionStore.setFormFieldsValues(value as IFormFieldValue);
     store.inspectionStore.checkIsFormSuccess();
   };
   const handleSaveInspection = () => {
-    setSavingState(false)
+    setSavingState(false);
     editInspectionId
       ? store.inspectionStore.updateInspectionToLocalStorage(editInspectionId)
       : store.inspectionStore.setInspectionToLocalStorage();
@@ -58,38 +60,50 @@ const NewInspectionPage = observer((props: INewInspectionPage) => {
   };
 
   const handleEditPassports = () => {};
+  const handleNextStep = () => {
+    const isValid = store.inspectionStore.checkIsFormSuccess();
+    console.log("isValid", isValid);
+    if (isValid) {
+      handleSaveInspection();
+      navigate(RoutesTypes.Passports);
+    }
+  };
 
   return (
-    <NewInspectionPageLayout
-      navPanel={
-        <NavPanel
-          disableSaveButton={!savingState}
-          handleEditPassports={handleEditPassports}
-          handleSaveInspection={handleSaveInspection}
-          description={t("addInspectionDescription")}
-          title={t("addInspectionTitle")}
-        />
-      }
-      content={
-        <InspectionForm
-          formFieldsValuesLength={
-            !!Object.values(store.inspectionStore.formFieldsValues).length
-          }
-          handleClearInspectionForm={() => {
-            setSavingState(true)
-            store.inspectionStore.clearInspectionForm();
-            store.inspectionStore.setIsValidate(false);
-          }}
-          setIsValidate={() => store.inspectionStore.setIsValidate(true)}
-          isValidate={store.inspectionStore.isValidate}
-          handleDateChange={handleChange}
-          formFieldsValues={store.inspectionStore.formFieldsValues}
-          handleChange={handleChange}
-          fieldsData={store.inspectionStore.fieldsData}
-          handleOpenField={handleOpenField}
-        />
-      }
-    />
+    <>
+      <NewInspectionPageLayout
+        navPanel={
+          <NavPanel
+            disableSaveButton={!savingState}
+            handleEditPassports={handleEditPassports}
+            handleSaveInspection={handleSaveInspection}
+            description={t("addInspectionDescription")}
+            title={t("addInspectionTitle")}
+          />
+        }
+        content={
+          <InspectionForm
+            handleNextStep={handleNextStep}
+            formFieldsValuesLength={
+              !!Object.values(store.inspectionStore.formFieldsValues).length
+            }
+            handleClearInspectionForm={() => {
+              setSavingState(true);
+              store.inspectionStore.clearInspectionForm();
+              store.inspectionStore.setIsValidate(false);
+            }}
+            setIsValidate={() => store.inspectionStore.setIsValidate(true)}
+            isValidate={store.inspectionStore.isValidate}
+            handleDateChange={handleChange}
+            formFieldsValues={store.inspectionStore.formFieldsValues}
+            handleChange={handleChange}
+            fieldsData={store.inspectionStore.fieldsData}
+            handleOpenField={handleOpenField}
+          />
+        }
+      />
+      <Outlet />
+    </>
   );
 });
 

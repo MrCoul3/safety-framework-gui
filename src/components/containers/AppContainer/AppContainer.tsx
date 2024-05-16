@@ -10,6 +10,7 @@ import { useTranslation } from "react-i18next";
 import { RoutesTypes } from "../../../enums/RoutesTypes";
 import NewInspectionPage from "../../../pages/NewInspectionPage";
 import { SubGroupsActionsTypes } from "../../../enums/SubGroupsTypes";
+import PassportsPage from "../../../pages/PassportsPage";
 export const AppContainer = observer(() => {
   const { t } = useTranslation("dict");
 
@@ -38,8 +39,9 @@ export const AppContainer = observer(() => {
     <>
       <MainHeader />
       <Routes>
-        <Route path="/*" element={<MainPage />} />
-        <Route path="*" element={render404()} />
+        <Route index element={<MainPage />} />
+        <Route path={"/*"} element={<MainPage />} />
+
         <Route
           path={RoutesTypes.NewInspection}
           element={<NewInspectionPage />}
@@ -48,6 +50,20 @@ export const AppContainer = observer(() => {
           path={RoutesTypes.NewInspection + "/:editInspectionId"}
           element={<NewInspectionPage />}
         />
+        <Route
+          path={
+            RoutesTypes.NewInspection +
+            "/:editInspectionId/" +
+            RoutesTypes.Passports
+          }
+          element={<PassportsPage />}
+        />
+        <Route
+          path={RoutesTypes.NewInspection + "/" + RoutesTypes.Passports}
+          element={<PassportsPage />}
+        />
+
+        <Route path="*" element={render404()} />
       </Routes>
     </>
   );

@@ -30,6 +30,7 @@ interface IInspectionForm {
 
   isValidate: boolean;
   setIsValidate(value: boolean): void;
+  handleNextStep(): void;
   handleChange(value: IFormFieldValue): void;
   handleDateChange(value: IFormDateFieldValue): void;
   formFieldsValues: IFormFieldValue | IFormDateFieldValue;
@@ -75,7 +76,8 @@ const InspectionForm = observer((props: IInspectionForm) => {
     return "success";
   };
 
-  const handleApplyForm = () => {
+  const handleNextStep = () => {
+    props.handleNextStep()
     props.setIsValidate(true);
   };
 
@@ -113,23 +115,17 @@ const InspectionForm = observer((props: IInspectionForm) => {
           ))}
         </form>
         <div className={style.buttonsGroup}>
-          {!editInspectionId && (
-            <>
-              <Button
-                onClick={() =>
-                  props.formFieldsValuesLength && setIsModalOpen(true)
-                }
-                view="clear"
-                label={t("clear")}
-              />
-              <Button
-                onClick={handleApplyForm}
-                type="submit"
-                label={t("farther")}
-                iconRight={IconForward}
-              />
-            </>
-          )}
+          <Button
+            onClick={() => props.formFieldsValuesLength && setIsModalOpen(true)}
+            view="clear"
+            label={t("clear")}
+          />
+          <Button
+            onClick={handleNextStep}
+            type="submit"
+            label={t("farther")}
+            iconRight={IconForward}
+          />
         </div>
       </div>
       <ConfirmDialog

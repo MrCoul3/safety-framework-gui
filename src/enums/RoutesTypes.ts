@@ -1,3 +1,4 @@
 export enum RoutesTypes {
-    NewInspection = 'newInspection'
+    NewInspection = 'newInspection',
+    Passports = 'passports',
 }
