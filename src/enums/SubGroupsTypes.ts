@@ -5,7 +5,7 @@ export enum SubGroupsTypes {
 }
 export enum SubGroupsActionsTypes {
     MainList = "Общий список",
-    NewInspections = "Не отправленные",
+    NewInspections = "Неотправленные",
     Sent = "Отправленные",
     Deleted = "Удаленные",
     BarriersCarts = "Корзины барьеров",

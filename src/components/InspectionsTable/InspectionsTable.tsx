@@ -16,9 +16,12 @@ import CustomFilter from "../CustomFilter/CustomFilter";
 import { INSPECTIONS_ON_PAGE } from "../../constants/config";
 import { IFieldsData } from "../../stores/InspectionStore";
 import { toJS } from "mobx";
+import { SubGroupsActionsTypes } from "../../enums/SubGroupsTypes";
 interface IInspectionsTable {
   inspections: IInspection[];
   fieldsData: IFieldsData[];
+
+  subGroupsActionsTypes: SubGroupsActionsTypes;
   handleEditButtonClick(id: string): void;
   handleOpenFilter(field: InspectionFormTypes): void;
   handleDeleteSentButtonClick(id: string): void;
@@ -59,9 +62,16 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
         iconRight={IconEdit}
         onlyIcon
       />
-      <Button view="clear" form="round" iconRight={IconMail} onlyIcon />
+      {props.subGroupsActionsTypes === SubGroupsActionsTypes.NewInspections && (
+        <Button view="clear" form="round" iconRight={IconMail} onlyIcon />
+      )}
+
       <Button
-        onClick={() => props.handleDeleteNewInspectionButtonClick(index)}
+        onClick={() =>
+          props.subGroupsActionsTypes === SubGroupsActionsTypes.NewInspections
+            ? props.handleDeleteNewInspectionButtonClick(index)
+            : props.handleDeleteSentButtonClick(index)
+        }
         view="clear"
         form="round"
         iconRight={IconTrash}

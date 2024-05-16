@@ -39,6 +39,7 @@ export const ru = {
     inspectionData: "Данные инспекции",
     editInspectionData: "Редактировать данные инспекции",
     createInspection: "Создать инспекцию",
+    saveInspection: "Сохранить инспекцию",
     saveChanges: "Сохранить изменения",
     editPassports: "Редактировать паспорта инспекции",
 
@@ -118,7 +119,7 @@ export const ru = {
       "Введите наименование субподрядной организации",
 
     dialogClearFields: "Очистить все заполненные поля?",
-    dialogDeleteNewInspection: "Удалить новую инспекцию?",
+    dialogDeleteNewInspection: "Удалить неотправленную инспекцию?",
     dialogDeleteSentInspection: "Удалить отправленную инспекцию?"
   },
 };

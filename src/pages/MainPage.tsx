@@ -132,8 +132,13 @@ export const MainPage = observer((props: IMainPage) => {
         ].map((inspections, index) => (
           <Route
             element={
-                inspections.length ? (
+              inspections.length ? (
                 <InspectionsTable
+                  subGroupsActionsTypes={
+                    !index
+                      ? SubGroupsActionsTypes.NewInspections
+                      : SubGroupsActionsTypes.Sent
+                  }
                   fieldsData={store.inspectionStore.fieldsData}
                   handleOpenFilter={handleOpenFilter}
                   handleDeleteSentButtonClick={(id: string) => {
@@ -155,7 +160,11 @@ export const MainPage = observer((props: IMainPage) => {
                 />
               )
             }
-            path={!index ? SubGroupsActionsTypes.NewInspections : SubGroupsActionsTypes.Sent}
+            path={
+              !index
+                ? SubGroupsActionsTypes.NewInspections
+                : SubGroupsActionsTypes.Sent
+            }
           />
         ))}
 

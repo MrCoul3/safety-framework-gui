@@ -1,24 +1,21 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
 import { Breadcrumbs } from "@consta/uikit/Breadcrumbs";
 import { useNavigate, useParams } from "react-router";
-import { IconSelect } from "@consta/icons/IconSelect";
 import { IBreadCrumbs } from "interfaces/IBreadCrumbs";
 import { Button } from "@consta/uikit/Button";
 import { useTranslation } from "react-i18next";
-import ConfirmDialog from "../ConfirmDialog/ConfirmDialog";
 import { IconEdit } from "@consta/icons/IconEdit";
+import { IconSave } from "@consta/icons/IconSave";
 
 interface INavPanel {
   title: string;
   description: string;
+  disableSaveButton?: boolean;
   actionText?: string;
-
-  handleClearInspectionForm(): void;
-  handleCreateInspection(): void;
+  handleSaveInspection(): void;
   handleEditPassports(): void;
-  formFieldsValuesLength?: boolean;
 }
 
 const NavPanel = observer((props: INavPanel) => {
@@ -44,8 +41,6 @@ const NavPanel = observer((props: INavPanel) => {
     }
   };
 
-  const [isModalOpen, setIsModalOpen] = React.useState(false);
-
   return (
     <div className={style.NavPanel}>
       <div className={style.flexCol}>
@@ -59,41 +54,21 @@ const NavPanel = observer((props: INavPanel) => {
       </div>
 
       <div className={style.buttonsGroup}>
-        {editInspectionId ? (
-          <>
-            <Button view="secondary"
-              onClick={props.handleEditPassports}
-              label={t("editPassports")}
-                    iconLeft={IconEdit}
-            />
-            <Button
-              onClick={props.handleCreateInspection}
-              label={t("saveChanges")}
-            />
-          </>
-        ) : (
+        {editInspectionId && (
           <Button
-            onClick={() => props.handleCreateInspection()}
-            label={t("createInspection")}
+            view="secondary"
+            onClick={props.handleEditPassports}
+            label={t("editPassports")}
+            iconLeft={IconEdit}
           />
         )}
-
         <Button
-          onClick={() => props.formFieldsValuesLength && setIsModalOpen(true)}
-          view="ghost"
-          label={t("clearAll")}
+          iconLeft={IconSave}
+          disabled={props.disableSaveButton}
+          onClick={props.handleSaveInspection}
+          label={t("saveChanges")}
         />
-        <div className={style.rightBorder}></div>
-        <Button iconRight={IconSelect} view="clear" label={t("description")} />
       </div>
-      <ConfirmDialog
-        cancelActionLabel={t("cancel")}
-        confirmActionLabel={t("clear")}
-        title={t("dialogClearFields")}
-        action={props.handleClearInspectionForm}
-        onClose={() => setIsModalOpen(false)}
-        open={isModalOpen}
-      />
     </div>
   );
 });
