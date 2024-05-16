@@ -30,6 +30,8 @@ export const ru = {
     clearAll: "Очистить все",
     clear: "Очистить",
     description: "Описание",
+    back: "Назад",
+    forward: "Вперёд",
 
 
     // breadcrumbs

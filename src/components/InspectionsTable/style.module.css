@@ -11,13 +11,15 @@
   display: flex;
   justify-content: center;
   height: var(--paginatorHeight);
+  padding: 10px 0;
 }
+
 .table {
   overflow: auto;
-  height: calc(
-    100vh - var(--mainHeaderHeight) - var(--subHeaderHeight) -
-      var(--contentPaddingTopBottom) - var(--paginatorHeight)
-  );
+}
+
+.tableHeight {
+  height: var(--tableHeight);
 }
 
 .colTitle {

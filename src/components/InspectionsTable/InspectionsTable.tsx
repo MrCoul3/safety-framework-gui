@@ -1,11 +1,7 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
-import {
-  Table,
-  TableColumn,
-  TableFilters,
-} from "@consta/uikit/Table";
+import { Table, TableColumn } from "@consta/uikit/Table";
 import { IInspection } from "../../interfaces/IInspection";
 import { useTranslation } from "react-i18next";
 import { Pagination } from "@consta/uikit/Pagination";
@@ -16,44 +12,43 @@ import { IconTrash } from "@consta/icons/IconTrash";
 import { IconMail } from "@consta/icons/IconMail";
 import { InspectionFormTypes } from "../../enums/InspectionFormTypes";
 import { onCellClick } from "@consta/uikit/__internal__/src/components/Table/Table";
-import {Combobox} from "@consta/uikit/Combobox";
+import CustomFilter from "../CustomFilter/CustomFilter";
+import { INSPECTIONS_ON_PAGE } from "../../constants/config";
+import { IFieldsData } from "../../stores/InspectionStore";
+import { toJS } from "mobx";
 interface IInspectionsTable {
   inspections: IInspection[];
+  fieldsData: IFieldsData[];
   handleEditButtonClick(id: string): void;
+  handleOpenFilter(field: InspectionFormTypes): void;
   handleDeleteSentButtonClick(id: string): void;
   handleDeleteNewInspectionButtonClick(id: string): void;
 }
-type Item = {
-    label: string;
-    id: number;
-};
-
-const items: Item[] = [
-    {
-        label: 'Первый',
-        id: 1,
-    },
-    {
-        label: 'Второй',
-        id: 2,
-    },
-    {
-        label: 'Третий',
-        id: 3,
-    },
-];
-const CustomFilter = () => {
-    const onChange = () => {}
-    return <div>
-        <Combobox items={items} onChange={onChange} />
-    </div>
-}
-
 
 const InspectionsTable = observer((props: IInspectionsTable) => {
   const { t } = useTranslation("dict");
 
   const [page, setPage] = useState(1);
+
+  const tableContainerRef = useRef<HTMLDivElement>(null);
+
+  const tableRef = useRef<HTMLDivElement>(null);
+
+  const getTableSize = () => {
+    const tableContainerHeight = tableContainerRef.current?.clientHeight;
+    const paginationHeight = 75;
+    if (tableContainerHeight) {
+      if (tableContainerHeight > tableContainerHeight - paginationHeight) {
+        tableContainerRef.current.classList.add(style.tableHeight);
+      }
+    }
+  };
+
+  useEffect(() => {
+    getTableSize();
+  }, [tableRef, tableContainerRef]);
+
+  const excludeFields = ["id"];
 
   const renderActions = (index: string) => (
     <>
@@ -80,7 +75,9 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
       props.inspections.map((item, index) => ({
         ...item,
         actions: renderActions((index + 1).toString()),
-        auditDate: moment(item.auditDate).format("DD.MM.YYYY"),
+        [InspectionFormTypes.AuditDate]: moment(item.auditDate).format(
+          "DD.MM.YYYY",
+        ),
       })),
     [props.inspections],
   );
@@ -88,8 +85,6 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
   const keys = Object.keys(props.inspections[0]);
 
   keys.unshift("actions");
-
-  const excludeFields = ["id", "status"];
 
   const columns: TableColumn<(typeof rows)[number]>[] = keys
     .filter((key) => !excludeFields.includes(key))
@@ -101,77 +96,72 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
       maxWidth: 200,
     }));
 
-  const filters: TableFilters<(typeof rows)[number]> = [
-    {
-      id: InspectionFormTypes.InspectionForm,
-      name: t(InspectionFormTypes.InspectionForm) + ": ",
-      filterer: (
-        cellValue,
-        filterValues: Array<{ value: string; name: string }>,
-      ) => {
-        console.log("filterer", cellValue, filterValues);
-        return filterValues.some(
-          (filterValue) => filterValue && filterValue.value === cellValue,
-        );
-      },
-      field: InspectionFormTypes.InspectionForm,
-    /*  component: {
-        name: TableTextFilter,
-        props: {
-          withSearch: true,
-          items: [
-            { name: "Северное", value: "Северное" },
-            { name: "Южное", value: "Южное" },
-          ],
-        },
-      },*/
-      component: {
-        name: CustomFilter,
-        props: {
+  const handleOpenFilter = (field: InspectionFormTypes) => {
+    console.log("onopen", field);
+    props.handleOpenFilter(field);
+  };
 
-        },
+  const filters: any = Object.values(InspectionFormTypes).map((field) => ({
+    id: field,
+    name: t(field) + ": ",
+    filterer: (
+      cellValue: string,
+      filterValues: Array<{ value: string; name: string }>,
+    ) => {
+      console.log("filterer", cellValue, filterValues);
+      /* return filterValues.some(
+        (filterValue) => filterValue && filterValue.value === cellValue,
+      );*/
+    },
+    field: field,
+    component: {
+      name: CustomFilter,
+      props: {
+        type: field,
+        fieldData: props.fieldsData.find((data) => data[field]),
+        onOpen: () => handleOpenFilter(field),
       },
     },
-  ];
+  }));
 
-  const onFiltersUpdated = () => {
-    console.log("onFiltersUpdated");
-  };
   const handleCellClick: onCellClick = ({ e, type, rowId, columnIdx, ref }) => {
     e.preventDefault();
-      console.log('handleCellClick', type, rowId, ref, columnIdx)
+    console.log("handleCellClick", type, rowId, ref, columnIdx);
   };
 
   return (
-    <div className={style.InspectionsTable}>
+    <div ref={tableContainerRef} className={style.InspectionsTable}>
       <Table
+        ref={tableRef}
         onCellClick={handleCellClick}
-        onFiltersUpdated={onFiltersUpdated}
         filters={filters}
         isResizable
         zebraStriped="odd"
         className={style.table}
         stickyHeader
+        stickyColumns={1}
         rows={rows}
         columns={columns}
       />
-      <Pagination
-        className={style.pagination}
-        items={5}
-        value={page}
-        onChange={setPage}
-        arrows={[{ label: "Назад" }, { label: "Вперёд" }]}
-        hotKeys={[
-          {
-            label: "← Shift",
-            keys: ["Shift", "ArrowLeft"],
-          },
-          {
-            label: "Shift →",
-            keys: ["Shift", "ArrowRight"],
-          },
-        ]}
-      />
+      {props.inspections.length > INSPECTIONS_ON_PAGE && (
+        <Pagination
+          className={style.pagination}
+          items={5}
+          value={page}
+          onChange={setPage}
+          arrows={[{ label: t("back") }, { label: t("forward") }]}
+          hotKeys={[
+            {
+              label: "← Shift",
+              keys: ["Shift", "ArrowLeft"],
+            },
+            {
+              label: "Shift →",
+              keys: ["Shift", "ArrowRight"],
+            },
+          ]}
+        />
+      )}
     </div>
   );
 });

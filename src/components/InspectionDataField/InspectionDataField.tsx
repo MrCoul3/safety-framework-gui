@@ -10,7 +10,9 @@ import { PropStatus } from "@consta/uikit/__internal__/src/components/SelectComp
 
 interface IInspectionDataField {
   inspectionType: InspectionFormTypes;
-  status: PropStatus | undefined;
+  disableLabel?: boolean
+
+  status?: PropStatus | undefined;
   value?: [Date?, Date?] | null;
   handleChange(value: IFormDateFieldValue): void;
 }
@@ -34,7 +36,7 @@ const InspectionDataField = observer((props: IInspectionDataField) => {
       ref={picker}
       status={props.status}
       className={style.field}
-      label={t(props.inspectionType)}
+      label={!props.disableLabel ? t(props.inspectionType) : ""}
       onChange={onChange}
       required
       rightSide={IconCalendar}

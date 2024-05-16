@@ -5,7 +5,8 @@ import { InspectionFormTypes } from "../../enums/InspectionFormTypes";
 import { Combobox } from "@consta/uikit/Combobox";
 import { useFlag } from "@consta/uikit/useFlag";
 import {
-  IFieldsData, IFormDateFieldValue,
+  IFieldsData,
+  IFormDateFieldValue,
   IFormFieldValue,
   Item,
 } from "../../stores/InspectionStore";
@@ -26,13 +27,8 @@ const InspectionTextField = observer((props: IFieldInspectionType) => {
 
   const [open, setOpen] = useFlag();
 
-  const inputRef = useRef<HTMLInputElement>(null);
-
   const onDropdownOpen = useCallback((open: boolean) => {
     setOpen.set(open);
-    if (open) {
-      inputRef.current?.focus();
-    }
   }, []);
 
   useEffect(() => {
@@ -61,11 +57,12 @@ const InspectionTextField = observer((props: IFieldInspectionType) => {
 
   useEffect(() => {
     const fieldBody = combobox.current?.parentElement;
-    fieldBody?.classList.add('customField')
+    fieldBody?.classList.add("customField");
   }, [combobox]);
 
   return (
-    <Combobox ref={combobox}
+    <Combobox
+      ref={combobox}
       status={props.status ?? props.status}
       getItemLabel={(item) => item.Title}
       className={style.field}
@@ -75,7 +72,7 @@ const InspectionTextField = observer((props: IFieldInspectionType) => {
       onDropdownOpen={onDropdownOpen}
       placeholder={t(`${props.inspectionType}Placeholder`)}
       required
-      value={ props.value ? {Title: props.value} : null}
+      value={props.value ? { Title: props.value } : null}
       items={getItems(props.inspectionType)}
       onChange={handleChange}
       getItemKey={(item: Item) => item.Title}

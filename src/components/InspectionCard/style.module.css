@@ -1,6 +1,9 @@
 .card {
-  padding: 16px;
-  max-height: 330px;
+  padding: 0 16px 16px;
+  max-height: var(--inspectionCardHeight);
+  min-height: 300px;
+  overflow: auto;
+  background-color: white;
 }
 .await {
   border-top: 8px solid var(--awaitOrange);
@@ -13,6 +16,9 @@
 }
 
 .title {
+  position: sticky;
+  background-color: white;
+  top: 0;
   font-size: 18px;
   font-weight: 600;
   line-height: 25.2px;
@@ -20,6 +26,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  border-bottom: 1px solid var(--border);
 }
 .separator {
   height: 1px;

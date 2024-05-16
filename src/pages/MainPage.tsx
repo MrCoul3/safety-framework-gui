@@ -16,6 +16,7 @@ import { RoutesTypes } from "../enums/RoutesTypes";
 import { LOCAL_STORE_INSPECTIONS } from "../constants/config";
 import { ResponsesNothingFound } from "@consta/uikit/ResponsesNothingFound";
 import ConfirmDialog from "../components/ConfirmDialog/ConfirmDialog";
+import { InspectionFormTypes } from "../enums/InspectionFormTypes";
 
 interface IMainPage {}
 
@@ -28,8 +29,9 @@ export const MainPage = observer((props: IMainPage) => {
 
   const init = () => {
     store.mainPageStore.getInspectionsDev();
-    getNewInspections();
+    getLocalInspections();
   };
+
   useEffect(() => {
     init();
   }, []);
@@ -58,7 +60,7 @@ export const MainPage = observer((props: IMainPage) => {
     );
   };
 
-  const getNewInspections = () => {
+  const getLocalInspections = () => {
     let localInspectionsParsed = [];
     const localInspections = localStorage.getItem(LOCAL_STORE_INSPECTIONS);
     if (localInspections) {
@@ -74,7 +76,7 @@ export const MainPage = observer((props: IMainPage) => {
       store.inspectionStore.deleteInspectionFromLocalStorage(
         deletingInspectionType?.id,
       );
-      getNewInspections();
+      getLocalInspections();
     }
   };
   const handleDeleteSentInspection = () => {
@@ -99,6 +101,10 @@ export const MainPage = observer((props: IMainPage) => {
     id: string;
   }>();
 
+  const handleOpenFilter = (field: InspectionFormTypes) => {
+    store.inspectionStore.handleOpenField(field);
+  };
+
   const contentRoutes = () => {
     return (
       <Routes>
@@ -120,57 +126,39 @@ export const MainPage = observer((props: IMainPage) => {
           path="/"
         />
         {/*Sent and new inspections table on main page*/}
-        <Route
-          element={
-            store.mainPageStore.localInspections.length ? (
-              <InspectionsTable
-                handleDeleteSentButtonClick={(id: string) => {
-                  handleDelete(id, SubGroupsActionsTypes.Sent);
-                }}
-                handleDeleteNewInspectionButtonClick={(id: string) => {
-                  handleDelete(id, SubGroupsActionsTypes.NewInspections);
-                }}
-                handleEditButtonClick={handleEditInspection}
-                inspections={store.mainPageStore.localInspections}
-              />
-            ) : (
-              <ResponsesNothingFound
-                title={t("emptyNewInspections")}
-                description={" "}
-                actions={
-                  <Button onClick={toHome} view="ghost" label={t("toHome")} />
-                }
-              />
-            )
-          }
-          path={SubGroupsActionsTypes.NewInspections}
-        />
-        {/*Sent and new inspections table on main page*/}
-        <Route
-          element={
-            store.mainPageStore.inspections.length ? (
-              <InspectionsTable
-                handleDeleteSentButtonClick={(id: string) => {
-                  handleDelete(id, SubGroupsActionsTypes.Sent);
-                }}
-                handleDeleteNewInspectionButtonClick={(id: string) => {
-                  handleDelete(id, SubGroupsActionsTypes.NewInspections);
-                }}
-                handleEditButtonClick={handleEditInspection}
-                inspections={store.mainPageStore.inspections}
-              />
-            ) : (
-              <ResponsesNothingFound
-                title={t("emptySentInspections")}
-                description={" "}
-                actions={
-                  <Button onClick={toHome} view="ghost" label={t("toHome")} />
-                }
-              />
-            )
-          }
-          path={SubGroupsActionsTypes.Sent}
-        />
+        {[
+          store.mainPageStore.localInspections,
+          store.mainPageStore.inspections,
+        ].map((inspections, index) => (
+          <Route
+            element={
+                inspections.length ? (
+                <InspectionsTable
+                  fieldsData={store.inspectionStore.fieldsData}
+                  handleOpenFilter={handleOpenFilter}
+                  handleDeleteSentButtonClick={(id: string) => {
+                    handleDelete(id, SubGroupsActionsTypes.Sent);
+                  }}
+                  handleDeleteNewInspectionButtonClick={(id: string) => {
+                    handleDelete(id, SubGroupsActionsTypes.NewInspections);
+                  }}
+                  handleEditButtonClick={handleEditInspection}
+                  inspections={inspections}
+                />
+              ) : (
+                <ResponsesNothingFound
+                  title={t("emptyNewInspections")}
+                  description={" "}
+                  actions={
+                    <Button onClick={toHome} view="ghost" label={t("toHome")} />
+                  }
+                />
+              )
+            }
+            path={!index ? SubGroupsActionsTypes.NewInspections : SubGroupsActionsTypes.Sent}
+          />
+        ))}
+
         {/*BarriersCarts and BarriersApps on main page*/}
         <Route
           element={renderEmptyBoxPage()}

@@ -2,6 +2,7 @@
   display: flex;
   width: 100%;
   gap: 24px;
+  justify-content: space-between;
   margin-top: var(--contentPaddingTopBottom);
 }
 .inspectionGroup {
@@ -11,9 +12,11 @@
 }
 .newGroup {
   width: 33%;
+  min-width: var(--inspectionCardWidth);
 }
 .sentGroup {
   width: 66%;
+  min-width:  calc(var(--inspectionCardWidth) * 2);
 }
 
 .cardContainer {
