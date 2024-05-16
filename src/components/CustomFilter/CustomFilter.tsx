@@ -49,9 +49,9 @@ const CustomFilter = (props: ICustomFilter) => {
   return (
     <div className={style.CustomFilter}>
       {props.type === InspectionFormTypes.AuditDate ? (
-        <DatePicker
+        <DatePicker withClearButton
           type="date-range"
-          className={style.field}
+          className={style.DatePicker}
           onChange={setValue}
           rightSide={IconCalendar}
           value={value}
