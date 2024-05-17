@@ -37,7 +37,7 @@ export const AppContainer = observer(() => {
   );
   return (
     <>
-      <MainHeader />
+      <MainHeader handleLogoClick={toHome} />
       <Routes>
         <Route index element={<MainPage />} />
         <Route path={"/*"} element={<MainPage />} />

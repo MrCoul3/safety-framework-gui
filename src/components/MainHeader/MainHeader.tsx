@@ -4,13 +4,15 @@ import style from "./style.module.css";
 import { useTranslation } from "react-i18next";
 import AuthControl from "../AuthControl/AuthControl";
 
-
-const MainHeader = observer(() => {
+interface IMainHeader {
+    handleLogoClick?(): void
+}
+const MainHeader = observer((props: IMainHeader) => {
   const { t } = useTranslation("dict");
 
   return (
     <div className={style.MainHeader}>
-      <div className={style.mainTitle}>
+      <div onClick={props.handleLogoClick} className={style.mainTitle}>
         <span className={style.mainTitleContent}>{t("mainTitle")}</span>{" "}
       </div>
       <div className={style.flexRow}>
