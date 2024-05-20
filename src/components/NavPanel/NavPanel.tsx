@@ -14,8 +14,8 @@ interface INavPanel {
   description: string;
   disableSaveButton?: boolean;
   actionText?: string;
-  handleSaveInspection(): void;
-  handleEditPassports(): void;
+  handleSaveInspection?(): void;
+  handleEditPassports?(): void;
 }
 
 const NavPanel = observer((props: INavPanel) => {
@@ -63,10 +63,10 @@ const NavPanel = observer((props: INavPanel) => {
           />
         )}
         <Button
-          iconLeft={IconSave}
+          // iconLeft={IconSave}
           disabled={props.disableSaveButton}
           onClick={props.handleSaveInspection}
-          label={t("saveChanges")}
+          label={t("saveInspection")}
         />
       </div>
     </div>

@@ -100,6 +100,9 @@ export const ru = {
     addInspectionTitle: "Подготовка данных инспекции",
     addInspectionDescription:
       "Заполните все ключевые поля, чтобы перейти дальше по структуре заполнения",
+    selectPassport: "Выбор паспорта барьера",
+    selectPassportDescription: "Выберите необходимый паспорт для заполнения. В этом окне будут отображаться все выбранные паспорта.",
+
 
     [InspectionFormTypes.InspectionForm + "Placeholder"]:
       "Введите форму проверки",
@@ -124,5 +127,7 @@ export const ru = {
 
     snackBarSuccessSave: "Инспекция успешно сохранена",
     snackBarSuccessSend: "Инспекция успешно отправлена",
+
+    barriersSelect: "Выбрано барьеров",
   },
 };

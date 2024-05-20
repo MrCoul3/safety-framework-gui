@@ -51,12 +51,16 @@ const NewInspectionPage = observer((props: INewInspectionPage) => {
     store.inspectionStore.setFormFieldsValues(value as IFormFieldValue);
     store.inspectionStore.checkIsFormSuccess();
   };
+
+  const saveInspection = () => {
+    editInspectionId
+        ? store.inspectionStore.updateInspectionToLocalStorage(editInspectionId)
+        : store.inspectionStore.setInspectionToLocalStorage();
+    store.inspectionStore.setIsValidate(false);
+  }
   const handleSaveInspection = () => {
     setSavingState(false);
-    editInspectionId
-      ? store.inspectionStore.updateInspectionToLocalStorage(editInspectionId)
-      : store.inspectionStore.setInspectionToLocalStorage();
-    store.inspectionStore.setIsValidate(false);
+    saveInspection();
     navigate(-1);
     store.snackBarStore.setSnackBarItem({
       message: t('snackBarSuccessSave'),
@@ -70,7 +74,7 @@ const NewInspectionPage = observer((props: INewInspectionPage) => {
     const isValid = store.inspectionStore.checkIsFormSuccess();
     console.log("isValid", isValid);
     if (isValid) {
-      handleSaveInspection();
+      saveInspection();
       navigate(RoutesTypes.Passports);
     }
   };

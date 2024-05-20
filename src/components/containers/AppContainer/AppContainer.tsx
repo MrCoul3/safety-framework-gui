@@ -11,6 +11,7 @@ import { RoutesTypes } from "../../../enums/RoutesTypes";
 import NewInspectionPage from "../../../pages/NewInspectionPage";
 import { SubGroupsActionsTypes } from "../../../enums/SubGroupsTypes";
 import PassportsPage from "../../../pages/PassportsPage";
+import BarriersPage from "../../../pages/BarriersPage";
 export const AppContainer = observer(() => {
   const { t } = useTranslation("dict");
 
@@ -47,12 +48,12 @@ export const AppContainer = observer(() => {
           element={<NewInspectionPage />}
         />
         <Route
-          path={RoutesTypes.NewInspection + "/:editInspectionId"}
+          path={RoutesTypes.EditInspection + "/:editInspectionId"}
           element={<NewInspectionPage />}
         />
         <Route
           path={
-            RoutesTypes.NewInspection +
+            RoutesTypes.EditInspection +
             "/:editInspectionId/" +
             RoutesTypes.Passports
           }
@@ -61,6 +62,29 @@ export const AppContainer = observer(() => {
         <Route
           path={RoutesTypes.NewInspection + "/" + RoutesTypes.Passports}
           element={<PassportsPage />}
+        />
+
+        <Route
+          path={
+            RoutesTypes.NewInspection +
+            "/" +
+            RoutesTypes.Passports +
+            "/" +
+            RoutesTypes.Barriers +
+            "/:id"
+          }
+          element={<BarriersPage />}
+        />
+        <Route
+          path={
+            RoutesTypes.EditInspection +
+            "/:editInspectionId/" +
+            RoutesTypes.Passports +
+            "/" +
+            RoutesTypes.Barriers +
+            "/:id"
+          }
+          element={<BarriersPage />}
         />
 
         <Route path="*" element={render404()} />

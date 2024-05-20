@@ -1,7 +1,7 @@
 import { AppStore } from "./AppStore";
 import { makeAutoObservable, toJS } from "mobx";
 import { InspectionFormTypes } from "../enums/InspectionFormTypes";
-import { instance } from "../api/endpoints";
+import { instance, localDevInstance } from "../api/endpoints";
 import { LOCAL_STORE_INSPECTIONS } from "../constants/config";
 import moment from "moment/moment";
 
@@ -45,7 +45,7 @@ export class InspectionStore {
 
   async getFieldData(type: InspectionFormTypes) {
     try {
-      const response = await instance.get(type);
+      const response = await localDevInstance.get(type);
       if (!response.data.error) {
         this.setFieldsData({ [type]: response.data });
       }

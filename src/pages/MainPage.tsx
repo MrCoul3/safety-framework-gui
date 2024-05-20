@@ -72,7 +72,7 @@ export const MainPage = observer((props: IMainPage) => {
     store.mainPageStore.setLocalInspections(localInspectionsParsed);
   };
   const handleEditInspection = (id: string) => {
-    navigate(RoutesTypes.NewInspection + "/" + id);
+    navigate(RoutesTypes.EditInspection + "/" + id);
   };
   const handleDeleteNewInspection = () => {
     if (deletingInspectionType) {

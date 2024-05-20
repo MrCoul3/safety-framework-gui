@@ -26,7 +26,6 @@ interface IInspectionCard {
   index?: number | boolean;
   inspectionForm?: CheckEntityTypes;
   subGroup?: SubGroupsActionsTypes;
-
   handleEditButtonClick(id: string): void;
   handleDeleteButtonClick(id: string): void;
 }
