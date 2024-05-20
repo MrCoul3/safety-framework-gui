@@ -17,12 +17,20 @@ import InspectionTextField from "../InspectionTextField/InspectionTextField";
 import InspectionDataField from "../InspectionDataField/InspectionDataField";
 import ItemGroupTitle from "../ItemGroupTitle/ItemGroupTitle";
 import { useParams } from "react-router";
+import ConfirmDialog from "../ConfirmDialog/ConfirmDialog";
 
 interface IInspectionForm {
   handleOpenField(type: InspectionFormTypes): void;
+
+  handleClearInspectionForm(): void;
+
   fieldsData: IFieldsData[];
+
+  formFieldsValuesLength?: boolean;
+
   isValidate: boolean;
   setIsValidate(value: boolean): void;
+  handleNextStep(): void;
   handleChange(value: IFormFieldValue): void;
   handleDateChange(value: IFormDateFieldValue): void;
   formFieldsValues: IFormFieldValue | IFormDateFieldValue;
@@ -32,6 +40,8 @@ const InspectionForm = observer((props: IInspectionForm) => {
   const { t } = useTranslation("dict");
 
   let { editInspectionId } = useParams();
+
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
 
   const fields: {
     [key: string | InspectionFormGroups]: InspectionFormTypes[];
@@ -66,7 +76,8 @@ const InspectionForm = observer((props: IInspectionForm) => {
     return "success";
   };
 
-  const handleApplyForm = () => {
+  const handleNextStep = () => {
+    props.handleNextStep()
     props.setIsValidate(true);
   };
 
@@ -103,18 +114,28 @@ const InspectionForm = observer((props: IInspectionForm) => {
             </>
           ))}
         </form>
-        {!editInspectionId && (
-          <div className={style.buttonsGroup}>
-            <Button view="clear" label={t("reset")} />
-            <Button
-              onClick={handleApplyForm}
-              type="submit"
-              label={t("farther")}
-              iconRight={IconForward}
-            />
-          </div>
-        )}
+        <div className={style.buttonsGroup}>
+          <Button
+            onClick={() => props.formFieldsValuesLength && setIsModalOpen(true)}
+            view="clear"
+            label={t("clear")}
+          />
+          <Button
+            onClick={handleNextStep}
+            type="submit"
+            label={t("farther")}
+            iconRight={IconForward}
+          />
+        </div>
       </div>
+      <ConfirmDialog
+        cancelActionLabel={t("cancel")}
+        confirmActionLabel={t("clear")}
+        title={t("dialogClearFields")}
+        action={props.handleClearInspectionForm}
+        onClose={() => setIsModalOpen(false)}
+        open={isModalOpen}
+      />
     </div>
   );
 });

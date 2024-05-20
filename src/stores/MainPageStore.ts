@@ -1,6 +1,6 @@
 import { makeAutoObservable } from "mobx";
 import { AppStore } from "./AppStore";
-import { instance } from "../api/endpoints";
+import {instance, localDevInstance} from "../api/endpoints";
 import { IInspection } from "../interfaces/IInspection";
 import { SubGroupsActionsTypes, SubGroupsTypes } from "../enums/SubGroupsTypes";
 import { IconBento } from "@consta/icons/IconBento";
@@ -89,7 +89,7 @@ export class MainPageStore {
 
   async getInspectionsDev() {
     try {
-      const response = await instance.get("inspections");
+      const response = await localDevInstance.get("inspections");
       if (!response.data.error) {
         this.setInspections(response.data);
       }

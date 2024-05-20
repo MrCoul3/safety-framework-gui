@@ -15,7 +15,7 @@ import { PropStatus } from "@consta/uikit/__internal__/src/components/SelectComp
 
 interface IFieldInspectionType {
   handleOpenField(type: InspectionFormTypes): void;
-  handleChange(value: IFormFieldValue): void;
+  handleChange(value: IFormFieldValue | null): void;
   status: PropStatus | undefined;
   fieldsData: IFieldsData[];
   value?: string;
@@ -38,9 +38,7 @@ const InspectionTextField = observer((props: IFieldInspectionType) => {
   }, [open]);
 
   const handleChange = (value: Item | null) => {
-    if (value) {
-      props.handleChange({ [props.inspectionType]: value.Title });
-    }
+    props.handleChange( { [props.inspectionType]: value ? value.Title : null } );
   };
 
   const getItems = (type: InspectionFormTypes) => {

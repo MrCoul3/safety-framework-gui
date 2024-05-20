@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
 import { Table, TableColumn } from "@consta/uikit/Table";
@@ -15,10 +15,11 @@ import { onCellClick } from "@consta/uikit/__internal__/src/components/Table/Tab
 import CustomFilter from "../CustomFilter/CustomFilter";
 import { INSPECTIONS_ON_PAGE } from "../../constants/config";
 import { IFieldsData } from "../../stores/InspectionStore";
-import { toJS } from "mobx";
+import { SubGroupsActionsTypes } from "../../enums/SubGroupsTypes";
 interface IInspectionsTable {
   inspections: IInspection[];
   fieldsData: IFieldsData[];
+  subGroupsActionsTypes: SubGroupsActionsTypes;
   handleEditButtonClick(id: string): void;
   handleOpenFilter(field: InspectionFormTypes): void;
   handleDeleteSentButtonClick(id: string): void;
@@ -51,23 +52,28 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
   const excludeFields = ["id"];
 
   const renderActions = (index: string) => (
-    <>
-      <Button
+    <div className={style.buttonGroup}>
+      <Button size="s"
         onClick={() => props.handleEditButtonClick(index)}
-        view="clear"
-        form="round"
+        view="ghost"
         iconRight={IconEdit}
         onlyIcon
       />
-      <Button view="clear" form="round" iconRight={IconMail} onlyIcon />
-      <Button
-        onClick={() => props.handleDeleteNewInspectionButtonClick(index)}
-        view="clear"
-        form="round"
+      {props.subGroupsActionsTypes === SubGroupsActionsTypes.NewInspections && (
+        <Button size="s" view="ghost"  iconRight={IconMail} onlyIcon />
+      )}
+
+      <Button size="s"
+        onClick={() =>
+          props.subGroupsActionsTypes === SubGroupsActionsTypes.NewInspections
+            ? props.handleDeleteNewInspectionButtonClick(index)
+            : props.handleDeleteSentButtonClick(index)
+        }
+        view="ghost"
         iconRight={IconTrash}
         onlyIcon
       />
-    </>
+    </div>
   );
 
   const rows = useMemo(
@@ -126,7 +132,6 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
 
   const handleCellClick: onCellClick = ({ e, type, rowId, columnIdx, ref }) => {
     e.preventDefault();
-    console.log("handleCellClick", type, rowId, ref, columnIdx);
   };
 
   return (
@@ -136,7 +141,7 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
         onCellClick={handleCellClick}
         filters={filters}
         isResizable
-        zebraStriped="odd"
+        // zebraStriped="odd"
         className={style.table}
         stickyHeader
         stickyColumns={1}

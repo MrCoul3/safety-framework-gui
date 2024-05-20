@@ -39,6 +39,7 @@ export const ru = {
     inspectionData: "Данные инспекции",
     editInspectionData: "Редактировать данные инспекции",
     createInspection: "Создать инспекцию",
+    saveInspection: "Сохранить инспекцию",
     saveChanges: "Сохранить изменения",
     editPassports: "Редактировать паспорта инспекции",
 
@@ -99,6 +100,9 @@ export const ru = {
     addInspectionTitle: "Подготовка данных инспекции",
     addInspectionDescription:
       "Заполните все ключевые поля, чтобы перейти дальше по структуре заполнения",
+    selectPassport: "Выбор паспорта барьера",
+    selectPassportDescription: "Выберите необходимый паспорт для заполнения. В этом окне будут отображаться все выбранные паспорта.",
+
 
     [InspectionFormTypes.InspectionForm + "Placeholder"]:
       "Введите форму проверки",
@@ -118,7 +122,12 @@ export const ru = {
       "Введите наименование субподрядной организации",
 
     dialogClearFields: "Очистить все заполненные поля?",
-    dialogDeleteNewInspection: "Удалить новую инспекцию?",
-    dialogDeleteSentInspection: "Удалить отправленную инспекцию?"
+    dialogDeleteNewInspection: "Удалить неотправленную инспекцию?",
+    dialogDeleteSentInspection: "Удалить отправленную инспекцию?",
+
+    snackBarSuccessSave: "Инспекция успешно сохранена",
+    snackBarSuccessSend: "Инспекция успешно отправлена",
+
+    barriersSelect: "Выбрано барьеров",
   },
 };

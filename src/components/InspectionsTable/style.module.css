@@ -28,3 +28,7 @@
   max-width: 200px;
   overflow: hidden;
 }
+.buttonGroup {
+  display: flex;
+  gap: 5px;
+}

@@ -14,6 +14,8 @@ export enum InspectionFormTypes {
     Contractors = 'contractors', // Наименование ПО
     TeamNumber = 'teamNumber', // Номер бригады ПО
     SubContractors = 'subContractors', // Наименование субподрядной организации
+
+    // Участники инспекции
 }
 
 export enum InspectionFormGroups {

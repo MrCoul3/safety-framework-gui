@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, {useEffect, useRef, useState} from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
 import { InspectionFormTypes } from "../../enums/InspectionFormTypes";
@@ -31,6 +31,12 @@ const InspectionDataField = observer((props: IInspectionDataField) => {
     fieldBody?.classList.add('customField')
   }, [picker]);
 
+  useEffect(() => {
+    setVal(props.value ?? null)
+  }, [props.value])
+
+  const [val, setVal] = useState<[Date?, Date?] | null>(null)
+
   return (
     <DatePicker
       ref={picker}
@@ -41,7 +47,7 @@ const InspectionDataField = observer((props: IInspectionDataField) => {
       required
       rightSide={IconCalendar}
       labelPosition="left"
-      value={props.value}
+      value={val}
     />
   );
 });

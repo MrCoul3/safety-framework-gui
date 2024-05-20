@@ -26,7 +26,6 @@ interface IInspectionCard {
   index?: number | boolean;
   inspectionForm?: CheckEntityTypes;
   subGroup?: SubGroupsActionsTypes;
-
   handleEditButtonClick(id: string): void;
   handleDeleteButtonClick(id: string): void;
 }
@@ -48,7 +47,7 @@ const InspectionCard = observer((props: IInspectionCard) => {
       verticalSpace="xs"
       horizontalSpace="xs"
     >
-     {/* {props.status && (
+      {/* {props.status && (
         <Badge
           form="round"
           iconLeft={IconAllDone}
@@ -105,39 +104,27 @@ const InspectionCard = observer((props: IInspectionCard) => {
         </div>
       </div>
       <div className={style.controlButtonGroup}>
-        {props.subGroup !== SubGroupsActionsTypes.Deleted && (
-          <>
-            <Button
-              size={"s"}
-              iconSize="s"
-              view="secondary"
-              label={t("send")}
-              iconLeft={IconMail}
-            />
-            <Button
-              onClick={() =>
-                props.handleEditButtonClick(
-                  props.index ? props.index.toString() : props.id.toString(),
-                )
-              }
-              size={"s"}
-              className={style.editButton}
-              iconSize="s"
-              label={t("edit")}
-              iconLeft={IconEdit}
-            />
-          </>
-        )}
-        {props.subGroup === SubGroupsActionsTypes.Deleted && (
+        {props.subGroup === SubGroupsActionsTypes.NewInspections && (
           <Button
-            width="full"
             size={"s"}
             iconSize="s"
             view="secondary"
-            label={t("recover")}
-            iconLeft={IconRevert}
+            label={t("send")}
+            iconLeft={IconMail}
           />
         )}
+        <Button
+          onClick={() =>
+            props.handleEditButtonClick(
+              props.index ? props.index.toString() : props.id.toString(),
+            )
+          }
+          size={"s"}
+          className={style.editButton}
+          iconSize="s"
+          label={t("edit")}
+          iconLeft={IconEdit}
+        />
       </div>
     </Card>
   );

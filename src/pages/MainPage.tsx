@@ -17,6 +17,9 @@ import { LOCAL_STORE_INSPECTIONS } from "../constants/config";
 import { ResponsesNothingFound } from "@consta/uikit/ResponsesNothingFound";
 import ConfirmDialog from "../components/ConfirmDialog/ConfirmDialog";
 import { InspectionFormTypes } from "../enums/InspectionFormTypes";
+import { IconAllDone } from "@consta/icons/IconAllDone";
+
+import { SnackBar } from "@consta/uikit/SnackBar";
 
 interface IMainPage {}
 
@@ -69,7 +72,7 @@ export const MainPage = observer((props: IMainPage) => {
     store.mainPageStore.setLocalInspections(localInspectionsParsed);
   };
   const handleEditInspection = (id: string) => {
-    navigate(RoutesTypes.NewInspection + "/" + id);
+    navigate(RoutesTypes.EditInspection + "/" + id);
   };
   const handleDeleteNewInspection = () => {
     if (deletingInspectionType) {
@@ -132,8 +135,13 @@ export const MainPage = observer((props: IMainPage) => {
         ].map((inspections, index) => (
           <Route
             element={
-                inspections.length ? (
+              inspections.length ? (
                 <InspectionsTable
+                  subGroupsActionsTypes={
+                    !index
+                      ? SubGroupsActionsTypes.NewInspections
+                      : SubGroupsActionsTypes.Sent
+                  }
                   fieldsData={store.inspectionStore.fieldsData}
                   handleOpenFilter={handleOpenFilter}
                   handleDeleteSentButtonClick={(id: string) => {
@@ -155,7 +163,11 @@ export const MainPage = observer((props: IMainPage) => {
                 />
               )
             }
-            path={!index ? SubGroupsActionsTypes.NewInspections : SubGroupsActionsTypes.Sent}
+            path={
+              !index
+                ? SubGroupsActionsTypes.NewInspections
+                : SubGroupsActionsTypes.Sent
+            }
           />
         ))}
 
@@ -174,6 +186,16 @@ export const MainPage = observer((props: IMainPage) => {
 
   return (
     <div>
+      {store.snackBarStore.snackBarItem && (
+        <SnackBar
+          getItemIcon={() => IconAllDone}
+          onItemClose={() => store.snackBarStore.clearSnackBar()}
+          getItemAutoClose={() => 3}
+          items={[store.snackBarStore.snackBarItem]}
+          getItemMessage={(item) => item.message}
+        />
+      )}
+
       <MainPageLayout
         sideBar={
           <SideBar

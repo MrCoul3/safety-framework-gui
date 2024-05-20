@@ -1,0 +1,18 @@
+.PassportsList {
+    background-color: var(--lightGray);
+    justify-content: center;
+    height: calc(100vh - var(--navPanelHeight) - var(--mainHeaderHeight) - 32px);
+    overflow: auto;
+    padding-top: 32px;
+    display: flex;
+}
+
+.passportsListWrap {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    grid-column-gap: 24px;
+    grid-row-gap: 32px;
+    padding-bottom: 24px;
+
+}
