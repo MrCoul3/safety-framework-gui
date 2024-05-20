@@ -6,12 +6,12 @@ import { useNavigate, useParams } from "react-router";
 import { IBreadCrumbs } from "interfaces/IBreadCrumbs";
 import { Button } from "@consta/uikit/Button";
 import { useTranslation } from "react-i18next";
-import { IconEdit } from "@consta/icons/IconEdit";
-import { IconSave } from "@consta/icons/IconSave";
+import ConfirmDialog from "../ConfirmDialog/ConfirmDialog";
 
 interface INavPanel {
   title: string;
   description: string;
+  crumbs: IBreadCrumbs[];
   disableSaveButton?: boolean;
   actionText?: string;
   handleSaveInspection?(): void;
@@ -21,47 +21,48 @@ interface INavPanel {
 const NavPanel = observer((props: INavPanel) => {
   const { t } = useTranslation("dict");
 
-  let { editInspectionId } = useParams();
-
   const navigate = useNavigate();
 
-  const pagesNoIcon: IBreadCrumbs[] = [
-    {
-      label: t("mainPage"),
-      index: -1,
-      href: "#",
-    },
-    {
-      label: editInspectionId ? t("editInspectionData") : t("inspectionData"),
-    },
-  ];
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
+
+  const [pageIndex, setPageIndex] = React.useState<number>();
+
   const onItemClick = (item: IBreadCrumbs) => {
+    if (item.path === 'main') {
+      setIsModalOpen(true)
+      setPageIndex(item.index)
+      return;
+    }
     if (item.index) {
       navigate(item.index);
     }
   };
-
+  const handleConfirm = () => {
+    if (pageIndex) {
+      navigate(pageIndex - 1);
+    }
+  }
   return (
     <div className={style.NavPanel}>
       <div className={style.flexCol}>
         <Breadcrumbs
           getItemLabel={(item: IBreadCrumbs) => item.label}
           onItemClick={onItemClick}
-          items={pagesNoIcon}
+          items={props.crumbs}
         />
         <div className={style.title}>{props.title}</div>
         <div className={style.description}>{props.description}</div>
       </div>
 
       <div className={style.buttonsGroup}>
-        {editInspectionId && (
+        {/* {editInspectionId && (
           <Button
             view="secondary"
             onClick={props.handleEditPassports}
             label={t("editPassports")}
             iconLeft={IconEdit}
           />
-        )}
+        )}*/}
         <Button
           // iconLeft={IconSave}
           disabled={props.disableSaveButton}
@@ -69,6 +70,14 @@ const NavPanel = observer((props: INavPanel) => {
           label={t("saveInspection")}
         />
       </div>
+      <ConfirmDialog
+          cancelActionLabel={t("cancel")}
+          confirmActionLabel={t("go")}
+          title={t("dialogGoToMain")}
+          action={handleConfirm}
+          onClose={() => setIsModalOpen(false)}
+          open={isModalOpen}
+      />
     </div>
   );
 });

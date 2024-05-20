@@ -18,6 +18,7 @@ export const ru = {
     edit: "Редактировать",
     recover: "Восстановить",
     delete: "Удалить",
+    go: "Перейти",
     send: "Отправить",
     apply: "Применить",
     select: "Выбрать",
@@ -37,11 +38,14 @@ export const ru = {
     // breadcrumbs
     mainPage: "Главная",
     inspectionData: "Данные инспекции",
+    passports: "Паспорта барьеров",
     editInspectionData: "Редактировать данные инспекции",
     createInspection: "Создать инспекцию",
     saveInspection: "Сохранить инспекцию",
     saveChanges: "Сохранить изменения",
     editPassports: "Редактировать паспорта инспекции",
+    completionBarrier: "Заполнение барьера по паспорту",
+    completionBarrierDescription: "Выберите необходимые паспорта, нажав на кнопку “+” и заполните требуемые поля, чтобы отправить инспекцию.",
 
     toHome: "На главную",
 
@@ -97,7 +101,8 @@ export const ru = {
     editDate: "Дата редактирования",
     actions: "Действия",
 
-    addInspectionTitle: "Подготовка данных инспекции",
+    addInspectionTitle: "Заполнение данных инспекции",
+    editInspectionTitle: "Редактирование данных инспекции",
     addInspectionDescription:
       "Заполните все ключевые поля, чтобы перейти дальше по структуре заполнения",
     selectPassport: "Выбор паспорта барьера",
@@ -124,6 +129,7 @@ export const ru = {
     dialogClearFields: "Очистить все заполненные поля?",
     dialogDeleteNewInspection: "Удалить неотправленную инспекцию?",
     dialogDeleteSentInspection: "Удалить отправленную инспекцию?",
+    dialogGoToMain: "Перейти на главную ? Все несохраненные данные будут потеряны.",
 
     snackBarSuccessSave: "Инспекция успешно сохранена",
     snackBarSuccessSend: "Инспекция успешно отправлена",

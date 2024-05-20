@@ -2,12 +2,12 @@ import React, {ReactNode} from 'react';
 import {observer} from "mobx-react-lite";
 import style from './style.module.css';
 
-interface INewInspectionPageLayout {
+interface ILayout {
     navPanel: ReactNode
     content: ReactNode
 }
 
-const NewInspectionPageLayout = observer((props: INewInspectionPageLayout) => {
+const Layout = observer((props: ILayout) => {
     return (
         <div className={style.NewInspectionPageLayout}>
             {props.navPanel}
@@ -16,4 +16,4 @@ const NewInspectionPageLayout = observer((props: INewInspectionPageLayout) => {
     );
 });
 
-export default NewInspectionPageLayout;
+export default Layout;

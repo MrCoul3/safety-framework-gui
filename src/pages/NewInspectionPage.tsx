@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
-import NewInspectionPageLayout from "../layouts/NewInspectionPageLayout/NewInspectionPageLayout";
 import NavPanel from "../components/NavPanel/NavPanel";
 import InspectionForm from "../components/InspectionForm/InspectionForm";
 import { useTranslation } from "react-i18next";
@@ -10,8 +9,10 @@ import {
   IFormDateFieldValue,
   IFormFieldValue,
 } from "../stores/InspectionStore";
-import { Outlet, useNavigate, useParams } from "react-router";
+import { Outlet, useLocation, useNavigate, useParams } from "react-router";
 import { RoutesTypes } from "../enums/RoutesTypes";
+import { IBreadCrumbs } from "../interfaces/IBreadCrumbs";
+import Layout from "../layouts/Layout/Layout";
 
 interface INewInspectionPage {}
 
@@ -19,21 +20,32 @@ const NewInspectionPage = observer((props: INewInspectionPage) => {
   const { t } = useTranslation("dict");
 
   const store = useStore();
+
   const navigate = useNavigate();
 
   let { editInspectionId } = useParams();
 
+  const location = useLocation();
+
   const [savingState, setSavingState] = useState(false);
 
-  useEffect(() => {
+  const init = () => {
     if (editInspectionId) {
-      store.inspectionStore.loadInspectionFromLocalStorage(editInspectionId);
+      if (location.pathname.includes(RoutesTypes.EditLocalInspection)) {
+        store.inspectionStore.loadInspectionFromLocalStorage(editInspectionId);
+      }
+      if (location.pathname.includes(RoutesTypes.EditInspection)) {
+
+      }
     }
-  }, [editInspectionId]);
+  };
+
+  useEffect(() => {}, [editInspectionId]);
 
   useEffect(() => {
+    init();
     window.addEventListener("keydown", handleKeyBoardEvent);
-    return () => store.inspectionStore.clearInspectionForm();
+    return () => window.removeEventListener("keydown", handleKeyBoardEvent);
   }, []);
 
   const handleKeyBoardEvent = (e: KeyboardEvent) => {
@@ -54,18 +66,18 @@ const NewInspectionPage = observer((props: INewInspectionPage) => {
 
   const saveInspection = () => {
     editInspectionId
-        ? store.inspectionStore.updateInspectionToLocalStorage(editInspectionId)
-        : store.inspectionStore.setInspectionToLocalStorage();
+      ? store.inspectionStore.updateInspectionToLocalStorage(editInspectionId)
+      : store.inspectionStore.setInspectionToLocalStorage();
     store.inspectionStore.setIsValidate(false);
-  }
+  };
   const handleSaveInspection = () => {
     setSavingState(false);
     saveInspection();
     navigate(-1);
     store.snackBarStore.setSnackBarItem({
-      message: t('snackBarSuccessSave'),
+      message: t("snackBarSuccessSave"),
       key: "1",
-      status: 'success'
+      status: "success",
     });
   };
 
@@ -79,20 +91,38 @@ const NewInspectionPage = observer((props: INewInspectionPage) => {
     }
   };
 
+  const crumbs: IBreadCrumbs[] = [
+    {
+      label: t("mainPage"),
+      index: -1,
+      href: "#",
+      path: "main",
+    },
+    {
+      label: t("inspectionData"),
+    },
+  ];
+
   return (
     <>
-      <NewInspectionPageLayout
+      <Layout
         navPanel={
           <NavPanel
+            crumbs={crumbs}
             disableSaveButton={!savingState}
             handleEditPassports={handleEditPassports}
             handleSaveInspection={handleSaveInspection}
             description={t("addInspectionDescription")}
-            title={t("addInspectionTitle")}
+            title={
+              !editInspectionId
+                ? t("addInspectionTitle")
+                : t("editInspectionTitle")
+            }
           />
         }
         content={
           <InspectionForm
+            onInit={() => store.inspectionStore.setIsValidate(false)}
             handleNextStep={handleNextStep}
             formFieldsValuesLength={
               !!Object.values(store.inspectionStore.formFieldsValues).length

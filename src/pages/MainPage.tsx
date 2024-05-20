@@ -72,7 +72,12 @@ export const MainPage = observer((props: IMainPage) => {
     store.mainPageStore.setLocalInspections(localInspectionsParsed);
   };
   const handleEditInspection = (id: string) => {
+    store.inspectionStore.clearInspectionForm();
     navigate(RoutesTypes.EditInspection + "/" + id);
+  };
+  const handleEditLocalInspection = (id: string) => {
+    store.inspectionStore.clearInspectionForm();
+    navigate(RoutesTypes.EditLocalInspection + "/" + id);
   };
   const handleDeleteNewInspection = () => {
     if (deletingInspectionType) {
@@ -83,11 +88,15 @@ export const MainPage = observer((props: IMainPage) => {
     }
   };
   const handleDeleteSentInspection = () => {
+    console.log('deletingInspectionType', deletingInspectionType)
+    // store.mainPageStore.deleteSentInspection(deletingInspectionType?.id);
+    // store.mainPageStore.getInspections();
     store.mainPageStore.getInspectionsDev();
   };
 
   const handleAddInspection = () => {
     navigate(RoutesTypes.NewInspection);
+    store.inspectionStore.clearInspectionForm();
   };
   const handleDelete = (id: string, type: SubGroupsActionsTypes) => {
     setIsModalOpen(true);
@@ -121,7 +130,8 @@ export const MainPage = observer((props: IMainPage) => {
               handleDeleteNewInspectionButtonClick={(id: string) => {
                 handleDelete(id, SubGroupsActionsTypes.NewInspections);
               }}
-              handleEditButtonClick={handleEditInspection}
+              handleEditInspection={handleEditInspection}
+              handleEditLocalInspection={handleEditLocalInspection}
               localInspections={store.mainPageStore.localInspections}
               data={store.mainPageStore.inspections}
             />
@@ -150,7 +160,8 @@ export const MainPage = observer((props: IMainPage) => {
                   handleDeleteNewInspectionButtonClick={(id: string) => {
                     handleDelete(id, SubGroupsActionsTypes.NewInspections);
                   }}
-                  handleEditButtonClick={handleEditInspection}
+                  handleEditInspection={handleEditInspection}
+                  handleEditLocalInspection={handleEditLocalInspection}
                   inspections={inspections}
                 />
               ) : (

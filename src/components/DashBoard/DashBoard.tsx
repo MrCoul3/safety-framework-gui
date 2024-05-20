@@ -11,7 +11,8 @@ import { ResponsesNothingFound } from "@consta/uikit/ResponsesNothingFound";
 interface IDashBoard {
   data: IInspection[];
   localInspections: IInspection[];
-  handleEditButtonClick(id: string): void;
+  handleEditInspection(id: string): void;
+  handleEditLocalInspection(id: string): void;
   handleDeleteSentButtonClick(id: string): void;
   handleDeleteNewInspectionButtonClick(id: string): void;
 }
@@ -71,7 +72,8 @@ const DashBoard = observer((props: IDashBoard) => {
           })}
         >
           <InspectionGroupHeader key={subGroup} subGroup={subGroup} />
-          <div key={subGroup}
+          <div
+            key={subGroup}
             className={classNames(style.cardContainer, {
               [style.cardContainerForNewGroup]:
                 newInspectionCondition(subGroup) || !props.data.length,
@@ -87,7 +89,11 @@ const DashBoard = observer((props: IDashBoard) => {
                   handleDeleteButtonClick={(id: string) =>
                     handleDeleteButtonClick(subGroup, id)
                   }
-                  handleEditButtonClick={props.handleEditButtonClick}
+                  handleEditButtonClick={
+                    sentCondition(subGroup)
+                      ? props.handleEditInspection
+                      : props.handleEditLocalInspection
+                  }
                   id={item.id}
                   key={item.id}
                   subGroup={subGroup}

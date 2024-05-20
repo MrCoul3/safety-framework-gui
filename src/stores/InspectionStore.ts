@@ -9,7 +9,7 @@ export interface IFieldsData {
   [key: string]: Item[];
 }
 export type Item = {
-  Title: string;
+  title: string;
 };
 
 export interface IFormFieldValue {
@@ -69,7 +69,7 @@ export class InspectionStore {
     if (localInspections) {
       const localInspectionsParsed = JSON.parse(localInspections);
       if (localInspectionsParsed) {
-        localInspectionsParsed.push(this.formFieldsValues);
+        localInspectionsParsed.unshift(this.formFieldsValues);
       }
       const newInspectionsJson = JSON.stringify(localInspectionsParsed);
       localStorage.setItem(LOCAL_STORE_INSPECTIONS, newInspectionsJson);
@@ -85,7 +85,7 @@ export class InspectionStore {
       const localInspectionsParsed = JSON.parse(localInspections);
       if (localInspectionsParsed.length) {
         localInspectionsParsed.splice(index, 1);
-        localInspectionsParsed.push(this.formFieldsValues);
+        localInspectionsParsed.unshift(this.formFieldsValues);
         const newInspectionsJson = JSON.stringify(localInspectionsParsed);
         localStorage.setItem(LOCAL_STORE_INSPECTIONS, newInspectionsJson);
       }

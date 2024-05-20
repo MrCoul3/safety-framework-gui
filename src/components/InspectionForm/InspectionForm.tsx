@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
 import {
@@ -31,6 +31,7 @@ interface IInspectionForm {
   isValidate: boolean;
   setIsValidate(value: boolean): void;
   handleNextStep(): void;
+  onInit?(): void;
   handleChange(value: IFormFieldValue): void;
   handleDateChange(value: IFormDateFieldValue): void;
   formFieldsValues: IFormFieldValue | IFormDateFieldValue;
@@ -39,7 +40,9 @@ interface IInspectionForm {
 const InspectionForm = observer((props: IInspectionForm) => {
   const { t } = useTranslation("dict");
 
-  let { editInspectionId } = useParams();
+  useEffect(() => {
+    props.onInit?.()
+  }, [])
 
   const [isModalOpen, setIsModalOpen] = React.useState(false);
 

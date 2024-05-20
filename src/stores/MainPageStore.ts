@@ -95,4 +95,19 @@ export class MainPageStore {
       }
     } catch (e) {}
   }
+  async getInspections() {
+    try {
+      const response = await localDevInstance.get("Inspections");
+      if (!response.data.error) {
+        this.setInspections(response.data);
+      }
+    } catch (e) {}
+  }
+  async deleteSentInspection(id?: string) {
+    try {
+      const response = await instance.delete(`Inspections/${id}`);
+      if (!response.data.error) {
+      }
+    } catch (e) {}
+  }
 }

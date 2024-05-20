@@ -52,8 +52,21 @@ export const AppContainer = observer(() => {
           element={<NewInspectionPage />}
         />
         <Route
+          path={RoutesTypes.EditLocalInspection + "/:editInspectionId"}
+          element={<NewInspectionPage />}
+        />
+
+        <Route
           path={
             RoutesTypes.EditInspection +
+            "/:editInspectionId/" +
+            RoutesTypes.Passports
+          }
+          element={<PassportsPage />}
+        />
+        <Route
+          path={
+            RoutesTypes.EditLocalInspection +
             "/:editInspectionId/" +
             RoutesTypes.Passports
           }
@@ -63,6 +76,8 @@ export const AppContainer = observer(() => {
           path={RoutesTypes.NewInspection + "/" + RoutesTypes.Passports}
           element={<PassportsPage />}
         />
+
+
 
         <Route
           path={
@@ -75,9 +90,22 @@ export const AppContainer = observer(() => {
           }
           element={<BarriersPage />}
         />
+
         <Route
           path={
             RoutesTypes.EditInspection +
+            "/:editInspectionId/" +
+            RoutesTypes.Passports +
+            "/" +
+            RoutesTypes.Barriers +
+            "/:id"
+          }
+          element={<BarriersPage />}
+        />
+
+        <Route
+          path={
+            RoutesTypes.EditLocalInspection +
             "/:editInspectionId/" +
             RoutesTypes.Passports +
             "/" +

@@ -38,7 +38,7 @@ const InspectionTextField = observer((props: IFieldInspectionType) => {
   }, [open]);
 
   const handleChange = (value: Item | null) => {
-    props.handleChange( { [props.inspectionType]: value ? value.Title : null } );
+    props.handleChange( { [props.inspectionType]: value ? value.title : null } );
   };
 
   const getItems = (type: InspectionFormTypes) => {
@@ -62,7 +62,7 @@ const InspectionTextField = observer((props: IFieldInspectionType) => {
     <Combobox
       ref={combobox}
       status={props.status ?? props.status}
-      getItemLabel={(item) => item.Title}
+      getItemLabel={(item) => item.title}
       className={style.field}
       dropdownOpen={open}
       labelPosition="left"
@@ -70,10 +70,10 @@ const InspectionTextField = observer((props: IFieldInspectionType) => {
       onDropdownOpen={onDropdownOpen}
       placeholder={t(`${props.inspectionType}Placeholder`)}
       required
-      value={props.value ? { Title: props.value } : null}
+      value={props.value ? { title: props.value } : null}
       items={getItems(props.inspectionType)}
       onChange={handleChange}
-      getItemKey={(item: Item) => item.Title}
+      getItemKey={(item: Item) => item.title}
     />
   );
 });

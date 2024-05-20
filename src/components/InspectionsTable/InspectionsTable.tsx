@@ -16,20 +16,24 @@ import CustomFilter from "../CustomFilter/CustomFilter";
 import { INSPECTIONS_ON_PAGE } from "../../constants/config";
 import { IFieldsData } from "../../stores/InspectionStore";
 import { SubGroupsActionsTypes } from "../../enums/SubGroupsTypes";
+import { useLocation } from "react-router";
 interface IInspectionsTable {
   inspections: IInspection[];
   fieldsData: IFieldsData[];
   subGroupsActionsTypes: SubGroupsActionsTypes;
-  handleEditButtonClick(id: string): void;
   handleOpenFilter(field: InspectionFormTypes): void;
   handleDeleteSentButtonClick(id: string): void;
   handleDeleteNewInspectionButtonClick(id: string): void;
+  handleEditInspection(id: string): void;
+  handleEditLocalInspection(id: string): void;
 }
 
 const InspectionsTable = observer((props: IInspectionsTable) => {
   const { t } = useTranslation("dict");
 
   const [page, setPage] = useState(1);
+
+  const location = useLocation();
 
   const tableContainerRef = useRef<HTMLDivElement>(null);
 
@@ -51,23 +55,34 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
 
   const excludeFields = ["id"];
 
-  const renderActions = (index: string) => (
+  const handleEditInspection = (index: string, inspection: IInspection) => {
+    if (location.pathname.includes(SubGroupsActionsTypes.Sent)) {
+        props.handleEditInspection(inspection.id)
+    }
+    if (location.pathname.includes(SubGroupsActionsTypes.NewInspections)) {
+      props.handleEditLocalInspection(index)
+    }
+  };
+
+  const renderActions = (index: string, inspection: IInspection) => (
     <div className={style.buttonGroup}>
-      <Button size="s"
-        onClick={() => props.handleEditButtonClick(index)}
+      <Button
+        size="s"
+        onClick={() => handleEditInspection(index, inspection)}
         view="ghost"
         iconRight={IconEdit}
         onlyIcon
       />
       {props.subGroupsActionsTypes === SubGroupsActionsTypes.NewInspections && (
-        <Button size="s" view="ghost"  iconRight={IconMail} onlyIcon />
+        <Button size="s" view="ghost" iconRight={IconMail} onlyIcon />
       )}
 
-      <Button size="s"
+      <Button
+        size="s"
         onClick={() =>
           props.subGroupsActionsTypes === SubGroupsActionsTypes.NewInspections
             ? props.handleDeleteNewInspectionButtonClick(index)
-            : props.handleDeleteSentButtonClick(index)
+            : props.handleDeleteSentButtonClick(inspection.id)
         }
         view="ghost"
         iconRight={IconTrash}
@@ -80,7 +95,7 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
     () =>
       props.inspections.map((item, index) => ({
         ...item,
-        actions: renderActions((index + 1).toString()),
+        actions: renderActions((index + 1).toString(), item),
         [InspectionFormTypes.AuditDate]: moment(item.auditDate).format(
           "DD.MM.YYYY",
         ),
