@@ -52,30 +52,28 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
   const excludeFields = ["id"];
 
   const renderActions = (index: string) => (
-    <>
-      <Button
+    <div className={style.buttonGroup}>
+      <Button size="s"
         onClick={() => props.handleEditButtonClick(index)}
-        view="clear"
-        form="round"
+        view="ghost"
         iconRight={IconEdit}
         onlyIcon
       />
       {props.subGroupsActionsTypes === SubGroupsActionsTypes.NewInspections && (
-        <Button view="clear" form="round" iconRight={IconMail} onlyIcon />
+        <Button size="s" view="ghost"  iconRight={IconMail} onlyIcon />
       )}
 
-      <Button
+      <Button size="s"
         onClick={() =>
           props.subGroupsActionsTypes === SubGroupsActionsTypes.NewInspections
             ? props.handleDeleteNewInspectionButtonClick(index)
             : props.handleDeleteSentButtonClick(index)
         }
-        view="clear"
-        form="round"
+        view="ghost"
         iconRight={IconTrash}
         onlyIcon
       />
-    </>
+    </div>
   );
 
   const rows = useMemo(
@@ -143,7 +141,7 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
         onCellClick={handleCellClick}
         filters={filters}
         isResizable
-        zebraStriped="odd"
+        // zebraStriped="odd"
         className={style.table}
         stickyHeader
         stickyColumns={1}
