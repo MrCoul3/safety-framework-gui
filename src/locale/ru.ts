@@ -120,6 +120,9 @@ export const ru = {
 
     dialogClearFields: "Очистить все заполненные поля?",
     dialogDeleteNewInspection: "Удалить неотправленную инспекцию?",
-    dialogDeleteSentInspection: "Удалить отправленную инспекцию?"
+    dialogDeleteSentInspection: "Удалить отправленную инспекцию?",
+
+    snackBarSuccessSave: "Инспекция успешно сохранена",
+    snackBarSuccessSend: "Инспекция успешно отправлена",
   },
 };

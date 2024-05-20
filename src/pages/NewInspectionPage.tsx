@@ -57,6 +57,12 @@ const NewInspectionPage = observer((props: INewInspectionPage) => {
       ? store.inspectionStore.updateInspectionToLocalStorage(editInspectionId)
       : store.inspectionStore.setInspectionToLocalStorage();
     store.inspectionStore.setIsValidate(false);
+    navigate(-1);
+    store.snackBarStore.setSnackBarItem({
+      message: t('snackBarSuccessSave'),
+      key: "1",
+      status: 'success'
+    });
   };
 
   const handleEditPassports = () => {};

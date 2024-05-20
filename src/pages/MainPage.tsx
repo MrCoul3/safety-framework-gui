@@ -17,6 +17,9 @@ import { LOCAL_STORE_INSPECTIONS } from "../constants/config";
 import { ResponsesNothingFound } from "@consta/uikit/ResponsesNothingFound";
 import ConfirmDialog from "../components/ConfirmDialog/ConfirmDialog";
 import { InspectionFormTypes } from "../enums/InspectionFormTypes";
+import { IconAllDone } from "@consta/icons/IconAllDone";
+
+import { SnackBar } from "@consta/uikit/SnackBar";
 
 interface IMainPage {}
 
@@ -183,6 +186,16 @@ export const MainPage = observer((props: IMainPage) => {
 
   return (
     <div>
+      {store.snackBarStore.snackBarItem && (
+        <SnackBar
+          getItemIcon={() => IconAllDone}
+          onItemClose={() => store.snackBarStore.clearSnackBar()}
+          getItemAutoClose={() => 3}
+          items={[store.snackBarStore.snackBarItem]}
+          getItemMessage={(item) => item.message}
+        />
+      )}
+
       <MainPageLayout
         sideBar={
           <SideBar

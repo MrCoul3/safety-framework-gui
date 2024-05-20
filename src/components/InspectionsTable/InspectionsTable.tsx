@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
 import { Table, TableColumn } from "@consta/uikit/Table";
@@ -15,12 +15,10 @@ import { onCellClick } from "@consta/uikit/__internal__/src/components/Table/Tab
 import CustomFilter from "../CustomFilter/CustomFilter";
 import { INSPECTIONS_ON_PAGE } from "../../constants/config";
 import { IFieldsData } from "../../stores/InspectionStore";
-import { toJS } from "mobx";
 import { SubGroupsActionsTypes } from "../../enums/SubGroupsTypes";
 interface IInspectionsTable {
   inspections: IInspection[];
   fieldsData: IFieldsData[];
-
   subGroupsActionsTypes: SubGroupsActionsTypes;
   handleEditButtonClick(id: string): void;
   handleOpenFilter(field: InspectionFormTypes): void;
@@ -136,7 +134,6 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
 
   const handleCellClick: onCellClick = ({ e, type, rowId, columnIdx, ref }) => {
     e.preventDefault();
-    console.log("handleCellClick", type, rowId, ref, columnIdx);
   };
 
   return (
