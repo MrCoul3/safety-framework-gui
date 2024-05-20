@@ -55,6 +55,7 @@ export const ru = {
     [SubGroupsActionsTypes.NewInspections]: "Новые инспекции",
     [SubGroupsActionsTypes.Sent]: "Отправленные",
     [SubGroupsActionsTypes.Deleted]: "Удаленные",
+    [SubGroupsActionsTypes.EliminationOfViolations]: "Устранение нарушений",
     [SubGroupsTypes.Information]: "Информация",
     [SubGroupsActionsTypes.BarriersCarts]: "Корзины барьеров",
     [SubGroupsActionsTypes.BarriersApps]: "Приложения к барьерам",

@@ -20,6 +20,7 @@ import { InspectionFormTypes } from "../enums/InspectionFormTypes";
 import { IconAllDone } from "@consta/icons/IconAllDone";
 
 import { SnackBar } from "@consta/uikit/SnackBar";
+import EmptyBoxPage from "../components/EmptyBoxPage/EmptyBoxPage";
 
 interface IMainPage {}
 
@@ -55,14 +56,6 @@ export const MainPage = observer((props: IMainPage) => {
     navigate(`/`);
   };
 
-  const renderEmptyBoxPage = () => {
-    return (
-      <ResponsesEmptyBox
-        actions={<Button onClick={toHome} view="ghost" label={t("toHome")} />}
-      />
-    );
-  };
-
   const getLocalInspections = () => {
     let localInspectionsParsed = [];
     const localInspections = localStorage.getItem(LOCAL_STORE_INSPECTIONS);
@@ -88,7 +81,7 @@ export const MainPage = observer((props: IMainPage) => {
     }
   };
   const handleDeleteSentInspection = () => {
-    console.log('deletingInspectionType', deletingInspectionType)
+    console.log("deletingInspectionType", deletingInspectionType);
     // store.mainPageStore.deleteSentInspection(deletingInspectionType?.id);
     // store.mainPageStore.getInspections();
     store.mainPageStore.getInspectionsDev();
@@ -181,14 +174,13 @@ export const MainPage = observer((props: IMainPage) => {
             }
           />
         ))}
-
         {/*BarriersCarts and BarriersApps on main page*/}
         <Route
-          element={renderEmptyBoxPage()}
+          element={<EmptyBoxPage />}
           path={SubGroupsActionsTypes.BarriersCarts}
         />
         <Route
-          element={renderEmptyBoxPage()}
+          element={<EmptyBoxPage />}
           path={SubGroupsActionsTypes.BarriersApps}
         />
       </Routes>

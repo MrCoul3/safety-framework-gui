@@ -12,6 +12,7 @@ import NewInspectionPage from "../../../pages/NewInspectionPage";
 import { SubGroupsActionsTypes } from "../../../enums/SubGroupsTypes";
 import PassportsPage from "../../../pages/PassportsPage";
 import BarriersPage from "../../../pages/BarriersPage";
+import EmptyBoxPage from "../../EmptyBoxPage/EmptyBoxPage";
 export const AppContainer = observer(() => {
   const { t } = useTranslation("dict");
 
@@ -42,6 +43,11 @@ export const AppContainer = observer(() => {
       <Routes>
         <Route index element={<MainPage />} />
         <Route path={"/*"} element={<MainPage />} />
+
+        <Route
+            element={<EmptyBoxPage />}
+            path={SubGroupsActionsTypes.EliminationOfViolations}
+        />
 
         <Route
           path={RoutesTypes.NewInspection}

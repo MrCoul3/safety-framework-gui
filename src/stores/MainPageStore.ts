@@ -8,6 +8,7 @@ import { IconList } from "@consta/icons/IconList";
 import { IconMail } from "@consta/icons/IconMail";
 import { IconDocFilled } from "@consta/icons/IconDocFilled";
 import { IconStorage } from "@consta/icons/IconStorage";
+import { IconHelmet } from "@consta/icons/IconHelmet";
 import { ISubGroupState } from "../interfaces/ISubGroupState";
 export class MainPageStore {
   private store: AppStore;
@@ -23,7 +24,7 @@ export class MainPageStore {
     SubGroupsActionsTypes.MainList;
 
   subGroupsState: ISubGroupState[] = [
-    {
+   /* {
       name: SubGroupsTypes.Statistic,
       actions: [
         {
@@ -32,10 +33,15 @@ export class MainPageStore {
           active: true,
         },
       ],
-    },
+    },*/
     {
       name: SubGroupsTypes.Inspections,
       actions: [
+        {
+          label: SubGroupsActionsTypes.MainList,
+          icon: IconBento,
+          active: true,
+        },
         {
           label: SubGroupsActionsTypes.Sent,
           icon: IconMail,
@@ -43,6 +49,10 @@ export class MainPageStore {
         {
           label: SubGroupsActionsTypes.NewInspections,
           icon: IconList,
+        },
+        {
+          label: SubGroupsActionsTypes.EliminationOfViolations,
+          icon: IconHelmet,
         },
       ],
     },
