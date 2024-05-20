@@ -57,10 +57,10 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
 
   const handleEditInspection = (index: string, inspection: IInspection) => {
     if (location.pathname.includes(SubGroupsActionsTypes.Sent)) {
-        props.handleEditInspection(inspection.id)
+      props.handleEditInspection(inspection.id);
     }
     if (location.pathname.includes(SubGroupsActionsTypes.NewInspections)) {
-      props.handleEditLocalInspection(index)
+      props.handleEditLocalInspection(index);
     }
   };
 
