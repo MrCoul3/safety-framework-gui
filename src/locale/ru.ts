@@ -42,6 +42,8 @@ export const ru = {
     editInspectionData: "Редактировать данные инспекции",
     createInspection: "Создать инспекцию",
     saveInspection: "Сохранить инспекцию",
+    toPassports: "К паспортам",
+    toInspectionForm: "К данным инспекции",
     saveChanges: "Сохранить изменения",
     editPassports: "Редактировать паспорта инспекции",
     completionBarrier: "Заполнение барьера по паспорту",
@@ -68,6 +70,7 @@ export const ru = {
     [CheckEntityTypes.FreeForms]: "Свободные формы",
 
     searchPlaceholder: "Я ищу",
+    searchBarriersPlaceholder: "Введите название барьера",
     mainTitle: "Каркас безопасности",
     addInspection: "Добавить инспекцию",
     inspection: "Инспекция",
@@ -126,6 +129,7 @@ export const ru = {
       "Введите номер бригады ПО",
     [InspectionFormTypes.SubContractors + "Placeholder"]:
       "Введите наименование субподрядной организации",
+
 
     dialogClearFields: "Очистить все заполненные поля?",
     dialogDeleteNewInspection: "Удалить неотправленную инспекцию?",

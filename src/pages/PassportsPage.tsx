@@ -6,9 +6,10 @@ import NavPanel from "../components/NavPanel/NavPanel";
 import { useTranslation } from "react-i18next";
 import PassportsList from "../components/PassportsList/PassportsList";
 import { RoutesTypes } from "../enums/RoutesTypes";
-import {useLocation, useNavigate, useParams} from "react-router";
+import {  useNavigate, useParams } from "react-router";
 import { IBreadCrumbs } from "../interfaces/IBreadCrumbs";
 import Layout from "../layouts/Layout/Layout";
+import { Button } from "@consta/uikit/Button";
 
 interface IPassportsPage {}
 
@@ -53,8 +54,8 @@ const PassportsPage = observer((props: IPassportsPage) => {
   ];
   const saveInspection = () => {
     editInspectionId
-        ? store.inspectionStore.updateInspectionToLocalStorage(editInspectionId)
-        : store.inspectionStore.setInspectionToLocalStorage();
+      ? store.inspectionStore.updateInspectionToLocalStorage(editInspectionId)
+      : store.inspectionStore.setInspectionToLocalStorage();
   };
 
   const handleSaveInspection = () => {
@@ -71,9 +72,14 @@ const PassportsPage = observer((props: IPassportsPage) => {
     <Layout
       navPanel={
         <NavPanel
+          actions={
+            <Button
+              onClick={() => navigate(-1)}
+              label={t("toInspectionForm")}
+              view={"secondary"}
+            />
+          }
           crumbs={crumbs}
-          // disableSaveButton={!savingState}
-          // handleEditPassports={handleEditPassports}
           handleSaveInspection={handleSaveInspection}
           title={t("selectPassport")}
           description={t("selectPassportDescription")}

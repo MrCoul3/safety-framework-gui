@@ -6,12 +6,12 @@ import Counter from "../Counter/Counter";
 import { Collapse } from "@consta/uikit/Collapse";
 
 interface IBarrierElement {
-  data: IBarrier;
-  content: ReactNode;
+  data?: IBarrier;
+  content?: ReactNode;
 }
 
 const BarrierElement = observer((props: IBarrierElement) => {
-  const title = props.data.Title;
+  const title = props.data?.Title;
 
   const code = title?.split(" ")[0];
 

@@ -36,6 +36,7 @@ const InspectionPage = observer((props: IInspectionPage) => {
       }
       if (location.pathname.includes(RoutesTypes.EditInspection)) {
         store.inspectionStore.getInspectionDev(editInspectionId);
+        // store.inspectionStore.getInspectionById(editInspectionId);
       }
     }
   };

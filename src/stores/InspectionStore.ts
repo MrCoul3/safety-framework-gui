@@ -68,6 +68,22 @@ export class InspectionStore {
       }
     } catch (e) {}
   }
+  async getInspectionById(editInspectionId: string) {
+    try {
+      const response = await localDevInstance.get(
+        `Inspections?$filter=(id eq ${editInspectionId})`,
+      );
+      if (!response.data.error) {
+        console.log('getInspectionDev response.data', response.data)
+        const result = response.data.value;
+        const inspection = {
+          ...result,
+          auditDate: moment(result.auditDate).toDate(),
+        };
+        this.setFormFieldsValues(inspection);
+      }
+    } catch (e) {}
+  }
 
   clearInspectionForm() {
     this.formFieldsValues = {};

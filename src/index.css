@@ -63,3 +63,6 @@ code {
 .customField {
   width: var(--fieldWidth) !important;
 }
+.searchBarriersField {
+  width: 96% !important;
+}

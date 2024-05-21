@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, {ReactNode, useEffect} from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
 import { Breadcrumbs } from "@consta/uikit/Breadcrumbs";
@@ -13,6 +13,7 @@ interface INavPanel {
   description: string;
   crumbs: IBreadCrumbs[];
   disableSaveButton?: boolean;
+  actions?: ReactNode;
   actionText?: string;
   handleSaveInspection?(): void;
   handleEditPassports?(): void;
@@ -69,6 +70,7 @@ const NavPanel = observer((props: INavPanel) => {
           onClick={props.handleSaveInspection}
           label={t("saveInspection")}
         />
+        {props.actions}
       </div>
       <ConfirmDialog
           cancelActionLabel={t("cancel")}
