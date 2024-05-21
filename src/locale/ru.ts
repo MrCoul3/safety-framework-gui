@@ -98,7 +98,7 @@ export const ru = {
     [InspectionFormGroups.ContractorUnderReview]:
       "Проверяемая подрядная организация",
     [InspectionFormTypes.Contractors]: "Наименование ПО",
-    [InspectionFormTypes.TeamNumber]: "Номер бригады ПО",
+    [InspectionFormTypes.ContractorStructs]: "Номер бригады ПО",
     [InspectionFormTypes.SubContractors]:
       "Наименование субподрядной организации",
     [InspectionFormGroups.InspectionParticipants]: "Участники инспекции",
@@ -125,7 +125,7 @@ export const ru = {
       "Введите объект ДО, где проводилась проверка",
     [InspectionFormTypes.Contractors + "Placeholder"]:
       "Введите наименование ПО",
-    [InspectionFormTypes.TeamNumber + "Placeholder"]:
+    [InspectionFormTypes.ContractorStructs + "Placeholder"]:
       "Введите номер бригады ПО",
     [InspectionFormTypes.SubContractors + "Placeholder"]:
       "Введите наименование субподрядной организации",

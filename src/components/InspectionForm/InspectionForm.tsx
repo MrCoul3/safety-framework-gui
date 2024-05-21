@@ -63,7 +63,7 @@ const InspectionForm = observer((props: IInspectionForm) => {
     ],
     [InspectionFormGroups.ContractorUnderReview]: [
       InspectionFormTypes.Contractors,
-      InspectionFormTypes.TeamNumber,
+      InspectionFormTypes.ContractorStructs,
       InspectionFormTypes.SubContractors,
     ],
     [InspectionFormGroups.InspectionParticipants]: [],

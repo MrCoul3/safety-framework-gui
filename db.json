@@ -11,7 +11,7 @@
       "inspectionType": "Целевая проверка - проверка транспорта",
       "oilField": "Г. Муравленко",
       "subContractors": "АО \"ЕВРАКОР\"",
-      "teamNumber": "АО \"Сервисная Логистическая Компания\""
+      "contractorStructs": "АО \"Сервисная Логистическая Компания\""
     },
     {
       "id": 2,
@@ -24,7 +24,7 @@
       "inspectionType": "Целевая проверка - проверка транспорта",
       "oilField": "Г. Муравленко",
       "subContractors": "АО \"ЕВРАКОР\"",
-      "teamNumber": "АО \"Сервисная Логистическая Компания\""
+      "contractorStructs": "АО \"Сервисная Логистическая Компания\""
     },
     {
       "id": 3,
@@ -1407,7 +1407,7 @@
       "id": 84
     }
   ],
-  "teamNumber": [
+  "contractorStructs": [
     {
       "AsdpoCompanyId": null,
       "Asdpo_Companies_CompanyId": null,
