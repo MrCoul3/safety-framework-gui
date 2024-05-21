@@ -6,7 +6,7 @@ import NavPanel from "../components/NavPanel/NavPanel";
 import { useTranslation } from "react-i18next";
 import PassportsList from "../components/PassportsList/PassportsList";
 import { RoutesTypes } from "../enums/RoutesTypes";
-import { useNavigate } from "react-router";
+import {useLocation, useNavigate, useParams} from "react-router";
 import { IBreadCrumbs } from "../interfaces/IBreadCrumbs";
 import Layout from "../layouts/Layout/Layout";
 
@@ -14,6 +14,10 @@ interface IPassportsPage {}
 
 const PassportsPage = observer((props: IPassportsPage) => {
   const { t } = useTranslation("dict");
+
+  let { editInspectionId } = useParams();
+
+  let { passportId } = useParams();
 
   const store = useStore();
 
@@ -47,6 +51,21 @@ const PassportsPage = observer((props: IPassportsPage) => {
       label: t("passports"),
     },
   ];
+  const saveInspection = () => {
+    editInspectionId
+        ? store.inspectionStore.updateInspectionToLocalStorage(editInspectionId)
+        : store.inspectionStore.setInspectionToLocalStorage();
+  };
+
+  const handleSaveInspection = () => {
+    saveInspection();
+    navigate(-2);
+    store.snackBarStore.setSnackBarItem({
+      message: t("snackBarSuccessSave"),
+      key: "1",
+      status: "success",
+    });
+  };
 
   return (
     <Layout
@@ -55,7 +74,7 @@ const PassportsPage = observer((props: IPassportsPage) => {
           crumbs={crumbs}
           // disableSaveButton={!savingState}
           // handleEditPassports={handleEditPassports}
-          // handleSaveInspection={handleSaveInspection}
+          handleSaveInspection={handleSaveInspection}
           title={t("selectPassport")}
           description={t("selectPassportDescription")}
         />

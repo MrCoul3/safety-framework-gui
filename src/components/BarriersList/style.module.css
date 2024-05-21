@@ -1,0 +1,15 @@
+.BarriersList {
+    background-color: var(--lightGray);
+    justify-content: center;
+    height: calc(100vh - var(--navPanelHeight) - var(--mainHeaderHeight) - 32px);
+    overflow: auto;
+    padding-top: 32px;
+    display: flex;
+}
+
+.barriersListWrap {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    padding-bottom: 24px;
+
+}

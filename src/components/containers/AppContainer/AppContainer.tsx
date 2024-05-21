@@ -11,7 +11,7 @@ import { RoutesTypes } from "../../../enums/RoutesTypes";
 import InspectionPage from "../../../pages/InspectionPage";
 import { SubGroupsActionsTypes } from "../../../enums/SubGroupsTypes";
 import PassportsPage from "../../../pages/PassportsPage";
-import BarriersPage from "../../../pages/BarriersPage";
+import BarriersPage from "../../../pages/BarriersPage/BarriersPage";
 import EmptyBoxPage from "../../EmptyBoxPage/EmptyBoxPage";
 export const AppContainer = observer(() => {
   const { t } = useTranslation("dict");
@@ -92,7 +92,7 @@ export const AppContainer = observer(() => {
             RoutesTypes.Passports +
             "/" +
             RoutesTypes.Barriers +
-            "/:id"
+            "/:passportId"
           }
           element={<BarriersPage />}
         />
@@ -116,7 +116,7 @@ export const AppContainer = observer(() => {
             RoutesTypes.Passports +
             "/" +
             RoutesTypes.Barriers +
-            "/:id"
+            "/:passportId"
           }
           element={<BarriersPage />}
         />

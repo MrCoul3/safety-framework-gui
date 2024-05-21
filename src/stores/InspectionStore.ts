@@ -74,8 +74,6 @@ export class InspectionStore {
   }
 
   checkIsFormSuccess() {
-    console.log('checkIsFormSuccess length1', Object.keys(InspectionFormTypes).length)
-    console.log('checkIsFormSuccess length2', Object.keys(this.formFieldsValues).length)
     return (
       Object.keys(InspectionFormTypes).length ===
         Object.keys(this.formFieldsValues).length &&
