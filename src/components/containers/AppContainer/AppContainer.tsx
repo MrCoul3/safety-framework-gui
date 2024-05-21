@@ -8,7 +8,7 @@ import MainHeader from "../../MainHeader/MainHeader";
 import { useStore } from "../../../hooks/useStore";
 import { useTranslation } from "react-i18next";
 import { RoutesTypes } from "../../../enums/RoutesTypes";
-import NewInspectionPage from "../../../pages/NewInspectionPage";
+import InspectionPage from "../../../pages/InspectionPage";
 import { SubGroupsActionsTypes } from "../../../enums/SubGroupsTypes";
 import PassportsPage from "../../../pages/PassportsPage";
 import BarriersPage from "../../../pages/BarriersPage";
@@ -51,15 +51,15 @@ export const AppContainer = observer(() => {
 
         <Route
           path={RoutesTypes.NewInspection}
-          element={<NewInspectionPage />}
+          element={<InspectionPage />}
         />
         <Route
           path={RoutesTypes.EditInspection + "/:editInspectionId"}
-          element={<NewInspectionPage />}
+          element={<InspectionPage />}
         />
         <Route
           path={RoutesTypes.EditLocalInspection + "/:editInspectionId"}
-          element={<NewInspectionPage />}
+          element={<InspectionPage />}
         />
 
         <Route

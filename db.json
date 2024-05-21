@@ -2,19 +2,29 @@
   "inspections": [
     {
       "auditDate": "2024-04-30T21:00:00.000Z",
-      "doStructs": "614 ПО - К. 614",
       "id": 1,
-      "inspectionType": "ЦП - проверка транспорта",
-      "oilField": "Валынтойское",
-      "inspectionForm": "barriers"
+      "contractors": "Акрос",
+      "doObjects": "151Р",
+      "doStructs": "ЦДНГ- № 10",
+      "function": "Бурение",
+      "inspectionFormTypes": "Свободная форма",
+      "inspectionType": "Целевая проверка - проверка транспорта",
+      "oilField": "Г. Муравленко",
+      "subContractors": "АО \"ЕВРАКОР\"",
+      "teamNumber": "АО \"Сервисная Логистическая Компания\""
     },
     {
       "id": 2,
-      "inspectionType": "Транспортные Компании",
-      "oilField": "Еты-Пуровское",
-      "doStructs": "ЦТОиРТ - №4",
       "auditDate": "2024-04-30T21:00:00.000Z",
-      "inspectionForm": "freeForms"
+      "contractors": "Акрос",
+      "doObjects": "151Р",
+      "doStructs": "ЦДНГ- № 10",
+      "function": "Бурение",
+      "inspectionFormTypes": "Свободная форма",
+      "inspectionType": "Целевая проверка - проверка транспорта",
+      "oilField": "Г. Муравленко",
+      "subContractors": "АО \"ЕВРАКОР\"",
+      "teamNumber": "АО \"Сервисная Логистическая Компания\""
     },
     {
       "id": 3,
@@ -121,7 +131,7 @@
       "inspectionForm": "barriers"
     }
   ],
-  "inspectionForm": [
+  "inspectionFormTypes": [
     {
       "title": "Барьеры",
       "id": 1
@@ -2261,7 +2271,7 @@
       "dateCreated": "2023-08-30T15:20:01.153+05:00",
       "dateModified": "2023-08-30T15:20:01.17+05:00",
       "id": 7,
-      "icon":  null,
+      "icon": null,
       "barriers": []
     },
     {
@@ -2273,7 +2283,7 @@
       "dateCreated": "2023-08-30T15:20:01.153+05:00",
       "dateModified": "2023-08-30T15:20:01.17+05:00",
       "id": 8,
-      "icon":  null,
+      "icon": null,
       "barriers": []
     },
     {
@@ -2285,7 +2295,7 @@
       "dateCreated": "2023-08-30T15:20:01.153+05:00",
       "dateModified": "2023-08-30T15:20:01.17+05:00",
       "id": 9,
-      "icon":  null,
+      "icon": null,
       "barriers": []
     },
     {
@@ -2297,7 +2307,7 @@
       "dateCreated": "2023-08-30T15:20:01.153+05:00",
       "dateModified": "2023-08-30T15:20:01.17+05:00",
       "id": 11,
-      "icon":  null,
+      "icon": null,
       "barriers": []
     },
     {
@@ -2309,7 +2319,7 @@
       "dateCreated": "2023-08-30T15:20:01.153+05:00",
       "dateModified": "2023-08-30T15:20:01.17+05:00",
       "id": 12,
-      "icon":  null,
+      "icon": null,
       "barriers": []
     },
     {
@@ -2321,7 +2331,7 @@
       "dateCreated": "2023-08-30T15:20:01.153+05:00",
       "dateModified": "2023-08-30T15:20:01.17+05:00",
       "id": 15,
-      "icon":  null,
+      "icon": null,
       "barriers": []
     },
     {
@@ -2333,7 +2343,7 @@
       "dateCreated": "2023-08-30T15:20:01.153+05:00",
       "dateModified": "2023-08-30T15:20:01.17+05:00",
       "id": 16,
-      "icon":  null,
+      "icon": null,
       "barriers": []
     },
     {
@@ -2345,9 +2355,8 @@
       "dateCreated": "2024-01-14T16:41:50.623+05:00",
       "dateModified": "2024-01-14T16:41:50.623+05:00",
       "id": 17,
-      "icon":  null,
+      "icon": null,
       "barriers": []
     }
-
   ]
 }

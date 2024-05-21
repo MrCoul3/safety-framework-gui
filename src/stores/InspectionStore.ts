@@ -4,6 +4,7 @@ import { InspectionFormTypes } from "../enums/InspectionFormTypes";
 import { instance, localDevInstance } from "../api/endpoints";
 import { LOCAL_STORE_INSPECTIONS } from "../constants/config";
 import moment from "moment/moment";
+import { IInspection } from "../interfaces/IInspection";
 
 export interface IFieldsData {
   [key: string]: Item[];
@@ -51,12 +52,30 @@ export class InspectionStore {
       }
     } catch (e) {}
   }
+  async getInspectionDev(editInspectionId: string) {
+    try {
+      const response = await localDevInstance.get(
+        `inspections/${editInspectionId}`,
+      );
+      if (!response.data.error) {
+        console.log('getInspectionDev response.data', response.data)
+        const result = response.data;
+        const inspection = {
+          ...result,
+          auditDate: moment(result.auditDate).toDate(),
+        };
+        this.setFormFieldsValues(inspection);
+      }
+    } catch (e) {}
+  }
 
   clearInspectionForm() {
     this.formFieldsValues = {};
   }
 
   checkIsFormSuccess() {
+    console.log('checkIsFormSuccess length1', Object.keys(InspectionFormTypes).length)
+    console.log('checkIsFormSuccess length2', Object.keys(this.formFieldsValues).length)
     return (
       Object.keys(InspectionFormTypes).length ===
         Object.keys(this.formFieldsValues).length &&

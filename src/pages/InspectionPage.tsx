@@ -14,9 +14,9 @@ import { RoutesTypes } from "../enums/RoutesTypes";
 import { IBreadCrumbs } from "../interfaces/IBreadCrumbs";
 import Layout from "../layouts/Layout/Layout";
 
-interface INewInspectionPage {}
+interface IInspectionPage {}
 
-const NewInspectionPage = observer((props: INewInspectionPage) => {
+const InspectionPage = observer((props: IInspectionPage) => {
   const { t } = useTranslation("dict");
 
   const store = useStore();
@@ -35,12 +35,10 @@ const NewInspectionPage = observer((props: INewInspectionPage) => {
         store.inspectionStore.loadInspectionFromLocalStorage(editInspectionId);
       }
       if (location.pathname.includes(RoutesTypes.EditInspection)) {
-
+        store.inspectionStore.getInspectionDev(editInspectionId);
       }
     }
   };
-
-  useEffect(() => {}, [editInspectionId]);
 
   useEffect(() => {
     init();
@@ -147,4 +145,4 @@ const NewInspectionPage = observer((props: INewInspectionPage) => {
   );
 });
 
-export default NewInspectionPage;
+export default InspectionPage;

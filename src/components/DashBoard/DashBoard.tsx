@@ -1,12 +1,13 @@
 import React from "react";
-import { observer } from "mobx-react-lite";
+import {observer} from "mobx-react-lite";
 import style from "./style.module.css";
-import { SubGroupsActionsTypes } from "enums/SubGroupsTypes";
-import { useTranslation } from "react-i18next";
+import {SubGroupsActionsTypes} from "enums/SubGroupsTypes";
+import {useTranslation} from "react-i18next";
 import InspectionCard from "../InspectionCard/InspectionCard";
-import { IInspection } from "../../interfaces/IInspection";
+import {IInspection} from "../../interfaces/IInspection";
 import classNames from "classnames";
-import { ResponsesNothingFound } from "@consta/uikit/ResponsesNothingFound";
+import {ResponsesNothingFound} from "@consta/uikit/ResponsesNothingFound";
+import {InspectionFormTypes} from "../../enums/InspectionFormTypes";
 
 interface IDashBoard {
   data: IInspection[];
@@ -98,10 +99,10 @@ const DashBoard = observer((props: IDashBoard) => {
                   key={item.id}
                   subGroup={subGroup}
                   oilField={item.oilField}
-                  doObject={item.doStructs}
-                  checkVerifyDate={item.auditDate}
-                  inspectionType={item.inspectionType}
-                  inspectionForm={item.inspectionForm}
+                  doStructs={item.doStructs}
+                  checkVerifyDate={item[InspectionFormTypes.AuditDate]}
+                  inspectionType={item[InspectionFormTypes.InspectionType]}
+                  inspectionForm={item[InspectionFormTypes.InspectionForm]}
                   index={newInspectionCondition(subGroup) && index + 1}
                 />
               ))

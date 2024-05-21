@@ -18,6 +18,7 @@ import InspectionDataField from "../InspectionDataField/InspectionDataField";
 import ItemGroupTitle from "../ItemGroupTitle/ItemGroupTitle";
 import { useParams } from "react-router";
 import ConfirmDialog from "../ConfirmDialog/ConfirmDialog";
+import {toJS} from "mobx";
 
 interface IInspectionForm {
   handleOpenField(type: InspectionFormTypes): void;
@@ -98,7 +99,7 @@ const InspectionForm = observer((props: IInspectionForm) => {
                       key={value}
                       inspectionType={value}
                       handleChange={props.handleDateChange}
-                      value={getValue(value) as [Date?, Date?] | null}
+                      value={getValue(value) as Date | null}
                       status={props.isValidate ? getStatus(value) : undefined}
                     />
                   );

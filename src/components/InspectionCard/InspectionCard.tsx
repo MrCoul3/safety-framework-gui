@@ -19,7 +19,7 @@ import { SubGroupsActionsTypes } from "../../enums/SubGroupsTypes";
 interface IInspectionCard {
   id: string;
   name?: string;
-  doObject?: string;
+  doStructs?: string;
   checkVerifyDate?: number;
   inspectionType?: string;
   oilField?: string;
@@ -89,7 +89,7 @@ const InspectionCard = observer((props: IInspectionCard) => {
           <Badge
             view="stroked"
             status="system"
-            label={t(props.doObject ?? "")}
+            label={t(props.doStructs ?? "")}
           />
         </div>
         <div className={style.extraInfo}>
