@@ -30,10 +30,11 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "start-fake-server": "json-server -p 4000 --watch db.json",
-    "precommit": "npm run build"
+    "start-fake-server": "json-server -p 4000 --watch db.json"
   },
-
+  "pre-commit": [
+    "build"
+  ],
   "browserslist": {
     "production": [
       ">0.2%",
@@ -53,6 +54,7 @@
     "@types/react-dom": "^18.3.0",
     "@types/react-router-dom": "^5.1.5",
     "json-server": "^1.0.0-alpha.23",
+    "pre-commit": "^1.2.2",
     "prettier": "^3.2.5",
     "typescript": "4.9.5"
   }
