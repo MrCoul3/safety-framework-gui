@@ -30,7 +30,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "start-fake-server": "json-server -p 4000 --watch db.json"
+    "start-fake-server": "json-server -p 4000 --watch db.json",
+    "precommit": "npm run build"
   },
 
   "browserslist": {
