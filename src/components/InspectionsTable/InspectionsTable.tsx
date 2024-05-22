@@ -129,7 +129,6 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
       cellValue: string,
       filterValues: Array<{ value: string; name: string }>,
     ) => {
-      console.log("filterer", cellValue, filterValues);
       /* return filterValues.some(
         (filterValue) => filterValue && filterValue.value === cellValue,
       );*/
