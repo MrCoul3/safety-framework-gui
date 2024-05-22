@@ -13,7 +13,7 @@ import { ResponsesEmptyBox } from "@consta/uikit/ResponsesEmptyBox";
 import { Button } from "@consta/uikit/Button";
 import { useTranslation } from "react-i18next";
 import { RoutesTypes } from "../enums/RoutesTypes";
-import { LOCAL_STORE_INSPECTIONS } from "../constants/config";
+import { isDevelop, LOCAL_STORE_INSPECTIONS } from "../constants/config";
 import { ResponsesNothingFound } from "@consta/uikit/ResponsesNothingFound";
 import ConfirmDialog from "../components/ConfirmDialog/ConfirmDialog";
 import { InspectionFormTypes } from "../enums/InspectionFormTypes";
@@ -21,10 +21,12 @@ import { IconAllDone } from "@consta/icons/IconAllDone";
 
 import { SnackBar } from "@consta/uikit/SnackBar";
 import EmptyBoxPage from "../components/EmptyBoxPage/EmptyBoxPage";
+import {toJS} from "mobx";
 
 interface IMainPage {}
 
 export const MainPage = observer((props: IMainPage) => {
+
   const store = useStore();
 
   const { t } = useTranslation("dict");
@@ -32,7 +34,12 @@ export const MainPage = observer((props: IMainPage) => {
   const navigate = useNavigate();
 
   const init = () => {
-    store.mainPageStore.getInspectionsDev();
+    if (isDevelop) {
+      store.mainPageStore.getInspectionsDev();
+    } else {
+      store.mainPageStore.getInspections();
+    }
+
     getLocalInspections();
   };
 
@@ -82,9 +89,12 @@ export const MainPage = observer((props: IMainPage) => {
   };
   const handleDeleteSentInspection = () => {
     console.log("deletingInspectionType", deletingInspectionType);
-    // store.mainPageStore.deleteSentInspection(deletingInspectionType?.id);
-    // store.mainPageStore.getInspections();
-    store.mainPageStore.getInspectionsDev();
+    if (isDevelop) {
+      store.mainPageStore.getInspectionsDev();
+    } else {
+      store.mainPageStore.deleteSentInspection(deletingInspectionType?.id);
+      store.mainPageStore.getInspections();
+    }
   };
 
   const handleAddInspection = () => {
@@ -115,7 +125,7 @@ export const MainPage = observer((props: IMainPage) => {
       <Routes>
         {/*Main page dashboard*/}
         <Route
-          element={
+          element={ store.mainPageStore.inspections.length &&
             <DashBoard
               handleDeleteSentButtonClick={(id: string) => {
                 handleDelete(id, SubGroupsActionsTypes.Sent);
@@ -126,7 +136,7 @@ export const MainPage = observer((props: IMainPage) => {
               handleEditInspection={handleEditInspection}
               handleEditLocalInspection={handleEditLocalInspection}
               localInspections={store.mainPageStore.localInspections}
-              data={store.mainPageStore.inspections}
+              inspections={store.mainPageStore.inspections}
             />
           }
           path="/"

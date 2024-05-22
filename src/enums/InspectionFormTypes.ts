@@ -6,14 +6,14 @@ export enum InspectionFormTypes {
   Function = "function", //Функция
 
   //Место проведения проверки
-  OilField = "oilField", // Месторождение
-  DoStructs = "doStructs", //Структурное подразделение ДО
-  DoObjects = "doObjects", // Объект ДО, где проводилась проверка
+  OilField = "oilfield", // Месторождение
+  DoStruct = "doStruct", //Структурное подразделение ДО
+  DoObject = "doObject", // Объект ДО, где проводилась проверка
 
   //Проверяемая подрядная организация
-  Contractors = "contractors", // Наименование ПО
-  ContractorStructs = "contractorStructs", // Номер бригады ПО
-  SubContractors = "subContractors", // Наименование субподрядной организации
+  Contractor = "contractor", // Наименование ПО
+  ContractorStruct = "contractorStruct", // Номер бригады ПО
+  SubContractor = "subContractor", // Наименование субподрядной организации
 
   // Участники инспекции
 

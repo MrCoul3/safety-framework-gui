@@ -24,7 +24,7 @@ const EmptyBoxPage = observer((props: IEmptyBoxPage) => {
   return (
     <ResponsesEmptyBox
       description={" "}
-      title={props.text ?? " "}
+      title={props.text ?? ""}
       actions={
         !props.disableActions ? (
           <Button onClick={toHome} view="ghost" label={t("toHome")} />

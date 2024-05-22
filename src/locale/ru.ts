@@ -84,6 +84,7 @@ export const ru = {
     emptyNewInspections: "Нет новых инспекций",
     emptySentInspections: "Нет отправленных инспекций",
     emptyInspections: "Нет инспекций",
+    noData: "Нет данных",
 
     // Данные формы
     [InspectionFormGroups.Common]: "Общее",
@@ -93,13 +94,13 @@ export const ru = {
     [InspectionFormTypes.Function]: "Функция",
     [InspectionFormGroups.InspectionPlace]: "Место проведения проверки",
     [InspectionFormTypes.OilField]: "Месторождение",
-    [InspectionFormTypes.DoStructs]: "Структурное подразделение ДО",
-    [InspectionFormTypes.DoObjects]: "Объект ДО, где проводилась проверка",
+    [InspectionFormTypes.DoStruct]: "Структурное подразделение ДО",
+    [InspectionFormTypes.DoObject]: "Объект ДО, где проводилась проверка",
     [InspectionFormGroups.ContractorUnderReview]:
       "Проверяемая подрядная организация",
-    [InspectionFormTypes.Contractors]: "Наименование ПО",
-    [InspectionFormTypes.ContractorStructs]: "Номер бригады ПО",
-    [InspectionFormTypes.SubContractors]:
+    [InspectionFormTypes.Contractor]: "Наименование ПО",
+    [InspectionFormTypes.ContractorStruct]: "Номер бригады ПО",
+    [InspectionFormTypes.SubContractor]:
       "Наименование субподрядной организации",
     [InspectionFormGroups.InspectionParticipants]: "Участники инспекции",
     [InspectionFormTypes.Auditor]: "ФИО составителя акта",
@@ -122,15 +123,15 @@ export const ru = {
       "Введите тип проверки",
     [InspectionFormTypes.Function + "Placeholder"]: "Введите функция",
     [InspectionFormTypes.OilField + "Placeholder"]: "Введите месторождение",
-    [InspectionFormTypes.DoStructs + "Placeholder"]:
+    [InspectionFormTypes.DoStruct + "Placeholder"]:
       "Введите структурное подразделение ДО",
-    [InspectionFormTypes.DoObjects + "Placeholder"]:
+    [InspectionFormTypes.DoObject + "Placeholder"]:
       "Введите объект ДО, где проводилась проверка",
-    [InspectionFormTypes.Contractors + "Placeholder"]:
+    [InspectionFormTypes.Contractor + "Placeholder"]:
       "Введите наименование ПО",
-    [InspectionFormTypes.ContractorStructs + "Placeholder"]:
+    [InspectionFormTypes.ContractorStruct + "Placeholder"]:
       "Введите номер бригады ПО",
-    [InspectionFormTypes.SubContractors + "Placeholder"]:
+    [InspectionFormTypes.SubContractor + "Placeholder"]:
       "Введите наименование субподрядной организации",
     [InspectionFormTypes.Auditor + "Placeholder"]: "введите ФИО составителя акта",
     [InspectionFormTypes.Auditee + "Placeholder"]: "введите ФИО проверяемого",

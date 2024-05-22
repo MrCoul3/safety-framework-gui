@@ -1,16 +1,17 @@
-import React from "react";
-import {observer} from "mobx-react-lite";
+import React, { useEffect } from "react";
+import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
-import {SubGroupsActionsTypes} from "enums/SubGroupsTypes";
-import {useTranslation} from "react-i18next";
-import InspectionCard from "../InspectionCard/InspectionCard";
-import {IInspection} from "../../interfaces/IInspection";
+import { SubGroupsActionsTypes } from "enums/SubGroupsTypes";
+import { useTranslation } from "react-i18next";
+import { IInspection } from "../../interfaces/IInspection";
 import classNames from "classnames";
-import {ResponsesNothingFound} from "@consta/uikit/ResponsesNothingFound";
-import {InspectionFormTypes} from "../../enums/InspectionFormTypes";
+import { InspectionFormTypes } from "../../enums/InspectionFormTypes";
+import { toJS } from "mobx";
+import InspectionCard from "../InspectionCard/InspectionCard";
+import { ResponsesNothingFound } from "@consta/uikit/ResponsesNothingFound";
 
 interface IDashBoard {
-  data: IInspection[];
+  inspections: IInspection[];
   localInspections: IInspection[];
   handleEditInspection(id: string): void;
   handleEditLocalInspection(id: string): void;
@@ -77,13 +78,15 @@ const DashBoard = observer((props: IDashBoard) => {
             key={subGroup}
             className={classNames(style.cardContainer, {
               [style.cardContainerForNewGroup]:
-                newInspectionCondition(subGroup) || !props.data.length,
+                newInspectionCondition(subGroup) || !props.inspections.length,
             })}
           >
-            {(sentCondition(subGroup) ? props.data : props.localInspections)
-              .length ? (
+            {(sentCondition(subGroup)
+              ? props.inspections
+              : props.localInspections
+            ).length ? (
               (sentCondition(subGroup)
-                ? props.data
+                ? props.inspections
                 : props.localInspections
               ).map((item, index) => (
                 <InspectionCard
@@ -98,10 +101,16 @@ const DashBoard = observer((props: IDashBoard) => {
                   id={item.id}
                   key={item.id}
                   subGroup={subGroup}
-                  oilField={item.oilField}
-                  doStructs={item.doStructs}
                   checkVerifyDate={item[InspectionFormTypes.AuditDate]}
-                  inspectionType={item[InspectionFormTypes.InspectionType]}
+                  oilfield={item[InspectionFormTypes.OilField]?.title}
+                  doObject={item[InspectionFormTypes.DoObject]?.title}
+                  contractor={item[InspectionFormTypes.Contractor]?.title}
+                  contractorStruct={
+                    item[InspectionFormTypes.ContractorStruct]?.title
+                  }
+                  inspectionType={
+                    item[InspectionFormTypes.InspectionType]?.title
+                  }
                   inspectionForm={item[InspectionFormTypes.InspectionForm]}
                   index={newInspectionCondition(subGroup) && index + 1}
                 />

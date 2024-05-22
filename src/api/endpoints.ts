@@ -14,3 +14,4 @@ export const instance: AxiosInstance = axios.create(
 );
 
 export const employeesEndpoint = `employees`;
+export const inspectionsEndpoint = `inspections`;

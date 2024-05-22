@@ -2,7 +2,7 @@ import React, { ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
 import { Table, TableColumn } from "@consta/uikit/Table";
-import { IInspection } from "../../interfaces/IInspection";
+import {IEntity, IInspection} from "../../interfaces/IInspection";
 import { useTranslation } from "react-i18next";
 import { Pagination } from "@consta/uikit/Pagination";
 import moment from "moment";
@@ -17,14 +17,15 @@ import { INSPECTIONS_ON_PAGE } from "../../constants/config";
 import { IFieldsData } from "../../stores/InspectionStore";
 import { SubGroupsActionsTypes } from "../../enums/SubGroupsTypes";
 import { useLocation } from "react-router";
+import {CheckEntityTypes} from "../../enums/CheckEntityTypes";
 interface IInspectionsTable {
   inspections: IInspection[];
   fieldsData: IFieldsData[];
   subGroupsActionsTypes: SubGroupsActionsTypes;
   handleOpenFilter(field: InspectionFormTypes): void;
-  handleDeleteSentButtonClick(id: string): void;
+  handleDeleteSentButtonClick(id: number | string): void;
   handleDeleteNewInspectionButtonClick(id: string): void;
-  handleEditInspection(id: string): void;
+  handleEditInspection(id: number | string): void;
   handleEditLocalInspection(id: string): void;
 }
 
@@ -94,7 +95,19 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
   const rows = useMemo(
     () =>
       props.inspections.map((item, index) => ({
-        ...item,
+        id: item.id,
+        [InspectionFormTypes.InspectionForm]: item[InspectionFormTypes.InspectionForm],
+        [InspectionFormTypes.InspectionType]: item[InspectionFormTypes.InspectionType]?.title,
+        [InspectionFormTypes.Function]: item[InspectionFormTypes.Function]?.title,
+        [InspectionFormTypes.OilField]: item[InspectionFormTypes.OilField]?.title,
+        [InspectionFormTypes.DoStruct]: item[InspectionFormTypes.DoStruct]?.title,
+        [InspectionFormTypes.DoObject]: item[InspectionFormTypes.DoObject]?.title,
+        [InspectionFormTypes.Contractor]: item[InspectionFormTypes.Contractor]?.title,
+        [InspectionFormTypes.ContractorStruct]: item[InspectionFormTypes.ContractorStruct]?.title,
+        [InspectionFormTypes.SubContractor]: item[InspectionFormTypes.SubContractor]?.title,
+        [InspectionFormTypes.Auditor]: item[InspectionFormTypes.Auditor]?.title,
+        [InspectionFormTypes.Auditee]: item[InspectionFormTypes.Auditee]?.title,
+        [InspectionFormTypes.Supervisor]: item[InspectionFormTypes.Supervisor]?.title,
         actions: renderActions((index + 1).toString(), item),
         [InspectionFormTypes.AuditDate]: moment(item.auditDate).format(
           "DD.MM.YYYY",

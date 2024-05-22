@@ -1,6 +1,9 @@
-import { makeAutoObservable } from "mobx";
+import {makeAutoObservable, toJS} from "mobx";
 import { AppStore } from "./AppStore";
-import {instance, localDevInstance} from "../api/endpoints";
+import {
+  inspectionsEndpoint,
+  instance,
+} from "../api/endpoints";
 import { IInspection } from "../interfaces/IInspection";
 import { SubGroupsActionsTypes, SubGroupsTypes } from "../enums/SubGroupsTypes";
 import { IconBento } from "@consta/icons/IconBento";
@@ -10,6 +13,7 @@ import { IconDocFilled } from "@consta/icons/IconDocFilled";
 import { IconStorage } from "@consta/icons/IconStorage";
 import { IconHelmet } from "@consta/icons/IconHelmet";
 import { ISubGroupState } from "../interfaces/ISubGroupState";
+import { INSPECTIONS_ON_PAGE } from "../constants/config";
 export class MainPageStore {
   private store: AppStore;
 
@@ -19,12 +23,13 @@ export class MainPageStore {
   }
 
   inspections: IInspection[] = [];
+  inspectionsCount: number | null = null;
   localInspections: IInspection[] = [];
   sideBarItemValue: SubGroupsActionsTypes | null =
     SubGroupsActionsTypes.MainList;
 
   subGroupsState: ISubGroupState[] = [
-   /* {
+    /* {
       name: SubGroupsTypes.Statistic,
       actions: [
         {
@@ -89,6 +94,11 @@ export class MainPageStore {
 
   setInspections(value: IInspection[]) {
     this.inspections = value;
+    console.log("this.inspections", toJS(this.inspections));
+  }
+  setInspectionsCount(value: number) {
+    this.inspectionsCount = value;
+    console.log("this.inspectionsCount", this.inspectionsCount);
   }
   setLocalInspections(value: IInspection[]) {
     this.localInspections = value;
@@ -97,22 +107,29 @@ export class MainPageStore {
     this.sideBarItemValue = value;
   }
 
+  async getInspections() {
+    const expand = `$expand=auditor,auditee,supervisor,contractor,subContractor,contractorStruct,oilfield,doStruct,doObject,function,inspectionType`;
+    try {
+      const response = await instance.get(
+        `${inspectionsEndpoint}?$skip=${0}&$top=${INSPECTIONS_ON_PAGE}&${expand}&$count=true`,
+      );
+      if (!response.data.error) {
+        this.setInspectionsCount(response.data["@odata.count"]);
+        if (response.data.value) {
+          this.setInspections(response.data.value);
+        }
+      }
+    } catch (e) {}
+  }
   async getInspectionsDev() {
     try {
-      const response = await localDevInstance.get("inspections");
+      const response = await instance.get(`${inspectionsEndpoint}`);
       if (!response.data.error) {
         this.setInspections(response.data);
       }
     } catch (e) {}
   }
-  async getInspections() {
-    try {
-      const response = await localDevInstance.get("Inspections");
-      if (!response.data.error) {
-        this.setInspections(response.data);
-      }
-    } catch (e) {}
-  }
+
   async deleteSentInspection(id?: string) {
     try {
       const response = await instance.delete(`Inspections/${id}`);

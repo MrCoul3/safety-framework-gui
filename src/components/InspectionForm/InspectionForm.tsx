@@ -59,13 +59,13 @@ const InspectionForm = observer((props: IInspectionForm) => {
     ],
     [InspectionFormGroups.InspectionPlace]: [
       InspectionFormTypes.OilField,
-      InspectionFormTypes.DoStructs,
-      InspectionFormTypes.DoObjects,
+      InspectionFormTypes.DoStruct,
+      InspectionFormTypes.DoObject,
     ],
     [InspectionFormGroups.ContractorUnderReview]: [
-      InspectionFormTypes.Contractors,
-      InspectionFormTypes.ContractorStructs,
-      InspectionFormTypes.SubContractors,
+      InspectionFormTypes.Contractor,
+      InspectionFormTypes.ContractorStruct,
+      InspectionFormTypes.SubContractor,
     ],
     [InspectionFormGroups.InspectionParticipants]: [
       InspectionFormTypes.Auditor,
