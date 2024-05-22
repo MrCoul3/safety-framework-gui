@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
 import { SubGroupsActionsTypes } from "enums/SubGroupsTypes";
@@ -6,9 +6,9 @@ import { useTranslation } from "react-i18next";
 import { IInspection } from "../../interfaces/IInspection";
 import classNames from "classnames";
 import { InspectionFormTypes } from "../../enums/InspectionFormTypes";
-import { toJS } from "mobx";
 import InspectionCard from "../InspectionCard/InspectionCard";
 import { ResponsesNothingFound } from "@consta/uikit/ResponsesNothingFound";
+import { useVirtualScroll } from "@consta/uikit/useVirtualScroll";
 
 interface IDashBoard {
   inspections: IInspection[];
@@ -63,6 +63,22 @@ const DashBoard = observer((props: IDashBoard) => {
   const newInspectionCondition = (subGroup: SubGroupsActionsTypes) =>
     subGroup === SubGroupsActionsTypes.NewInspections;
 
+  const SIZE = 500;
+
+  const [length, setLength] = useState<number>(SIZE);
+
+  const { listRefs, scrollElementRef, slice, spaceTop } = useVirtualScroll({
+    length: 500,
+    isActive: true,
+    onScrollToBottom: () => {
+      setLength((state) => state + SIZE);
+    },
+  });
+
+  const renderData = (subGroup: SubGroupsActionsTypes) => {
+    return sentCondition(subGroup) ? props.inspections : props.localInspections;
+  };
+
   return (
     <div className={style.DashBoard}>
       {subGroups.map((subGroup) => (
@@ -74,6 +90,7 @@ const DashBoard = observer((props: IDashBoard) => {
           })}
         >
           <InspectionGroupHeader key={subGroup} subGroup={subGroup} />
+
           <div
             key={subGroup}
             className={classNames(style.cardContainer, {
@@ -81,14 +98,8 @@ const DashBoard = observer((props: IDashBoard) => {
                 newInspectionCondition(subGroup) || !props.inspections.length,
             })}
           >
-            {(sentCondition(subGroup)
-              ? props.inspections
-              : props.localInspections
-            ).length ? (
-              (sentCondition(subGroup)
-                ? props.inspections
-                : props.localInspections
-              ).map((item, index) => (
+            {renderData(subGroup).length ? (
+              renderData(subGroup).map((item, index) => (
                 <InspectionCard
                   handleDeleteButtonClick={(id: string) =>
                     handleDeleteButtonClick(subGroup, id)

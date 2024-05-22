@@ -1,9 +1,6 @@
-import {makeAutoObservable, toJS} from "mobx";
+import { makeAutoObservable, toJS } from "mobx";
 import { AppStore } from "./AppStore";
-import {
-  inspectionsEndpoint,
-  instance,
-} from "../api/endpoints";
+import { inspectionsEndpoint, instance } from "../api/endpoints";
 import { IInspection } from "../interfaces/IInspection";
 import { SubGroupsActionsTypes, SubGroupsTypes } from "../enums/SubGroupsTypes";
 import { IconBento } from "@consta/icons/IconBento";
@@ -107,11 +104,18 @@ export class MainPageStore {
     this.sideBarItemValue = value;
   }
 
+  inspectionOffset: number = 0;
+  setInspectionOffset(value: number) {
+    this.inspectionOffset = value;
+  }
+  clearInspectionOffset() {
+    this.inspectionOffset = 0;
+  }
   async getInspections() {
     const expand = `$expand=auditor,auditee,supervisor,contractor,subContractor,contractorStruct,oilfield,doStruct,doObject,function,inspectionType`;
     try {
       const response = await instance.get(
-        `${inspectionsEndpoint}?$skip=${0}&$top=${INSPECTIONS_ON_PAGE}&${expand}&$count=true`,
+        `${inspectionsEndpoint}?$skip=${this.inspectionOffset}&$top=${this.inspectionOffset + INSPECTIONS_ON_PAGE}&${expand}&$count=true`,
       );
       if (!response.data.error) {
         this.setInspectionsCount(response.data["@odata.count"]);
@@ -125,6 +129,7 @@ export class MainPageStore {
     try {
       const response = await instance.get(`${inspectionsEndpoint}`);
       if (!response.data.error) {
+        this.setInspectionsCount(48546);
         this.setInspections(response.data);
       }
     } catch (e) {}

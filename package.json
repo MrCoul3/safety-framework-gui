@@ -23,6 +23,7 @@
     "react-dom": "^18.3.1",
     "react-i18next": "^14.1.1",
     "react-localization": "^1.0.19",
+
     "react-router": "6.23.0",
     "react-router-dom": "6.23.0",
     "react-scripts": "5.0.1"
@@ -32,9 +33,6 @@
     "build": "react-scripts build",
     "start-fake-server": "json-server -p 4000 --watch db.json"
   },
-  "pre-commit": [
-    "build"
-  ],
   "browserslist": {
     "production": [
       ">0.2%",

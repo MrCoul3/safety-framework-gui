@@ -9,11 +9,10 @@ import { SubGroupsActionsTypes } from "enums/SubGroupsTypes";
 import { Route, Routes, useLocation, useNavigate } from "react-router";
 import DashBoard from "../components/DashBoard/DashBoard";
 import InspectionsTable from "../components/InspectionsTable/InspectionsTable";
-import { ResponsesEmptyBox } from "@consta/uikit/ResponsesEmptyBox";
 import { Button } from "@consta/uikit/Button";
 import { useTranslation } from "react-i18next";
 import { RoutesTypes } from "../enums/RoutesTypes";
-import { isDevelop, LOCAL_STORE_INSPECTIONS } from "../constants/config";
+import {INSPECTIONS_ON_PAGE, isDevelop, LOCAL_STORE_INSPECTIONS} from "../constants/config";
 import { ResponsesNothingFound } from "@consta/uikit/ResponsesNothingFound";
 import ConfirmDialog from "../components/ConfirmDialog/ConfirmDialog";
 import { InspectionFormTypes } from "../enums/InspectionFormTypes";
@@ -21,12 +20,10 @@ import { IconAllDone } from "@consta/icons/IconAllDone";
 
 import { SnackBar } from "@consta/uikit/SnackBar";
 import EmptyBoxPage from "../components/EmptyBoxPage/EmptyBoxPage";
-import {toJS} from "mobx";
 
 interface IMainPage {}
 
 export const MainPage = observer((props: IMainPage) => {
-
   const store = useStore();
 
   const { t } = useTranslation("dict");
@@ -34,6 +31,7 @@ export const MainPage = observer((props: IMainPage) => {
   const navigate = useNavigate();
 
   const init = () => {
+    store.mainPageStore.clearInspectionOffset();
     if (isDevelop) {
       store.mainPageStore.getInspectionsDev();
     } else {
@@ -120,24 +118,34 @@ export const MainPage = observer((props: IMainPage) => {
     store.inspectionStore.handleOpenField(field);
   };
 
+  const handlePaginationChange = (pageNumber: number) => {
+    console.log('handlePaginationChange')
+      const offset = (pageNumber - 1)  * INSPECTIONS_ON_PAGE;
+      store.mainPageStore.setInspectionOffset(offset);
+      store.mainPageStore.getInspections();
+
+  }
+
   const contentRoutes = () => {
     return (
       <Routes>
         {/*Main page dashboard*/}
         <Route
-          element={ store.mainPageStore.inspections.length &&
-            <DashBoard
-              handleDeleteSentButtonClick={(id: string) => {
-                handleDelete(id, SubGroupsActionsTypes.Sent);
-              }}
-              handleDeleteNewInspectionButtonClick={(id: string) => {
-                handleDelete(id, SubGroupsActionsTypes.NewInspections);
-              }}
-              handleEditInspection={handleEditInspection}
-              handleEditLocalInspection={handleEditLocalInspection}
-              localInspections={store.mainPageStore.localInspections}
-              inspections={store.mainPageStore.inspections}
-            />
+          element={
+            store.mainPageStore.inspections.length && (
+              <DashBoard
+                handleDeleteSentButtonClick={(id: string) => {
+                  handleDelete(id, SubGroupsActionsTypes.Sent);
+                }}
+                handleDeleteNewInspectionButtonClick={(id: string) => {
+                  handleDelete(id, SubGroupsActionsTypes.NewInspections);
+                }}
+                handleEditInspection={handleEditInspection}
+                handleEditLocalInspection={handleEditLocalInspection}
+                localInspections={store.mainPageStore.localInspections}
+                inspections={store.mainPageStore.inspections}
+              />
+            )
           }
           path="/"
         />
@@ -149,7 +157,7 @@ export const MainPage = observer((props: IMainPage) => {
           <Route
             element={
               inspections.length ? (
-                <InspectionsTable
+                <InspectionsTable handlePaginationChange={handlePaginationChange}
                   subGroupsActionsTypes={
                     !index
                       ? SubGroupsActionsTypes.NewInspections
@@ -160,6 +168,7 @@ export const MainPage = observer((props: IMainPage) => {
                   handleDeleteSentButtonClick={(id: string) => {
                     handleDelete(id, SubGroupsActionsTypes.Sent);
                   }}
+                  inspectionsCount={store.mainPageStore.inspectionsCount}
                   handleDeleteNewInspectionButtonClick={(id: string) => {
                     handleDelete(id, SubGroupsActionsTypes.NewInspections);
                   }}
