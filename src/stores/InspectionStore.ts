@@ -1,16 +1,16 @@
 import { AppStore } from "./AppStore";
 import { makeAutoObservable, toJS } from "mobx";
-import { InspectionFormTypes } from "../enums/InspectionFormTypes";
-import { instance, localDevInstance } from "../api/endpoints";
+import {EMPLOYEES, InspectionFormTypes} from "../enums/InspectionFormTypes";
+import { employeesEndpoint, instance, localDevInstance} from "../api/endpoints";
 import { LOCAL_STORE_INSPECTIONS } from "../constants/config";
 import moment from "moment/moment";
-import { IInspection } from "../interfaces/IInspection";
 
 export interface IFieldsData {
   [key: string]: Item[];
 }
 export type Item = {
   title: string;
+  PersonFio?: string
 };
 
 export interface IFormFieldValue {
@@ -43,22 +43,29 @@ export class InspectionStore {
     Object.assign(this.formFieldsValues, value);
     console.debug("formFieldsValues: ", toJS(this.formFieldsValues));
   }
-
   async getFieldData(type: InspectionFormTypes) {
+
+    let requestType: any = type;
+
+
+    if (EMPLOYEES.includes(type)) {
+      requestType = employeesEndpoint;
+    }
+
     try {
-      const response = await localDevInstance.get(type);
+      const response = await instance.get(requestType);
       if (!response.data.error) {
         this.setFieldsData({ [type]: response.data });
       }
     } catch (e) {}
   }
+
   async getInspectionDev(editInspectionId: string) {
     try {
       const response = await localDevInstance.get(
         `inspections/${editInspectionId}`,
       );
       if (!response.data.error) {
-        console.log('getInspectionDev response.data', response.data)
         const result = response.data;
         const inspection = {
           ...result,
@@ -74,7 +81,6 @@ export class InspectionStore {
         `Inspections?$filter=(id eq ${editInspectionId})`,
       );
       if (!response.data.error) {
-        console.log('getInspectionDev response.data', response.data)
         const result = response.data.value;
         const inspection = {
           ...result,

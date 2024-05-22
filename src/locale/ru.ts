@@ -102,6 +102,9 @@ export const ru = {
     [InspectionFormTypes.SubContractors]:
       "Наименование субподрядной организации",
     [InspectionFormGroups.InspectionParticipants]: "Участники инспекции",
+    [InspectionFormTypes.Auditor]: "ФИО составителя акта",
+    [InspectionFormTypes.Auditee]: "ФИО проверяемого",
+    [InspectionFormTypes.Supervisor]: "ФИО супервайзера",
     editDate: "Дата редактирования",
     actions: "Действия",
 
@@ -129,7 +132,9 @@ export const ru = {
       "Введите номер бригады ПО",
     [InspectionFormTypes.SubContractors + "Placeholder"]:
       "Введите наименование субподрядной организации",
-
+    [InspectionFormTypes.Auditor + "Placeholder"]: "введите ФИО составителя акта",
+    [InspectionFormTypes.Auditee + "Placeholder"]: "введите ФИО проверяемого",
+    [InspectionFormTypes.Supervisor + "Placeholder"]: "введите ФИО супервайзера",
 
     dialogClearFields: "Очистить все заполненные поля?",
     dialogDeleteNewInspection: "Удалить неотправленную инспекцию?",

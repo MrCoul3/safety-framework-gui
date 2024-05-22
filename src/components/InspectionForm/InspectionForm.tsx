@@ -66,7 +66,11 @@ const InspectionForm = observer((props: IInspectionForm) => {
       InspectionFormTypes.ContractorStructs,
       InspectionFormTypes.SubContractors,
     ],
-    [InspectionFormGroups.InspectionParticipants]: [],
+    [InspectionFormGroups.InspectionParticipants]: [
+      InspectionFormTypes.Auditor,
+      InspectionFormTypes.Auditee,
+      InspectionFormTypes.Supervisor
+    ],
   };
 
   const getValue = (inspectionFormType: InspectionFormTypes) => {

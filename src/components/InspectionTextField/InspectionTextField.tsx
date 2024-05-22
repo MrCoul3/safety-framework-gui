@@ -1,12 +1,14 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
-import { InspectionFormTypes } from "../../enums/InspectionFormTypes";
-import { Combobox } from "@consta/uikit/Combobox";
+import {
+  EMPLOYEES,
+  InspectionFormTypes,
+} from "../../enums/InspectionFormTypes";
+import { Combobox, ComboboxItemDefault } from "@consta/uikit/Combobox";
 import { useFlag } from "@consta/uikit/useFlag";
 import {
   IFieldsData,
-  IFormDateFieldValue,
   IFormFieldValue,
   Item,
 } from "../../stores/InspectionStore";
@@ -38,7 +40,16 @@ const InspectionTextField = observer((props: IFieldInspectionType) => {
   }, [open]);
 
   const handleChange = (value: Item | null) => {
-    props.handleChange( { [props.inspectionType]: value ? value.title : null } );
+    if (value?.title) {
+      props.handleChange({
+        [props.inspectionType]: value ? value.title : null,
+      });
+    }
+    if (value?.PersonFio) {
+      props.handleChange({
+        [props.inspectionType]: value ? value.PersonFio : null,
+      });
+    }
   };
 
   const getItems = (type: InspectionFormTypes) => {
@@ -58,11 +69,24 @@ const InspectionTextField = observer((props: IFieldInspectionType) => {
     fieldBody?.classList.add("customField");
   }, [combobox]);
 
+  const getItemLabel = (item: Item) => {
+    if (EMPLOYEES.includes(props.inspectionType)) {
+      return item.PersonFio ?? "";
+    }
+    return item.title;
+  };
+  const getItemKey = (item: Item) => {
+    if (EMPLOYEES.includes(props.inspectionType)) {
+      return item.PersonFio ?? "";
+    }
+    return item.title;
+  };
+
   return (
     <Combobox
       ref={combobox}
       status={props.status ?? props.status}
-      getItemLabel={(item) => item.title}
+      getItemLabel={(item) => getItemLabel(item)}
       className={style.field}
       dropdownOpen={open}
       labelPosition="left"
@@ -70,10 +94,12 @@ const InspectionTextField = observer((props: IFieldInspectionType) => {
       onDropdownOpen={onDropdownOpen}
       placeholder={t(`${props.inspectionType}Placeholder`)}
       required
-      value={props.value ? { title: props.value } : null}
+      value={
+        props.value ? { title: props.value, PersonFio: props.value } : null
+      }
       items={getItems(props.inspectionType)}
       onChange={handleChange}
-      getItemKey={(item: Item) => item.title}
+      getItemKey={(item: Item) => getItemKey(item)}
     />
   );
 });

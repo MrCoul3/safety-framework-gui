@@ -17,9 +17,9 @@ export enum InspectionFormTypes {
 
   // Участники инспекции
 
-  // ФИО составителя акта ?
-  // ФИО проверяемого ?
-  // ФИО супервайзера ?
+  Auditor = "auditor", // ФИО составителя акта ?
+  Auditee = 'auditee',// ФИО проверяемого ?
+  Supervisor = "supervisor"// ФИО супервайзера ?
 }
 
 export enum InspectionFormGroups {
@@ -28,3 +28,9 @@ export enum InspectionFormGroups {
   ContractorUnderReview = "contractorUnderReview",
   InspectionParticipants = "inspectionParticipants",
 }
+
+export const EMPLOYEES = [
+  InspectionFormTypes.Auditor,
+  InspectionFormTypes.Auditee,
+  InspectionFormTypes.Supervisor,
+];
