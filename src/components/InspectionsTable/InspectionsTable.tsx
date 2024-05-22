@@ -103,12 +103,12 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
     [props.inspections],
   );
 
-  const keys = Object.keys(props.inspections[0]);
+  const keys = Object.values(InspectionFormTypes) as any;
 
   keys.unshift("actions");
 
   const columns: TableColumn<(typeof rows)[number]>[] = keys
-    .filter((key) => !excludeFields.includes(key))
+    .filter((key: string) => !excludeFields.includes(key))
     .map((key: any) => ({
       title: <span className={style.colTitle}>{t(key)}</span>,
       accessor: key,

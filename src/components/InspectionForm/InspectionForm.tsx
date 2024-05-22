@@ -31,7 +31,8 @@ interface IInspectionForm {
 
   isValidate: boolean;
   setIsValidate(value: boolean): void;
-  handleNextStep(): void;
+  handleNextStepToBarriers(): void;
+  handleNextStepToFreeForm(): void;
   onInit?(): void;
   handleChange(value: IFormFieldValue): void;
   handleDateChange(value: IFormDateFieldValue): void;
@@ -85,7 +86,11 @@ const InspectionForm = observer((props: IInspectionForm) => {
   };
 
   const handleNextStep = () => {
-    props.handleNextStep()
+    if (props.formFieldsValues[InspectionFormTypes.InspectionForm] === "Барьеры") {
+      props.handleNextStepToBarriers()
+    } else {
+      props.handleNextStepToFreeForm();
+    }
     props.setIsValidate(true);
   };
 

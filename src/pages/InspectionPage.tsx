@@ -81,12 +81,22 @@ const InspectionPage = observer((props: IInspectionPage) => {
   };
 
   const handleEditPassports = () => {};
-  const handleNextStep = () => {
+
+  const handleNextStepToBarriers = () => {
     const isValid = store.inspectionStore.checkIsFormSuccess();
     console.log("isValid", isValid);
     if (isValid) {
-      saveInspection();
+      // saveInspection();
       navigate(RoutesTypes.Passports);
+    }
+  };
+  const handleNextStepToFreeForm = () => {
+    console.log('handleNextStepToFreeForm')
+    const isValid = store.inspectionStore.checkIsFormSuccess();
+    console.log("isValid", isValid);
+    if (isValid) {
+      // saveInspection();
+      // navigate(RoutesTypes.Passports);
     }
   };
 
@@ -122,7 +132,8 @@ const InspectionPage = observer((props: IInspectionPage) => {
         content={
           <InspectionForm
             onInit={() => store.inspectionStore.setIsValidate(false)}
-            handleNextStep={handleNextStep}
+            handleNextStepToBarriers={handleNextStepToBarriers}
+            handleNextStepToFreeForm={handleNextStepToFreeForm}
             formFieldsValuesLength={
               !!Object.values(store.inspectionStore.formFieldsValues).length
             }
