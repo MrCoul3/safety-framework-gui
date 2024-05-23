@@ -6,7 +6,7 @@ import {
   instance,
   localDevInstance,
 } from "../api/endpoints";
-import { LOCAL_STORE_INSPECTIONS } from "../constants/config";
+import { isDevelop, LOCAL_STORE_INSPECTIONS } from "../constants/config";
 import moment from "moment/moment";
 import { IInspection } from "../interfaces/IInspection";
 
@@ -15,11 +15,12 @@ export interface IFieldsData {
 }
 export type Item = {
   title: string;
+  id?: string;
   PersonFio?: string;
 };
 
 export interface IFormFieldValue {
-  [key: string]: Item | null | string;
+  [key: string]: Item ;
 }
 export interface IFormDateFieldValue {
   [key: string]: [Date?, Date?] | null;
@@ -49,6 +50,35 @@ export class InspectionStore {
     // Object.assign(this.formFieldsValues, value);
     console.debug("formFieldsValues: ", toJS(this.formFieldsValues));
   }
+  updateFormFieldsValues(value: IFormFieldValue | IFormDateFieldValue) {
+    console.log('updateFormFieldsValues', value)
+    if (this.formFieldsValues) {
+      const key = Object.keys(value)[0]
+      if (key === InspectionFormTypes.AuditDate) {
+        const values = Object.values(value)[0] as Item
+        const valueId = {[key + 'Id']: values.id};
+        Object.assign(this.formFieldsValues, valueId);
+      }
+      Object.assign(this.formFieldsValues, value);
+    }
+    console.debug("formFieldsValues: ", toJS(this.formFieldsValues));
+  }
+
+  async getFieldDataDev(type: InspectionFormTypes) {
+    let requestType: any = type;
+
+    if (EMPLOYEES.includes(type)) {
+      requestType = employeesEndpoint;
+    }
+
+    try {
+      const response = await instance.get(requestType);
+      if (!response.data.error) {
+        this.setFieldsData({ [type]: response.data });
+      }
+    } catch (e) {}
+  }
+
   async getFieldData(type: InspectionFormTypes) {
     let requestType: any = type;
 
@@ -167,7 +197,11 @@ export class InspectionStore {
       Object.keys(data).includes(type),
     );
     if (!foundField) {
-      this.getFieldData(type);
+      if (isDevelop) {
+        this.getFieldDataDev(type);
+      } else {
+        this.getFieldData(type);
+      }
     }
   }
 }

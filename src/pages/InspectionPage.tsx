@@ -7,13 +7,15 @@ import { InspectionFormTypes } from "../enums/InspectionFormTypes";
 import { useStore } from "../hooks/useStore";
 import {
   IFormDateFieldValue,
-  IFormFieldValue,
+  IFormFieldValue, Item,
 } from "../stores/InspectionStore";
 import { Outlet, useLocation, useNavigate, useParams } from "react-router";
 import { RoutesTypes } from "../enums/RoutesTypes";
 import { IBreadCrumbs } from "../interfaces/IBreadCrumbs";
 import Layout from "../layouts/Layout/Layout";
 import {isDevelop} from "../constants/config";
+import moment from "moment";
+import {toJS} from "mobx";
 
 interface IInspectionPage {}
 
@@ -61,9 +63,17 @@ const InspectionPage = observer((props: IInspectionPage) => {
     store.inspectionStore.handleOpenField(type);
   };
 
-  const handleChange = (value: IFormFieldValue | IFormDateFieldValue) => {
+  const handleChange = (value: IFormFieldValue) => {
+    const values = Object.values(value)[0] as Item
+    const key = Object.keys(value)[0]
+    const valueId = {[key + 'Id']: values.id};
+    store.inspectionStore.updateFormFieldsValues(value );
     setSavingState(true);
-    // store.inspectionStore.setFormFieldsValues(value as IFormFieldValue);
+    store.inspectionStore.checkIsFormSuccess();
+  };
+  const handleDateChange = (value: IFormDateFieldValue) => {
+    store.inspectionStore.updateFormFieldsValues(value);
+    setSavingState(true);
     store.inspectionStore.checkIsFormSuccess();
   };
 
@@ -148,9 +158,9 @@ const InspectionPage = observer((props: IInspectionPage) => {
             }}
             setIsValidate={() => store.inspectionStore.setIsValidate(true)}
             isValidate={store.inspectionStore.isValidate}
-            handleDateChange={handleChange}
             formFieldsValues={store.inspectionStore.formFieldsValues}
             handleChange={handleChange}
+            handleDateChange={handleDateChange}
             fieldsData={store.inspectionStore.fieldsData}
             handleOpenField={handleOpenField}
           />

@@ -18,7 +18,7 @@ import {toJS} from "mobx";
 
 interface IFieldInspectionType {
   handleOpenField(type: InspectionFormTypes): void;
-  handleChange(value: IFormFieldValue | null): void;
+  handleChange(value: IFormFieldValue): void;
   status: PropStatus | undefined;
   fieldsData: IFieldsData[];
   value?: string;
@@ -48,14 +48,14 @@ const InspectionTextField = observer((props: IFieldInspectionType) => {
   const handleChange = (value: Item | null) => {
     if (value?.title) {
       props.handleChange({
-        [props.inspectionType]: value ? value.title : null,
+        [props.inspectionType]: value,
       });
     }
-    if (value?.PersonFio) {
+    /*if (value?.PersonFio) {
       props.handleChange({
-        [props.inspectionType]: value ? value.PersonFio : null,
+        [props.inspectionType]: value
       });
-    }
+    }*/
   };
 
   const getItems = (type: InspectionFormTypes) => {
