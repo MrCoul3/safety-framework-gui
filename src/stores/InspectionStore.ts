@@ -54,7 +54,7 @@ export class InspectionStore {
     console.log('updateFormFieldsValues', value)
     if (this.formFieldsValues) {
       const key = Object.keys(value)[0]
-      if (key === InspectionFormTypes.AuditDate) {
+      if (key !== InspectionFormTypes.AuditDate) {
         const values = Object.values(value)[0] as Item
         const valueId = {[key + 'Id']: values.id};
         Object.assign(this.formFieldsValues, valueId);
