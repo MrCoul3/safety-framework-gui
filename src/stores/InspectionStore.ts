@@ -4,7 +4,6 @@ import { EMPLOYEES, InspectionFormTypes } from "../enums/InspectionFormTypes";
 import {
   employeesEndpoint,
   instance,
-  localDevInstance,
 } from "../api/endpoints";
 import {
   ELEMENTS_ON_FIELD,
@@ -16,7 +15,7 @@ import moment from "moment/moment";
 import { IInspection } from "../interfaces/IInspection";
 
 export interface IFieldsData {
-  [key: string]: Item[];
+  [key: string]: Item[] | number;
 }
 export type Item = {
   title: string;
@@ -47,7 +46,6 @@ export class InspectionStore {
     this.searchFieldValue = value;
     console.log("this.searchFieldValue", this.searchFieldValue);
   }
-
   formFieldsValues: IInspection | {} = {};
 
   setFieldsData(value: IFieldsData) {
@@ -86,6 +84,9 @@ export class InspectionStore {
 
     try {
       const response = await instance.get(requestType);
+      this.setFieldsData({
+        [type + "Count"]: 321,
+      });
       if (!response.data.error) {
         this.setFieldsData({ [type]: response.data });
       }
@@ -257,7 +258,7 @@ export class InspectionStore {
     if (!foundField) {
       if (isDevelop) {
         this.getFieldDataDev(type);
-        this.getFieldData(type);
+        // this.getFieldData(type);
       } else {
         this.getFieldData(type);
       }

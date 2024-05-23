@@ -82,19 +82,20 @@ export const MainPage = observer((props: IMainPage) => {
     navigate(RoutesTypes.EditLocalInspection + "/" + id);
   };
   const handleDeleteNewInspection = () => {
-    if (deletingInspectionType) {
+    if (store.mainPageStore.deletingInspectionType) {
       store.inspectionStore.deleteInspectionFromLocalStorage(
-        deletingInspectionType?.id,
+        store.mainPageStore.deletingInspectionType?.id,
       );
       getLocalInspections();
     }
   };
   const handleDeleteSentInspection = () => {
-    console.log("deletingInspectionType", deletingInspectionType);
     if (isDevelop) {
       store.mainPageStore.getInspectionsDev();
     } else {
-      store.mainPageStore.deleteSentInspection(deletingInspectionType?.id);
+      store.mainPageStore.deleteSentInspection(
+        store.mainPageStore.deletingInspectionType?.id,
+      );
       store.mainPageStore.getInspections();
     }
   };
@@ -104,19 +105,14 @@ export const MainPage = observer((props: IMainPage) => {
     store.inspectionStore.clearInspectionForm();
   };
   const handleDelete = (id: string, type: SubGroupsActionsTypes) => {
-    setIsModalOpen(true);
-    setDeletingInspectionType({
+    store.mainPageStore.setDeletingInspectionType({
       type: type,
       id: id,
     });
+    setIsModalOpen(true);
   };
 
   const [isModalOpen, setIsModalOpen] = React.useState(false);
-
-  const [deletingInspectionType, setDeletingInspectionType] = React.useState<{
-    type: SubGroupsActionsTypes;
-    id: string;
-  }>();
 
   const handleOpenFilter = (field: InspectionFormTypes) => {
     store.inspectionStore.handleOpenField(field);
@@ -241,12 +237,14 @@ export const MainPage = observer((props: IMainPage) => {
         cancelActionLabel={t("cancel")}
         confirmActionLabel={t("delete")}
         title={
-          deletingInspectionType?.type === SubGroupsActionsTypes.Sent
+          store.mainPageStore.deletingInspectionType?.type ===
+          SubGroupsActionsTypes.Sent
             ? t("dialogDeleteSentInspection")
             : t("dialogDeleteNewInspection")
         }
         action={() =>
-          deletingInspectionType?.type === SubGroupsActionsTypes.Sent
+          store.mainPageStore.deletingInspectionType?.type ===
+          SubGroupsActionsTypes.Sent
             ? handleDeleteSentInspection()
             : handleDeleteNewInspection()
         }

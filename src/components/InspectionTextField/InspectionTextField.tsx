@@ -15,10 +15,14 @@ import {
 import { useTranslation } from "react-i18next";
 import { PropStatus } from "@consta/uikit/__internal__/src/components/SelectComponents/types";
 import { toJS } from "mobx";
+import { Simulate } from "react-dom/test-utils";
+import load = Simulate.load;
+import {ELEMENTS_ON_FIELD} from "../../constants/config";
 
 interface IFieldInspectionType {
   handleOpenField(type: InspectionFormTypes): void;
   handleChange(value: IFormFieldValue): void;
+  onScrollToBottom?(inspectionType: InspectionFormTypes): void;
   onSearchValueChange?(value: string | null): void;
   status: PropStatus | undefined;
   fieldsData: IFieldsData[];
@@ -37,6 +41,7 @@ const InspectionTextField = observer((props: IFieldInspectionType) => {
 
   const onDropdownOpen = useCallback((open: boolean) => {
     setOpen.set(open);
+    onScrollToBottom();
   }, []);
 
   useEffect(() => {
@@ -90,7 +95,17 @@ const InspectionTextField = observer((props: IFieldInspectionType) => {
   };
 
   const onScrollToBottom = () => {
-    console.log("onScrollToBottom");
+    const found = props.fieldsData.find((field) =>
+      Object.keys(field).includes(props.inspectionType + 'Count'),
+    );
+
+
+    if (found) {
+      const count = found[props.inspectionType + 'Count']
+      if (count && count > ELEMENTS_ON_FIELD) {
+        props.onScrollToBottom?.(props.inspectionType)
+      }
+    }
   };
   const onSearchValueChange = (value: string | null) => {
     props.onSearchValueChange?.(value);
@@ -99,7 +114,6 @@ const InspectionTextField = observer((props: IFieldInspectionType) => {
 
   return (
     <Combobox
-      virtualScroll
       ref={combobox}
       dropdownOpen={open}
       labelPosition="left"
@@ -111,8 +125,9 @@ const InspectionTextField = observer((props: IFieldInspectionType) => {
       onDropdownOpen={onDropdownOpen}
       label={t(props.inspectionType)}
       searchValue={searchValue ?? ""}
-      onScrollToBottom={onScrollToBottom}
-      items={getItems(props.inspectionType)}
+      onScrollToBottom={searchValue ? undefined : onScrollToBottom}
+      virtualScroll
+      items={getItems(props.inspectionType) as Item[]}
       onSearchValueChange={onSearchValueChange}
       getItemKey={(item: Item) => getItemKey(item)}
       placeholder={t(`${props.inspectionType}Placeholder`)}

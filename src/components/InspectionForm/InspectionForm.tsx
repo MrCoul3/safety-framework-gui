@@ -29,6 +29,7 @@ interface IInspectionForm {
   formFieldsValuesLength?: boolean;
   isValidate: boolean;
   setIsValidate(value: boolean): void;
+  onScrollToBottom?(inspectionType: InspectionFormTypes): void;
   handleNextStepToBarriers(): void;
   handleNextStepToFreeForm(): void;
   onInit?(): void;
@@ -162,6 +163,7 @@ const InspectionForm = observer((props: IInspectionForm) => {
                 }
                 return (
                   <InspectionTextField
+                    onScrollToBottom={props.onScrollToBottom}
                     onSearchValueChange={props.onSearchValueChange}
                     required={requiredConditions(inspectionType)}
                     disabled={disabledConditions(inspectionType)}

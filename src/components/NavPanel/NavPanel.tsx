@@ -39,9 +39,7 @@ const NavPanel = observer((props: INavPanel) => {
     }
   };
   const handleConfirm = () => {
-    if (pageIndex) {
-      navigate(pageIndex - 1);
-    }
+      navigate('/');
   }
   return (
     <div className={style.NavPanel}>

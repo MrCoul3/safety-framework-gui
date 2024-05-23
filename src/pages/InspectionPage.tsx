@@ -148,6 +148,12 @@ const InspectionPage = observer((props: IInspectionPage) => {
     }
   };
 
+  const handleScrollFieldToBottom = (inspectionType: InspectionFormTypes) => {
+    console.log("onScrollToBottom", inspectionType);
+    store.inspectionStore.getFieldData(inspectionType);
+
+  };
+
   return (
     <>
       <Layout
@@ -167,6 +173,7 @@ const InspectionPage = observer((props: IInspectionPage) => {
         }
         content={
           <InspectionForm
+            onScrollToBottom={handleScrollFieldToBottom}
             onSearchValueChange={handleSearchValueChange}
             onInit={() => store.inspectionStore.setIsValidate(false)}
             handleNextStepToBarriers={handleNextStepToBarriers}

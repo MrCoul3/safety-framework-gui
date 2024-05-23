@@ -11,6 +11,12 @@ import { IconStorage } from "@consta/icons/IconStorage";
 import { IconHelmet } from "@consta/icons/IconHelmet";
 import { ISubGroupState } from "../interfaces/ISubGroupState";
 import { INSPECTIONS_ON_PAGE } from "../constants/config";
+
+export interface IDeletingInspectionType {
+  type: SubGroupsActionsTypes;
+  id: string;
+}
+
 export class MainPageStore {
   private store: AppStore;
 
@@ -18,7 +24,10 @@ export class MainPageStore {
     this.store = store;
     makeAutoObservable(this);
   }
-
+  deletingInspectionType: IDeletingInspectionType | null = null;
+  setDeletingInspectionType(val: IDeletingInspectionType) {
+    this.deletingInspectionType = val;
+  }
   inspections: IInspection[] = [];
   inspectionsCount: number | null = null;
   localInspections: IInspection[] = [];
@@ -133,7 +142,9 @@ export class MainPageStore {
           this.setInspections(response.data.value);
         }
       }
-    } catch (e) {console.error(e)}
+    } catch (e) {
+      console.error(e);
+    }
   }
   async getInspectionsDashboard() {
     try {
@@ -146,7 +157,9 @@ export class MainPageStore {
           this.updateInspections(response.data.value);
         }
       }
-    } catch (e) {console.error(e)}
+    } catch (e) {
+      console.error(e);
+    }
   }
   async getInspectionsDev() {
     try {
@@ -155,14 +168,19 @@ export class MainPageStore {
         this.setInspectionsCount(48546);
         this.setInspections(response.data);
       }
-    } catch (e) {console.error(e)}
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   async deleteSentInspection(id?: string) {
+    console.log("deleteSentInspection");
     try {
       const response = await instance.delete(`Inspections/${id}`);
       if (!response.data.error) {
       }
-    } catch (e) {console.error(e)}
+    } catch (e) {
+      console.error(e);
+    }
   }
 }

@@ -64,7 +64,7 @@ const CustomFilter = (props: ICustomFilter) => {
           getItemKey={(item: Item) => item.title}
           multiple
           className={style.combobox}
-          items={getItems()}
+          items={getItems() as Item[]}
           onChange={props.onConfirm}
         />
       )}
