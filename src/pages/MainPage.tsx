@@ -123,10 +123,13 @@ export const MainPage = observer((props: IMainPage) => {
   };
 
   const handlePaginationChange = (pageNumber: number) => {
-    console.log("handlePaginationChange");
     const offset = (pageNumber - 1) * INSPECTIONS_ON_PAGE;
     store.mainPageStore.setInspectionOffset(offset);
     store.mainPageStore.getInspections();
+  };
+  const onScrollToBottom = () => {
+    store.mainPageStore.increaseInspectionOffset();
+    store.mainPageStore.getInspectionsDashboard();
   };
 
   const contentRoutes = () => {
@@ -136,7 +139,8 @@ export const MainPage = observer((props: IMainPage) => {
         <Route
           element={
             store.mainPageStore.inspections.length && (
-              <DashBoard offset={store.mainPageStore.inspectionOffset}
+              <DashBoard
+                onScrollToBottom={onScrollToBottom}
                 inspectionsCount={store.mainPageStore.inspectionsCount}
                 handleDeleteSentButtonClick={(id: string) => {
                   handleDelete(id, SubGroupsActionsTypes.Sent);

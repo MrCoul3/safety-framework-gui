@@ -9,15 +9,16 @@ import { InspectionFormTypes } from "../../enums/InspectionFormTypes";
 import InspectionCard from "../InspectionCard/InspectionCard";
 import { ResponsesNothingFound } from "@consta/uikit/ResponsesNothingFound";
 import { useVirtualScroll } from "@consta/uikit/useVirtualScroll";
-import { toJS } from "mobx";
 import { INSPECTIONS_ON_PAGE } from "../../constants/config";
+import InfiniteScroll from "react-infinite-scroller";
+import { ProgressSpin } from "@consta/uikit/ProgressSpin";
 
 interface IDashBoard {
   inspections: IInspection[];
   inspectionsCount: number | null;
 
-  offset: number;
   localInspections: IInspection[];
+  onScrollToBottom(): void;
   handleEditInspection(id: string): void;
   handleEditLocalInspection(id: string): void;
   handleDeleteSentButtonClick(id: string): void;
@@ -62,26 +63,12 @@ const DashBoard = observer((props: IDashBoard) => {
       props.handleDeleteNewInspectionButtonClick(id);
     }
   };
+  console.log('init!!!!!!')
 
   const sentCondition = (subGroup: SubGroupsActionsTypes) =>
     subGroup === SubGroupsActionsTypes.Sent;
   const newInspectionCondition = (subGroup: SubGroupsActionsTypes) =>
     subGroup === SubGroupsActionsTypes.NewInspections;
-
-  const { listRefs, scrollElementRef, slice, spaceTop } = useVirtualScroll({
-    length: props.offset + INSPECTIONS_ON_PAGE,
-    isActive: true,
-
-    onScrollToBottom: (index) => {
-      console.log("onScrollToBottom!!!", index);
-    },
-  });
-
-  const renderData = (subGroup: SubGroupsActionsTypes) => {
-    return sentCondition(subGroup)
-      ? props.inspections.slice(...slice)
-      : props.localInspections;
-  };
 
   const renderContent = (
     subGroup: SubGroupsActionsTypes,
@@ -89,32 +76,27 @@ const DashBoard = observer((props: IDashBoard) => {
   ) => {
     return data.length ? (
       data.map((item, index) => (
-        <div
-          key={`${index}${slice[0]}${slice[1]}`}
-          ref={listRefs[slice[0] + index]}
-        >
-          <InspectionCard
-            handleDeleteButtonClick={(id: string) =>
-              handleDeleteButtonClick(subGroup, id)
-            }
-            handleEditButtonClick={
-              sentCondition(subGroup)
-                ? props.handleEditInspection
-                : props.handleEditLocalInspection
-            }
-            id={item.id}
-            key={item.id}
-            subGroup={subGroup}
-            checkVerifyDate={item[InspectionFormTypes.AuditDate]}
-            oilfield={item[InspectionFormTypes.OilField]?.title}
-            doObject={item[InspectionFormTypes.DoObject]?.title}
-            contractor={item[InspectionFormTypes.Contractor]?.title}
-            contractorStruct={item[InspectionFormTypes.ContractorStruct]?.title}
-            inspectionType={item[InspectionFormTypes.InspectionType]?.title}
-            inspectionForm={item[InspectionFormTypes.InspectionForm]}
-            index={newInspectionCondition(subGroup) && index + 1}
-          />
-        </div>
+        <InspectionCard
+          handleDeleteButtonClick={(id: string) =>
+            handleDeleteButtonClick(subGroup, id)
+          }
+          handleEditButtonClick={
+            sentCondition(subGroup)
+              ? props.handleEditInspection
+              : props.handleEditLocalInspection
+          }
+          id={item.id}
+          key={item.id}
+          subGroup={subGroup}
+          checkVerifyDate={item[InspectionFormTypes.AuditDate]}
+          oilfield={item[InspectionFormTypes.OilField]?.title}
+          doObject={item[InspectionFormTypes.DoObject]?.title}
+          contractor={item[InspectionFormTypes.Contractor]?.title}
+          contractorStruct={item[InspectionFormTypes.ContractorStruct]?.title}
+          inspectionType={item[InspectionFormTypes.InspectionType]?.title}
+          inspectionForm={item[InspectionFormTypes.InspectionForm]}
+          index={newInspectionCondition(subGroup) && index + 1}
+        />
       ))
     ) : (
       <ResponsesNothingFound
@@ -142,7 +124,6 @@ const DashBoard = observer((props: IDashBoard) => {
           <InspectionGroupHeader key={index} subGroup={subGroup} />
 
           <div
-            ref={scrollElementRef}
             key={subGroup}
             className={classNames(style.cardContainer, {
               [style.cardContainerForNewGroup]:
@@ -150,9 +131,17 @@ const DashBoard = observer((props: IDashBoard) => {
             })}
           >
             {sentCondition(subGroup) ? (
-              <div className={style.virtualScrollWrap} style={{ marginTop: spaceTop }}>
+              <InfiniteScroll
+                pageStart={0}
+                hasMore={true}
+                threshold={500}
+                useWindow={false}
+                className={style.virtualScrollWrap}
+                loadMore={() => props.onScrollToBottom()}
+                loader={<ProgressSpin key={0} size="m" />}
+              >
                 {renderContent(subGroup, props.inspections)}
-              </div>
+              </InfiniteScroll>
             ) : (
               renderContent(subGroup, props.localInspections)
             )}

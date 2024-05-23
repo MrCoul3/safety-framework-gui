@@ -93,6 +93,10 @@ export class MainPageStore {
     this.inspections = value;
     console.log("this.inspections", toJS(this.inspections));
   }
+  updateInspections(value: IInspection[]) {
+    this.inspections = [...this.inspections, ...value];
+    console.log("this.inspections", toJS(this.inspections));
+  }
   setInspectionsCount(value: number) {
     this.inspectionsCount = value;
     console.log("this.inspectionsCount", this.inspectionsCount);
@@ -105,22 +109,45 @@ export class MainPageStore {
   }
 
   inspectionOffset: number = 0;
+  inspectionTop: number = INSPECTIONS_ON_PAGE;
   setInspectionOffset(value: number) {
     this.inspectionOffset = value;
+  }
+  increaseInspectionOffset() {
+    console.log("increaseInspectionOffset");
+    this.inspectionOffset = this.inspectionOffset + INSPECTIONS_ON_PAGE;
+  }
+  increaseInspectionTop() {
+    this.inspectionTop = this.inspectionTop + INSPECTIONS_ON_PAGE;
   }
   clearInspectionOffset() {
     this.inspectionOffset = 0;
   }
+
+  expand: string = `$expand=auditor,auditee,supervisor,contractor,subContractor,contractorStruct,oilfield,doStruct,doObject,function,inspectionType`;
+
   async getInspections() {
-    const expand = `$expand=auditor,auditee,supervisor,contractor,subContractor,contractorStruct,oilfield,doStruct,doObject,function,inspectionType`;
     try {
       const response = await instance.get(
-        `${inspectionsEndpoint}?$skip=${this.inspectionOffset}&$top=${this.inspectionOffset + INSPECTIONS_ON_PAGE}&${expand}&$count=true`,
+        `${inspectionsEndpoint}?$skip=${this.inspectionOffset}&$top=${this.inspectionOffset + INSPECTIONS_ON_PAGE}&${this.expand}&$count=true`,
       );
       if (!response.data.error) {
         this.setInspectionsCount(response.data["@odata.count"]);
         if (response.data.value) {
           this.setInspections(response.data.value);
+        }
+      }
+    } catch (e) {}
+  }
+  async getInspectionsDashboard() {
+    try {
+      const response = await instance.get(
+        `${inspectionsEndpoint}?$skip=${this.inspectionOffset}&$top=${this.inspectionOffset + INSPECTIONS_ON_PAGE}&${this.expand}&$count=true`,
+      );
+      if (!response.data.error) {
+        this.setInspectionsCount(response.data["@odata.count"]);
+        if (response.data.value) {
+          this.updateInspections(response.data.value);
         }
       }
     } catch (e) {}
