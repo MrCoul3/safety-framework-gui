@@ -83,12 +83,12 @@ const InspectionForm = observer((props: IInspectionForm) => {
         inspectionFormType !== InspectionFormTypes.Auditee &&
         inspectionFormType !== InspectionFormTypes.Supervisor
       ) {
-        return props.formFieldsValues[inspectionFormType]?.title;
+        return props.formFieldsValues[inspectionFormType]?.title as string;
       } else if (inspectionFormType !== InspectionFormTypes.AuditDate) {
-        return props.formFieldsValues[inspectionFormType]?.personFio;
+        return props.formFieldsValues[inspectionFormType]?.personFio as string;
       }
     }
-    return ""
+    return "";
   };
   const getDate = (inspectionFormType: InspectionFormTypes) => {
     if (props.formFieldsValues) {

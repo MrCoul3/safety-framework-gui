@@ -7,15 +7,13 @@ import { InspectionFormTypes } from "../enums/InspectionFormTypes";
 import { useStore } from "../hooks/useStore";
 import {
   IFormDateFieldValue,
-  IFormFieldValue, Item,
+  IFormFieldValue,
 } from "../stores/InspectionStore";
 import { Outlet, useLocation, useNavigate, useParams } from "react-router";
 import { RoutesTypes } from "../enums/RoutesTypes";
 import { IBreadCrumbs } from "../interfaces/IBreadCrumbs";
 import Layout from "../layouts/Layout/Layout";
-import {isDevelop} from "../constants/config";
-import moment from "moment";
-import {toJS} from "mobx";
+import { isDevelop } from "../constants/config";
 
 interface IInspectionPage {}
 
@@ -64,13 +62,11 @@ const InspectionPage = observer((props: IInspectionPage) => {
   };
 
   const handleChange = (value: IFormFieldValue) => {
-    const values = Object.values(value)[0] as Item
-    const key = Object.keys(value)[0]
-    const valueId = {[key + 'Id']: values.id};
-    store.inspectionStore.updateFormFieldsValues(value );
+    store.inspectionStore.updateFormFieldsValues(value);
     setSavingState(true);
     store.inspectionStore.checkIsFormSuccess();
   };
+
   const handleDateChange = (value: IFormDateFieldValue) => {
     store.inspectionStore.updateFormFieldsValues(value);
     setSavingState(true);
@@ -78,11 +74,21 @@ const InspectionPage = observer((props: IInspectionPage) => {
   };
 
   const saveInspection = () => {
-    editInspectionId
-      ? store.inspectionStore.updateInspectionToLocalStorage(editInspectionId)
-      : store.inspectionStore.setInspectionToLocalStorage();
+    if (
+      location.pathname.includes(RoutesTypes.EditLocalInspection) &&
+      editInspectionId
+    ) {
+      store.inspectionStore.updateInspectionToLocalStorage(editInspectionId);
+    }
+    if (location.pathname.includes(RoutesTypes.NewInspection)) {
+      store.inspectionStore.setInspectionToLocalStorage();
+    }
+    if (location.pathname.includes(RoutesTypes.EditInspection)) {
+      store.inspectionStore.setInspectionToLocalStorage();
+    }
     store.inspectionStore.setIsValidate(false);
   };
+
   const handleSaveInspection = () => {
     setSavingState(false);
     saveInspection();
@@ -105,7 +111,7 @@ const InspectionPage = observer((props: IInspectionPage) => {
     }
   };
   const handleNextStepToFreeForm = () => {
-    console.log('handleNextStepToFreeForm')
+    console.log("handleNextStepToFreeForm");
     const isValid = store.inspectionStore.checkIsFormSuccess();
     console.log("isValid", isValid);
     if (isValid) {
@@ -149,7 +155,8 @@ const InspectionPage = observer((props: IInspectionPage) => {
             handleNextStepToBarriers={handleNextStepToBarriers}
             handleNextStepToFreeForm={handleNextStepToFreeForm}
             formFieldsValuesLength={
-              !!Object.values(store.inspectionStore.formFieldsValues ?? {}).length
+              !!Object.values(store.inspectionStore.formFieldsValues)
+                .length
             }
             handleClearInspectionForm={() => {
               setSavingState(true);

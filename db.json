@@ -5136,7 +5136,7 @@
       "id": 2
     }
   ],
-  "inspectionType": [
+  "inspectionTypes": [
     {
       "title": "Плановая проверка",
       "uniqueId": "1e0c6ce6-aa28-4f2a-bcbf-6f5890889df8",
@@ -5178,7 +5178,7 @@
       "id": 5
     }
   ],
-  "function": [
+  "functions": [
     {
       "title": "Автоматизация и метрология",
       "uniqueId": "d16a3896-5282-4ffe-aa4d-0575b68aa8f5",
@@ -5268,7 +5268,7 @@
       "id": 11
     }
   ],
-  "oilfield": [
+  "oilfields": [
     {
       "title": "Валынтойское",
       "uniqueId": "e6892d26-524d-43bd-a719-68d33a27756c",
@@ -5566,7 +5566,7 @@
       "id": 37
     }
   ],
-  "doStruct": [
+  "doStructs": [
     {
       "title": "Компрессорная станция",
       "uniqueId": "134eab70-b593-4934-bf7f-db504199b277",
@@ -5608,7 +5608,7 @@
       "id": 5
     }
   ],
-  "doObject": [
+  "doObjects": [
     {
       "title": "(НПВ-3) ДНС - КНС-2",
       "uniqueId": "d3f9991b-206d-4d7d-a895-749bd5090462",
@@ -5650,7 +5650,7 @@
       "id": 1668
     }
   ],
-  "contractor": [
+  "contractors": [
     {
       "AsdpoCompanyId": null,
       "Asdpo_Companies_CompanyId": null,
@@ -6402,7 +6402,7 @@
       "id": 84
     }
   ],
-  "contractorStruct": [
+  "contractorStructs": [
     {
       "AsdpoCompanyId": null,
       "Asdpo_Companies_CompanyId": null,
@@ -7154,7 +7154,7 @@
       "id": 84
     }
   ],
-  "subContractor": [
+  "subContractors": [
     {
       "title": "Акрос",
       "uniqueId": "47390f44-5253-440b-ae4a-32a6a0171bff",

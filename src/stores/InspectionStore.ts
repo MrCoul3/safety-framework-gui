@@ -38,7 +38,7 @@ export class InspectionStore {
     this.isValidate = value;
   }
 
-  formFieldsValues: IInspection | null = null;
+  formFieldsValues: IInspection | {}= {};
 
   setFieldsData(value: IFieldsData) {
     this.fieldsData = [...this.fieldsData, value];
@@ -51,7 +51,6 @@ export class InspectionStore {
     console.debug("formFieldsValues: ", toJS(this.formFieldsValues));
   }
   updateFormFieldsValues(value: IFormFieldValue | IFormDateFieldValue) {
-    console.log('updateFormFieldsValues', value)
     if (this.formFieldsValues) {
       const key = Object.keys(value)[0]
       if (key !== InspectionFormTypes.AuditDate) {
@@ -60,12 +59,15 @@ export class InspectionStore {
         Object.assign(this.formFieldsValues, valueId);
       }
       Object.assign(this.formFieldsValues, value);
+    } else {
+      Object.assign(this.formFieldsValues ?? {}, value);
     }
     console.debug("formFieldsValues: ", toJS(this.formFieldsValues));
   }
 
   async getFieldDataDev(type: InspectionFormTypes) {
-    let requestType: any = type;
+
+    let requestType: any = type + 's';
 
     if (EMPLOYEES.includes(type)) {
       requestType = employeesEndpoint;
@@ -80,7 +82,7 @@ export class InspectionStore {
   }
 
   async getFieldData(type: InspectionFormTypes) {
-    let requestType: any = type;
+    let requestType: any = type + 's';
 
     if (EMPLOYEES.includes(type)) {
       requestType = employeesEndpoint;
@@ -125,7 +127,7 @@ export class InspectionStore {
   }
 
   clearInspectionForm() {
-    this.formFieldsValues = null;
+    this.formFieldsValues = {};
   }
 
   checkIsFormSuccess() {
@@ -140,6 +142,8 @@ export class InspectionStore {
   }
 
   setInspectionToLocalStorage() {
+    delete (this.formFieldsValues as IInspection)?.id;
+
     const localInspections = localStorage.getItem(LOCAL_STORE_INSPECTIONS);
     if (localInspections) {
       const localInspectionsParsed = JSON.parse(localInspections);

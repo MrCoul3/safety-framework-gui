@@ -60,7 +60,7 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
 
   const handleEditInspection = (index: string, inspection: IInspection) => {
     if (location.pathname.includes(SubGroupsActionsTypes.Sent)) {
-      props.handleEditInspection(inspection.id);
+      props.handleEditInspection(inspection.id ?? '');
     }
     if (location.pathname.includes(SubGroupsActionsTypes.NewInspections)) {
       props.handleEditLocalInspection(index);
@@ -85,7 +85,7 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
         onClick={() =>
           props.subGroupsActionsTypes === SubGroupsActionsTypes.NewInspections
             ? props.handleDeleteNewInspectionButtonClick(index)
-            : props.handleDeleteSentButtonClick(inspection.id)
+            : props.handleDeleteSentButtonClick(inspection.id ?? '')
         }
         view="ghost"
         iconRight={IconTrash}
@@ -94,7 +94,7 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
     </div>
   );
 
-  const rows = useMemo(
+  const rows: any = useMemo(
     () =>
       props.inspections.map((item, index) => ({
         id: item.id,
@@ -132,7 +132,7 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
 
   keys.unshift("actions");
 
-  const columns: TableColumn<(typeof rows)[number]>[] = keys
+  const columns: any[] = keys
     .filter((key: string) => !excludeFields.includes(key))
     .map((key: any) => ({
       title: <span className={style.colTitle}>{t(key)}</span>,

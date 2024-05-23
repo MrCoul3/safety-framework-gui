@@ -84,7 +84,7 @@ const DashBoard = observer((props: IDashBoard) => {
               ? props.handleEditInspection
               : props.handleEditLocalInspection
           }
-          id={item.id}
+          id={item.id ?? ''}
           key={item.id}
           subGroup={subGroup}
           checkVerifyDate={item[InspectionFormTypes.AuditDate]}
