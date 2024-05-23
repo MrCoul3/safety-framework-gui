@@ -109,16 +109,12 @@ export class MainPageStore {
   }
 
   inspectionOffset: number = 0;
-  inspectionTop: number = INSPECTIONS_ON_PAGE;
   setInspectionOffset(value: number) {
     this.inspectionOffset = value;
   }
   increaseInspectionOffset() {
     console.log("increaseInspectionOffset");
     this.inspectionOffset = this.inspectionOffset + INSPECTIONS_ON_PAGE;
-  }
-  increaseInspectionTop() {
-    this.inspectionTop = this.inspectionTop + INSPECTIONS_ON_PAGE;
   }
   clearInspectionOffset() {
     this.inspectionOffset = 0;
@@ -137,7 +133,7 @@ export class MainPageStore {
           this.setInspections(response.data.value);
         }
       }
-    } catch (e) {}
+    } catch (e) {console.error(e)}
   }
   async getInspectionsDashboard() {
     try {
@@ -150,7 +146,7 @@ export class MainPageStore {
           this.updateInspections(response.data.value);
         }
       }
-    } catch (e) {}
+    } catch (e) {console.error(e)}
   }
   async getInspectionsDev() {
     try {
@@ -159,7 +155,7 @@ export class MainPageStore {
         this.setInspectionsCount(48546);
         this.setInspections(response.data);
       }
-    } catch (e) {}
+    } catch (e) {console.error(e)}
   }
 
   async deleteSentInspection(id?: string) {
@@ -167,6 +163,6 @@ export class MainPageStore {
       const response = await instance.delete(`Inspections/${id}`);
       if (!response.data.error) {
       }
-    } catch (e) {}
+    } catch (e) {console.error(e)}
   }
 }

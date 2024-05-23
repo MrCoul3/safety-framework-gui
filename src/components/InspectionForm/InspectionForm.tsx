@@ -23,13 +23,10 @@ import { IInspection } from "../../interfaces/IInspection";
 
 interface IInspectionForm {
   handleOpenField(type: InspectionFormTypes): void;
-
   handleClearInspectionForm(): void;
-
+  onSearchValueChange?(value: string | null): void;
   fieldsData: IFieldsData[];
-
   formFieldsValuesLength?: boolean;
-
   isValidate: boolean;
   setIsValidate(value: boolean): void;
   handleNextStepToBarriers(): void;
@@ -165,6 +162,7 @@ const InspectionForm = observer((props: IInspectionForm) => {
                 }
                 return (
                   <InspectionTextField
+                    onSearchValueChange={props.onSearchValueChange}
                     required={requiredConditions(inspectionType)}
                     disabled={disabledConditions(inspectionType)}
                     inspectionType={inspectionType}

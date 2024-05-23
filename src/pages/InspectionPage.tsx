@@ -30,6 +30,9 @@ const InspectionPage = observer((props: IInspectionPage) => {
 
   const [savingState, setSavingState] = useState(false);
 
+  const [openFilterType, setOpenFilterType] =
+    useState<InspectionFormTypes | null>(null);
+
   const init = () => {
     if (editInspectionId) {
       if (location.pathname.includes(RoutesTypes.EditLocalInspection)) {
@@ -59,10 +62,11 @@ const InspectionPage = observer((props: IInspectionPage) => {
 
   const handleOpenField = (type: InspectionFormTypes) => {
     store.inspectionStore.handleOpenField(type);
+    setOpenFilterType(type);
   };
 
   const handleChange = (value: IFormFieldValue) => {
-    console.log('handleChange', value)
+    console.log("handleChange", value);
     store.inspectionStore.updateFormFieldsValues(value);
     setSavingState(true);
     store.inspectionStore.checkIsFormSuccess();
@@ -133,6 +137,17 @@ const InspectionPage = observer((props: IInspectionPage) => {
     },
   ];
 
+  const handleSearchValueChange = (value: string | null) => {
+    console.log("handleSearchValueChange value!!!", value);
+    store.inspectionStore.setSearchFieldValue(value);
+    if (!value) {
+      setOpenFilterType(null);
+    }
+    if (value && openFilterType) {
+      store.inspectionStore.getFieldData(openFilterType);
+    }
+  };
+
   return (
     <>
       <Layout
@@ -152,12 +167,12 @@ const InspectionPage = observer((props: IInspectionPage) => {
         }
         content={
           <InspectionForm
+            onSearchValueChange={handleSearchValueChange}
             onInit={() => store.inspectionStore.setIsValidate(false)}
             handleNextStepToBarriers={handleNextStepToBarriers}
             handleNextStepToFreeForm={handleNextStepToFreeForm}
             formFieldsValuesLength={
-              !!Object.values(store.inspectionStore.formFieldsValues)
-                .length
+              !!Object.values(store.inspectionStore.formFieldsValues).length
             }
             handleClearInspectionForm={() => {
               setSavingState(true);

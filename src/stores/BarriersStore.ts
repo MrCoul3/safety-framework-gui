@@ -22,15 +22,19 @@ export class BarriersStore {
             if (!response.data.error) {
                 this.setBarriers(response.data);
             }
-        } catch (e) {}
+        } catch (e) {
+            console.error(e)
+        }
     }
     async getBarriers(passportId: string) {
         try {
             const response = await instance.get(`Barriers?$filter=(PassportId eq ${passportId})and(IsActual eq true)and(IsPk ne null)&$count=true`);
             if (!response.data.error) {
-                this.setBarriers(response.data.value);
+                if (response.data.value) {
+                    this.setBarriers(response.data.value);
+                }
             }
-        } catch (e) {}
+        } catch (e) {console.error(e)}
     }
 
 

@@ -23,3 +23,4 @@ export const UPPER_LEVEL_DOMAIN =
 export const LOCAL_STORE_INSPECTIONS = "localInspections";
 
 export const INSPECTIONS_ON_PAGE = 40;
+export const ELEMENTS_ON_FIELD = 100;

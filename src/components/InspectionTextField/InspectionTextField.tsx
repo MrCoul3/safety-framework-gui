@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
 import {
@@ -19,6 +19,7 @@ import { toJS } from "mobx";
 interface IFieldInspectionType {
   handleOpenField(type: InspectionFormTypes): void;
   handleChange(value: IFormFieldValue): void;
+  onSearchValueChange?(value: string | null): void;
   status: PropStatus | undefined;
   fieldsData: IFieldsData[];
   value?: string;
@@ -32,6 +33,8 @@ const InspectionTextField = observer((props: IFieldInspectionType) => {
 
   const [open, setOpen] = useFlag();
 
+  const [searchValue, setSearchValue] = useState<string | null>(null);
+
   const onDropdownOpen = useCallback((open: boolean) => {
     setOpen.set(open);
   }, []);
@@ -39,6 +42,9 @@ const InspectionTextField = observer((props: IFieldInspectionType) => {
   useEffect(() => {
     if (open) {
       props.handleOpenField(props.inspectionType);
+    } else {
+      props.onSearchValueChange?.(null);
+      setSearchValue(null);
     }
   }, [open]);
 
@@ -86,28 +92,34 @@ const InspectionTextField = observer((props: IFieldInspectionType) => {
   const onScrollToBottom = () => {
     console.log("onScrollToBottom");
   };
+  const onSearchValueChange = (value: string | null) => {
+    props.onSearchValueChange?.(value);
+    setSearchValue(value);
+  };
 
   return (
     <Combobox
-      disabled={props.disabled}
-      onScrollToBottom={onScrollToBottom}
       virtualScroll
       ref={combobox}
-      status={props.status}
-      getItemLabel={(item) => getItemLabel(item)}
-      className={style.field}
       dropdownOpen={open}
       labelPosition="left"
-      label={t(props.inspectionType)}
-      onDropdownOpen={onDropdownOpen}
-      placeholder={t(`${props.inspectionType}Placeholder`)}
+      status={props.status}
+      className={style.field}
+      onChange={handleChange}
+      disabled={props.disabled}
       required={props.required}
+      onDropdownOpen={onDropdownOpen}
+      label={t(props.inspectionType)}
+      searchValue={searchValue ?? ""}
+      onScrollToBottom={onScrollToBottom}
+      items={getItems(props.inspectionType)}
+      onSearchValueChange={onSearchValueChange}
+      getItemKey={(item: Item) => getItemKey(item)}
+      placeholder={t(`${props.inspectionType}Placeholder`)}
+      getItemLabel={(item) => getItemLabel(item)}
       value={
         props.value ? { title: props.value, personFio: props.value } : null
       }
-      items={getItems(props.inspectionType)}
-      onChange={handleChange}
-      getItemKey={(item: Item) => getItemKey(item)}
     />
   );
 });
