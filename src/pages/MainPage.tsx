@@ -12,7 +12,11 @@ import InspectionsTable from "../components/InspectionsTable/InspectionsTable";
 import { Button } from "@consta/uikit/Button";
 import { useTranslation } from "react-i18next";
 import { RoutesTypes } from "../enums/RoutesTypes";
-import {INSPECTIONS_ON_PAGE, isDevelop, LOCAL_STORE_INSPECTIONS} from "../constants/config";
+import {
+  INSPECTIONS_ON_PAGE,
+  isDevelop,
+  LOCAL_STORE_INSPECTIONS,
+} from "../constants/config";
 import { ResponsesNothingFound } from "@consta/uikit/ResponsesNothingFound";
 import ConfirmDialog from "../components/ConfirmDialog/ConfirmDialog";
 import { InspectionFormTypes } from "../enums/InspectionFormTypes";
@@ -119,12 +123,11 @@ export const MainPage = observer((props: IMainPage) => {
   };
 
   const handlePaginationChange = (pageNumber: number) => {
-    console.log('handlePaginationChange')
-      const offset = (pageNumber - 1)  * INSPECTIONS_ON_PAGE;
-      store.mainPageStore.setInspectionOffset(offset);
-      store.mainPageStore.getInspections();
-
-  }
+    console.log("handlePaginationChange");
+    const offset = (pageNumber - 1) * INSPECTIONS_ON_PAGE;
+    store.mainPageStore.setInspectionOffset(offset);
+    store.mainPageStore.getInspections();
+  };
 
   const contentRoutes = () => {
     return (
@@ -133,7 +136,8 @@ export const MainPage = observer((props: IMainPage) => {
         <Route
           element={
             store.mainPageStore.inspections.length && (
-              <DashBoard
+              <DashBoard offset={store.mainPageStore.inspectionOffset}
+                inspectionsCount={store.mainPageStore.inspectionsCount}
                 handleDeleteSentButtonClick={(id: string) => {
                   handleDelete(id, SubGroupsActionsTypes.Sent);
                 }}
@@ -157,7 +161,8 @@ export const MainPage = observer((props: IMainPage) => {
           <Route
             element={
               inspections.length ? (
-                <InspectionsTable handlePaginationChange={handlePaginationChange}
+                <InspectionsTable
+                  handlePaginationChange={handlePaginationChange}
                   subGroupsActionsTypes={
                     !index
                       ? SubGroupsActionsTypes.NewInspections
