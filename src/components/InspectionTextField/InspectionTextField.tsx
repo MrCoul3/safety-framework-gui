@@ -1,11 +1,11 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
 import {
   EMPLOYEES,
   InspectionFormTypes,
 } from "../../enums/InspectionFormTypes";
-import { Combobox, ComboboxItemDefault } from "@consta/uikit/Combobox";
+import { Combobox } from "@consta/uikit/Combobox";
 import { useFlag } from "@consta/uikit/useFlag";
 import {
   IFieldsData,
@@ -14,7 +14,7 @@ import {
 } from "../../stores/InspectionStore";
 import { useTranslation } from "react-i18next";
 import { PropStatus } from "@consta/uikit/__internal__/src/components/SelectComponents/types";
-import {toJS} from "mobx";
+import { toJS } from "mobx";
 
 interface IFieldInspectionType {
   handleOpenField(type: InspectionFormTypes): void;
@@ -22,6 +22,8 @@ interface IFieldInspectionType {
   status: PropStatus | undefined;
   fieldsData: IFieldsData[];
   value?: string;
+  disabled?: boolean;
+  required?: boolean;
   inspectionType: InspectionFormTypes;
 }
 
@@ -41,19 +43,14 @@ const InspectionTextField = observer((props: IFieldInspectionType) => {
   }, [open]);
 
   useEffect(() => {
-    console.log('props.fieldsData', toJS(props.fieldsData))
-    console.log('props.value', toJS(props.value))
-  }, [props.value])
+    console.log("props.fieldsData", toJS(props.fieldsData));
+    console.log("props.value", toJS(props.value));
+  }, [props.value]);
 
   const handleChange = (value: Item | null) => {
     props.handleChange({
-      [props.inspectionType]: value
+      [props.inspectionType]: value,
     });
-    /*if (value?.PersonFio) {
-      props.handleChange({
-        [props.inspectionType]: value
-      });
-    }*/
   };
 
   const getItems = (type: InspectionFormTypes) => {
@@ -75,21 +72,28 @@ const InspectionTextField = observer((props: IFieldInspectionType) => {
 
   const getItemLabel = (item: Item) => {
     if (EMPLOYEES.includes(props.inspectionType)) {
-      return item.PersonFio ?? "";
+      return item.personFio ?? "";
     }
     return item.title;
   };
   const getItemKey = (item: Item) => {
     if (EMPLOYEES.includes(props.inspectionType)) {
-      return item.PersonFio ?? "";
+      return item.personFio ?? "";
     }
     return item.title;
   };
 
+  const onScrollToBottom = () => {
+    console.log("onScrollToBottom");
+  };
+
   return (
     <Combobox
+      disabled={props.disabled}
+      onScrollToBottom={onScrollToBottom}
+      virtualScroll
       ref={combobox}
-      status={props.status ?? props.status}
+      status={props.status}
       getItemLabel={(item) => getItemLabel(item)}
       className={style.field}
       dropdownOpen={open}
@@ -97,9 +101,9 @@ const InspectionTextField = observer((props: IFieldInspectionType) => {
       label={t(props.inspectionType)}
       onDropdownOpen={onDropdownOpen}
       placeholder={t(`${props.inspectionType}Placeholder`)}
-      required
+      required={props.required}
       value={
-        props.value ? { title: props.value, PersonFio: props.value } : null
+        props.value ? { title: props.value, personFio: props.value } : null
       }
       items={getItems(props.inspectionType)}
       onChange={handleChange}

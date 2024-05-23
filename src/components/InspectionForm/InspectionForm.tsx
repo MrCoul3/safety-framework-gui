@@ -115,6 +115,32 @@ const InspectionForm = observer((props: IInspectionForm) => {
     }*/
     props.setIsValidate(true);
   };
+  const disabledConditions = (inspectionType: InspectionFormTypes) => {
+    const ifContractor =
+      props.formFieldsValues &&
+      !props.formFieldsValues[InspectionFormTypes.Contractor];
+    /* enable doStruct if contractor enabled */
+    if (inspectionType === InspectionFormTypes.DoStruct) {
+      if (ifContractor) {
+        return true;
+      }
+    }
+    /* enable doStruct if contractor enabled */
+    if (inspectionType === InspectionFormTypes.Supervisor) {
+      if (ifContractor) {
+        return true;
+      }
+    }
+  };
+
+  const requiredConditions = (inspectionType: InspectionFormTypes) => {
+    const notReqFields = [
+      InspectionFormTypes.Contractor,
+      InspectionFormTypes.SubContractor,
+      InspectionFormTypes.Supervisor,
+    ];
+    return !notReqFields.includes(inspectionType);
+  };
 
   return (
     <div className={style.InspectionForm}>
@@ -123,26 +149,32 @@ const InspectionForm = observer((props: IInspectionForm) => {
           {Object.keys(fields).map((key: string) => (
             <>
               <ItemGroupTitle key={key} groupTitle={key} />
-              {fields[key].map((value) => {
-                if (value === InspectionFormTypes.AuditDate) {
+              {fields[key].map((inspectionType) => {
+                if (inspectionType === InspectionFormTypes.AuditDate) {
                   return (
                     <InspectionDataField
-                      key={value}
-                      inspectionType={value}
+                      key={inspectionType}
+                      inspectionType={inspectionType}
                       handleChange={props.handleDateChange}
-                      value={getDate(value) as Date | null}
-                      status={props.isValidate ? getStatus(value) : undefined}
+                      value={getDate(inspectionType) as Date | null}
+                      status={
+                        props.isValidate ? getStatus(inspectionType) : undefined
+                      }
                     />
                   );
                 }
                 return (
                   <InspectionTextField
-                    inspectionType={value}
-                    value={getValue(value)}
+                    required={requiredConditions(inspectionType)}
+                    disabled={disabledConditions(inspectionType)}
+                    inspectionType={inspectionType}
+                    value={getValue(inspectionType)}
                     fieldsData={props.fieldsData}
                     handleChange={props.handleChange}
                     handleOpenField={props.handleOpenField}
-                    status={props.isValidate ? getStatus(value) : undefined}
+                    status={
+                      props.isValidate ? getStatus(inspectionType) : undefined
+                    }
                   />
                 );
               })}

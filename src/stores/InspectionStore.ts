@@ -16,7 +16,7 @@ export interface IFieldsData {
 export type Item = {
   title: string;
   id?: string;
-  PersonFio?: string;
+  personFio?: string;
 };
 
 export interface IFormFieldValue {
