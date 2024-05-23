@@ -63,7 +63,7 @@ const DashBoard = observer((props: IDashBoard) => {
       props.handleDeleteNewInspectionButtonClick(id);
     }
   };
-  console.log('init!!!!!!')
+  console.log("init!!!!!!");
 
   const sentCondition = (subGroup: SubGroupsActionsTypes) =>
     subGroup === SubGroupsActionsTypes.Sent;
@@ -133,7 +133,11 @@ const DashBoard = observer((props: IDashBoard) => {
             {sentCondition(subGroup) ? (
               <InfiniteScroll
                 pageStart={0}
-                hasMore={true}
+                hasMore={
+                  props.inspectionsCount
+                    ? props.inspectionsCount > props.inspections.length
+                    : true
+                }
                 threshold={500}
                 useWindow={false}
                 className={style.virtualScrollWrap}
