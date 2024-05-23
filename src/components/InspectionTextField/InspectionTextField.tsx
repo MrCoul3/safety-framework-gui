@@ -46,11 +46,9 @@ const InspectionTextField = observer((props: IFieldInspectionType) => {
   }, [props.value])
 
   const handleChange = (value: Item | null) => {
-    if (value?.title) {
-      props.handleChange({
-        [props.inspectionType]: value,
-      });
-    }
+    props.handleChange({
+      [props.inspectionType]: value
+    });
     /*if (value?.PersonFio) {
       props.handleChange({
         [props.inspectionType]: value

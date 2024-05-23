@@ -62,6 +62,7 @@ const InspectionPage = observer((props: IInspectionPage) => {
   };
 
   const handleChange = (value: IFormFieldValue) => {
+    console.log('handleChange', value)
     store.inspectionStore.updateFormFieldsValues(value);
     setSavingState(true);
     store.inspectionStore.checkIsFormSuccess();

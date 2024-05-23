@@ -24,7 +24,7 @@ interface IInspectionsTable {
   inspectionsCount?: number | null;
   subGroupsActionsTypes: SubGroupsActionsTypes;
   handleOpenFilter(field: InspectionFormTypes): void;
-    handlePaginationChange(pageNumber: number): void;
+  handlePaginationChange(pageNumber: number): void;
   handleDeleteSentButtonClick(id: number | string): void;
   handleDeleteNewInspectionButtonClick(id: string): void;
   handleEditInspection(id: number | string): void;
@@ -60,7 +60,7 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
 
   const handleEditInspection = (index: string, inspection: IInspection) => {
     if (location.pathname.includes(SubGroupsActionsTypes.Sent)) {
-      props.handleEditInspection(inspection.id ?? '');
+      props.handleEditInspection(inspection.id ?? "");
     }
     if (location.pathname.includes(SubGroupsActionsTypes.NewInspections)) {
       props.handleEditLocalInspection(index);
@@ -85,7 +85,7 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
         onClick={() =>
           props.subGroupsActionsTypes === SubGroupsActionsTypes.NewInspections
             ? props.handleDeleteNewInspectionButtonClick(index)
-            : props.handleDeleteSentButtonClick(inspection.id ?? '')
+            : props.handleDeleteSentButtonClick(inspection.id ?? "")
         }
         view="ghost"
         iconRight={IconTrash}
@@ -116,8 +116,10 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
           item[InspectionFormTypes.ContractorStruct]?.title,
         [InspectionFormTypes.SubContractor]:
           item[InspectionFormTypes.SubContractor]?.title,
-        [InspectionFormTypes.Auditor]: item[InspectionFormTypes.Auditor]?.personFio,
-        [InspectionFormTypes.Auditee]: item[InspectionFormTypes.Auditee]?.personFio,
+        [InspectionFormTypes.Auditor]:
+          item[InspectionFormTypes.Auditor]?.personFio,
+        [InspectionFormTypes.Auditee]:
+          item[InspectionFormTypes.Auditee]?.personFio,
         [InspectionFormTypes.Supervisor]:
           item[InspectionFormTypes.Supervisor]?.personFio,
         actions: renderActions((index + 1).toString(), item),
@@ -175,7 +177,7 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
 
   const handlePaginationChange = (val: number) => {
     setPage(val);
-    props.handlePaginationChange(val)
+    props.handlePaginationChange(val);
   };
 
   return (
@@ -193,7 +195,7 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
         columns={columns}
       />
       {props.inspectionsCount &&
-        props.inspections.length > INSPECTIONS_ON_PAGE && (
+        props.inspectionsCount > INSPECTIONS_ON_PAGE && (
           <Pagination
             showFirstPage
             showLastPage

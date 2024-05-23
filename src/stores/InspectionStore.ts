@@ -20,7 +20,7 @@ export type Item = {
 };
 
 export interface IFormFieldValue {
-  [key: string]: Item ;
+  [key: string]: Item | null;
 }
 export interface IFormDateFieldValue {
   [key: string]: [Date?, Date?] | null;
@@ -38,7 +38,7 @@ export class InspectionStore {
     this.isValidate = value;
   }
 
-  formFieldsValues: IInspection | {}= {};
+  formFieldsValues: IInspection | {} = {};
 
   setFieldsData(value: IFieldsData) {
     this.fieldsData = [...this.fieldsData, value];
@@ -52,22 +52,23 @@ export class InspectionStore {
   }
   updateFormFieldsValues(value: IFormFieldValue | IFormDateFieldValue) {
     if (this.formFieldsValues) {
-      const key = Object.keys(value)[0]
+      const key = Object.keys(value)[0];
       if (key !== InspectionFormTypes.AuditDate) {
-        const values = Object.values(value)[0] as Item
-        const valueId = {[key + 'Id']: values.id ? +values.id : values.id};
+        const values = Object.values(value)[0] as Item;
+        const valueId = {
+          [key + "Id"]: values ? (values.id ? +values.id : values.id) : null,
+        };
         Object.assign(this.formFieldsValues, valueId);
       }
       Object.assign(this.formFieldsValues, value);
-    } else {
-      Object.assign(this.formFieldsValues ?? {}, value);
     }
+    Object.assign(this.formFieldsValues, value);
+
     console.debug("formFieldsValues: ", toJS(this.formFieldsValues));
   }
 
   async getFieldDataDev(type: InspectionFormTypes) {
-
-    let requestType: any = type + 's';
+    let requestType: any = type + "s";
 
     if (EMPLOYEES.includes(type)) {
       requestType = employeesEndpoint;
@@ -82,7 +83,7 @@ export class InspectionStore {
   }
 
   async getFieldData(type: InspectionFormTypes) {
-    let requestType: any = type + 's';
+    let requestType: any = type + "s";
 
     if (EMPLOYEES.includes(type)) {
       requestType = employeesEndpoint;
