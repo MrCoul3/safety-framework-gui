@@ -56,7 +56,7 @@ export class InspectionStore {
       const key = Object.keys(value)[0]
       if (key !== InspectionFormTypes.AuditDate) {
         const values = Object.values(value)[0] as Item
-        const valueId = {[key + 'Id']: values.id};
+        const valueId = {[key + 'Id']: values.id ? +values.id : values.id};
         Object.assign(this.formFieldsValues, valueId);
       }
       Object.assign(this.formFieldsValues, value);
