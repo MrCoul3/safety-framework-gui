@@ -28,7 +28,7 @@ export class BarriersStore {
         try {
             const response = await instance.get(`Barriers?$filter=(PassportId eq ${passportId})and(IsActual eq true)and(IsPk ne null)&$count=true`);
             if (!response.data.error) {
-                this.setBarriers(response.data);
+                this.setBarriers(response.data.value);
             }
         } catch (e) {}
     }

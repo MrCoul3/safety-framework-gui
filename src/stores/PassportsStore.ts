@@ -26,9 +26,9 @@ export class PassportsStore {
 
     async getPassports() {
         try {
-            const response = await instance.get("Passports?$filter=IsActual%20eq%20true&$count=true");
+            const response = await instance.get("Passports?$filter=IsActual eq true&$count=true");
             if (!response.data.error) {
-                this.setPassports(response.data);
+                this.setPassports(response.data.value);
             }
         } catch (e) {}
     }

@@ -92,7 +92,7 @@ export class InspectionStore {
     try {
       const response = await instance.get(requestType);
       if (!response.data.error) {
-        this.setFieldsData({ [type]: response.data });
+        this.setFieldsData({ [type]: response.data.value });
       }
     } catch (e) {}
   }
