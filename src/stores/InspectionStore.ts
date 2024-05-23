@@ -1,16 +1,21 @@
 import { AppStore } from "./AppStore";
 import { makeAutoObservable, toJS } from "mobx";
-import {EMPLOYEES, InspectionFormTypes} from "../enums/InspectionFormTypes";
-import { employeesEndpoint, instance, localDevInstance} from "../api/endpoints";
+import { EMPLOYEES, InspectionFormTypes } from "../enums/InspectionFormTypes";
+import {
+  employeesEndpoint,
+  instance,
+  localDevInstance,
+} from "../api/endpoints";
 import { LOCAL_STORE_INSPECTIONS } from "../constants/config";
 import moment from "moment/moment";
+import { IInspection } from "../interfaces/IInspection";
 
 export interface IFieldsData {
   [key: string]: Item[];
 }
 export type Item = {
   title: string;
-  PersonFio?: string
+  PersonFio?: string;
 };
 
 export interface IFormFieldValue {
@@ -32,21 +37,20 @@ export class InspectionStore {
     this.isValidate = value;
   }
 
-  formFieldsValues: IFormFieldValue | IFormDateFieldValue = {};
+  formFieldsValues: IInspection | null = null;
 
   setFieldsData(value: IFieldsData) {
     this.fieldsData = [...this.fieldsData, value];
     console.log("this.fieldsData", toJS(this.fieldsData));
   }
 
-  setFormFieldsValues(value: IFormFieldValue | IFormDateFieldValue) {
-    Object.assign(this.formFieldsValues, value);
+  setFormFieldsValues(value: IInspection) {
+    this.formFieldsValues = value;
+    // Object.assign(this.formFieldsValues, value);
     console.debug("formFieldsValues: ", toJS(this.formFieldsValues));
   }
   async getFieldData(type: InspectionFormTypes) {
-
     let requestType: any = type;
-
 
     if (EMPLOYEES.includes(type)) {
       requestType = employeesEndpoint;
@@ -62,9 +66,7 @@ export class InspectionStore {
 
   async getInspectionDev(editInspectionId: string) {
     try {
-      const response = await localDevInstance.get(
-        `inspections/${editInspectionId}`,
-      );
+      const response = await instance.get(`inspections/${editInspectionId}`);
       if (!response.data.error) {
         const result = response.data;
         const inspection = {
@@ -75,9 +77,10 @@ export class InspectionStore {
       }
     } catch (e) {}
   }
+
   async getInspectionById(editInspectionId: string) {
     try {
-      const response = await localDevInstance.get(
+      const response = await instance.get(
         `Inspections?$filter=(id eq ${editInspectionId})`,
       );
       if (!response.data.error) {
@@ -92,15 +95,18 @@ export class InspectionStore {
   }
 
   clearInspectionForm() {
-    this.formFieldsValues = {};
+    this.formFieldsValues = null;
   }
 
   checkIsFormSuccess() {
-    return (
-      Object.keys(InspectionFormTypes).length ===
-        Object.keys(this.formFieldsValues).length &&
-      !Object.values(this.formFieldsValues).some((field) => field === null)
-    );
+    if (this.formFieldsValues) {
+      return (
+        Object.keys(InspectionFormTypes).length ===
+          Object.keys(this.formFieldsValues).length &&
+        !Object.values(this.formFieldsValues).some((field) => field === null)
+      );
+    }
+    return false;
   }
 
   setInspectionToLocalStorage() {

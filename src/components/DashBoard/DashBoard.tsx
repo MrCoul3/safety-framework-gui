@@ -63,7 +63,6 @@ const DashBoard = observer((props: IDashBoard) => {
       props.handleDeleteNewInspectionButtonClick(id);
     }
   };
-  console.log("init!!!!!!");
 
   const sentCondition = (subGroup: SubGroupsActionsTypes) =>
     subGroup === SubGroupsActionsTypes.Sent;

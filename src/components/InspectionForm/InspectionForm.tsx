@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
 import {
@@ -18,7 +18,8 @@ import InspectionDataField from "../InspectionDataField/InspectionDataField";
 import ItemGroupTitle from "../ItemGroupTitle/ItemGroupTitle";
 import { useParams } from "react-router";
 import ConfirmDialog from "../ConfirmDialog/ConfirmDialog";
-import {toJS} from "mobx";
+import { toJS } from "mobx";
+import { IInspection } from "../../interfaces/IInspection";
 
 interface IInspectionForm {
   handleOpenField(type: InspectionFormTypes): void;
@@ -36,15 +37,15 @@ interface IInspectionForm {
   onInit?(): void;
   handleChange(value: IFormFieldValue): void;
   handleDateChange(value: IFormDateFieldValue): void;
-  formFieldsValues: IFormFieldValue | IFormDateFieldValue;
+  formFieldsValues: IInspection | null;
 }
 
 const InspectionForm = observer((props: IInspectionForm) => {
   const { t } = useTranslation("dict");
 
   useEffect(() => {
-    props.onInit?.()
-  }, [])
+    props.onInit?.();
+  }, []);
 
   const [isModalOpen, setIsModalOpen] = React.useState(false);
 
@@ -70,27 +71,48 @@ const InspectionForm = observer((props: IInspectionForm) => {
     [InspectionFormGroups.InspectionParticipants]: [
       InspectionFormTypes.Auditor,
       InspectionFormTypes.Auditee,
-      InspectionFormTypes.Supervisor
+      InspectionFormTypes.Supervisor,
     ],
   };
 
-  const getValue = (inspectionFormType: InspectionFormTypes) => {
-    return props.formFieldsValues[inspectionFormType];
+  const getValue = (inspectionFormType: InspectionFormTypes): string => {
+    if (props.formFieldsValues) {
+      if (
+        inspectionFormType !== InspectionFormTypes.AuditDate &&
+        inspectionFormType !== InspectionFormTypes.Auditor &&
+        inspectionFormType !== InspectionFormTypes.Auditee &&
+        inspectionFormType !== InspectionFormTypes.Supervisor
+      ) {
+        return props.formFieldsValues[inspectionFormType]?.title;
+      } else if (inspectionFormType !== InspectionFormTypes.AuditDate) {
+        return props.formFieldsValues[inspectionFormType]?.personFio;
+      }
+    }
+    return ""
+  };
+  const getDate = (inspectionFormType: InspectionFormTypes) => {
+    if (props.formFieldsValues) {
+      return props.formFieldsValues[inspectionFormType];
+    }
   };
   const getStatus = (inspectionFormType: InspectionFormTypes) => {
-    const condition = props.formFieldsValues[inspectionFormType];
-    if (!condition) {
-      return "alert";
+    if (props.formFieldsValues) {
+      const condition = props.formFieldsValues[inspectionFormType];
+      if (!condition) {
+        return "alert";
+      }
     }
     return "success";
   };
 
   const handleNextStep = () => {
-    if (props.formFieldsValues[InspectionFormTypes.InspectionForm] === "Барьеры") {
-      props.handleNextStepToBarriers()
+    /* if (
+      props.formFieldsValues[InspectionFormTypes.InspectionForm] === "Барьеры"
+    ) {
+      props.handleNextStepToBarriers();
     } else {
       props.handleNextStepToFreeForm();
-    }
+    }*/
     props.setIsValidate(true);
   };
 
@@ -108,7 +130,7 @@ const InspectionForm = observer((props: IInspectionForm) => {
                       key={value}
                       inspectionType={value}
                       handleChange={props.handleDateChange}
-                      value={getValue(value) as Date | null}
+                      value={getDate(value) as Date | null}
                       status={props.isValidate ? getStatus(value) : undefined}
                     />
                   );
@@ -116,7 +138,7 @@ const InspectionForm = observer((props: IInspectionForm) => {
                 return (
                   <InspectionTextField
                     inspectionType={value}
-                    value={getValue(value) as string}
+                    value={getValue(value)}
                     fieldsData={props.fieldsData}
                     handleChange={props.handleChange}
                     handleOpenField={props.handleOpenField}

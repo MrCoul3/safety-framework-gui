@@ -16,6 +16,7 @@ import { InspectionStatusesTypes } from "enums/InspectionStatusesTypes";
 import moment from "moment";
 import { SubGroupsActionsTypes } from "../../enums/SubGroupsTypes";
 import {InspectionFormTypes} from "../../enums/InspectionFormTypes";
+import {IEntity} from "../../interfaces/IInspection";
 
 interface IInspectionCard {
   id: string;
@@ -28,7 +29,7 @@ interface IInspectionCard {
   contractor?: string;
   contractorStruct?: string;
   index?: number | boolean;
-  inspectionForm?: CheckEntityTypes;
+  inspectionForm?: IEntity;
   subGroup?: SubGroupsActionsTypes;
   handleEditButtonClick(id: string): void;
   handleDeleteButtonClick(id: string): void;
@@ -89,7 +90,7 @@ const InspectionCard = observer((props: IInspectionCard) => {
       <div className={style.checkDetails}>
         <span className={style.checkDetailsTitle}>{t("checkDetails")}</span>
         <div className={style.badgeGroup}>
-          <Badge status="system" label={t(props.inspectionForm ?? t("noData"))} />
+          <Badge status="system" label={t(props.inspectionForm?.title ?? t("noData"))} />
          {/* <Badge
             view="stroked"
             status="system"

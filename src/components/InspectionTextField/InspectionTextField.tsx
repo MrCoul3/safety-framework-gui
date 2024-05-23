@@ -14,6 +14,7 @@ import {
 } from "../../stores/InspectionStore";
 import { useTranslation } from "react-i18next";
 import { PropStatus } from "@consta/uikit/__internal__/src/components/SelectComponents/types";
+import {toJS} from "mobx";
 
 interface IFieldInspectionType {
   handleOpenField(type: InspectionFormTypes): void;
@@ -38,6 +39,11 @@ const InspectionTextField = observer((props: IFieldInspectionType) => {
       props.handleOpenField(props.inspectionType);
     }
   }, [open]);
+
+  useEffect(() => {
+    console.log('props.fieldsData', toJS(props.fieldsData))
+    console.log('props.value', toJS(props.value))
+  }, [props.value])
 
   const handleChange = (value: Item | null) => {
     if (value?.title) {

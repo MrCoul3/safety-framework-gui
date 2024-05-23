@@ -5,7 +5,7 @@ export interface IInspection {
   id: string;
 
   [InspectionFormTypes.AuditDate]: Date;
-  [InspectionFormTypes.InspectionForm]: CheckEntityTypes;
+  [InspectionFormTypes.InspectionForm]: IEntity;
   [InspectionFormTypes.InspectionType]: IEntity;
   [InspectionFormTypes.Function]: IEntity;
 
@@ -18,9 +18,9 @@ export interface IInspection {
   [InspectionFormTypes.ContractorStruct]: IEntity;
   [InspectionFormTypes.SubContractor]: IEntity;
 
-  [InspectionFormTypes.Auditor]: IEntity;
-  [InspectionFormTypes.Auditee]: IEntity;
-  [InspectionFormTypes.Supervisor]: IEntity;
+  [InspectionFormTypes.Auditor]: IEmployees;
+  [InspectionFormTypes.Auditee]: IEmployees;
+  [InspectionFormTypes.Supervisor]: IEmployees;
 }
 
 
@@ -31,4 +31,18 @@ export interface IEntity {
   "dateCreated": Date,
   "dateModified": Date,
   "id": number
+}
+
+export interface IEmployees {
+  "personFio": string,
+  "companyId": string,
+  "department": null | string,
+  "position": string,
+  "verified": boolean,
+  "uniqueId": string,
+  "isActual": boolean,
+  "propuskId": null | string,
+  "dateCreated": Date,
+  "dateModified": Date,
+  "id": string
 }

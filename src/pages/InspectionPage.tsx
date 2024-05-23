@@ -13,6 +13,7 @@ import { Outlet, useLocation, useNavigate, useParams } from "react-router";
 import { RoutesTypes } from "../enums/RoutesTypes";
 import { IBreadCrumbs } from "../interfaces/IBreadCrumbs";
 import Layout from "../layouts/Layout/Layout";
+import {isDevelop} from "../constants/config";
 
 interface IInspectionPage {}
 
@@ -35,8 +36,11 @@ const InspectionPage = observer((props: IInspectionPage) => {
         store.inspectionStore.loadInspectionFromLocalStorage(editInspectionId);
       }
       if (location.pathname.includes(RoutesTypes.EditInspection)) {
-        store.inspectionStore.getInspectionDev(editInspectionId);
-        // store.inspectionStore.getInspectionById(editInspectionId);
+        if (isDevelop) {
+          store.inspectionStore.getInspectionDev(editInspectionId);
+        } else {
+          store.inspectionStore.getInspectionById(editInspectionId);
+        }
       }
     }
   };
@@ -59,7 +63,7 @@ const InspectionPage = observer((props: IInspectionPage) => {
 
   const handleChange = (value: IFormFieldValue | IFormDateFieldValue) => {
     setSavingState(true);
-    store.inspectionStore.setFormFieldsValues(value as IFormFieldValue);
+    // store.inspectionStore.setFormFieldsValues(value as IFormFieldValue);
     store.inspectionStore.checkIsFormSuccess();
   };
 
@@ -135,7 +139,7 @@ const InspectionPage = observer((props: IInspectionPage) => {
             handleNextStepToBarriers={handleNextStepToBarriers}
             handleNextStepToFreeForm={handleNextStepToFreeForm}
             formFieldsValuesLength={
-              !!Object.values(store.inspectionStore.formFieldsValues).length
+              !!Object.values(store.inspectionStore.formFieldsValues ?? {}).length
             }
             handleClearInspectionForm={() => {
               setSavingState(true);

@@ -116,10 +116,10 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
           item[InspectionFormTypes.ContractorStruct]?.title,
         [InspectionFormTypes.SubContractor]:
           item[InspectionFormTypes.SubContractor]?.title,
-        [InspectionFormTypes.Auditor]: item[InspectionFormTypes.Auditor]?.title,
-        [InspectionFormTypes.Auditee]: item[InspectionFormTypes.Auditee]?.title,
+        [InspectionFormTypes.Auditor]: item[InspectionFormTypes.Auditor]?.personFio,
+        [InspectionFormTypes.Auditee]: item[InspectionFormTypes.Auditee]?.personFio,
         [InspectionFormTypes.Supervisor]:
-          item[InspectionFormTypes.Supervisor]?.title,
+          item[InspectionFormTypes.Supervisor]?.personFio,
         actions: renderActions((index + 1).toString(), item),
         [InspectionFormTypes.AuditDate]: moment(item.auditDate).format(
           "DD.MM.YYYY",

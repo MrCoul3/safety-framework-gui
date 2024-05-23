@@ -2,6 +2,7 @@
   "inspections": [
 
     {
+      "id": 1,
       "appVersion": "3.1.0",
       "karkas_MailInbox_MailId": 94993,
       "dataSourceId": 1,
@@ -27,7 +28,6 @@
       "createdById": 661,
       "modifiedWhen": "2024-05-17T11:08:02.0255057+05:00",
       "modifiedById": 661,
-      "id": 1,
       "auditor": {
         "personFio": "Котельников Александр Алексеевич",
         "companyId": 125,
