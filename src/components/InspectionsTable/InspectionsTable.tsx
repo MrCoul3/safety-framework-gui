@@ -171,6 +171,10 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
     },
   }));
 
+  const isSentInspectionsCondition = () => {
+    return location.pathname.includes(SubGroupsActionsTypes.Sent);
+  };
+
   const handleCellClick: onCellClick = ({ e, type, rowId, columnIdx, ref }) => {
     e.preventDefault();
   };
@@ -185,7 +189,7 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
       <Table
         ref={tableRef}
         onCellClick={handleCellClick}
-        filters={filters}
+        filters={isSentInspectionsCondition() ? filters : false}
         isResizable
         className={style.table}
         stickyHeader
@@ -195,7 +199,7 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
       />
       {props.inspectionsCount &&
         props.inspectionsCount > INSPECTIONS_ON_PAGE &&
-        location.pathname.includes(SubGroupsActionsTypes.Sent) && (
+        isSentInspectionsCondition() && (
           <Pagination
             showFirstPage
             showLastPage
