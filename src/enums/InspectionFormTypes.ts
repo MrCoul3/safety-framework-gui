@@ -1,7 +1,7 @@
 export enum InspectionFormTypes {
   //Общее
   AuditDate = "auditDate", //Дата проверки
-  InspectionForm = "inspectionFormTypes", //Форма проверки
+  InspectionForm = "inspectionFormType", //Форма проверки
   InspectionType = "inspectionType", //Тип проверки
   Function = "function", //Функция
 

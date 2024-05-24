@@ -41,6 +41,7 @@ const InspectionPage = observer((props: IInspectionPage) => {
       if (location.pathname.includes(RoutesTypes.EditInspection)) {
         if (isDevelop) {
           store.inspectionStore.getInspectionDev(editInspectionId);
+
         } else {
           store.inspectionStore.getInspectionById(editInspectionId);
         }

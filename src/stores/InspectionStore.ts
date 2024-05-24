@@ -11,6 +11,7 @@ import {
 import moment from "moment/moment";
 import { IInspection } from "../interfaces/IInspection";
 import { joinObjectValues } from "../utils/joinObjectValues";
+import {expandFilter} from "../constants/filters";
 
 export interface IFieldsData {
   [key: string]: Item[] | number;
@@ -47,14 +48,22 @@ export class InspectionStore {
   formFieldsValues: IInspection | {} = {};
 
   setFieldsData(value: IFieldsData) {
+    console.log('setFieldsData value', value)
     const keyValue = Object.keys(value)[0];
-    const foundField = this.fieldsData.find((field) =>
-      Object.keys(field).includes(keyValue),
-    );
-    if (foundField) {
-      const newValue = joinObjectValues(foundField, value);
-      this.fieldsData = [...this.fieldsData, newValue];
-      return;
+    console.log('setFieldsData keyValue', keyValue)
+
+    if (!keyValue.includes('Count')) {
+      const foundField = this.fieldsData.find((field) =>
+          Object.keys(field).includes(keyValue),
+      );
+      console.log('setFieldsData foundField', foundField)
+
+      if (foundField) {
+        const newValue = joinObjectValues(foundField, value);
+        console.log('setFieldsData newValue', newValue)
+        this.fieldsData = [...this.fieldsData, newValue];
+        return;
+      }
     }
     this.fieldsData = [...this.fieldsData, value];
     console.log("this.fieldsData", toJS(this.fieldsData));
@@ -178,7 +187,7 @@ export class InspectionStore {
   async getInspectionById(editInspectionId: string) {
     try {
       const response = await instance.get(
-        `Inspections?$filter=(id eq ${editInspectionId})`,
+        `Inspections?$filter=(id eq ${editInspectionId})&$expand=${expandFilter}`,
       );
       if (!response.data.error) {
         if (response.data.value) {
@@ -272,7 +281,6 @@ export class InspectionStore {
     if (!foundField) {
       if (isDevelop) {
         this.getFieldDataDev(type);
-        this.getFieldData(type);
       } else {
         this.getFieldData(type);
       }
