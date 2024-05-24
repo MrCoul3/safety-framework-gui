@@ -15,6 +15,8 @@ export const DEVELOPMENT_DOMAIN = "";
 
 export const [, upperLevelDomain] = window.location.hostname.split(".");
 
+console.log('window.location', window.location);
+
 console.log('upperLevelDomain', upperLevelDomain)
 
 export const UPPER_LEVEL_DOMAIN =
