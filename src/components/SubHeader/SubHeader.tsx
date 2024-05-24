@@ -9,10 +9,13 @@ import { Combobox } from "@consta/uikit/Combobox";
 
 interface ISubHeader {
   handleAddInspection(): void;
+    title?:string
+
 }
 
 type Item = {
   label: string;
+
   id: string | number;
   groupId?: string | number;
 };
@@ -23,7 +26,7 @@ const SubHeader = observer((props: ISubHeader) => {
 
   return (
     <div className={style.SubHeader}>
-      <span className={style.title}>{t(SubGroupsTypes.Inspections)}</span>
+      <span className={style.title}>{props.title ? props.title : t('mainListOfInspections')}</span>
       <div className={style.flexRow}>
         <Button
           onClick={props.handleAddInspection}

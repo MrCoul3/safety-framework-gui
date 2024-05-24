@@ -33,6 +33,8 @@ export const MainPage = observer((props: IMainPage) => {
 
   const navigate = useNavigate();
 
+  const location = useLocation();
+
   const init = () => {
     store.mainPageStore.clearInspectionOffset();
     getLocalInspections();
@@ -216,6 +218,15 @@ export const MainPage = observer((props: IMainPage) => {
     );
   };
 
+  const getSubHeaderTitle = () => {
+    if (location.pathname.includes(SubGroupsActionsTypes.Sent)) {
+      return t(SubGroupsActionsTypes.Sent)
+    }
+    if (location.pathname.includes(SubGroupsActionsTypes.NewInspections)) {
+      return t(SubGroupsActionsTypes.NewInspections)
+    }
+  };
+
   return (
     <div>
       <SnackBarCustom
@@ -230,7 +241,12 @@ export const MainPage = observer((props: IMainPage) => {
             subGroupsState={store.mainPageStore.subGroupsState}
           />
         }
-        contentHeader={<SubHeader handleAddInspection={handleAddInspection} />}
+        contentHeader={
+          <SubHeader
+            title={getSubHeaderTitle()}
+            handleAddInspection={handleAddInspection}
+          />
+        }
         content={contentRoutes()}
       />
       <ConfirmDialog

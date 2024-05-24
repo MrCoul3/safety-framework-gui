@@ -53,9 +53,10 @@ export const ru = {
 
     [SubGroupsTypes.Statistic]: "Статистика",
     [SubGroupsActionsTypes.MainList]: "Общий список",
+    mainListOfInspections: "Общий список иснпекций",
     [SubGroupsTypes.Inspections]: "Инспекции",
-    [SubGroupsActionsTypes.NewInspections]: "Новые инспекции",
-    [SubGroupsActionsTypes.Sent]: "Отправленные",
+    [SubGroupsActionsTypes.NewInspections]: "Неотправленные инспекции",
+    [SubGroupsActionsTypes.Sent]: "Отправленные инспекции",
     [SubGroupsActionsTypes.Deleted]: "Удаленные",
     [SubGroupsActionsTypes.EliminationOfViolations]: "Устранение нарушений",
     [SubGroupsTypes.Information]: "Информация",

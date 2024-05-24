@@ -17,6 +17,7 @@
   font-weight: 700;
   line-height: 28.8px;
   text-align: left;
+  white-space: nowrap;
 }
 
 .autocomplete {

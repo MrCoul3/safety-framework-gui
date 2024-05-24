@@ -15,9 +15,8 @@ import {
 import { useTranslation } from "react-i18next";
 import { PropStatus } from "@consta/uikit/__internal__/src/components/SelectComponents/types";
 import { toJS } from "mobx";
-import { Simulate } from "react-dom/test-utils";
-import load = Simulate.load;
 import { ELEMENTS_ON_FIELD } from "../../constants/config";
+import { useDebounce } from "@consta/uikit/useDebounce";
 
 interface IFieldInspectionType {
   onClose?(): void;
@@ -117,8 +116,16 @@ const InspectionTextField = observer((props: IFieldInspectionType) => {
       }
     }
   };
+
+  const debounceSetSearchValue = useDebounce(
+    (value) => props.onSearchValueChange?.(value),
+    300,
+  );
+
+  useEffect(() => debounceSetSearchValue(searchValue), [searchValue]);
+
   const onSearchValueChange = (value: string | null) => {
-    props.onSearchValueChange?.(value);
+    console.log("onSearchValueChange", value);
     setSearchValue(value);
   };
 
