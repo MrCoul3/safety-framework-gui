@@ -15,8 +15,8 @@ import { CheckEntityTypes } from "enums/CheckEntityTypes";
 import { InspectionStatusesTypes } from "enums/InspectionStatusesTypes";
 import moment from "moment";
 import { SubGroupsActionsTypes } from "../../enums/SubGroupsTypes";
-import {InspectionFormTypes} from "../../enums/InspectionFormTypes";
-import {IEntity} from "../../interfaces/IInspection";
+import { InspectionFormTypes } from "../../enums/InspectionFormTypes";
+import { IEntity } from "../../interfaces/IInspection";
 
 interface IInspectionCard {
   id: string;
@@ -29,7 +29,7 @@ interface IInspectionCard {
   contractor?: string;
   contractorStruct?: string;
   index?: number | boolean;
-  inspectionForm?: IEntity;
+  inspectionForm?: string;
   subGroup?: SubGroupsActionsTypes;
   handleEditButtonClick(id: string): void;
   handleDeleteButtonClick(id: string): void;
@@ -40,7 +40,9 @@ const InspectionCard = observer((props: IInspectionCard) => {
   // const successCond = () => props.status === InspectionStatusesTypes.Success;
   // const awaitCond = () => props.status === InspectionStatusesTypes.Warning;
   // const errorCond = () => props.status === InspectionStatusesTypes.Error;
-  const getDate = (date?: Date) => moment(date).format("DD.MM.YYYY");
+  const getDate = (date?: Date) =>
+    date ? moment(date).format("DD.MM.YYYY") : t("noData");
+  const getValue = (value?: string) => (value ? value : t("noData"));
 
   return (
     <Card
@@ -90,8 +92,11 @@ const InspectionCard = observer((props: IInspectionCard) => {
       <div className={style.checkDetails}>
         <span className={style.checkDetailsTitle}>{t("checkDetails")}</span>
         <div className={style.badgeGroup}>
-          <Badge status="system" label={t(props.inspectionForm?.title ?? t("noData"))} />
-         {/* <Badge
+          <Badge
+            status="system"
+            label={t(props.inspectionForm ?? t("noData"))}
+          />
+          {/* <Badge
             view="stroked"
             status="system"
             label={t(props.doStruct ?? "")}
@@ -104,20 +109,23 @@ const InspectionCard = observer((props: IInspectionCard) => {
           </div>*/}
           <div className={style.extraInfoValue}>
             {t(InspectionFormTypes.OilField)}
-            <span className={style.value}> {props.oilfield}</span>
+            <span className={style.value}> {getValue(props.oilfield)}</span>
           </div>
 
           <div className={style.extraInfoValue}>
             {t(InspectionFormTypes.DoObject)}
-            <span className={style.value}> {props.doObject}</span>
+            <span className={style.value}> {getValue(props.doObject)}</span>
           </div>
           <div className={style.extraInfoValue}>
             {t(InspectionFormTypes.Contractor)}
-            <span className={style.value}> {props.contractor}</span>
+            <span className={style.value}> {getValue(props.contractor)}</span>
           </div>
           <div className={style.extraInfoValue}>
             {t(InspectionFormTypes.ContractorStruct)}
-            <span className={style.value}> {props.contractorStruct}</span>
+            <span className={style.value}>
+              {" "}
+              {getValue(props.contractorStruct)}
+            </span>
           </div>
         </div>
       </div>

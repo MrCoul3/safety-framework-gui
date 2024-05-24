@@ -9,8 +9,7 @@ import { Combobox } from "@consta/uikit/Combobox";
 
 interface ISubHeader {
   handleAddInspection(): void;
-    title?:string
-
+  title?: string;
 }
 
 type Item = {
@@ -23,10 +22,11 @@ type Item = {
 const SubHeader = observer((props: ISubHeader) => {
   const { t } = useTranslation("dict");
 
-
   return (
     <div className={style.SubHeader}>
-      <span className={style.title}>{props.title ? props.title : t('mainListOfInspections')}</span>
+      <span className={style.title}>
+        {props.title ? props.title : t("mainListOfInspections")}
+      </span>
       <div className={style.flexRow}>
         <Button
           onClick={props.handleAddInspection}
