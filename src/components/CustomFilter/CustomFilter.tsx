@@ -60,11 +60,11 @@ const CustomFilter = (props: ICustomFilter) => {
         <Combobox
           placeholder={t(`${props.type}Placeholder`)}
           onDropdownOpen={onDropdownOpen}
-          getItemLabel={(item) => item.Title}
-          getItemKey={(item: Item) => item.Title}
+          getItemLabel={(item) => item.title}
+          getItemKey={(item: Item) => item.title}
           multiple
           className={style.combobox}
-          items={getItems()}
+          items={getItems() as Item[]}
           onChange={props.onConfirm}
         />
       )}

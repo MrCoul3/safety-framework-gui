@@ -21,7 +21,7 @@
 
 .cardContainer {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(1, 1fr);
   gap: var(--normalGap);
   height: calc(
     100vh - var(--mainHeaderHeight) - var(--subHeaderHeight) -
@@ -54,4 +54,11 @@
 .flexRow {
   display: flex;
   align-items: center;
+}
+
+.virtualScrollWrap {
+  display: grid;
+  gap: var(--normalGap);
+
+  grid-template-columns: repeat(2, 1fr);
 }

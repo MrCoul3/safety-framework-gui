@@ -9,17 +9,23 @@ import { SubGroupsActionsTypes } from "enums/SubGroupsTypes";
 import { Route, Routes, useLocation, useNavigate } from "react-router";
 import DashBoard from "../components/DashBoard/DashBoard";
 import InspectionsTable from "../components/InspectionsTable/InspectionsTable";
-import { ResponsesEmptyBox } from "@consta/uikit/ResponsesEmptyBox";
 import { Button } from "@consta/uikit/Button";
 import { useTranslation } from "react-i18next";
 import { RoutesTypes } from "../enums/RoutesTypes";
-import { LOCAL_STORE_INSPECTIONS } from "../constants/config";
+import {
+  INSPECTIONS_ON_PAGE,
+  isDevelop,
+  LOCAL_STORE_INSPECTIONS,
+} from "../constants/config";
 import { ResponsesNothingFound } from "@consta/uikit/ResponsesNothingFound";
 import ConfirmDialog from "../components/ConfirmDialog/ConfirmDialog";
 import { InspectionFormTypes } from "../enums/InspectionFormTypes";
 import { IconAllDone } from "@consta/icons/IconAllDone";
 
 import { SnackBar } from "@consta/uikit/SnackBar";
+import EmptyBoxPage from "../components/EmptyBoxPage/EmptyBoxPage";
+import { Loader } from "@consta/uikit/Loader";
+import SnackBarCustom from "../components/SnackBarCustom/SnackBarCustom";
 
 interface IMainPage {}
 
@@ -31,8 +37,13 @@ export const MainPage = observer((props: IMainPage) => {
   const navigate = useNavigate();
 
   const init = () => {
-    store.mainPageStore.getInspectionsDev();
+    store.mainPageStore.clearInspectionOffset();
     getLocalInspections();
+    if (isDevelop) {
+      store.mainPageStore.getInspectionsDev();
+    } else {
+      store.mainPageStore.getInspections();
+    }
   };
 
   useEffect(() => {
@@ -55,14 +66,6 @@ export const MainPage = observer((props: IMainPage) => {
     navigate(`/`);
   };
 
-  const renderEmptyBoxPage = () => {
-    return (
-      <ResponsesEmptyBox
-        actions={<Button onClick={toHome} view="ghost" label={t("toHome")} />}
-      />
-    );
-  };
-
   const getLocalInspections = () => {
     let localInspectionsParsed = [];
     const localInspections = localStorage.getItem(LOCAL_STORE_INSPECTIONS);
@@ -72,40 +75,58 @@ export const MainPage = observer((props: IMainPage) => {
     store.mainPageStore.setLocalInspections(localInspectionsParsed);
   };
   const handleEditInspection = (id: string) => {
+    store.inspectionStore.clearInspectionForm();
     navigate(RoutesTypes.EditInspection + "/" + id);
   };
+  const handleEditLocalInspection = (id: string) => {
+    store.inspectionStore.clearInspectionForm();
+    navigate(RoutesTypes.EditLocalInspection + "/" + id);
+  };
   const handleDeleteNewInspection = () => {
-    if (deletingInspectionType) {
+    if (store.mainPageStore.deletingInspectionType) {
       store.inspectionStore.deleteInspectionFromLocalStorage(
-        deletingInspectionType?.id,
+        store.mainPageStore.deletingInspectionType?.id,
       );
       getLocalInspections();
     }
   };
   const handleDeleteSentInspection = () => {
-    store.mainPageStore.getInspectionsDev();
+    if (isDevelop) {
+      store.mainPageStore.getInspectionsDev();
+    } else {
+      store.mainPageStore.deleteSentInspection(
+        store.mainPageStore.deletingInspectionType?.id,
+      );
+      store.mainPageStore.getInspections();
+    }
   };
 
   const handleAddInspection = () => {
     navigate(RoutesTypes.NewInspection);
+    store.inspectionStore.clearInspectionForm();
   };
   const handleDelete = (id: string, type: SubGroupsActionsTypes) => {
-    setIsModalOpen(true);
-    setDeletingInspectionType({
+    store.mainPageStore.setDeletingInspectionType({
       type: type,
       id: id,
     });
+    setIsModalOpen(true);
   };
 
   const [isModalOpen, setIsModalOpen] = React.useState(false);
 
-  const [deletingInspectionType, setDeletingInspectionType] = React.useState<{
-    type: SubGroupsActionsTypes;
-    id: string;
-  }>();
-
   const handleOpenFilter = (field: InspectionFormTypes) => {
     store.inspectionStore.handleOpenField(field);
+  };
+
+  const handlePaginationChange = (pageNumber: number) => {
+    const offset = (pageNumber - 1) * INSPECTIONS_ON_PAGE;
+    store.mainPageStore.setInspectionOffset(offset);
+    store.mainPageStore.getInspections();
+  };
+  const onScrollToBottom = () => {
+    store.mainPageStore.increaseInspectionOffset();
+    store.mainPageStore.getInspectionsByScrollToBottomOnDashboard();
   };
 
   const contentRoutes = () => {
@@ -115,15 +136,19 @@ export const MainPage = observer((props: IMainPage) => {
         <Route
           element={
             <DashBoard
+              loader={store.loaderStore.loader}
+              onScrollToBottom={onScrollToBottom}
+              inspectionsCount={store.mainPageStore.inspectionsCount}
               handleDeleteSentButtonClick={(id: string) => {
                 handleDelete(id, SubGroupsActionsTypes.Sent);
               }}
               handleDeleteNewInspectionButtonClick={(id: string) => {
                 handleDelete(id, SubGroupsActionsTypes.NewInspections);
               }}
-              handleEditButtonClick={handleEditInspection}
+              handleEditInspection={handleEditInspection}
+              handleEditLocalInspection={handleEditLocalInspection}
               localInspections={store.mainPageStore.localInspections}
-              data={store.mainPageStore.inspections}
+              inspections={store.mainPageStore.inspections}
             />
           }
           path="/"
@@ -137,6 +162,7 @@ export const MainPage = observer((props: IMainPage) => {
             element={
               inspections.length ? (
                 <InspectionsTable
+                  handlePaginationChange={handlePaginationChange}
                   subGroupsActionsTypes={
                     !index
                       ? SubGroupsActionsTypes.NewInspections
@@ -147,10 +173,12 @@ export const MainPage = observer((props: IMainPage) => {
                   handleDeleteSentButtonClick={(id: string) => {
                     handleDelete(id, SubGroupsActionsTypes.Sent);
                   }}
+                  inspectionsCount={store.mainPageStore.inspectionsCount}
                   handleDeleteNewInspectionButtonClick={(id: string) => {
                     handleDelete(id, SubGroupsActionsTypes.NewInspections);
                   }}
-                  handleEditButtonClick={handleEditInspection}
+                  handleEditInspection={handleEditInspection}
+                  handleEditLocalInspection={handleEditLocalInspection}
                   inspections={inspections}
                 />
               ) : (
@@ -170,14 +198,13 @@ export const MainPage = observer((props: IMainPage) => {
             }
           />
         ))}
-
         {/*BarriersCarts and BarriersApps on main page*/}
         <Route
-          element={renderEmptyBoxPage()}
+          element={<EmptyBoxPage />}
           path={SubGroupsActionsTypes.BarriersCarts}
         />
         <Route
-          element={renderEmptyBoxPage()}
+          element={<EmptyBoxPage />}
           path={SubGroupsActionsTypes.BarriersApps}
         />
       </Routes>
@@ -186,15 +213,11 @@ export const MainPage = observer((props: IMainPage) => {
 
   return (
     <div>
-      {store.snackBarStore.snackBarItem && (
-        <SnackBar
-          getItemIcon={() => IconAllDone}
-          onItemClose={() => store.snackBarStore.clearSnackBar()}
-          getItemAutoClose={() => 3}
-          items={[store.snackBarStore.snackBarItem]}
-          getItemMessage={(item) => item.message}
-        />
-      )}
+
+      <SnackBarCustom
+        onItemClose={() => store.snackBarStore.clearSnackBar()}
+        item={store.snackBarStore.snackBarItem}
+      />
 
       <MainPageLayout
         sideBar={
@@ -210,12 +233,14 @@ export const MainPage = observer((props: IMainPage) => {
         cancelActionLabel={t("cancel")}
         confirmActionLabel={t("delete")}
         title={
-          deletingInspectionType?.type === SubGroupsActionsTypes.Sent
+          store.mainPageStore.deletingInspectionType?.type ===
+          SubGroupsActionsTypes.Sent
             ? t("dialogDeleteSentInspection")
             : t("dialogDeleteNewInspection")
         }
         action={() =>
-          deletingInspectionType?.type === SubGroupsActionsTypes.Sent
+          store.mainPageStore.deletingInspectionType?.type ===
+          SubGroupsActionsTypes.Sent
             ? handleDeleteSentInspection()
             : handleDeleteNewInspection()
         }

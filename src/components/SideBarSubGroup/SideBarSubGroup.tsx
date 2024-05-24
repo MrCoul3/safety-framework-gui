@@ -4,6 +4,7 @@ import style from "./style.module.css";
 import { Navbar } from "@consta/header/Navbar";
 import { IAction } from "../../interfaces/IAction";
 import ItemGroupTitle from "../ItemGroupTitle/ItemGroupTitle";
+import { useTranslation } from "react-i18next";
 
 interface ISideBarSubGroup {
   groupTitle: string;
@@ -12,10 +13,16 @@ interface ISideBarSubGroup {
 }
 
 const SideBarSubGroup = observer((props: ISideBarSubGroup) => {
+  const { t } = useTranslation("dict");
+
   return (
     <div className={style.SideBarSubGroup}>
       <ItemGroupTitle groupTitle={props.groupTitle} />
-      <Navbar onItemClick={props.onItemClick} items={props.actions} />
+      <Navbar
+        getItemLabel={(item) => t(item.label)}
+        onItemClick={props.onItemClick}
+        items={props.actions}
+      />
     </div>
   );
 });

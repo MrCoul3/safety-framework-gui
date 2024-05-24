@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
 import { InspectionFormTypes } from "../../enums/InspectionFormTypes";
@@ -10,10 +10,10 @@ import { PropStatus } from "@consta/uikit/__internal__/src/components/SelectComp
 
 interface IInspectionDataField {
   inspectionType: InspectionFormTypes;
-  disableLabel?: boolean
+  disableLabel?: boolean;
 
   status?: PropStatus | undefined;
-  value?: [Date?, Date?] | null;
+  value?: Date | null;
   handleChange(value: IFormDateFieldValue): void;
 }
 
@@ -28,17 +28,18 @@ const InspectionDataField = observer((props: IInspectionDataField) => {
 
   useEffect(() => {
     const fieldBody = picker.current?.parentElement;
-    fieldBody?.classList.add('customField')
+    fieldBody?.classList.add("customField");
   }, [picker]);
 
   useEffect(() => {
-    setVal(props.value ?? null)
-  }, [props.value])
+    setVal(props.value ?? null);
+  }, [props.value]);
 
-  const [val, setVal] = useState<[Date?, Date?] | null>(null)
+  const [val, setVal] = useState<Date | null>(null);
 
   return (
     <DatePicker
+      type={"date"}
       ref={picker}
       status={props.status}
       className={style.field}

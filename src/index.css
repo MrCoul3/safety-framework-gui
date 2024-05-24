@@ -37,6 +37,7 @@ code {
   --lightGray: #ecf1f4;
   --lightText: #fafafa;
   --blue: #32b4ff;
+  --blueDeep: #0071B2;
   --awaitOrange: #f38b00;
   --successGreen: #22c38e;
   --errorRed: #eb5757;
@@ -57,9 +58,13 @@ code {
       var(--paginatorHeight)
   );
   --inspectionCardWidth: 368px;
-  --inspectionCardHeight: 330px;
+  --inspectionCardMaxHeight: 360px;
+  --inspectionCardMinHeight: 330px;
 }
 
 .customField {
   width: var(--fieldWidth) !important;
+}
+.searchBarriersField {
+  width: 96% !important;
 }

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
 import {
@@ -16,30 +16,33 @@ import {
 import InspectionTextField from "../InspectionTextField/InspectionTextField";
 import InspectionDataField from "../InspectionDataField/InspectionDataField";
 import ItemGroupTitle from "../ItemGroupTitle/ItemGroupTitle";
-import { useParams } from "react-router";
 import ConfirmDialog from "../ConfirmDialog/ConfirmDialog";
+import { IInspection } from "../../interfaces/IInspection";
 
 interface IInspectionForm {
   handleOpenField(type: InspectionFormTypes): void;
-
   handleClearInspectionForm(): void;
-
+  onInspectionTextFieldClose?(): void;
+  onSearchValueChange?(value: string | null): void;
   fieldsData: IFieldsData[];
-
   formFieldsValuesLength?: boolean;
-
   isValidate: boolean;
   setIsValidate(value: boolean): void;
-  handleNextStep(): void;
+  onScrollToBottom?(inspectionType: InspectionFormTypes): void;
+  handleNextStepToBarriers(): void;
+  handleNextStepToFreeForm(): void;
+  onInit?(): void;
   handleChange(value: IFormFieldValue): void;
   handleDateChange(value: IFormDateFieldValue): void;
-  formFieldsValues: IFormFieldValue | IFormDateFieldValue;
+  formFieldsValues: IInspection | null;
 }
 
 const InspectionForm = observer((props: IInspectionForm) => {
   const { t } = useTranslation("dict");
 
-  let { editInspectionId } = useParams();
+  useEffect(() => {
+    props.onInit?.();
+  }, []);
 
   const [isModalOpen, setIsModalOpen] = React.useState(false);
 
@@ -54,31 +57,86 @@ const InspectionForm = observer((props: IInspectionForm) => {
     ],
     [InspectionFormGroups.InspectionPlace]: [
       InspectionFormTypes.OilField,
-      InspectionFormTypes.DoStructs,
-      InspectionFormTypes.DoObjects,
+      InspectionFormTypes.DoStruct,
+      InspectionFormTypes.DoObject,
     ],
     [InspectionFormGroups.ContractorUnderReview]: [
-      InspectionFormTypes.Contractors,
-      InspectionFormTypes.TeamNumber,
-      InspectionFormTypes.SubContractors,
+      InspectionFormTypes.Contractor,
+      InspectionFormTypes.ContractorStruct,
+      InspectionFormTypes.SubContractor,
     ],
-    [InspectionFormGroups.InspectionParticipants]: [],
+    [InspectionFormGroups.InspectionParticipants]: [
+      InspectionFormTypes.Auditor,
+      InspectionFormTypes.Auditee,
+      InspectionFormTypes.Supervisor,
+    ],
   };
 
-  const getValue = (inspectionFormType: InspectionFormTypes) => {
-    return props.formFieldsValues[inspectionFormType];
+  const getValue = (inspectionFormType: InspectionFormTypes): string => {
+    if (props.formFieldsValues) {
+      if (
+        inspectionFormType !== InspectionFormTypes.AuditDate &&
+        inspectionFormType !== InspectionFormTypes.Auditor &&
+        inspectionFormType !== InspectionFormTypes.Auditee &&
+        inspectionFormType !== InspectionFormTypes.Supervisor
+      ) {
+        return props.formFieldsValues[inspectionFormType]?.title as string;
+      } else if (inspectionFormType !== InspectionFormTypes.AuditDate) {
+        return props.formFieldsValues[inspectionFormType]?.personFio as string;
+      }
+    }
+    return "";
+  };
+  const getDate = (inspectionFormType: InspectionFormTypes) => {
+    if (props.formFieldsValues) {
+      return props.formFieldsValues[inspectionFormType];
+    }
   };
   const getStatus = (inspectionFormType: InspectionFormTypes) => {
-    const condition = props.formFieldsValues[inspectionFormType];
-    if (!condition) {
-      return "alert";
+    if (props.formFieldsValues) {
+      const condition = props.formFieldsValues[inspectionFormType];
+      if (!condition) {
+        return "alert";
+      }
     }
     return "success";
   };
 
   const handleNextStep = () => {
-    props.handleNextStep()
+    /* if (
+      props.formFieldsValues[InspectionFormTypes.InspectionForm] === "Барьеры"
+    ) {
+      props.handleNextStepToBarriers();
+    } else {
+      props.handleNextStepToFreeForm();
+    }*/
     props.setIsValidate(true);
+  };
+  const disabledConditions = (inspectionType: InspectionFormTypes) => {
+    const ifContractor =
+      props.formFieldsValues &&
+      !props.formFieldsValues[InspectionFormTypes.Contractor];
+    /* enable doStruct if contractor enabled */
+    if (inspectionType === InspectionFormTypes.DoStruct) {
+      if (ifContractor) {
+        return true;
+      }
+    }
+    /* enable doStruct if contractor enabled */
+    if (inspectionType === InspectionFormTypes.Supervisor) {
+      if (ifContractor) {
+        return true;
+      }
+    }
+  };
+
+  const requiredConditions = (inspectionType: InspectionFormTypes) => {
+    const notReqFields = [
+      InspectionFormTypes.Contractor,
+      InspectionFormTypes.SubContractor,
+      InspectionFormTypes.Supervisor,
+    ];
+    return !notReqFields.includes(inspectionType);
   };
 
   return (
@@ -88,26 +146,34 @@ const InspectionForm = observer((props: IInspectionForm) => {
           {Object.keys(fields).map((key: string) => (
             <>
               <ItemGroupTitle key={key} groupTitle={key} />
-              {fields[key].map((value) => {
-                if (value === InspectionFormTypes.AuditDate) {
+              {fields[key].map((inspectionType) => {
+                if (inspectionType === InspectionFormTypes.AuditDate) {
                   return (
                     <InspectionDataField
-                      key={value}
-                      inspectionType={value}
+                      key={inspectionType}
+                      inspectionType={inspectionType}
                       handleChange={props.handleDateChange}
-                      value={getValue(value) as [Date?, Date?] | null}
-                      status={props.isValidate ? getStatus(value) : undefined}
+                      value={getDate(inspectionType) as Date | null}
+                      status={
+                        props.isValidate ? getStatus(inspectionType) : undefined
+                      }
                     />
                   );
                 }
                 return (
-                  <InspectionTextField
-                    inspectionType={value}
-                    value={getValue(value) as string}
+                  <InspectionTextField onClose={props.onInspectionTextFieldClose}
+                    onScrollToBottom={props.onScrollToBottom}
+                    onSearchValueChange={props.onSearchValueChange}
+                    required={requiredConditions(inspectionType)}
+                    disabled={disabledConditions(inspectionType)}
+                    inspectionType={inspectionType}
+                    value={getValue(inspectionType)}
                     fieldsData={props.fieldsData}
                     handleChange={props.handleChange}
                     handleOpenField={props.handleOpenField}
-                    status={props.isValidate ? getStatus(value) : undefined}
+                    status={
+                      props.isValidate ? getStatus(inspectionType) : undefined
+                    }
                   />
                 );
               })}

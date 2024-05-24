@@ -1,17 +1,29 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
 import { SubGroupsActionsTypes } from "enums/SubGroupsTypes";
 import { useTranslation } from "react-i18next";
-import InspectionCard from "../InspectionCard/InspectionCard";
 import { IInspection } from "../../interfaces/IInspection";
 import classNames from "classnames";
+import { InspectionFormTypes } from "../../enums/InspectionFormTypes";
+import InspectionCard from "../InspectionCard/InspectionCard";
 import { ResponsesNothingFound } from "@consta/uikit/ResponsesNothingFound";
+import InfiniteScroll from "react-infinite-scroller";
+import { ProgressSpin } from "@consta/uikit/ProgressSpin";
+
+import { LoaderType } from "../../interfaces/LoaderType";
+import LoaderPage from "../LoaderPage/LoaderPage";
 
 interface IDashBoard {
-  data: IInspection[];
+  inspections: IInspection[];
+  inspectionsCount: number | null;
+
+  loader?: LoaderType;
+
   localInspections: IInspection[];
-  handleEditButtonClick(id: string): void;
+  onScrollToBottom(): void;
+  handleEditInspection(id: string): void;
+  handleEditLocalInspection(id: string): void;
   handleDeleteSentButtonClick(id: string): void;
   handleDeleteNewInspectionButtonClick(id: string): void;
 }
@@ -47,7 +59,7 @@ const DashBoard = observer((props: IDashBoard) => {
     subGroup: SubGroupsActionsTypes,
     id: string,
   ) => {
-    if (sentCondition(subGroup)) {
+    if (sentInspectionsCondition(subGroup)) {
       props.handleDeleteSentButtonClick(id);
     }
     if (newInspectionCondition(subGroup)) {
@@ -55,60 +67,111 @@ const DashBoard = observer((props: IDashBoard) => {
     }
   };
 
-  const sentCondition = (subGroup: SubGroupsActionsTypes) =>
+  const sentInspectionsCondition = (subGroup: SubGroupsActionsTypes) =>
     subGroup === SubGroupsActionsTypes.Sent;
   const newInspectionCondition = (subGroup: SubGroupsActionsTypes) =>
     subGroup === SubGroupsActionsTypes.NewInspections;
 
+  const renderContent = (
+    subGroup: SubGroupsActionsTypes,
+    data: IInspection[],
+  ) => {
+    return data.length ? (
+      data.map((item, index) => (
+        <InspectionCard
+          handleDeleteButtonClick={(id: string) =>
+            handleDeleteButtonClick(subGroup, id)
+          }
+          handleEditButtonClick={
+            sentInspectionsCondition(subGroup)
+              ? props.handleEditInspection
+              : props.handleEditLocalInspection
+          }
+          id={item.id ?? ""}
+          key={item.id}
+          subGroup={subGroup}
+          checkVerifyDate={item[InspectionFormTypes.AuditDate]}
+          oilfield={item[InspectionFormTypes.OilField]?.title}
+          doObject={item[InspectionFormTypes.DoObject]?.title}
+          contractor={item[InspectionFormTypes.Contractor]?.title}
+          contractorStruct={item[InspectionFormTypes.ContractorStruct]?.title}
+          inspectionType={item[InspectionFormTypes.InspectionType]?.title}
+          inspectionForm={item[InspectionFormTypes.InspectionForm]}
+          index={newInspectionCondition(subGroup) && index + 1}
+        />
+      ))
+    ) : (
+      <ResponsesNothingFound
+        title={
+          sentInspectionsCondition(subGroup)
+            ? t("emptySentInspections")
+            : t("emptyNewInspections")
+        }
+        description={" "}
+        actions={" "}
+      />
+    );
+  };
+
+  const renderLoader = (subGroup: SubGroupsActionsTypes) => {
+    if (props.loader === "wait") {
+      return <LoaderPage />;
+    } else {
+      return (
+        <ResponsesNothingFound
+          title={
+            sentInspectionsCondition(subGroup)
+              ? t("emptySentInspections")
+              : t("emptyNewInspections")
+          }
+          description={" "}
+          actions={" "}
+        />
+      );
+    }
+  };
+
   return (
     <div className={style.DashBoard}>
-      {subGroups.map((subGroup) => (
+      {subGroups.map((subGroup, index) => (
         <div
-          key={subGroup}
+          key={index}
           className={classNames(style.inspectionGroup, {
             [style.newGroup]: newInspectionCondition(subGroup),
-            [style.sentGroup]: sentCondition(subGroup),
+            [style.sentGroup]: sentInspectionsCondition(subGroup),
           })}
         >
-          <InspectionGroupHeader key={subGroup} subGroup={subGroup} />
-          <div key={subGroup}
+          <InspectionGroupHeader key={index} subGroup={subGroup} />
+
+          <div
+            key={subGroup}
             className={classNames(style.cardContainer, {
               [style.cardContainerForNewGroup]:
-                newInspectionCondition(subGroup) || !props.data.length,
+                newInspectionCondition(subGroup) || !props.inspections.length,
             })}
           >
-            {(sentCondition(subGroup) ? props.data : props.localInspections)
-              .length ? (
-              (sentCondition(subGroup)
-                ? props.data
-                : props.localInspections
-              ).map((item, index) => (
-                <InspectionCard
-                  handleDeleteButtonClick={(id: string) =>
-                    handleDeleteButtonClick(subGroup, id)
+            {sentInspectionsCondition(subGroup) ? (
+              props.inspections.length ? (
+                <InfiniteScroll
+                  pageStart={0}
+                  hasMore={
+                    props.inspectionsCount
+                      ? props.inspectionsCount > props.inspections.length
+                      : true
                   }
-                  handleEditButtonClick={props.handleEditButtonClick}
-                  id={item.id}
-                  key={item.id}
-                  subGroup={subGroup}
-                  oilField={item.oilField}
-                  doObject={item.doStructs}
-                  checkVerifyDate={item.auditDate}
-                  inspectionType={item.inspectionType}
-                  inspectionForm={item.inspectionForm}
-                  index={newInspectionCondition(subGroup) && index + 1}
-                />
-              ))
+                  threshold={500}
+                  useWindow={false}
+                  className={style.virtualScrollWrap}
+                  loadMore={() => props.onScrollToBottom()}
+                  loader={<ProgressSpin key={0} size="m" />}
+                >
+                  {renderContent(subGroup, props.inspections)}
+                </InfiniteScroll>
+              ) : (
+                renderLoader(subGroup)
+              )
             ) : (
-              <ResponsesNothingFound
-                title={
-                  sentCondition(subGroup)
-                    ? t("emptySentInspections")
-                    : t("emptyNewInspections")
-                }
-                description={" "}
-                actions={" "}
-              />
+              renderContent(subGroup, props.localInspections)
             )}
           </div>
         </div>

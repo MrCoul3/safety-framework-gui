@@ -1,6 +1,6 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, toJS } from "mobx";
 import { AppStore } from "./AppStore";
-import {instance, localDevInstance} from "../api/endpoints";
+import { inspectionsEndpoint, instance } from "../api/endpoints";
 import { IInspection } from "../interfaces/IInspection";
 import { SubGroupsActionsTypes, SubGroupsTypes } from "../enums/SubGroupsTypes";
 import { IconBento } from "@consta/icons/IconBento";
@@ -8,7 +8,15 @@ import { IconList } from "@consta/icons/IconList";
 import { IconMail } from "@consta/icons/IconMail";
 import { IconDocFilled } from "@consta/icons/IconDocFilled";
 import { IconStorage } from "@consta/icons/IconStorage";
+import { IconHelmet } from "@consta/icons/IconHelmet";
 import { ISubGroupState } from "../interfaces/ISubGroupState";
+import { INSPECTIONS_ON_PAGE } from "../constants/config";
+
+export interface IDeletingInspectionType {
+  type: SubGroupsActionsTypes;
+  id: string;
+}
+
 export class MainPageStore {
   private store: AppStore;
 
@@ -16,14 +24,18 @@ export class MainPageStore {
     this.store = store;
     makeAutoObservable(this);
   }
-
+  deletingInspectionType: IDeletingInspectionType | null = null;
+  setDeletingInspectionType(val: IDeletingInspectionType) {
+    this.deletingInspectionType = val;
+  }
   inspections: IInspection[] = [];
+  inspectionsCount: number | null = null;
   localInspections: IInspection[] = [];
   sideBarItemValue: SubGroupsActionsTypes | null =
     SubGroupsActionsTypes.MainList;
 
   subGroupsState: ISubGroupState[] = [
-    {
+    /* {
       name: SubGroupsTypes.Statistic,
       actions: [
         {
@@ -32,10 +44,15 @@ export class MainPageStore {
           active: true,
         },
       ],
-    },
+    },*/
     {
       name: SubGroupsTypes.Inspections,
       actions: [
+        {
+          label: SubGroupsActionsTypes.MainList,
+          icon: IconBento,
+          active: true,
+        },
         {
           label: SubGroupsActionsTypes.Sent,
           icon: IconMail,
@@ -43,6 +60,10 @@ export class MainPageStore {
         {
           label: SubGroupsActionsTypes.NewInspections,
           icon: IconList,
+        },
+        {
+          label: SubGroupsActionsTypes.EliminationOfViolations,
+          icon: IconHelmet,
         },
       ],
     },
@@ -79,6 +100,15 @@ export class MainPageStore {
 
   setInspections(value: IInspection[]) {
     this.inspections = value;
+    console.log("this.inspections", toJS(this.inspections));
+  }
+  updateInspections(value: IInspection[]) {
+    this.inspections = [...this.inspections, ...value];
+    console.log("this.inspections", toJS(this.inspections));
+  }
+  setInspectionsCount(value: number) {
+    this.inspectionsCount = value;
+    console.log("this.inspectionsCount", this.inspectionsCount);
   }
   setLocalInspections(value: IInspection[]) {
     this.localInspections = value;
@@ -87,12 +117,77 @@ export class MainPageStore {
     this.sideBarItemValue = value;
   }
 
+  inspectionOffset: number = 0;
+  setInspectionOffset(value: number) {
+    this.inspectionOffset = value;
+  }
+  increaseInspectionOffset() {
+    console.log("increaseInspectionOffset");
+    this.inspectionOffset = this.inspectionOffset + INSPECTIONS_ON_PAGE;
+  }
+  clearInspectionOffset() {
+    this.inspectionOffset = 0;
+  }
+
+  expand: string = `$expand=auditor,auditee,supervisor,contractor,subContractor,contractorStruct,oilfield,doStruct,doObject,function,inspectionType`;
   async getInspectionsDev() {
+    this.store.loaderStore.setLoader('wait')
     try {
-      const response = await localDevInstance.get("inspections");
+      const response = await instance.get(`${inspectionsEndpoint}`);
       if (!response.data.error) {
-        this.setInspections(response.data);
+        setTimeout(() => {
+          this.setInspectionsCount(48546);
+          this.setInspections(response.data);
+          this.store.loaderStore.setLoader('ready')
+        }, 1000)
       }
-    } catch (e) {}
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  async getInspections() {
+    this.store.loaderStore.setLoader('wait')
+    try {
+      const response = await instance.get(
+        `${inspectionsEndpoint}?$skip=${this.inspectionOffset}&$top=${INSPECTIONS_ON_PAGE}&${this.expand}&$count=true`,
+      );
+      if (!response.data.error) {
+        this.setInspectionsCount(response.data["@odata.count"]);
+        if (response.data.value) {
+          this.setInspections(response.data.value);
+        }
+        this.store.loaderStore.setLoader('ready')
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+  async getInspectionsByScrollToBottomOnDashboard() {
+    try {
+      const response = await instance.get(
+        `${inspectionsEndpoint}?$skip=${this.inspectionOffset}&$top=${INSPECTIONS_ON_PAGE}&${this.expand}&$count=true`,
+      );
+      if (!response.data.error) {
+        this.setInspectionsCount(response.data["@odata.count"]);
+        if (response.data.value) {
+          this.updateInspections(response.data.value);
+        }
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+
+  async deleteSentInspection(id?: string) {
+    console.log("deleteSentInspection");
+    try {
+      const response = await instance.delete(`Inspections/${id}`);
+      if (!response.data.error) {
+      }
+    } catch (e) {
+      console.error(e);
+    }
   }
 }

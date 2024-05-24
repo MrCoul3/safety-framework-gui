@@ -1,19 +1,28 @@
 import { AppStore } from "./AppStore";
 import { makeAutoObservable, toJS } from "mobx";
-import { InspectionFormTypes } from "../enums/InspectionFormTypes";
-import { instance, localDevInstance } from "../api/endpoints";
-import { LOCAL_STORE_INSPECTIONS } from "../constants/config";
+import { EMPLOYEES, InspectionFormTypes } from "../enums/InspectionFormTypes";
+import { employeesEndpoint, instance } from "../api/endpoints";
+import {
+  ELEMENTS_ON_FIELD,
+  INSPECTIONS_ON_PAGE,
+  isDevelop,
+  LOCAL_STORE_INSPECTIONS,
+} from "../constants/config";
 import moment from "moment/moment";
+import { IInspection } from "../interfaces/IInspection";
+import { joinObjectValues } from "../utils/joinObjectValues";
 
 export interface IFieldsData {
-  [key: string]: Item[];
+  [key: string]: Item[] | number;
 }
 export type Item = {
-  Title: string;
+  title: string;
+  id?: string;
+  personFio?: string;
 };
 
 export interface IFormFieldValue {
-  [key: string]: Item | null | string;
+  [key: string]: Item | null;
 }
 export interface IFormDateFieldValue {
   [key: string]: [Date?, Date?] | null;
@@ -27,29 +36,163 @@ export class InspectionStore {
   }
   fieldsData: IFieldsData[] = [];
   isValidate: boolean = false;
+  searchFieldValue: string | null = null;
   setIsValidate(value: boolean) {
     this.isValidate = value;
   }
-
-  formFieldsValues: IFormFieldValue | IFormDateFieldValue = {};
+  setSearchFieldValue(value: string | null) {
+    this.searchFieldValue = value;
+    console.log("this.searchFieldValue", this.searchFieldValue);
+  }
+  formFieldsValues: IInspection | {} = {};
 
   setFieldsData(value: IFieldsData) {
+    const keyValue = Object.keys(value)[0];
+    const foundField = this.fieldsData.find((field) =>
+      Object.keys(field).includes(keyValue),
+    );
+    if (foundField) {
+      const newValue = joinObjectValues(foundField, value);
+      this.fieldsData = [...this.fieldsData, newValue];
+      return;
+    }
     this.fieldsData = [...this.fieldsData, value];
     console.log("this.fieldsData", toJS(this.fieldsData));
   }
+  clearFieldsData() {
+    this.fieldsData = [];
+    console.log("this.fieldsData", toJS(this.fieldsData));
+  }
 
-  setFormFieldsValues(value: IFormFieldValue | IFormDateFieldValue) {
+  setFormFieldsValues(value: IInspection) {
+    this.formFieldsValues = value;
+    console.debug("formFieldsValues: ", toJS(this.formFieldsValues));
+  }
+  updateFormFieldsValues(value: IFormFieldValue | IFormDateFieldValue) {
+    if (this.formFieldsValues) {
+      const key = Object.keys(value)[0];
+      if (key !== InspectionFormTypes.AuditDate) {
+        const values = Object.values(value)[0] as Item;
+        const valueId = {
+          [key + "Id"]: values ? (values.id ? +values.id : values.id) : null,
+        };
+        Object.assign(this.formFieldsValues, valueId);
+      }
+      Object.assign(this.formFieldsValues, value);
+    }
     Object.assign(this.formFieldsValues, value);
+
     console.debug("formFieldsValues: ", toJS(this.formFieldsValues));
   }
 
-  async getFieldData(type: InspectionFormTypes) {
+  async getFieldDataDev(type: InspectionFormTypes) {
+    let requestType: any = type + "s";
+
+    if (EMPLOYEES.includes(type)) {
+      requestType = employeesEndpoint;
+    }
+
     try {
-      const response = await localDevInstance.get(type);
+      const response = await instance.get(requestType);
+      this.setFieldsData({
+        [type + "Count"]: 321,
+      });
       if (!response.data.error) {
         this.setFieldsData({ [type]: response.data });
       }
-    } catch (e) {}
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  offset: number = 0;
+  setOffset(value: number) {
+    this.offset = value;
+    console.log("field offset", this.offset);
+  }
+  increaseOffset() {
+    this.offset = this.offset + ELEMENTS_ON_FIELD;
+    console.log("field offset", this.offset);
+  }
+  clearOffset() {
+    this.offset = 0;
+    console.log("field offset", this.offset);
+  }
+
+  async getFieldData(type: InspectionFormTypes) {
+    let requestType: any = type + "s";
+
+    const searchFieldValue = this.searchFieldValue ?? "";
+
+    const itemValue: Item = { title: "title", personFio: "personFio" };
+
+    let filter = searchFieldValue ? `$filter=contains(${itemValue.title},'${searchFieldValue}')` : "";
+
+    let offset = searchFieldValue ? "" : `&$skip=${this.offset}&$top=${ELEMENTS_ON_FIELD}`
+
+    if (EMPLOYEES.includes(type)) {
+      requestType = employeesEndpoint;
+      filter = searchFieldValue ? `$filter=contains(${itemValue.personFio},'${searchFieldValue}')` : "";
+    }
+
+    const countFilter = this.searchFieldValue ? "" : `&$count=true`;
+
+    try {
+      const response = await instance.get(
+        `${requestType}?${filter}${offset}${countFilter}`,
+      );
+      if (!response.data.error) {
+        const count = response.data["@odata.count"];
+        if (count) {
+          this.setFieldsData({
+            [type + "Count"]: count,
+          });
+        }
+        if (response.data.value) {
+          this.setFieldsData({
+            [type]: response.data.value,
+          });
+        }
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  async getInspectionDev(editInspectionId: string) {
+    try {
+      const response = await instance.get(`inspections/${editInspectionId}`);
+      if (!response.data.error) {
+        const result = response.data;
+        const inspection = {
+          ...result,
+          auditDate: moment(result.auditDate).toDate(),
+        };
+        this.setFormFieldsValues(inspection);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  async getInspectionById(editInspectionId: string) {
+    try {
+      const response = await instance.get(
+        `Inspections?$filter=(id eq ${editInspectionId})`,
+      );
+      if (!response.data.error) {
+        if (response.data.value) {
+          const result = response.data.value;
+          const inspection = {
+            ...result,
+            auditDate: moment(result.auditDate).toDate(),
+          };
+          this.setFormFieldsValues(inspection);
+        }
+      }
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   clearInspectionForm() {
@@ -57,19 +200,24 @@ export class InspectionStore {
   }
 
   checkIsFormSuccess() {
-    return (
-      Object.keys(InspectionFormTypes).length ===
-        Object.keys(this.formFieldsValues).length &&
-      !Object.values(this.formFieldsValues).some((field) => field === null)
-    );
+    if (this.formFieldsValues) {
+      return (
+        Object.keys(InspectionFormTypes).length ===
+          Object.keys(this.formFieldsValues).length &&
+        !Object.values(this.formFieldsValues).some((field) => field === null)
+      );
+    }
+    return false;
   }
 
   setInspectionToLocalStorage() {
+    delete (this.formFieldsValues as IInspection)?.id;
+
     const localInspections = localStorage.getItem(LOCAL_STORE_INSPECTIONS);
     if (localInspections) {
       const localInspectionsParsed = JSON.parse(localInspections);
       if (localInspectionsParsed) {
-        localInspectionsParsed.push(this.formFieldsValues);
+        localInspectionsParsed.unshift(this.formFieldsValues);
       }
       const newInspectionsJson = JSON.stringify(localInspectionsParsed);
       localStorage.setItem(LOCAL_STORE_INSPECTIONS, newInspectionsJson);
@@ -85,7 +233,7 @@ export class InspectionStore {
       const localInspectionsParsed = JSON.parse(localInspections);
       if (localInspectionsParsed.length) {
         localInspectionsParsed.splice(index, 1);
-        localInspectionsParsed.push(this.formFieldsValues);
+        localInspectionsParsed.unshift(this.formFieldsValues);
         const newInspectionsJson = JSON.stringify(localInspectionsParsed);
         localStorage.setItem(LOCAL_STORE_INSPECTIONS, newInspectionsJson);
       }
@@ -122,7 +270,12 @@ export class InspectionStore {
       Object.keys(data).includes(type),
     );
     if (!foundField) {
-      this.getFieldData(type);
+      if (isDevelop) {
+        this.getFieldDataDev(type);
+        this.getFieldData(type);
+      } else {
+        this.getFieldData(type);
+      }
     }
   }
 }

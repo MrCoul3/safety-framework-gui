@@ -8,10 +8,11 @@ import MainHeader from "../../MainHeader/MainHeader";
 import { useStore } from "../../../hooks/useStore";
 import { useTranslation } from "react-i18next";
 import { RoutesTypes } from "../../../enums/RoutesTypes";
-import NewInspectionPage from "../../../pages/NewInspectionPage";
+import InspectionPage from "../../../pages/InspectionPage";
 import { SubGroupsActionsTypes } from "../../../enums/SubGroupsTypes";
 import PassportsPage from "../../../pages/PassportsPage";
-import BarriersPage from "../../../pages/BarriersPage";
+import BarriersPage from "../../../pages/BarriersPage/BarriersPage";
+import EmptyBoxPage from "../../EmptyBoxPage/EmptyBoxPage";
 export const AppContainer = observer(() => {
   const { t } = useTranslation("dict");
 
@@ -44,16 +45,34 @@ export const AppContainer = observer(() => {
         <Route path={"/*"} element={<MainPage />} />
 
         <Route
+            element={<EmptyBoxPage />}
+            path={SubGroupsActionsTypes.EliminationOfViolations}
+        />
+
+        <Route
           path={RoutesTypes.NewInspection}
-          element={<NewInspectionPage />}
+          element={<InspectionPage />}
         />
         <Route
           path={RoutesTypes.EditInspection + "/:editInspectionId"}
-          element={<NewInspectionPage />}
+          element={<InspectionPage />}
         />
+        <Route
+          path={RoutesTypes.EditLocalInspection + "/:editInspectionId"}
+          element={<InspectionPage />}
+        />
+
         <Route
           path={
             RoutesTypes.EditInspection +
+            "/:editInspectionId/" +
+            RoutesTypes.Passports
+          }
+          element={<PassportsPage />}
+        />
+        <Route
+          path={
+            RoutesTypes.EditLocalInspection +
             "/:editInspectionId/" +
             RoutesTypes.Passports
           }
@@ -64,6 +83,8 @@ export const AppContainer = observer(() => {
           element={<PassportsPage />}
         />
 
+
+
         <Route
           path={
             RoutesTypes.NewInspection +
@@ -71,10 +92,11 @@ export const AppContainer = observer(() => {
             RoutesTypes.Passports +
             "/" +
             RoutesTypes.Barriers +
-            "/:id"
+            "/:passportId"
           }
           element={<BarriersPage />}
         />
+
         <Route
           path={
             RoutesTypes.EditInspection +
@@ -83,6 +105,18 @@ export const AppContainer = observer(() => {
             "/" +
             RoutesTypes.Barriers +
             "/:id"
+          }
+          element={<BarriersPage />}
+        />
+
+        <Route
+          path={
+            RoutesTypes.EditLocalInspection +
+            "/:editInspectionId/" +
+            RoutesTypes.Passports +
+            "/" +
+            RoutesTypes.Barriers +
+            "/:passportId"
           }
           element={<BarriersPage />}
         />

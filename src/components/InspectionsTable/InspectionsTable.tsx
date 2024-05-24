@@ -2,7 +2,7 @@ import React, { ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
 import { Table, TableColumn } from "@consta/uikit/Table";
-import { IInspection } from "../../interfaces/IInspection";
+import { IEntity, IInspection } from "../../interfaces/IInspection";
 import { useTranslation } from "react-i18next";
 import { Pagination } from "@consta/uikit/Pagination";
 import moment from "moment";
@@ -16,20 +16,27 @@ import CustomFilter from "../CustomFilter/CustomFilter";
 import { INSPECTIONS_ON_PAGE } from "../../constants/config";
 import { IFieldsData } from "../../stores/InspectionStore";
 import { SubGroupsActionsTypes } from "../../enums/SubGroupsTypes";
+import { useLocation } from "react-router";
 interface IInspectionsTable {
   inspections: IInspection[];
   fieldsData: IFieldsData[];
+
+  inspectionsCount?: number | null;
   subGroupsActionsTypes: SubGroupsActionsTypes;
-  handleEditButtonClick(id: string): void;
   handleOpenFilter(field: InspectionFormTypes): void;
-  handleDeleteSentButtonClick(id: string): void;
+  handlePaginationChange(pageNumber: number): void;
+  handleDeleteSentButtonClick(id: number | string): void;
   handleDeleteNewInspectionButtonClick(id: string): void;
+  handleEditInspection(id: number | string): void;
+  handleEditLocalInspection(id: string): void;
 }
 
 const InspectionsTable = observer((props: IInspectionsTable) => {
   const { t } = useTranslation("dict");
 
   const [page, setPage] = useState(1);
+
+  const location = useLocation();
 
   const tableContainerRef = useRef<HTMLDivElement>(null);
 
@@ -51,23 +58,34 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
 
   const excludeFields = ["id"];
 
-  const renderActions = (index: string) => (
+  const handleEditInspection = (index: string, inspection: IInspection) => {
+    if (location.pathname.includes(SubGroupsActionsTypes.Sent)) {
+      props.handleEditInspection(inspection.id ?? "");
+    }
+    if (location.pathname.includes(SubGroupsActionsTypes.NewInspections)) {
+      props.handleEditLocalInspection(index);
+    }
+  };
+
+  const renderActions = (index: string, inspection: IInspection) => (
     <div className={style.buttonGroup}>
-      <Button size="s"
-        onClick={() => props.handleEditButtonClick(index)}
+      <Button
+        size="s"
+        onClick={() => handleEditInspection(index, inspection)}
         view="ghost"
         iconRight={IconEdit}
         onlyIcon
       />
       {props.subGroupsActionsTypes === SubGroupsActionsTypes.NewInspections && (
-        <Button size="s" view="ghost"  iconRight={IconMail} onlyIcon />
+        <Button size="s" view="ghost" iconRight={IconMail} onlyIcon />
       )}
 
-      <Button size="s"
+      <Button
+        size="s"
         onClick={() =>
           props.subGroupsActionsTypes === SubGroupsActionsTypes.NewInspections
             ? props.handleDeleteNewInspectionButtonClick(index)
-            : props.handleDeleteSentButtonClick(index)
+            : props.handleDeleteSentButtonClick(inspection.id ?? "")
         }
         view="ghost"
         iconRight={IconTrash}
@@ -76,11 +94,35 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
     </div>
   );
 
-  const rows = useMemo(
+  const rows: any = useMemo(
     () =>
       props.inspections.map((item, index) => ({
-        ...item,
-        actions: renderActions((index + 1).toString()),
+        id: item.id,
+        [InspectionFormTypes.InspectionForm]:
+          item[InspectionFormTypes.InspectionForm],
+        [InspectionFormTypes.InspectionType]:
+          item[InspectionFormTypes.InspectionType]?.title,
+        [InspectionFormTypes.Function]:
+          item[InspectionFormTypes.Function]?.title,
+        [InspectionFormTypes.OilField]:
+          item[InspectionFormTypes.OilField]?.title,
+        [InspectionFormTypes.DoStruct]:
+          item[InspectionFormTypes.DoStruct]?.title,
+        [InspectionFormTypes.DoObject]:
+          item[InspectionFormTypes.DoObject]?.title,
+        [InspectionFormTypes.Contractor]:
+          item[InspectionFormTypes.Contractor]?.title,
+        [InspectionFormTypes.ContractorStruct]:
+          item[InspectionFormTypes.ContractorStruct]?.title,
+        [InspectionFormTypes.SubContractor]:
+          item[InspectionFormTypes.SubContractor]?.title,
+        [InspectionFormTypes.Auditor]:
+          item[InspectionFormTypes.Auditor]?.personFio,
+        [InspectionFormTypes.Auditee]:
+          item[InspectionFormTypes.Auditee]?.personFio,
+        [InspectionFormTypes.Supervisor]:
+          item[InspectionFormTypes.Supervisor]?.personFio,
+        actions: renderActions((index + 1).toString(), item),
         [InspectionFormTypes.AuditDate]: moment(item.auditDate).format(
           "DD.MM.YYYY",
         ),
@@ -88,12 +130,12 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
     [props.inspections],
   );
 
-  const keys = Object.keys(props.inspections[0]);
+  const keys = Object.values(InspectionFormTypes) as any;
 
   keys.unshift("actions");
 
-  const columns: TableColumn<(typeof rows)[number]>[] = keys
-    .filter((key) => !excludeFields.includes(key))
+  const columns: any[] = keys
+    .filter((key: string) => !excludeFields.includes(key))
     .map((key: any) => ({
       title: <span className={style.colTitle}>{t(key)}</span>,
       accessor: key,
@@ -114,7 +156,6 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
       cellValue: string,
       filterValues: Array<{ value: string; name: string }>,
     ) => {
-      console.log("filterer", cellValue, filterValues);
       /* return filterValues.some(
         (filterValue) => filterValue && filterValue.value === cellValue,
       );*/
@@ -134,6 +175,11 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
     e.preventDefault();
   };
 
+  const handlePaginationChange = (val: number) => {
+    setPage(val);
+    props.handlePaginationChange(val);
+  };
+
   return (
     <div ref={tableContainerRef} className={style.InspectionsTable}>
       <Table
@@ -148,25 +194,29 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
         rows={rows}
         columns={columns}
       />
-      {props.inspections.length > INSPECTIONS_ON_PAGE && (
-        <Pagination
-          className={style.pagination}
-          items={5}
-          value={page}
-          onChange={setPage}
-          arrows={[{ label: t("back") }, { label: t("forward") }]}
-          hotKeys={[
-            {
-              label: "← Shift",
-              keys: ["Shift", "ArrowLeft"],
-            },
-            {
-              label: "Shift →",
-              keys: ["Shift", "ArrowRight"],
-            },
-          ]}
-        />
-      )}
+      {props.inspectionsCount &&
+        props.inspectionsCount > INSPECTIONS_ON_PAGE && (
+          <Pagination
+            showFirstPage
+            showLastPage
+            visibleCount={8}
+            className={style.pagination}
+            items={Math.ceil(props.inspectionsCount / INSPECTIONS_ON_PAGE)}
+            value={page}
+            onChange={handlePaginationChange}
+            arrows={[{ label: t("back") }, { label: t("forward") }]}
+            hotKeys={[
+              {
+                label: "← Shift",
+                keys: ["Shift", "ArrowLeft"],
+              },
+              {
+                label: "Shift →",
+                keys: ["Shift", "ArrowRight"],
+              },
+            ]}
+          />
+        )}
     </div>
   );
 });

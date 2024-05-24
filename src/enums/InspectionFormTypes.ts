@@ -1,26 +1,36 @@
 export enum InspectionFormTypes {
-    //Общее
-    AuditDate = 'auditDate', //Дата проверки
-    InspectionForm = 'inspectionForm', //Форма проверки
-    InspectionType = 'inspectionType', //Тип проверки
-    Function = 'function', //Функция
+  //Общее
+  AuditDate = "auditDate", //Дата проверки
+  InspectionForm = "inspectionFormTypes", //Форма проверки
+  InspectionType = "inspectionType", //Тип проверки
+  Function = "function", //Функция
 
-    //Место проведения проверки
-    OilField = 'oilField', // Месторождение
-    DoStructs = 'doStructs', //Структурное подразделение ДО
-    DoObjects = 'doObjects', // Объект ДО, где проводилась проверка
+  //Место проведения проверки
+  OilField = "oilfield", // Месторождение
+  DoStruct = "doStruct", //Структурное подразделение ДО
+  DoObject = "doObject", // Объект ДО, где проводилась проверка
 
-    //Проверяемая подрядная организация
-    Contractors = 'contractors', // Наименование ПО
-    TeamNumber = 'teamNumber', // Номер бригады ПО
-    SubContractors = 'subContractors', // Наименование субподрядной организации
+  //Проверяемая подрядная организация
+  Contractor = "contractor", // Наименование ПО
+  ContractorStruct = "contractorStruct", // Номер бригады ПО
+  SubContractor = "subContractor", // Наименование субподрядной организации
 
-    // Участники инспекции
+  // Участники инспекции
+
+  Auditor = "auditor", // ФИО составителя акта ?
+  Auditee = 'auditee',// ФИО проверяемого ?
+  Supervisor = "supervisor"// ФИО супервайзера ?
 }
 
 export enum InspectionFormGroups {
-    Common= "common",
-    InspectionPlace= "inspectionPlace",
-    ContractorUnderReview= "contractorUnderReview",
-    InspectionParticipants= "inspectionParticipants",
+  Common = "common",
+  InspectionPlace = "inspectionPlace",
+  ContractorUnderReview = "contractorUnderReview",
+  InspectionParticipants = "inspectionParticipants",
 }
+
+export const EMPLOYEES = [
+  InspectionFormTypes.Auditor,
+  InspectionFormTypes.Auditee,
+  InspectionFormTypes.Supervisor,
+];

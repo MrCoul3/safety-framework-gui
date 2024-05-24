@@ -18,6 +18,7 @@ export const ru = {
     edit: "Редактировать",
     recover: "Восстановить",
     delete: "Удалить",
+    go: "Перейти",
     send: "Отправить",
     apply: "Применить",
     select: "Выбрать",
@@ -37,11 +38,16 @@ export const ru = {
     // breadcrumbs
     mainPage: "Главная",
     inspectionData: "Данные инспекции",
+    passports: "Паспорта барьеров",
     editInspectionData: "Редактировать данные инспекции",
     createInspection: "Создать инспекцию",
     saveInspection: "Сохранить инспекцию",
+    toPassports: "К паспортам",
+    toInspectionForm: "К данным инспекции",
     saveChanges: "Сохранить изменения",
     editPassports: "Редактировать паспорта инспекции",
+    completionBarrier: "Заполнение барьера по паспорту",
+    completionBarrierDescription: "Выберите необходимые паспорта, нажав на кнопку “+” и заполните требуемые поля, чтобы отправить инспекцию.",
 
     toHome: "На главную",
 
@@ -51,6 +57,7 @@ export const ru = {
     [SubGroupsActionsTypes.NewInspections]: "Новые инспекции",
     [SubGroupsActionsTypes.Sent]: "Отправленные",
     [SubGroupsActionsTypes.Deleted]: "Удаленные",
+    [SubGroupsActionsTypes.EliminationOfViolations]: "Устранение нарушений",
     [SubGroupsTypes.Information]: "Информация",
     [SubGroupsActionsTypes.BarriersCarts]: "Корзины барьеров",
     [SubGroupsActionsTypes.BarriersApps]: "Приложения к барьерам",
@@ -63,6 +70,7 @@ export const ru = {
     [CheckEntityTypes.FreeForms]: "Свободные формы",
 
     searchPlaceholder: "Я ищу",
+    searchBarriersPlaceholder: "Введите название барьера",
     mainTitle: "Каркас безопасности",
     addInspection: "Добавить инспекцию",
     inspection: "Инспекция",
@@ -76,6 +84,7 @@ export const ru = {
     emptyNewInspections: "Нет новых инспекций",
     emptySentInspections: "Нет отправленных инспекций",
     emptyInspections: "Нет инспекций",
+    noData: "Нет данных",
 
     // Данные формы
     [InspectionFormGroups.Common]: "Общее",
@@ -85,19 +94,23 @@ export const ru = {
     [InspectionFormTypes.Function]: "Функция",
     [InspectionFormGroups.InspectionPlace]: "Место проведения проверки",
     [InspectionFormTypes.OilField]: "Месторождение",
-    [InspectionFormTypes.DoStructs]: "Структурное подразделение ДО",
-    [InspectionFormTypes.DoObjects]: "Объект ДО, где проводилась проверка",
+    [InspectionFormTypes.DoStruct]: "Структурное подразделение ДО",
+    [InspectionFormTypes.DoObject]: "Объект ДО, где проводилась проверка",
     [InspectionFormGroups.ContractorUnderReview]:
       "Проверяемая подрядная организация",
-    [InspectionFormTypes.Contractors]: "Наименование ПО",
-    [InspectionFormTypes.TeamNumber]: "Номер бригады ПО",
-    [InspectionFormTypes.SubContractors]:
+    [InspectionFormTypes.Contractor]: "Наименование ПО",
+    [InspectionFormTypes.ContractorStruct]: "Номер бригады ПО",
+    [InspectionFormTypes.SubContractor]:
       "Наименование субподрядной организации",
     [InspectionFormGroups.InspectionParticipants]: "Участники инспекции",
+    [InspectionFormTypes.Auditor]: "ФИО составителя акта",
+    [InspectionFormTypes.Auditee]: "ФИО проверяемого",
+    [InspectionFormTypes.Supervisor]: "ФИО супервайзера",
     editDate: "Дата редактирования",
     actions: "Действия",
 
-    addInspectionTitle: "Подготовка данных инспекции",
+    addInspectionTitle: "Заполнение данных инспекции",
+    editInspectionTitle: "Редактирование данных инспекции",
     addInspectionDescription:
       "Заполните все ключевые поля, чтобы перейти дальше по структуре заполнения",
     selectPassport: "Выбор паспорта барьера",
@@ -110,20 +123,24 @@ export const ru = {
       "Введите тип проверки",
     [InspectionFormTypes.Function + "Placeholder"]: "Введите функция",
     [InspectionFormTypes.OilField + "Placeholder"]: "Введите месторождение",
-    [InspectionFormTypes.DoStructs + "Placeholder"]:
+    [InspectionFormTypes.DoStruct + "Placeholder"]:
       "Введите структурное подразделение ДО",
-    [InspectionFormTypes.DoObjects + "Placeholder"]:
+    [InspectionFormTypes.DoObject + "Placeholder"]:
       "Введите объект ДО, где проводилась проверка",
-    [InspectionFormTypes.Contractors + "Placeholder"]:
+    [InspectionFormTypes.Contractor + "Placeholder"]:
       "Введите наименование ПО",
-    [InspectionFormTypes.TeamNumber + "Placeholder"]:
+    [InspectionFormTypes.ContractorStruct + "Placeholder"]:
       "Введите номер бригады ПО",
-    [InspectionFormTypes.SubContractors + "Placeholder"]:
+    [InspectionFormTypes.SubContractor + "Placeholder"]:
       "Введите наименование субподрядной организации",
+    [InspectionFormTypes.Auditor + "Placeholder"]: "введите ФИО составителя акта",
+    [InspectionFormTypes.Auditee + "Placeholder"]: "введите ФИО проверяемого",
+    [InspectionFormTypes.Supervisor + "Placeholder"]: "введите ФИО супервайзера",
 
     dialogClearFields: "Очистить все заполненные поля?",
     dialogDeleteNewInspection: "Удалить неотправленную инспекцию?",
     dialogDeleteSentInspection: "Удалить отправленную инспекцию?",
+    dialogGoToMain: "Перейти на главную ? Все несохраненные данные будут потеряны.",
 
     snackBarSuccessSave: "Инспекция успешно сохранена",
     snackBarSuccessSend: "Инспекция успешно отправлена",

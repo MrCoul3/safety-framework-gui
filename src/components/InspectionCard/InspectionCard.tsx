@@ -15,16 +15,21 @@ import { CheckEntityTypes } from "enums/CheckEntityTypes";
 import { InspectionStatusesTypes } from "enums/InspectionStatusesTypes";
 import moment from "moment";
 import { SubGroupsActionsTypes } from "../../enums/SubGroupsTypes";
+import {InspectionFormTypes} from "../../enums/InspectionFormTypes";
+import {IEntity} from "../../interfaces/IInspection";
 
 interface IInspectionCard {
   id: string;
   name?: string;
-  doObject?: string;
-  checkVerifyDate?: number;
+  doStruct?: string;
+  checkVerifyDate?: Date;
   inspectionType?: string;
-  oilField?: string;
+  oilfield?: string;
+  doObject?: string;
+  contractor?: string;
+  contractorStruct?: string;
   index?: number | boolean;
-  inspectionForm?: CheckEntityTypes;
+  inspectionForm?: IEntity;
   subGroup?: SubGroupsActionsTypes;
   handleEditButtonClick(id: string): void;
   handleDeleteButtonClick(id: string): void;
@@ -35,12 +40,12 @@ const InspectionCard = observer((props: IInspectionCard) => {
   // const successCond = () => props.status === InspectionStatusesTypes.Success;
   // const awaitCond = () => props.status === InspectionStatusesTypes.Warning;
   // const errorCond = () => props.status === InspectionStatusesTypes.Error;
-  const getDate = (date?: number) => moment(date).format("DD.MM.YYYY");
+  const getDate = (date?: Date) => moment(date).format("DD.MM.YYYY");
 
   return (
     <Card
       className={classNames(style.card, {
-        // [style.success]: successCond(),
+        [style.sentCard]: props.subGroup === SubGroupsActionsTypes.Sent,
         // [style.await]: awaitCond(),
         // [style.error]: errorCond(),
       })}
@@ -85,21 +90,34 @@ const InspectionCard = observer((props: IInspectionCard) => {
       <div className={style.checkDetails}>
         <span className={style.checkDetailsTitle}>{t("checkDetails")}</span>
         <div className={style.badgeGroup}>
-          <Badge status="system" label={t(props.inspectionForm ?? "")} />
-          <Badge
+          <Badge status="system" label={t(props.inspectionForm?.title ?? t("noData"))} />
+         {/* <Badge
             view="stroked"
             status="system"
-            label={t(props.doObject ?? "")}
-          />
+            label={t(props.doStruct ?? "")}
+          />*/}
         </div>
         <div className={style.extraInfo}>
-          <div className={style.extraInfoValue}>
+          {/*<div className={style.extraInfoValue}>
             {t("inspectionType")}
             <span className={style.value}> {props.inspectionType}</span>
+          </div>*/}
+          <div className={style.extraInfoValue}>
+            {t(InspectionFormTypes.OilField)}
+            <span className={style.value}> {props.oilfield}</span>
+          </div>
+
+          <div className={style.extraInfoValue}>
+            {t(InspectionFormTypes.DoObject)}
+            <span className={style.value}> {props.doObject}</span>
           </div>
           <div className={style.extraInfoValue}>
-            {t("oilField")}
-            <span className={style.value}> {props.oilField}</span>
+            {t(InspectionFormTypes.Contractor)}
+            <span className={style.value}> {props.contractor}</span>
+          </div>
+          <div className={style.extraInfoValue}>
+            {t(InspectionFormTypes.ContractorStruct)}
+            <span className={style.value}> {props.contractorStruct}</span>
           </div>
         </div>
       </div>

@@ -22,16 +22,31 @@ const ConfirmDialog = observer((props: IConfirmDialog) => {
     setIsModalOpen(props.open);
   }, [props.open]);
 
+  const confirmAction = () => {
+    setIsModalOpen(false);
+    props.action();
+  };
+
+  const onKeyDown = (e: KeyboardEvent) => {
+
+  };
+
+  useEffect(() => {
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
+
   return (
     <div className={style.ConfirmDialog}>
-      <Modal className={style.modal}
+      <Modal
+        className={style.modal}
         onClose={props.onClose}
         isOpen={isModalOpen}
         hasOverlay
         onClickOutside={() => setIsModalOpen(false)}
         onEsc={() => setIsModalOpen(false)}
       >
-         <span className={style.title}>{props.title}</span>
+        <span className={style.title}>{props.title}</span>
 
         <div className={style.buttonGroup}>
           <Button
@@ -47,8 +62,7 @@ const ConfirmDialog = observer((props: IConfirmDialog) => {
             label={props.confirmActionLabel}
             width="default"
             onClick={() => {
-              props.action();
-              setIsModalOpen(false);
+                confirmAction()
             }}
           />
         </div>

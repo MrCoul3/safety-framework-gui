@@ -1,9 +1,14 @@
 .card {
   padding: 0 16px 16px;
-  max-height: var(--inspectionCardHeight);
-  min-height: 260px;
+  max-height: var(--inspectionCardMaxHeight);
+  min-height: var(--inspectionCardMinHeight);
   overflow: auto;
   background-color: white;
+  box-sizing: border-box;
+}
+.sentCard {
+  border-top: 8px solid var(--blueDeep);
+
 }
 .await {
   border-top: 8px solid var(--awaitOrange);
