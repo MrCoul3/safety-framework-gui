@@ -20,12 +20,9 @@ import {
 import { ResponsesNothingFound } from "@consta/uikit/ResponsesNothingFound";
 import ConfirmDialog from "../components/ConfirmDialog/ConfirmDialog";
 import { InspectionFormTypes } from "../enums/InspectionFormTypes";
-import { IconAllDone } from "@consta/icons/IconAllDone";
-
-import { SnackBar } from "@consta/uikit/SnackBar";
 import EmptyBoxPage from "../components/EmptyBoxPage/EmptyBoxPage";
-import { Loader } from "@consta/uikit/Loader";
 import SnackBarCustom from "../components/SnackBarCustom/SnackBarCustom";
+import LoaderPage from "../components/LoaderPage/LoaderPage";
 
 interface IMainPage {}
 
@@ -129,6 +126,20 @@ export const MainPage = observer((props: IMainPage) => {
     store.mainPageStore.getInspectionsByScrollToBottomOnDashboard();
   };
 
+  const renderLoader = () => {
+    if (store.loaderStore.loader === "wait") {
+      return <LoaderPage />;
+    } else {
+      return (
+        <ResponsesNothingFound
+          title={t("emptyNewInspections")}
+          description={" "}
+          actions={<Button onClick={toHome} view="ghost" label={t("toHome")} />}
+        />
+      );
+    }
+  };
+
   const contentRoutes = () => {
     return (
       <Routes>
@@ -182,13 +193,7 @@ export const MainPage = observer((props: IMainPage) => {
                   inspections={inspections}
                 />
               ) : (
-                <ResponsesNothingFound
-                  title={t("emptyNewInspections")}
-                  description={" "}
-                  actions={
-                    <Button onClick={toHome} view="ghost" label={t("toHome")} />
-                  }
-                />
+                renderLoader()
               )
             }
             path={
@@ -213,7 +218,6 @@ export const MainPage = observer((props: IMainPage) => {
 
   return (
     <div>
-
       <SnackBarCustom
         onItemClose={() => store.snackBarStore.clearSnackBar()}
         item={store.snackBarStore.snackBarItem}

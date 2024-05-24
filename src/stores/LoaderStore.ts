@@ -10,7 +10,7 @@ export class LoaderStore {
         makeAutoObservable(this);
     }
 
-    loader: LoaderType = "ready";
+    loader: LoaderType = "wait";
 
     setLoader(val: LoaderType) {
         this.loader = val;
