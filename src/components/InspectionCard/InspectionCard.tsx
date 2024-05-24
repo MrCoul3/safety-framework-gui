@@ -41,8 +41,8 @@ const InspectionCard = observer((props: IInspectionCard) => {
   // const awaitCond = () => props.status === InspectionStatusesTypes.Warning;
   // const errorCond = () => props.status === InspectionStatusesTypes.Error;
   const getDate = (date?: Date) =>
-    date ? moment(date).format("DD.MM.YYYY") : t("noData");
-  const getValue = (value?: string) => (value ? value : t("noData"));
+    date ? moment(date).format("DD.MM.YYYY") : t("noFilled");
+  const getValue = (value?: string) => (value ? value : t("noFilled"));
 
   return (
     <Card
@@ -94,7 +94,7 @@ const InspectionCard = observer((props: IInspectionCard) => {
         <div className={style.badgeGroup}>
           <Badge
             status="system"
-            label={t(props.inspectionForm ?? t("noData"))}
+            label={t(props.inspectionForm ?? t("noFilled"))}
           />
           {/* <Badge
             view="stroked"

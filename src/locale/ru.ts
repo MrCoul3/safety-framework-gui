@@ -86,6 +86,7 @@ export const ru = {
     emptySentInspections: "Нет отправленных инспекций",
     emptyInspections: "Нет инспекций",
     noData: "Нет данных",
+    noFilled: "Не заполнено",
 
     // Данные формы
     [InspectionFormGroups.Common]: "Общее",
