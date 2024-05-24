@@ -187,7 +187,6 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
         onCellClick={handleCellClick}
         filters={filters}
         isResizable
-        // zebraStriped="odd"
         className={style.table}
         stickyHeader
         stickyColumns={1}
@@ -195,7 +194,8 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
         columns={columns}
       />
       {props.inspectionsCount &&
-        props.inspectionsCount > INSPECTIONS_ON_PAGE && (
+        props.inspectionsCount > INSPECTIONS_ON_PAGE &&
+        location.pathname.includes(SubGroupsActionsTypes.Sent) && (
           <Pagination
             showFirstPage
             showLastPage
