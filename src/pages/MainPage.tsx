@@ -24,6 +24,8 @@ import { IconAllDone } from "@consta/icons/IconAllDone";
 
 import { SnackBar } from "@consta/uikit/SnackBar";
 import EmptyBoxPage from "../components/EmptyBoxPage/EmptyBoxPage";
+import { Loader } from "@consta/uikit/Loader";
+import SnackBarCustom from "../components/SnackBarCustom/SnackBarCustom";
 
 interface IMainPage {}
 
@@ -124,7 +126,7 @@ export const MainPage = observer((props: IMainPage) => {
   };
   const onScrollToBottom = () => {
     store.mainPageStore.increaseInspectionOffset();
-    store.mainPageStore.getInspectionsDashboard();
+    store.mainPageStore.getInspectionsByScrollToBottomOnDashboard();
   };
 
   const contentRoutes = () => {
@@ -134,6 +136,7 @@ export const MainPage = observer((props: IMainPage) => {
         <Route
           element={
             <DashBoard
+              loader={store.loaderStore.loader}
               onScrollToBottom={onScrollToBottom}
               inspectionsCount={store.mainPageStore.inspectionsCount}
               handleDeleteSentButtonClick={(id: string) => {
@@ -210,15 +213,11 @@ export const MainPage = observer((props: IMainPage) => {
 
   return (
     <div>
-      {store.snackBarStore.snackBarItem && (
-        <SnackBar
-          getItemIcon={() => IconAllDone}
-          onItemClose={() => store.snackBarStore.clearSnackBar()}
-          getItemAutoClose={() => 3}
-          items={[store.snackBarStore.snackBarItem]}
-          getItemMessage={(item) => item.message}
-        />
-      )}
+
+      <SnackBarCustom
+        onItemClose={() => store.snackBarStore.clearSnackBar()}
+        item={store.snackBarStore.snackBarItem}
+      />
 
       <MainPageLayout
         sideBar={

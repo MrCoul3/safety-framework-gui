@@ -130,8 +130,24 @@ export class MainPageStore {
   }
 
   expand: string = `$expand=auditor,auditee,supervisor,contractor,subContractor,contractorStruct,oilfield,doStruct,doObject,function,inspectionType`;
+  async getInspectionsDev() {
+    this.store.loaderStore.setLoader('wait')
+    try {
+      const response = await instance.get(`${inspectionsEndpoint}`);
+      if (!response.data.error) {
+        setTimeout(() => {
+          this.setInspectionsCount(48546);
+          this.setInspections(response.data);
+          this.store.loaderStore.setLoader('ready')
+        }, 1000)
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
 
   async getInspections() {
+    this.store.loaderStore.setLoader('wait')
     try {
       const response = await instance.get(
         `${inspectionsEndpoint}?$skip=${this.inspectionOffset}&$top=${INSPECTIONS_ON_PAGE}&${this.expand}&$count=true`,
@@ -141,12 +157,13 @@ export class MainPageStore {
         if (response.data.value) {
           this.setInspections(response.data.value);
         }
+        this.store.loaderStore.setLoader('ready')
       }
     } catch (e) {
       console.error(e);
     }
   }
-  async getInspectionsDashboard() {
+  async getInspectionsByScrollToBottomOnDashboard() {
     try {
       const response = await instance.get(
         `${inspectionsEndpoint}?$skip=${this.inspectionOffset}&$top=${INSPECTIONS_ON_PAGE}&${this.expand}&$count=true`,
@@ -161,21 +178,7 @@ export class MainPageStore {
       console.error(e);
     }
   }
-  async getInspectionsDev() {
-    try {
-      const response = await instance.get(`${inspectionsEndpoint}`);
-      if (!response.data.error) {
-        /*setTimeout(() => {
-          this.setInspectionsCount(48546);
-          this.setInspections(response.data);
-        }, 1000000)*/
-        this.setInspectionsCount(48546);
-        this.setInspections(response.data);
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  }
+
 
   async deleteSentInspection(id?: string) {
     console.log("deleteSentInspection");

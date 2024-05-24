@@ -8,14 +8,17 @@ import classNames from "classnames";
 import { InspectionFormTypes } from "../../enums/InspectionFormTypes";
 import InspectionCard from "../InspectionCard/InspectionCard";
 import { ResponsesNothingFound } from "@consta/uikit/ResponsesNothingFound";
-import { useVirtualScroll } from "@consta/uikit/useVirtualScroll";
-import { INSPECTIONS_ON_PAGE } from "../../constants/config";
 import InfiniteScroll from "react-infinite-scroller";
 import { ProgressSpin } from "@consta/uikit/ProgressSpin";
+
+import { LoaderType } from "../../interfaces/LoaderType";
+import LoaderPage from "../LoaderPage/LoaderPage";
 
 interface IDashBoard {
   inspections: IInspection[];
   inspectionsCount: number | null;
+
+  loader?: LoaderType;
 
   localInspections: IInspection[];
   onScrollToBottom(): void;
@@ -56,7 +59,7 @@ const DashBoard = observer((props: IDashBoard) => {
     subGroup: SubGroupsActionsTypes,
     id: string,
   ) => {
-    if (sentCondition(subGroup)) {
+    if (sentInspectionsCondition(subGroup)) {
       props.handleDeleteSentButtonClick(id);
     }
     if (newInspectionCondition(subGroup)) {
@@ -64,7 +67,7 @@ const DashBoard = observer((props: IDashBoard) => {
     }
   };
 
-  const sentCondition = (subGroup: SubGroupsActionsTypes) =>
+  const sentInspectionsCondition = (subGroup: SubGroupsActionsTypes) =>
     subGroup === SubGroupsActionsTypes.Sent;
   const newInspectionCondition = (subGroup: SubGroupsActionsTypes) =>
     subGroup === SubGroupsActionsTypes.NewInspections;
@@ -80,11 +83,11 @@ const DashBoard = observer((props: IDashBoard) => {
             handleDeleteButtonClick(subGroup, id)
           }
           handleEditButtonClick={
-            sentCondition(subGroup)
+            sentInspectionsCondition(subGroup)
               ? props.handleEditInspection
               : props.handleEditLocalInspection
           }
-          id={item.id ?? ''}
+          id={item.id ?? ""}
           key={item.id}
           subGroup={subGroup}
           checkVerifyDate={item[InspectionFormTypes.AuditDate]}
@@ -100,7 +103,7 @@ const DashBoard = observer((props: IDashBoard) => {
     ) : (
       <ResponsesNothingFound
         title={
-          sentCondition(subGroup)
+          sentInspectionsCondition(subGroup)
             ? t("emptySentInspections")
             : t("emptyNewInspections")
         }
@@ -110,6 +113,24 @@ const DashBoard = observer((props: IDashBoard) => {
     );
   };
 
+  const renderLoader = (subGroup: SubGroupsActionsTypes) => {
+    if (props.loader === "wait") {
+      return <LoaderPage />;
+    } else {
+      return (
+        <ResponsesNothingFound
+          title={
+            sentInspectionsCondition(subGroup)
+              ? t("emptySentInspections")
+              : t("emptyNewInspections")
+          }
+          description={" "}
+          actions={" "}
+        />
+      );
+    }
+  };
+
   return (
     <div className={style.DashBoard}>
       {subGroups.map((subGroup, index) => (
@@ -117,7 +138,7 @@ const DashBoard = observer((props: IDashBoard) => {
           key={index}
           className={classNames(style.inspectionGroup, {
             [style.newGroup]: newInspectionCondition(subGroup),
-            [style.sentGroup]: sentCondition(subGroup),
+            [style.sentGroup]: sentInspectionsCondition(subGroup),
           })}
         >
           <InspectionGroupHeader key={index} subGroup={subGroup} />
@@ -129,22 +150,26 @@ const DashBoard = observer((props: IDashBoard) => {
                 newInspectionCondition(subGroup) || !props.inspections.length,
             })}
           >
-            {sentCondition(subGroup) ? (
-              <InfiniteScroll
-                pageStart={0}
-                hasMore={
-                  props.inspectionsCount
-                    ? props.inspectionsCount > props.inspections.length
-                    : true
-                }
-                threshold={500}
-                useWindow={false}
-                className={style.virtualScrollWrap}
-                loadMore={() => props.onScrollToBottom()}
-                loader={<ProgressSpin key={0} size="m" />}
-              >
-                {renderContent(subGroup, props.inspections)}
-              </InfiniteScroll>
+            {sentInspectionsCondition(subGroup) ? (
+              props.inspections.length ? (
+                <InfiniteScroll
+                  pageStart={0}
+                  hasMore={
+                    props.inspectionsCount
+                      ? props.inspectionsCount > props.inspections.length
+                      : true
+                  }
+                  threshold={500}
+                  useWindow={false}
+                  className={style.virtualScrollWrap}
+                  loadMore={() => props.onScrollToBottom()}
+                  loader={<ProgressSpin key={0} size="m" />}
+                >
+                  {renderContent(subGroup, props.inspections)}
+                </InfiniteScroll>
+              ) : (
+                renderLoader(subGroup)
+              )
             ) : (
               renderContent(subGroup, props.localInspections)
             )}

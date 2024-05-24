@@ -4,6 +4,7 @@ import { InspectionStore } from "./InspectionStore";
 import {SnackBarStore} from "./SnackBarStore";
 import {PassportsStore} from "./PassportsStore";
 import {BarriersStore} from "./BarriersStore";
+import {LoaderStore} from "./LoaderStore";
 
 export class AppStore {
   mainPageStore: MainPageStore;
@@ -11,6 +12,7 @@ export class AppStore {
   snackBarStore: SnackBarStore;
   passportsStore: PassportsStore;
   barriersStore: BarriersStore;
+  loaderStore: LoaderStore;
 
 
   constructor() {
@@ -19,6 +21,7 @@ export class AppStore {
     this.snackBarStore = new SnackBarStore(this);
     this.passportsStore = new PassportsStore(this);
     this.barriersStore = new BarriersStore(this);
+    this.loaderStore = new LoaderStore(this);
     makeAutoObservable(this);
 
     console.debug(this);
