@@ -17,11 +17,10 @@ import { PropStatus } from "@consta/uikit/__internal__/src/components/SelectComp
 import { toJS } from "mobx";
 import { Simulate } from "react-dom/test-utils";
 import load = Simulate.load;
-import {ELEMENTS_ON_FIELD} from "../../constants/config";
+import { ELEMENTS_ON_FIELD } from "../../constants/config";
 
 interface IFieldInspectionType {
-
-  onClose?(): void
+  onClose?(): void;
   handleOpenField(type: InspectionFormTypes): void;
   handleChange(value: IFormFieldValue): void;
   onScrollToBottom?(inspectionType: InspectionFormTypes): void;
@@ -52,7 +51,7 @@ const InspectionTextField = observer((props: IFieldInspectionType) => {
     } else {
       props.onSearchValueChange?.(null);
       setSearchValue(null);
-      props.onClose?.()
+      props.onClose?.();
     }
   }, [open]);
 
@@ -98,15 +97,23 @@ const InspectionTextField = observer((props: IFieldInspectionType) => {
   };
 
   const onScrollToBottom = () => {
-    const found = props.fieldsData.find((field) =>
-      Object.keys(field).includes(props.inspectionType + 'Count'),
+    const foundCount = props.fieldsData.find((field) =>
+      Object.keys(field).includes(props.inspectionType + "Count"),
+    );
+    const foundField = props.fieldsData.find((field) =>
+      Object.keys(field).includes(props.inspectionType),
     );
 
+    if (foundCount && foundField) {
+      const foundFieldValues = Object.values(foundField)[0] as Item[];
 
-    if (found) {
-      const count = found[props.inspectionType + 'Count']
-      if (count && count > ELEMENTS_ON_FIELD) {
-        props.onScrollToBottom?.(props.inspectionType)
+      const count = foundCount[props.inspectionType + "Count"];
+      if (
+        count &&
+        count > ELEMENTS_ON_FIELD &&
+        foundFieldValues.length >= ELEMENTS_ON_FIELD
+      ) {
+        props.onScrollToBottom?.(props.inspectionType);
       }
     }
   };

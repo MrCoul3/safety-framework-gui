@@ -143,12 +143,13 @@ const InspectionPage = observer((props: IInspectionPage) => {
     if (!value || value === "") {
       store.inspectionStore.clearOffset();
     }
-    if (value === "" && openFilterType) {
+    if ((value || value === "") && openFilterType) {
       store.inspectionStore.getFieldData(openFilterType);
     }
   };
 
   const handleScrollFieldToBottom = (inspectionType: InspectionFormTypes) => {
+    console.log('handleScrollFieldToBottom!!!')
     store.inspectionStore.increaseOffset();
     store.inspectionStore.getFieldData(inspectionType);
   };

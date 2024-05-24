@@ -199,7 +199,7 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
           <Pagination
             showFirstPage
             showLastPage
-            visibleCount={5}
+            visibleCount={8}
             className={style.pagination}
             items={Math.ceil(props.inspectionsCount / INSPECTIONS_ON_PAGE)}
             value={page}

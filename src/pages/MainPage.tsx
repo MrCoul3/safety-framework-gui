@@ -36,13 +36,12 @@ export const MainPage = observer((props: IMainPage) => {
 
   const init = () => {
     store.mainPageStore.clearInspectionOffset();
+    getLocalInspections();
     if (isDevelop) {
       store.mainPageStore.getInspectionsDev();
     } else {
       store.mainPageStore.getInspections();
     }
-
-    getLocalInspections();
   };
 
   useEffect(() => {
@@ -134,22 +133,20 @@ export const MainPage = observer((props: IMainPage) => {
         {/*Main page dashboard*/}
         <Route
           element={
-            store.mainPageStore.inspections.length && (
-              <DashBoard
-                onScrollToBottom={onScrollToBottom}
-                inspectionsCount={store.mainPageStore.inspectionsCount}
-                handleDeleteSentButtonClick={(id: string) => {
-                  handleDelete(id, SubGroupsActionsTypes.Sent);
-                }}
-                handleDeleteNewInspectionButtonClick={(id: string) => {
-                  handleDelete(id, SubGroupsActionsTypes.NewInspections);
-                }}
-                handleEditInspection={handleEditInspection}
-                handleEditLocalInspection={handleEditLocalInspection}
-                localInspections={store.mainPageStore.localInspections}
-                inspections={store.mainPageStore.inspections}
-              />
-            )
+            <DashBoard
+              onScrollToBottom={onScrollToBottom}
+              inspectionsCount={store.mainPageStore.inspectionsCount}
+              handleDeleteSentButtonClick={(id: string) => {
+                handleDelete(id, SubGroupsActionsTypes.Sent);
+              }}
+              handleDeleteNewInspectionButtonClick={(id: string) => {
+                handleDelete(id, SubGroupsActionsTypes.NewInspections);
+              }}
+              handleEditInspection={handleEditInspection}
+              handleEditLocalInspection={handleEditLocalInspection}
+              localInspections={store.mainPageStore.localInspections}
+              inspections={store.mainPageStore.inspections}
+            />
           }
           path="/"
         />

@@ -134,7 +134,7 @@ export class MainPageStore {
   async getInspections() {
     try {
       const response = await instance.get(
-        `${inspectionsEndpoint}?$skip=${this.inspectionOffset}&$top=${this.inspectionOffset + INSPECTIONS_ON_PAGE}&${this.expand}&$count=true`,
+        `${inspectionsEndpoint}?$skip=${this.inspectionOffset}&$top=${INSPECTIONS_ON_PAGE}&${this.expand}&$count=true`,
       );
       if (!response.data.error) {
         this.setInspectionsCount(response.data["@odata.count"]);
@@ -149,7 +149,7 @@ export class MainPageStore {
   async getInspectionsDashboard() {
     try {
       const response = await instance.get(
-        `${inspectionsEndpoint}?$skip=${this.inspectionOffset}&$top=${this.inspectionOffset + INSPECTIONS_ON_PAGE}&${this.expand}&$count=true`,
+        `${inspectionsEndpoint}?$skip=${this.inspectionOffset}&$top=${INSPECTIONS_ON_PAGE}&${this.expand}&$count=true`,
       );
       if (!response.data.error) {
         this.setInspectionsCount(response.data["@odata.count"]);
@@ -165,6 +165,10 @@ export class MainPageStore {
     try {
       const response = await instance.get(`${inspectionsEndpoint}`);
       if (!response.data.error) {
+        /*setTimeout(() => {
+          this.setInspectionsCount(48546);
+          this.setInspections(response.data);
+        }, 1000000)*/
         this.setInspectionsCount(48546);
         this.setInspections(response.data);
       }

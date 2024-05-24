@@ -126,13 +126,13 @@ export class InspectionStore {
 
     const itemValue: Item = { title: "title", personFio: "personFio" };
 
-    let filter = `$filter=contains(${itemValue.title},${searchFieldValue}')`;
+    let filter = searchFieldValue ? `$filter=contains(${itemValue.title},'${searchFieldValue}')` : "";
 
-    let offset = searchFieldValue ? "" : `&$skip=${this.offset}&$top=${this.offset + ELEMENTS_ON_FIELD}`
+    let offset = searchFieldValue ? "" : `&$skip=${this.offset}&$top=${ELEMENTS_ON_FIELD}`
 
     if (EMPLOYEES.includes(type)) {
       requestType = employeesEndpoint;
-      filter = `$filter=contains(${itemValue.personFio},${searchFieldValue})`;
+      filter = searchFieldValue ? `$filter=contains(${itemValue.personFio},'${searchFieldValue}')` : "";
     }
 
     const countFilter = this.searchFieldValue ? "" : `&$count=true`;
