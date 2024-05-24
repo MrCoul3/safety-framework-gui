@@ -16,14 +16,13 @@ import {
 import InspectionTextField from "../InspectionTextField/InspectionTextField";
 import InspectionDataField from "../InspectionDataField/InspectionDataField";
 import ItemGroupTitle from "../ItemGroupTitle/ItemGroupTitle";
-import { useParams } from "react-router";
 import ConfirmDialog from "../ConfirmDialog/ConfirmDialog";
-import { toJS } from "mobx";
 import { IInspection } from "../../interfaces/IInspection";
 
 interface IInspectionForm {
   handleOpenField(type: InspectionFormTypes): void;
   handleClearInspectionForm(): void;
+  onInspectionTextFieldClose?(): void;
   onSearchValueChange?(value: string | null): void;
   fieldsData: IFieldsData[];
   formFieldsValuesLength?: boolean;
@@ -162,7 +161,7 @@ const InspectionForm = observer((props: IInspectionForm) => {
                   );
                 }
                 return (
-                  <InspectionTextField
+                  <InspectionTextField onClose={props.onInspectionTextFieldClose}
                     onScrollToBottom={props.onScrollToBottom}
                     onSearchValueChange={props.onSearchValueChange}
                     required={requiredConditions(inspectionType)}

@@ -140,18 +140,22 @@ const InspectionPage = observer((props: IInspectionPage) => {
   const handleSearchValueChange = (value: string | null) => {
     console.log("handleSearchValueChange value!!!", value);
     store.inspectionStore.setSearchFieldValue(value);
-    if (!value) {
-      setOpenFilterType(null);
+    if (!value || value === "") {
+      store.inspectionStore.clearOffset();
     }
-    if (value && openFilterType) {
+    if (value === "" && openFilterType) {
       store.inspectionStore.getFieldData(openFilterType);
     }
   };
 
   const handleScrollFieldToBottom = (inspectionType: InspectionFormTypes) => {
-    console.log("onScrollToBottom", inspectionType);
+    store.inspectionStore.increaseOffset();
     store.inspectionStore.getFieldData(inspectionType);
-
+  };
+  const handleInspectionTextFieldClose = () => {
+    setOpenFilterType(null);
+    store.inspectionStore.clearOffset();
+    store.inspectionStore.clearFieldsData();
   };
 
   return (
@@ -173,6 +177,7 @@ const InspectionPage = observer((props: IInspectionPage) => {
         }
         content={
           <InspectionForm
+            onInspectionTextFieldClose={handleInspectionTextFieldClose}
             onScrollToBottom={handleScrollFieldToBottom}
             onSearchValueChange={handleSearchValueChange}
             onInit={() => store.inspectionStore.setIsValidate(false)}

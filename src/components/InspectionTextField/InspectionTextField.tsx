@@ -20,6 +20,8 @@ import load = Simulate.load;
 import {ELEMENTS_ON_FIELD} from "../../constants/config";
 
 interface IFieldInspectionType {
+
+  onClose?(): void
   handleOpenField(type: InspectionFormTypes): void;
   handleChange(value: IFormFieldValue): void;
   onScrollToBottom?(inspectionType: InspectionFormTypes): void;
@@ -50,6 +52,7 @@ const InspectionTextField = observer((props: IFieldInspectionType) => {
     } else {
       props.onSearchValueChange?.(null);
       setSearchValue(null);
+      props.onClose?.()
     }
   }, [open]);
 

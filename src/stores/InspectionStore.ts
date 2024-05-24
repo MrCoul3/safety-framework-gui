@@ -1,10 +1,7 @@
 import { AppStore } from "./AppStore";
 import { makeAutoObservable, toJS } from "mobx";
 import { EMPLOYEES, InspectionFormTypes } from "../enums/InspectionFormTypes";
-import {
-  employeesEndpoint,
-  instance,
-} from "../api/endpoints";
+import { employeesEndpoint, instance } from "../api/endpoints";
 import {
   ELEMENTS_ON_FIELD,
   INSPECTIONS_ON_PAGE,
@@ -13,6 +10,7 @@ import {
 } from "../constants/config";
 import moment from "moment/moment";
 import { IInspection } from "../interfaces/IInspection";
+import { joinObjectValues } from "../utils/joinObjectValues";
 
 export interface IFieldsData {
   [key: string]: Item[] | number;
@@ -49,13 +47,25 @@ export class InspectionStore {
   formFieldsValues: IInspection | {} = {};
 
   setFieldsData(value: IFieldsData) {
+    const keyValue = Object.keys(value)[0];
+    const foundField = this.fieldsData.find((field) =>
+      Object.keys(field).includes(keyValue),
+    );
+    if (foundField) {
+      const newValue = joinObjectValues(foundField, value);
+      this.fieldsData = [...this.fieldsData, newValue];
+      return;
+    }
     this.fieldsData = [...this.fieldsData, value];
+    console.log("this.fieldsData", toJS(this.fieldsData));
+  }
+  clearFieldsData() {
+    this.fieldsData = [];
     console.log("this.fieldsData", toJS(this.fieldsData));
   }
 
   setFormFieldsValues(value: IInspection) {
     this.formFieldsValues = value;
-    // Object.assign(this.formFieldsValues, value);
     console.debug("formFieldsValues: ", toJS(this.formFieldsValues));
   }
   updateFormFieldsValues(value: IFormFieldValue | IFormDateFieldValue) {
@@ -95,26 +105,30 @@ export class InspectionStore {
     }
   }
 
-  inspectionOffset: number = 0;
-  setInspectionOffset(value: number) {
-    this.inspectionOffset = value;
+  offset: number = 0;
+  setOffset(value: number) {
+    this.offset = value;
+    console.log("field offset", this.offset);
   }
-  increaseInspectionOffset() {
-    this.inspectionOffset = this.inspectionOffset + ELEMENTS_ON_FIELD;
+  increaseOffset() {
+    this.offset = this.offset + ELEMENTS_ON_FIELD;
+    console.log("field offset", this.offset);
   }
-  clearInspectionOffset() {
-    this.inspectionOffset = 0;
+  clearOffset() {
+    this.offset = 0;
+    console.log("field offset", this.offset);
   }
 
   async getFieldData(type: InspectionFormTypes) {
-
     let requestType: any = type + "s";
 
-    const searchFieldValue = this.searchFieldValue ?? ""
+    const searchFieldValue = this.searchFieldValue ?? "";
 
     const itemValue: Item = { title: "title", personFio: "personFio" };
 
     let filter = `$filter=contains(${itemValue.title},${searchFieldValue}')`;
+
+    let offset = searchFieldValue ? "" : `&$skip=${this.offset}&$top=${this.offset + ELEMENTS_ON_FIELD}`
 
     if (EMPLOYEES.includes(type)) {
       requestType = employeesEndpoint;
@@ -125,7 +139,7 @@ export class InspectionStore {
 
     try {
       const response = await instance.get(
-        `${requestType}?${filter}&$skip=${this.inspectionOffset}&$top=${this.inspectionOffset + ELEMENTS_ON_FIELD}${countFilter}`,
+        `${requestType}?${filter}${offset}${countFilter}`,
       );
       if (!response.data.error) {
         const count = response.data["@odata.count"];
@@ -258,7 +272,7 @@ export class InspectionStore {
     if (!foundField) {
       if (isDevelop) {
         this.getFieldDataDev(type);
-        // this.getFieldData(type);
+        this.getFieldData(type);
       } else {
         this.getFieldData(type);
       }
