@@ -23,6 +23,9 @@ import { InspectionFormTypes } from "../enums/InspectionFormTypes";
 import EmptyBoxPage from "../components/EmptyBoxPage/EmptyBoxPage";
 import SnackBarCustom from "../components/SnackBarCustom/SnackBarCustom";
 import LoaderPage from "../components/LoaderPage/LoaderPage";
+import { toJS } from "mobx";
+import { IFormFieldValue } from "../stores/InspectionStore";
+import { IFilterFieldVal, IFilterFieldValue } from "../stores/MainPageStore";
 
 interface IMainPage {}
 
@@ -142,6 +145,12 @@ export const MainPage = observer((props: IMainPage) => {
     }
   };
 
+  const handleFilterChange = (value: IFilterFieldValue) => {
+    console.log("table handleChange", value);
+    store.mainPageStore.updateFormFieldsValues(value);
+    store.mainPageStore.getInspections();
+  };
+
   const contentRoutes = () => {
     return (
       <Routes>
@@ -170,41 +179,47 @@ export const MainPage = observer((props: IMainPage) => {
         {[
           store.mainPageStore.localInspections,
           store.mainPageStore.inspections,
-        ].map((inspections, index) => (
-          <Route
-            element={
-              inspections.length ? (
-                <InspectionsTable
-                  handlePaginationChange={handlePaginationChange}
-                  subGroupsActionsTypes={
-                    !index
-                      ? SubGroupsActionsTypes.NewInspections
-                      : SubGroupsActionsTypes.Sent
-                  }
-                  fieldsData={store.inspectionStore.fieldsData}
-                  handleOpenFilter={handleOpenFilter}
-                  handleDeleteSentButtonClick={(id: string) => {
-                    handleDelete(id, SubGroupsActionsTypes.Sent);
-                  }}
-                  inspectionsCount={store.mainPageStore.inspectionsCount}
-                  handleDeleteNewInspectionButtonClick={(id: string) => {
-                    handleDelete(id, SubGroupsActionsTypes.NewInspections);
-                  }}
-                  handleEditInspection={handleEditInspection}
-                  handleEditLocalInspection={handleEditLocalInspection}
-                  inspections={inspections}
-                />
-              ) : (
-                renderLoader()
-              )
-            }
-            path={
-              !index
-                ? SubGroupsActionsTypes.NewInspections
-                : SubGroupsActionsTypes.Sent
-            }
-          />
-        ))}
+        ].map((inspections, index) => {
+          return (
+            <Route
+              element={
+                inspections.length ? (
+                  <InspectionsTable
+                    resetFilters={() => store.mainPageStore.resetFilters()}
+                    handleDeleteFilter={handleFilterChange}
+                    filterFieldsValues={store.mainPageStore.filterFieldsValues}
+                    handleFilterChange={handleFilterChange}
+                    handlePaginationChange={handlePaginationChange}
+                    subGroupsActionsTypes={
+                      !index
+                        ? SubGroupsActionsTypes.NewInspections
+                        : SubGroupsActionsTypes.Sent
+                    }
+                    fieldsData={store.inspectionStore.fieldsData}
+                    handleOpenFilter={handleOpenFilter}
+                    handleDeleteSentButtonClick={(id: string) => {
+                      handleDelete(id, SubGroupsActionsTypes.Sent);
+                    }}
+                    inspectionsCount={store.mainPageStore.inspectionsCount}
+                    handleDeleteNewInspectionButtonClick={(id: string) => {
+                      handleDelete(id, SubGroupsActionsTypes.NewInspections);
+                    }}
+                    handleEditInspection={handleEditInspection}
+                    handleEditLocalInspection={handleEditLocalInspection}
+                    inspections={inspections}
+                  />
+                ) : (
+                  renderLoader()
+                )
+              }
+              path={
+                !index
+                  ? SubGroupsActionsTypes.NewInspections
+                  : SubGroupsActionsTypes.Sent
+              }
+            />
+          );
+        })}
         {/*BarriersCarts and BarriersApps on main page*/}
         <Route
           element={<EmptyBoxPage />}
@@ -220,10 +235,10 @@ export const MainPage = observer((props: IMainPage) => {
 
   const getSubHeaderTitle = () => {
     if (location.pathname.includes(SubGroupsActionsTypes.Sent)) {
-      return t(SubGroupsActionsTypes.Sent)
+      return t(SubGroupsActionsTypes.Sent);
     }
     if (location.pathname.includes(SubGroupsActionsTypes.NewInspections)) {
-      return t(SubGroupsActionsTypes.NewInspections)
+      return t(SubGroupsActionsTypes.NewInspections);
     }
   };
 

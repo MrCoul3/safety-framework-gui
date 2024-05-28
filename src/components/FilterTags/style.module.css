@@ -1,0 +1,14 @@
+.tags {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+.FilterTags {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.resetBtn {
+    width: 200px;
+}

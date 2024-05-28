@@ -161,7 +161,8 @@ const InspectionForm = observer((props: IInspectionForm) => {
                   );
                 }
                 return (
-                  <InspectionTextField onClose={props.onInspectionTextFieldClose}
+                  <InspectionTextField
+                    onClose={props.onInspectionTextFieldClose}
                     onScrollToBottom={props.onScrollToBottom}
                     onSearchValueChange={props.onSearchValueChange}
                     required={requiredConditions(inspectionType)}

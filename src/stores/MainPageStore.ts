@@ -12,7 +12,15 @@ import { IconHelmet } from "@consta/icons/IconHelmet";
 import { ISubGroupState } from "../interfaces/ISubGroupState";
 import { INSPECTIONS_ON_PAGE } from "../constants/config";
 import { expandFilter } from "../constants/filters";
+import { IFormDateFieldValue, Item } from "./InspectionStore";
+import { IInspectionFilters } from "../interfaces/IInspectionFilters";
 
+export interface IFilterFieldValue {
+  [key: string]: Item[] | null;
+}
+export interface IFilterFieldVal {
+  [key: string]: Item | null;
+}
 export interface IDeletingInspectionType {
   type: SubGroupsActionsTypes;
   id: string;
@@ -135,11 +143,11 @@ export class MainPageStore {
     try {
       const response = await instance.get(`${inspectionsEndpoint}`);
       if (!response.data.error) {
-        setTimeout(() => {
-          this.setInspectionsCount(48546);
-          this.setInspections(response.data);
-          this.store.loaderStore.setLoader("ready");
-        }, 1000);
+        setTimeout(() => {}, 0);
+
+        this.setInspectionsCount(48546);
+        this.setInspections(response.data);
+        this.store.loaderStore.setLoader("ready");
       }
     } catch (e) {
       console.error(e);
@@ -148,9 +156,32 @@ export class MainPageStore {
 
   async getInspections() {
     this.store.loaderStore.setLoader("wait");
+    const filterFieldsValues = this.filterFieldsValues as {
+      [key: string]: Item[];
+    };
+
+    console.log("getInspections!!!", toJS(filterFieldsValues));
+
+    const tableFilterValues = Object.keys(filterFieldsValues).length
+      ? Object.keys(filterFieldsValues)
+          .map((key) => {
+            const values = filterFieldsValues[key];
+            if (values && values.length) {
+              return values
+                .map((val) => `contains(${key}/title, '${val.title}')`)
+                .join(" or ");
+            }
+          })
+          .join(" and ")
+      : null;
+
+    const tableFilter = tableFilterValues
+      ? `&$filter=${tableFilterValues}`
+      : "";
+
     try {
       const response = await instance.get(
-        `${inspectionsEndpoint}?$skip=${this.inspectionOffset}&$top=${INSPECTIONS_ON_PAGE}&$expand=${expandFilter}&$count=true`,
+        `${inspectionsEndpoint}?$skip=${this.inspectionOffset}&$top=${INSPECTIONS_ON_PAGE}&$expand=${expandFilter}${tableFilter}&$count=true`,
       );
       if (!response.data.error) {
         this.setInspectionsCount(response.data["@odata.count"]);
@@ -188,5 +219,17 @@ export class MainPageStore {
     } catch (e) {
       console.error(e);
     }
+  }
+  filterFieldsValues: IInspectionFilters | {} = {};
+
+  resetFilters() {
+    this.filterFieldsValues = {}
+  }
+  updateFormFieldsValues(value: IFilterFieldValue | IFormDateFieldValue) {
+    Object.assign(this.filterFieldsValues, value);
+    console.debug(
+      "updateFormFieldsValues formFieldsValues: ",
+      toJS(this.filterFieldsValues),
+    );
   }
 }

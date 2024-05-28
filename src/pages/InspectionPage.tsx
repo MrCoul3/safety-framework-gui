@@ -108,7 +108,7 @@ const InspectionPage = observer((props: IInspectionPage) => {
 
   const handleEditPassports = () => {};
 
-  const handleNextStepToBarriers = () => {
+  const handleNextStepToPassports = () => {
     const isValid = store.inspectionStore.checkIsFormSuccess();
     console.log("isValid", isValid);
     if (isValid) {
@@ -183,7 +183,7 @@ const InspectionPage = observer((props: IInspectionPage) => {
             onScrollToBottom={handleScrollFieldToBottom}
             onSearchValueChange={handleSearchValueChange}
             onInit={() => store.inspectionStore.setIsValidate(false)}
-            handleNextStepToBarriers={handleNextStepToBarriers}
+            handleNextStepToBarriers={handleNextStepToPassports}
             handleNextStepToFreeForm={handleNextStepToFreeForm}
             formFieldsValuesLength={
               !!Object.values(store.inspectionStore.formFieldsValues).length

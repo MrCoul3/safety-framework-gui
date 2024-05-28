@@ -14,6 +14,7 @@ export const ru = {
     reset: "Сбросить",
     cancel: "Отменить",
     next: "Продолжить",
+    resetFilter: "Сбросить фильтр",
     farther: "Дальше",
     edit: "Редактировать",
     recover: "Восстановить",

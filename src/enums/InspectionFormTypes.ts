@@ -19,8 +19,10 @@ export enum InspectionFormTypes {
 
   Auditor = "auditor", // ФИО составителя акта ?
   Auditee = 'auditee',// ФИО проверяемого ?
-  Supervisor = "supervisor"// ФИО супервайзера ?
+  Supervisor = "supervisor", // ФИО супервайзера ?
+
 }
+
 
 export enum InspectionFormGroups {
   Common = "common",
