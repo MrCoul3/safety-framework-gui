@@ -24,8 +24,11 @@ import EmptyBoxPage from "../components/EmptyBoxPage/EmptyBoxPage";
 import SnackBarCustom from "../components/SnackBarCustom/SnackBarCustom";
 import LoaderPage from "../components/LoaderPage/LoaderPage";
 import { toJS } from "mobx";
-import {IFilterDateRangeFieldValue, IFilterFieldValue, IFormDateFieldValue} from "../interfaces/IFieldInterfaces";
-
+import {
+  IFilterDateRangeFieldValue,
+  IFilterFieldValue,
+  IFormDateFieldValue,
+} from "../interfaces/IFieldInterfaces";
 
 interface IMainPage {}
 
@@ -119,7 +122,7 @@ export const MainPage = observer((props: IMainPage) => {
 
   const handleOpenFilter = (type: InspectionFormTypes) => {
     store.inspectionStore.handleOpenField(type);
-    setOpenFilterType(type)
+    setOpenFilterType(type);
   };
 
   const handlePaginationChange = (pageNumber: number) => {
@@ -155,10 +158,10 @@ export const MainPage = observer((props: IMainPage) => {
   };
 
   const [openFilterType, setOpenFilterType] =
-      useState<InspectionFormTypes | null>(null);
+    useState<InspectionFormTypes | null>(null);
 
   const handleScrollFieldToBottom = (inspectionType: InspectionFormTypes) => {
-    console.log('handleScrollFieldToBottom!!!')
+    console.log("handleScrollFieldToBottom!!!");
     store.inspectionStore.increaseOffset();
     store.inspectionStore.getFieldData(inspectionType);
   };
@@ -213,7 +216,10 @@ export const MainPage = observer((props: IMainPage) => {
               element={
                 inspections.length ? (
                   <InspectionsTable
-                      onInspectionTextFieldClose={handleInspectionTextFieldClose}
+                    setSortSetting={(value) =>
+                      store.mainPageStore.setSortSetting(value)
+                    }
+                    onInspectionTextFieldClose={handleInspectionTextFieldClose}
                     onScrollToBottom={handleScrollFieldToBottom}
                     onSearchValueChange={handleSearchValueChange}
                     resetFilters={() => store.mainPageStore.resetFilters()}

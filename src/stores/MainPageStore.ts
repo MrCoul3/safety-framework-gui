@@ -11,7 +11,7 @@ import { IconStorage } from "@consta/icons/IconStorage";
 import { IconHelmet } from "@consta/icons/IconHelmet";
 import { ISubGroupState } from "../interfaces/ISubGroupState";
 import { INSPECTIONS_ON_PAGE } from "../constants/config";
-import {expandFilter, tableFilters} from "../constants/filters";
+import { expandFilter, tableFilters } from "../constants/filters";
 import { IInspectionFilters } from "../interfaces/IInspectionFilters";
 import { InspectionFormTypes } from "../enums/InspectionFormTypes";
 import { transformDateToServerFormat } from "../utils/transformDateToServerFormat";
@@ -21,6 +21,8 @@ import {
   IFormDateFieldValue,
   Item,
 } from "../interfaces/IFieldInterfaces";
+import { SortByProps } from "@consta/uikit/Table";
+import { ISortByParams } from "../interfaces/ISortByParams";
 
 export interface IDeletingInspectionType {
   type: SubGroupsActionsTypes;
@@ -162,11 +164,13 @@ export class MainPageStore {
       [key: string]: Item[] | [Date?, Date?];
     };
 
-    const tableFilterValues = tableFilters(filterFieldsValues)
+    const tableFilterValues = tableFilters(filterFieldsValues);
 
     const tableFilter = tableFilterValues
       ? `&$filter=${tableFilterValues}`
       : "";
+
+    const sortFilter = `&orderby`
 
     try {
       const response = await instance.get(
@@ -222,5 +226,10 @@ export class MainPageStore {
       "updateFormFieldsValues formFieldsValues: ",
       toJS(this.filterFieldsValues),
     );
+  }
+  sortSettings: SortByProps<any> | null = null;
+  setSortSetting(value: SortByProps<any> | null) {
+    this.sortSettings = value;
+    console.log("this.sortSetting", toJS(this.sortSettings));
   }
 }

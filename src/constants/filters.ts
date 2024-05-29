@@ -2,6 +2,7 @@ import { InspectionFormTypes } from "../enums/InspectionFormTypes";
 import { toJS } from "mobx";
 import { transformDateToServerFormat } from "../utils/transformDateToServerFormat";
 import { Item } from "../interfaces/IFieldInterfaces";
+import moment from "moment";
 
 const excludedFields = [InspectionFormTypes.AuditDate];
 
@@ -24,15 +25,21 @@ export const tableFilters = (filterFieldsValues: {
             if (values && values.length) {
               if ((!values[1] && values[0]) || (values[1] && !values[0])) {
                 const value = values.filter((val) => val)[0];
-                if (value)
-                  return `createdWhen eq ${transformDateToServerFormat(value)}`;
+                const endDay = moment(value).endOf("day").toDate();
+                return value
+                  ? `createdWhen ge ${transformDateToServerFormat(value)} and createdWhen le ${transformDateToServerFormat(endDay)}`
+                  : "";
               }
               return values
-                .map((value, index) =>
-                  value
-                    ? `createdWhen ${!index ? "ge" : "le"} ${transformDateToServerFormat(value)}`
-                    : "",
-                )
+                .map((value, index) => {
+                  const val = !index
+                    ? value
+                    : moment(value).endOf("day").toDate();
+                  if (val)
+                    return value
+                      ? `createdWhen ${!index ? "ge" : "le"} ${transformDateToServerFormat(val)}`
+                      : "";
+                })
                 .join(" and ");
             }
           } else {
