@@ -11,18 +11,17 @@ import { IconStorage } from "@consta/icons/IconStorage";
 import { IconHelmet } from "@consta/icons/IconHelmet";
 import { ISubGroupState } from "../interfaces/ISubGroupState";
 import { INSPECTIONS_ON_PAGE } from "../constants/config";
-import { expandFilter } from "../constants/filters";
-import { IFormDateFieldValue, Item } from "./InspectionStore";
+import {expandFilter, tableFilters} from "../constants/filters";
 import { IInspectionFilters } from "../interfaces/IInspectionFilters";
-import {InspectionFormTypes} from "../enums/InspectionFormTypes";
-import {transformDateToServerFormat} from "../utils/transformDateToServerFormat";
+import { InspectionFormTypes } from "../enums/InspectionFormTypes";
+import { transformDateToServerFormat } from "../utils/transformDateToServerFormat";
+import {
+  IFilterDateRangeFieldValue,
+  IFilterFieldValue,
+  IFormDateFieldValue,
+  Item,
+} from "../interfaces/IFieldInterfaces";
 
-export interface IFilterFieldValue {
-  [key: string]: Item[] | null;
-}
-export interface IFilterFieldVal {
-  [key: string]: Item | null;
-}
 export interface IDeletingInspectionType {
   type: SubGroupsActionsTypes;
   id: string;
@@ -124,7 +123,6 @@ export class MainPageStore {
   setLocalInspections(value: IInspection[]) {
     this.localInspections = value;
     console.log("this.localInspections", toJS(this.localInspections));
-
   }
   setSideBarItemValue(value: SubGroupsActionsTypes) {
     this.sideBarItemValue = value;
@@ -161,40 +159,14 @@ export class MainPageStore {
   async getInspections() {
     this.store.loaderStore.setLoader("wait");
     const filterFieldsValues = this.filterFieldsValues as {
-      [key: string]: Item[] | Date;
+      [key: string]: Item[] | [Date?, Date?];
     };
 
-    console.log("getInspections!!!", toJS(filterFieldsValues));
-
-    const tableFilterValues = Object.keys(filterFieldsValues).length
-      ? Object.keys(filterFieldsValues)
-          .map((key) => {
-            console.log('getInspections key', key)
-            if (key === InspectionFormTypes.AuditDate) {
-              const value = filterFieldsValues[key] as Date;
-              console.log('getInspections value', value);
-              const serverFormatValue = transformDateToServerFormat(value)
-              console.log('getInspections serverFormatValue', serverFormatValue);
-              return `createdWhen eq ${serverFormatValue}`
-            } else {
-              const values = filterFieldsValues[key] as Item[];
-              if (values && values.length) {
-                return values
-                    .map((val) => `contains(${key}/title, '${val.title}')`)
-                    .join(" or ");
-              }
-            }
-
-
-          })
-          .join(" and ")
-      : null;
+    const tableFilterValues = tableFilters(filterFieldsValues)
 
     const tableFilter = tableFilterValues
       ? `&$filter=${tableFilterValues}`
       : "";
-
-
 
     try {
       const response = await instance.get(
@@ -240,9 +212,11 @@ export class MainPageStore {
   filterFieldsValues: IInspectionFilters | {} = {};
 
   resetFilters() {
-    this.filterFieldsValues = {}
+    this.filterFieldsValues = {};
   }
-  updateFormFieldsValues(value: IFilterFieldValue | IFormDateFieldValue) {
+  updateFormFieldsValues(
+    value: IFilterFieldValue | IFilterDateRangeFieldValue,
+  ) {
     Object.assign(this.filterFieldsValues, value);
     console.debug(
       "updateFormFieldsValues formFieldsValues: ",

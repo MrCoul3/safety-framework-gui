@@ -7,16 +7,12 @@ import {
 } from "../../enums/InspectionFormTypes";
 import { Combobox } from "@consta/uikit/Combobox";
 import { useFlag } from "@consta/uikit/useFlag";
-import {
-  IFieldsData,
-  IFormFieldValue,
-  Item,
-} from "../../stores/InspectionStore";
 import { useTranslation } from "react-i18next";
 import { PropStatus } from "@consta/uikit/__internal__/src/components/SelectComponents/types";
 import { toJS } from "mobx";
 import { ELEMENTS_ON_FIELD } from "../../constants/config";
 import { useDebounce } from "@consta/uikit/useDebounce";
+import {IFieldsData, IFormFieldValue, Item} from "../../interfaces/IFieldInterfaces";
 
 interface IFieldInspectionType {
   onClose?(): void;

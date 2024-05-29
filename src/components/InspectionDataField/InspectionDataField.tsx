@@ -5,8 +5,8 @@ import { InspectionFormTypes } from "../../enums/InspectionFormTypes";
 import { useTranslation } from "react-i18next";
 import { DatePicker, DatePickerPropOnChange } from "@consta/uikit/DatePicker";
 import { IconCalendar } from "@consta/icons/IconCalendar";
-import { IFormDateFieldValue } from "../../stores/InspectionStore";
 import { PropStatus } from "@consta/uikit/__internal__/src/components/SelectComponents/types";
+import {IFormDateFieldValue} from "../../interfaces/IFieldInterfaces";
 
 interface IInspectionDataField {
   inspectionType: InspectionFormTypes;

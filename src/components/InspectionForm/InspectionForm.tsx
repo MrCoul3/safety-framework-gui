@@ -8,17 +8,14 @@ import {
 import { useTranslation } from "react-i18next";
 import { Button } from "@consta/uikit/Button";
 import { IconForward } from "@consta/icons/IconForward";
-import {
-  IFieldsData,
-  IFormDateFieldValue,
-  IFormFieldValue,
-} from "../../stores/InspectionStore";
+
 import InspectionTextField from "../InspectionTextField/InspectionTextField";
 import InspectionDataField from "../InspectionDataField/InspectionDataField";
 import ItemGroupTitle from "../ItemGroupTitle/ItemGroupTitle";
 import ConfirmDialog from "../ConfirmDialog/ConfirmDialog";
 import { IInspection } from "../../interfaces/IInspection";
 import { toJS } from "mobx";
+import {IFieldsData, IFormDateFieldValue, IFormFieldValue} from "../../interfaces/IFieldInterfaces";
 
 interface IInspectionForm {
   handleOpenField(type: InspectionFormTypes): void;

@@ -12,22 +12,11 @@ import moment from "moment/moment";
 import { IInspection } from "../interfaces/IInspection";
 import { joinObjectValues } from "../utils/joinObjectValues";
 import { expandFilter } from "../constants/filters";
+import {IFieldsData, IFormDateFieldValue, IFormFieldValue, Item} from "../interfaces/IFieldInterfaces";
 
-export interface IFieldsData {
-  [key: string]: Item[] | number;
-}
-export type Item = {
-  title: string;
-  id?: string;
-  personFio?: string;
-};
 
-export interface IFormFieldValue {
-  [key: string]: Item | null;
-}
-export interface IFormDateFieldValue {
-  [key: string]: Date | null;
-}
+
+
 export class InspectionStore {
   private store: AppStore;
 

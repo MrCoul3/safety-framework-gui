@@ -21,17 +21,17 @@ import { InspectionFormTypes } from "../../enums/InspectionFormTypes";
 import { onCellClick } from "@consta/uikit/__internal__/src/components/Table/Table";
 import CustomFilter from "../CustomFilter/CustomFilter";
 import { INSPECTIONS_ON_PAGE } from "../../constants/config";
-import {
-  IFieldsData,
-  IFormDateFieldValue,
-  Item,
-} from "../../stores/InspectionStore";
 import { SubGroupsActionsTypes } from "../../enums/SubGroupsTypes";
 import { useLocation } from "react-router";
 import { toJS } from "mobx";
-import { IFilterFieldVal, IFilterFieldValue } from "../../stores/MainPageStore";
 import { IInspectionFilters } from "../../interfaces/IInspectionFilters";
 import FilterTags from "../FilterTags/FilterTags";
+import {
+  IFieldsData,
+  IFilterDateRangeFieldValue,
+  IFilterFieldValue,
+  IFormDateFieldValue
+} from "../../interfaces/IFieldInterfaces";
 
 interface IInspectionsTable {
   inspections: IInspection[];
@@ -41,13 +41,13 @@ interface IInspectionsTable {
   subGroupsActionsTypes: SubGroupsActionsTypes;
   handleOpenFilter(field: InspectionFormTypes): void;
   resetFilters(): void;
-  handleDeleteFilter(value: IFilterFieldValue | IFormDateFieldValue): void;
+  handleDeleteFilter(value: IFilterFieldValue | IFilterDateRangeFieldValue): void;
   handlePaginationChange(pageNumber: number): void;
   handleDeleteSentButtonClick(id: number | string): void;
   handleDeleteNewInspectionButtonClick(id: string): void;
   handleEditInspection(id: number | string): void;
   handleEditLocalInspection(id: string): void;
-  handleFilterChange(value: IFilterFieldValue | IFormDateFieldValue): void;
+  handleFilterChange(value: IFilterFieldValue | IFilterDateRangeFieldValue): void;
   onSearchValueChange?(value: string | null): void;
   onScrollToBottom?(inspectionType: InspectionFormTypes): void;
   onInspectionTextFieldClose?(): void;

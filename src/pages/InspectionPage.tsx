@@ -5,15 +5,13 @@ import InspectionForm from "../components/InspectionForm/InspectionForm";
 import { useTranslation } from "react-i18next";
 import { InspectionFormTypes } from "../enums/InspectionFormTypes";
 import { useStore } from "../hooks/useStore";
-import {
-  IFormDateFieldValue,
-  IFormFieldValue,
-} from "../stores/InspectionStore";
+
 import { Outlet, useLocation, useNavigate, useParams } from "react-router";
 import { RoutesTypes } from "../enums/RoutesTypes";
 import { IBreadCrumbs } from "../interfaces/IBreadCrumbs";
 import Layout from "../layouts/Layout/Layout";
 import { isDevelop } from "../constants/config";
+import {IFormDateFieldValue, IFormFieldValue} from "../interfaces/IFieldInterfaces";
 
 interface IInspectionPage {}
 

@@ -7,18 +7,20 @@ import {
 } from "../../enums/InspectionFormTypes";
 import { DatePicker } from "@consta/uikit/DatePicker";
 import { IconCalendar } from "@consta/icons/IconCalendar";
-import {
-  IFieldsData, IFormDateFieldValue,
-  IFormFieldValue,
-  Item,
-} from "../../stores/InspectionStore";
+
 import { useFlag } from "@consta/uikit/useFlag";
 import { useTranslation } from "react-i18next";
 import { toJS } from "mobx";
-import { IFilterFieldValue } from "../../stores/MainPageStore";
 import { Button } from "@consta/uikit/Button";
-import {useDebounce} from "@consta/uikit/useDebounce";
-import {ELEMENTS_ON_FIELD} from "../../constants/config";
+import { useDebounce } from "@consta/uikit/useDebounce";
+import { ELEMENTS_ON_FIELD } from "../../constants/config";
+import {
+  IFieldsData,
+  IFilterDateRangeFieldValue,
+  IFilterFieldValue,
+  IFormDateFieldValue,
+  Item,
+} from "../../interfaces/IFieldInterfaces";
 
 interface ICustomFilter {
   inspectionType: InspectionFormTypes;
@@ -26,11 +28,11 @@ interface ICustomFilter {
   onConfirm: (value: unknown) => void;
   onCancel: () => void;
   filterValue?: unknown;
-  filterFieldsValues: Item[] | Date;
+  filterFieldsValues: Item[] | [Date?, Date?];
   onOpen(): void;
   onSearchValueChange?(value: string | null): void;
   onScrollToBottom?(inspectionType: InspectionFormTypes): void;
-  handleChange(value: IFilterFieldValue | IFormDateFieldValue): void;
+  handleChange(value: IFilterFieldValue | IFilterDateRangeFieldValue): void;
   onClose?(): void;
 }
 
@@ -54,12 +56,12 @@ const CustomFilter = (props: ICustomFilter) => {
   }, [open]);
 
   useEffect(() => {
-    console.log('props.fieldsData', toJS(props.fieldsData))
-  }, [props.fieldsData])
+    console.log("props.fieldsData", toJS(props.fieldsData));
+  }, [props.fieldsData]);
 
   const getItems = (type: InspectionFormTypes) => {
     const found = props.fieldsData.find((data) =>
-        Object.keys(data).includes(props.inspectionType),
+      Object.keys(data).includes(props.inspectionType),
     );
     if (found) {
       return found[type];
@@ -78,10 +80,10 @@ const CustomFilter = (props: ICustomFilter) => {
 
   const onScrollToBottom = () => {
     const foundCount = props.fieldsData.find((field) =>
-        Object.keys(field).includes(props.inspectionType + "Count"),
+      Object.keys(field).includes(props.inspectionType + "Count"),
     );
     const foundField = props.fieldsData.find((field) =>
-        Object.keys(field).includes(props.inspectionType),
+      Object.keys(field).includes(props.inspectionType),
     );
 
     if (foundCount && foundField) {
@@ -89,9 +91,9 @@ const CustomFilter = (props: ICustomFilter) => {
 
       const count = foundCount[props.inspectionType + "Count"];
       if (
-          count &&
-          count > ELEMENTS_ON_FIELD &&
-          foundFieldValues.length >= ELEMENTS_ON_FIELD
+        count &&
+        count > ELEMENTS_ON_FIELD &&
+        foundFieldValues.length >= ELEMENTS_ON_FIELD
       ) {
         props.onScrollToBottom?.(props.inspectionType);
       }
@@ -105,8 +107,8 @@ const CustomFilter = (props: ICustomFilter) => {
   };
 
   const debounceSetSearchValue = useDebounce(
-      (value) => props.onSearchValueChange?.(value),
-      300,
+    (value) => props.onSearchValueChange?.(value),
+    300,
   );
 
   useEffect(() => debounceSetSearchValue(searchValue), [searchValue]);
@@ -121,27 +123,33 @@ const CustomFilter = (props: ICustomFilter) => {
       {props.inspectionType === InspectionFormTypes.AuditDate ? (
         <DatePicker
           withClearButton
-          // type="date-range"
+          type="date-range"
           className={style.DatePicker}
-          onChange={(val) => props.handleChange({ [props.inspectionType]: val })}
+          onChange={(dateRangeValue) =>
+            props.handleChange({
+              [props.inspectionType]: dateRangeValue,
+            } as IFilterDateRangeFieldValue)
+          }
           rightSide={IconCalendar}
-          value={props.filterFieldsValues as Date}
+          value={props.filterFieldsValues as [Date?, Date?]}
         />
       ) : (
         <Combobox
-            multiple
-            virtualScroll
-            className={style.combobox}
-            items={getItems(props.inspectionType) as Item[]}
-            onDropdownOpen={onDropdownOpen}
-            searchValue={searchValue ?? ""}
-            onSearchValueChange={onSearchValueChange}
-            value={props.filterFieldsValues as Item[]}
-            getItemKey={(item: Item) => getItemKey(item)}
-            placeholder={t(`${props.inspectionType}Placeholder`)}
-            getItemLabel={(item) => getItemLabel(item)}
-            onScrollToBottom={searchValue ? undefined : onScrollToBottom}
-            onChange={(val) => props.handleChange({ [props.inspectionType]: val })}
+          multiple
+          virtualScroll
+          className={style.combobox}
+          items={getItems(props.inspectionType) as Item[]}
+          onDropdownOpen={onDropdownOpen}
+          searchValue={searchValue ?? ""}
+          onSearchValueChange={onSearchValueChange}
+          value={props.filterFieldsValues as Item[]}
+          getItemKey={(item: Item) => getItemKey(item)}
+          placeholder={t(`${props.inspectionType}Placeholder`)}
+          getItemLabel={(item) => getItemLabel(item)}
+          onScrollToBottom={searchValue ? undefined : onScrollToBottom}
+          onChange={(val) =>
+            props.handleChange({ [props.inspectionType]: val })
+          }
         />
       )}
     </div>

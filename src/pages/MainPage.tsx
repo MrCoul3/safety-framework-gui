@@ -24,11 +24,8 @@ import EmptyBoxPage from "../components/EmptyBoxPage/EmptyBoxPage";
 import SnackBarCustom from "../components/SnackBarCustom/SnackBarCustom";
 import LoaderPage from "../components/LoaderPage/LoaderPage";
 import { toJS } from "mobx";
-import {
-  IFormDateFieldValue,
-  IFormFieldValue,
-} from "../stores/InspectionStore";
-import { IFilterFieldVal, IFilterFieldValue } from "../stores/MainPageStore";
+import {IFilterDateRangeFieldValue, IFilterFieldValue, IFormDateFieldValue} from "../interfaces/IFieldInterfaces";
+
 
 interface IMainPage {}
 
@@ -150,7 +147,7 @@ export const MainPage = observer((props: IMainPage) => {
   };
 
   const handleFilterChange = (
-    value: IFilterFieldValue | IFormDateFieldValue,
+    value: IFilterFieldValue | IFilterDateRangeFieldValue,
   ) => {
     console.log("table handleChange", toJS(value));
     store.mainPageStore.updateFormFieldsValues(value);
