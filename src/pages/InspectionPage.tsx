@@ -122,7 +122,7 @@ const InspectionPage = observer((props: IInspectionPage) => {
     console.log("isValid", isValid);
     if (isValid) {
       // saveInspection();
-      // navigate(RoutesTypes.Passports);
+      navigate(RoutesTypes.FreeForm);
     }
   };
 

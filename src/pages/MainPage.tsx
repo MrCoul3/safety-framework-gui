@@ -176,7 +176,67 @@ export const MainPage = observer((props: IMainPage) => {
           path="/"
         />
         {/*Sent and new inspections table on main page*/}
-        {[
+
+        <Route
+          element={
+            store.mainPageStore.inspections.length ? (
+              <InspectionsTable
+                resetFilters={() => store.mainPageStore.resetFilters()}
+                handleDeleteFilter={handleFilterChange}
+                filterFieldsValues={store.mainPageStore.filterFieldsValues}
+                handleFilterChange={handleFilterChange}
+                handlePaginationChange={handlePaginationChange}
+                subGroupsActionsTypes={SubGroupsActionsTypes.Sent}
+                fieldsData={store.inspectionStore.fieldsData}
+                handleOpenFilter={handleOpenFilter}
+                handleDeleteSentButtonClick={(id: string) => {
+                  handleDelete(id, SubGroupsActionsTypes.Sent);
+                }}
+                inspectionsCount={store.mainPageStore.inspectionsCount}
+                handleDeleteNewInspectionButtonClick={(id: string) => {
+                  handleDelete(id, SubGroupsActionsTypes.NewInspections);
+                }}
+                handleEditInspection={handleEditInspection}
+                handleEditLocalInspection={handleEditLocalInspection}
+                inspections={store.mainPageStore.inspections}
+              />
+            ) : (
+              renderLoader()
+            )
+          }
+          path={SubGroupsActionsTypes.Sent}
+        />
+        <Route
+          element={
+            store.mainPageStore.localInspections.length ? (
+              <InspectionsTable
+                resetFilters={() => store.mainPageStore.resetFilters()}
+                handleDeleteFilter={handleFilterChange}
+                filterFieldsValues={store.mainPageStore.filterFieldsValues}
+                handleFilterChange={handleFilterChange}
+                handlePaginationChange={handlePaginationChange}
+                subGroupsActionsTypes={SubGroupsActionsTypes.Sent}
+                fieldsData={store.inspectionStore.fieldsData}
+                handleOpenFilter={handleOpenFilter}
+                handleDeleteSentButtonClick={(id: string) => {
+                  handleDelete(id, SubGroupsActionsTypes.Sent);
+                }}
+                inspectionsCount={store.mainPageStore.inspectionsCount}
+                handleDeleteNewInspectionButtonClick={(id: string) => {
+                  handleDelete(id, SubGroupsActionsTypes.NewInspections);
+                }}
+                handleEditInspection={handleEditInspection}
+                handleEditLocalInspection={handleEditLocalInspection}
+                inspections={store.mainPageStore.localInspections}
+              />
+            ) : (
+              renderLoader()
+            )
+          }
+          path={SubGroupsActionsTypes.NewInspections}
+        />
+
+        {/* {[
           store.mainPageStore.localInspections,
           store.mainPageStore.inspections,
         ].map((inspections, index) => {
@@ -219,7 +279,7 @@ export const MainPage = observer((props: IMainPage) => {
               }
             />
           );
-        })}
+        })}*/}
         {/*BarriersCarts and BarriersApps on main page*/}
         <Route
           element={<EmptyBoxPage />}

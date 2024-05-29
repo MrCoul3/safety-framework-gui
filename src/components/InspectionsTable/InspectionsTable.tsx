@@ -68,6 +68,10 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
   };
 
   useEffect(() => {
+      console.log('inspections!!!', toJS(props.inspections))
+  }, [props.inspections])
+
+  useEffect(() => {
     getTableSize();
   }, [tableRef, tableContainerRef]);
 
@@ -108,12 +112,9 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
       />
     </div>
   );
-
-  const inspections = props.inspections;
-
   const rows = useMemo(
     () =>
-      inspections.map((item, index) => ({
+        props.inspections.map((item, index) => ({
         id: item.id ?? "",
         [InspectionFormTypes.InspectionForm]:
           item[InspectionFormTypes.InspectionForm]?.title,
@@ -147,9 +148,10 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
     [props.inspections],
   );
 
+    console.log('rows!!!', toJS(rows))
+
   const keys = Object.values(InspectionFormTypes);
 
-  // keys.unshift("actions");
 
   const columns: TableColumn<(typeof rows)[number]>[] = keys
     .filter((key) => !excludeFields.includes(key))
@@ -175,9 +177,7 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
   const filters: any = Object.values(InspectionFormTypes).map((field) => ({
     id: field,
     name: t(field) + ": ",
-
     field: field,
-
     component: {
       name: CustomFilter,
       props: {

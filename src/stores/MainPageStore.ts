@@ -121,6 +121,8 @@ export class MainPageStore {
   }
   setLocalInspections(value: IInspection[]) {
     this.localInspections = value;
+    console.log("this.localInspections", toJS(this.localInspections));
+
   }
   setSideBarItemValue(value: SubGroupsActionsTypes) {
     this.sideBarItemValue = value;

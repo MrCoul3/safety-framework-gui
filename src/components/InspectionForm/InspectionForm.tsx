@@ -18,6 +18,7 @@ import InspectionDataField from "../InspectionDataField/InspectionDataField";
 import ItemGroupTitle from "../ItemGroupTitle/ItemGroupTitle";
 import ConfirmDialog from "../ConfirmDialog/ConfirmDialog";
 import { IInspection } from "../../interfaces/IInspection";
+import { toJS } from "mobx";
 
 interface IInspectionForm {
   handleOpenField(type: InspectionFormTypes): void;
@@ -103,13 +104,18 @@ const InspectionForm = observer((props: IInspectionForm) => {
   };
 
   const handleNextStep = () => {
-    /* if (
-      props.formFieldsValues[InspectionFormTypes.InspectionForm] === "Барьеры"
-    ) {
+    console.log(
+      "handleNextStep props.formFieldsValues",
+      toJS(props.formFieldsValues),
+    );
+    const formType =
+      props.formFieldsValues?.[InspectionFormTypes.InspectionForm]?.id;
+    // id = 1 barriers, id = 2 freeForm
+    if (formType === 1) {
       props.handleNextStepToBarriers();
     } else {
       props.handleNextStepToFreeForm();
-    }*/
+    }
     props.setIsValidate(true);
   };
   const disabledConditions = (inspectionType: InspectionFormTypes) => {

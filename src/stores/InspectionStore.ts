@@ -11,7 +11,7 @@ import {
 import moment from "moment/moment";
 import { IInspection } from "../interfaces/IInspection";
 import { joinObjectValues } from "../utils/joinObjectValues";
-import {expandFilter} from "../constants/filters";
+import { expandFilter } from "../constants/filters";
 
 export interface IFieldsData {
   [key: string]: Item[] | number;
@@ -48,19 +48,19 @@ export class InspectionStore {
   formFieldsValues: IInspection | {} = {};
 
   setFieldsData(value: IFieldsData) {
-    console.log('setFieldsData value', value)
+    console.log("setFieldsData value", value);
     const keyValue = Object.keys(value)[0];
-    console.log('setFieldsData keyValue', keyValue)
+    console.log("setFieldsData keyValue", keyValue);
 
-    if (!keyValue.includes('Count')) {
+    if (!keyValue.includes("Count")) {
       const foundField = this.fieldsData.find((field) =>
-          Object.keys(field).includes(keyValue),
+        Object.keys(field).includes(keyValue),
       );
-      console.log('setFieldsData foundField', foundField)
+      console.log("setFieldsData foundField", foundField);
 
       if (foundField) {
         const newValue = joinObjectValues(foundField, value);
-        console.log('setFieldsData newValue', newValue)
+        console.log("setFieldsData newValue", newValue);
         this.fieldsData = [...this.fieldsData, newValue];
         return;
       }
@@ -135,13 +135,19 @@ export class InspectionStore {
 
     const itemValue: Item = { title: "title", personFio: "personFio" };
 
-    let filter = searchFieldValue ? `$filter=contains(${itemValue.title},'${searchFieldValue}')` : "";
+    let filter = searchFieldValue
+      ? `$filter=contains(${itemValue.title},'${searchFieldValue}')`
+      : "";
 
-    let offset = searchFieldValue ? "" : `&$skip=${this.offset}&$top=${ELEMENTS_ON_FIELD}`
+    let offset = searchFieldValue
+      ? ""
+      : `&$skip=${this.offset}&$top=${ELEMENTS_ON_FIELD}`;
 
     if (EMPLOYEES.includes(type)) {
       requestType = employeesEndpoint;
-      filter = searchFieldValue ? `$filter=contains(${itemValue.personFio},'${searchFieldValue}')` : "";
+      filter = searchFieldValue
+        ? `$filter=contains(${itemValue.personFio},'${searchFieldValue}')`
+        : "";
     }
 
     const countFilter = this.searchFieldValue ? "" : `&$count=true`;
@@ -178,10 +184,28 @@ export class InspectionStore {
           auditDate: moment(result.auditDate).toDate(),
         };
         this.setFormFieldsValues(inspection);
+        console.log('getInspectionDev')
       }
     } catch (e) {
       console.error(e);
     }
+  }
+
+  cropExtraValuesFromInspection() {
+    const inspectionFormTypesValues = Object.values(InspectionFormTypes);
+    const formFieldsValuesKeys = Object.keys(this.formFieldsValues);
+    const formFieldsValues = this.formFieldsValues as {[key: string]: Item};
+    formFieldsValuesKeys.forEach((formFieldsValuesKey) => {
+          if (
+            !inspectionFormTypesValues.includes(
+                formFieldsValuesKey as InspectionFormTypes,
+            )
+          ) {
+            delete formFieldsValues[formFieldsValuesKey]
+          }
+        }
+    );
+    return formFieldsValues
   }
 
   async getInspectionById(editInspectionId: string) {
@@ -209,11 +233,13 @@ export class InspectionStore {
   }
 
   checkIsFormSuccess() {
-    if (this.formFieldsValues) {
+    const formFieldsValues = this.cropExtraValuesFromInspection()
+
+    if (formFieldsValues) {
       return (
         Object.keys(InspectionFormTypes).length ===
-          Object.keys(this.formFieldsValues).length &&
-        !Object.values(this.formFieldsValues).some((field) => field === null)
+          Object.keys(formFieldsValues).length &&
+        !Object.values(formFieldsValues).some((field) => field === null)
       );
     }
     return false;
