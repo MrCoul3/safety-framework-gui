@@ -11,7 +11,11 @@ import { IconStorage } from "@consta/icons/IconStorage";
 import { IconHelmet } from "@consta/icons/IconHelmet";
 import { ISubGroupState } from "../interfaces/ISubGroupState";
 import { INSPECTIONS_ON_PAGE } from "../constants/config";
-import { expandFilter, tableFilters } from "../constants/filters";
+import {
+  expandFilter,
+  getSortFilter,
+  tableFilters,
+} from "../constants/filters";
 import { IInspectionFilters } from "../interfaces/IInspectionFilters";
 import { InspectionFormTypes } from "../enums/InspectionFormTypes";
 import { transformDateToServerFormat } from "../utils/transformDateToServerFormat";
@@ -170,11 +174,13 @@ export class MainPageStore {
       ? `&$filter=${tableFilterValues}`
       : "";
 
-    const sortFilter = `&orderby`
+    const sortFilterValues = getSortFilter(this.sortSettings)
+
+    const sortFilter = sortFilterValues ? `&$orderby=${sortFilterValues}` : "";
 
     try {
       const response = await instance.get(
-        `${inspectionsEndpoint}?$skip=${this.inspectionOffset}&$top=${INSPECTIONS_ON_PAGE}&$expand=${expandFilter}${tableFilter}&$count=true`,
+        `${inspectionsEndpoint}?$skip=${this.inspectionOffset}&$top=${INSPECTIONS_ON_PAGE}&$expand=${expandFilter}${tableFilter}${sortFilter}&$count=true`,
       );
       if (!response.data.error) {
         this.setInspectionsCount(response.data["@odata.count"]);

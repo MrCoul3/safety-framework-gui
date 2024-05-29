@@ -52,7 +52,7 @@ interface IInspectionsTable {
   onSearchValueChange?(value: string | null): void;
   onScrollToBottom?(inspectionType: InspectionFormTypes): void;
   onInspectionTextFieldClose?(): void;
-  setSortSetting?(value: SortByProps<any> | null): void;
+  handleSort?(value: SortByProps<any> | null): void;
 }
 
 const InspectionsTable = observer((props: IInspectionsTable) => {
@@ -232,7 +232,7 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
         stickyColumns={1}
         columns={columns}
         className={style.table}
-        onSortBy={props.setSortSetting}
+        onSortBy={props.handleSort}
         onCellClick={handleCellClick}
       />
 

@@ -3,6 +3,7 @@ import { toJS } from "mobx";
 import { transformDateToServerFormat } from "../utils/transformDateToServerFormat";
 import { Item } from "../interfaces/IFieldInterfaces";
 import moment from "moment";
+import {SortByProps} from "@consta/uikit/Table";
 
 const excludedFields = [InspectionFormTypes.AuditDate];
 
@@ -53,3 +54,11 @@ export const tableFilters = (filterFieldsValues: {
         })
         .join(" and ")
     : null;
+
+
+export const getSortFilter = (sortSettings: SortByProps<any> | null) => {
+    if (sortSettings?.sortingBy === InspectionFormTypes.AuditDate) {
+        return `createdWhen ${sortSettings?.sortOrder}`
+    }
+    return ""
+}

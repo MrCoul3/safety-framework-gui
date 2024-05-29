@@ -29,6 +29,7 @@ import {
   IFilterFieldValue,
   IFormDateFieldValue,
 } from "../interfaces/IFieldInterfaces";
+import {SortByProps} from "@consta/uikit/Table";
 
 interface IMainPage {}
 
@@ -182,6 +183,11 @@ export const MainPage = observer((props: IMainPage) => {
     store.inspectionStore.clearFieldsData();
   };
 
+  const handleSort = (value: SortByProps<any> | null) => {
+    store.mainPageStore.setSortSetting(value);
+    store.mainPageStore.getInspections();
+  };
+
   const contentRoutes = () => {
     return (
       <Routes>
@@ -216,9 +222,7 @@ export const MainPage = observer((props: IMainPage) => {
               element={
                 inspections.length ? (
                   <InspectionsTable
-                    setSortSetting={(value) =>
-                      store.mainPageStore.setSortSetting(value)
-                    }
+                    handleSort={handleSort}
                     onInspectionTextFieldClose={handleInspectionTextFieldClose}
                     onScrollToBottom={handleScrollFieldToBottom}
                     onSearchValueChange={handleSearchValueChange}
