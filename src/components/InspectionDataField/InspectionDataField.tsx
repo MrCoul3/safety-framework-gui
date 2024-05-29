@@ -20,9 +20,9 @@ interface IInspectionDataField {
 const InspectionDataField = observer((props: IInspectionDataField) => {
   const { t } = useTranslation("dict");
 
-  const onChange: DatePickerPropOnChange<"date-range"> = (value) => {
+  /*  const onChange = (value) => {
     props.handleChange({ [props.inspectionType]: value });
-  };
+  };*/
 
   const picker = useRef<HTMLDivElement>(null);
 
@@ -44,7 +44,9 @@ const InspectionDataField = observer((props: IInspectionDataField) => {
       status={props.status}
       className={style.field}
       label={!props.disableLabel ? t(props.inspectionType) : ""}
-      onChange={onChange}
+      onChange={(value) =>
+        props.handleChange({ [props.inspectionType]: value })
+      }
       required
       rightSide={IconCalendar}
       labelPosition="left"

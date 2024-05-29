@@ -26,7 +26,7 @@ export interface IFormFieldValue {
   [key: string]: Item | null;
 }
 export interface IFormDateFieldValue {
-  [key: string]: [Date?, Date?] | null;
+  [key: string]: Date | null;
 }
 export class InspectionStore {
   private store: AppStore;

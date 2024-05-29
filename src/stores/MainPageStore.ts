@@ -14,6 +14,8 @@ import { INSPECTIONS_ON_PAGE } from "../constants/config";
 import { expandFilter } from "../constants/filters";
 import { IFormDateFieldValue, Item } from "./InspectionStore";
 import { IInspectionFilters } from "../interfaces/IInspectionFilters";
+import {InspectionFormTypes} from "../enums/InspectionFormTypes";
+import {transformDateToServerFormat} from "../utils/transformDateToServerFormat";
 
 export interface IFilterFieldValue {
   [key: string]: Item[] | null;
@@ -159,7 +161,7 @@ export class MainPageStore {
   async getInspections() {
     this.store.loaderStore.setLoader("wait");
     const filterFieldsValues = this.filterFieldsValues as {
-      [key: string]: Item[];
+      [key: string]: Item[] | Date;
     };
 
     console.log("getInspections!!!", toJS(filterFieldsValues));
@@ -167,12 +169,23 @@ export class MainPageStore {
     const tableFilterValues = Object.keys(filterFieldsValues).length
       ? Object.keys(filterFieldsValues)
           .map((key) => {
-            const values = filterFieldsValues[key];
-            if (values && values.length) {
-              return values
-                .map((val) => `contains(${key}/title, '${val.title}')`)
-                .join(" or ");
+            console.log('getInspections key', key)
+            if (key === InspectionFormTypes.AuditDate) {
+              const value = filterFieldsValues[key] as Date;
+              console.log('getInspections value', value);
+              const serverFormatValue = transformDateToServerFormat(value)
+              console.log('getInspections serverFormatValue', serverFormatValue);
+              return `createdWhen eq ${serverFormatValue}`
+            } else {
+              const values = filterFieldsValues[key] as Item[];
+              if (values && values.length) {
+                return values
+                    .map((val) => `contains(${key}/title, '${val.title}')`)
+                    .join(" or ");
+              }
             }
+
+
           })
           .join(" and ")
       : null;
@@ -180,6 +193,8 @@ export class MainPageStore {
     const tableFilter = tableFilterValues
       ? `&$filter=${tableFilterValues}`
       : "";
+
+
 
     try {
       const response = await instance.get(

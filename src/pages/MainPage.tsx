@@ -24,7 +24,10 @@ import EmptyBoxPage from "../components/EmptyBoxPage/EmptyBoxPage";
 import SnackBarCustom from "../components/SnackBarCustom/SnackBarCustom";
 import LoaderPage from "../components/LoaderPage/LoaderPage";
 import { toJS } from "mobx";
-import { IFormFieldValue } from "../stores/InspectionStore";
+import {
+  IFormDateFieldValue,
+  IFormFieldValue,
+} from "../stores/InspectionStore";
 import { IFilterFieldVal, IFilterFieldValue } from "../stores/MainPageStore";
 
 interface IMainPage {}
@@ -117,8 +120,9 @@ export const MainPage = observer((props: IMainPage) => {
 
   const [isModalOpen, setIsModalOpen] = React.useState(false);
 
-  const handleOpenFilter = (field: InspectionFormTypes) => {
-    store.inspectionStore.handleOpenField(field);
+  const handleOpenFilter = (type: InspectionFormTypes) => {
+    store.inspectionStore.handleOpenField(type);
+    setOpenFilterType(type)
   };
 
   const handlePaginationChange = (pageNumber: number) => {
@@ -145,10 +149,37 @@ export const MainPage = observer((props: IMainPage) => {
     }
   };
 
-  const handleFilterChange = (value: IFilterFieldValue) => {
-    console.log("table handleChange", value);
+  const handleFilterChange = (
+    value: IFilterFieldValue | IFormDateFieldValue,
+  ) => {
+    console.log("table handleChange", toJS(value));
     store.mainPageStore.updateFormFieldsValues(value);
     store.mainPageStore.getInspections();
+  };
+
+  const [openFilterType, setOpenFilterType] =
+      useState<InspectionFormTypes | null>(null);
+
+  const handleScrollFieldToBottom = (inspectionType: InspectionFormTypes) => {
+    console.log('handleScrollFieldToBottom!!!')
+    store.inspectionStore.increaseOffset();
+    store.inspectionStore.getFieldData(inspectionType);
+  };
+
+  const handleSearchValueChange = (value: string | null) => {
+    console.log("handleSearchValueChange value!!!", value);
+    store.inspectionStore.setSearchFieldValue(value);
+    if (!value || value === "") {
+      store.inspectionStore.clearOffset();
+    }
+    if ((value || value === "") && openFilterType) {
+      store.inspectionStore.getFieldData(openFilterType);
+    }
+  };
+  const handleInspectionTextFieldClose = () => {
+    setOpenFilterType(null);
+    store.inspectionStore.clearOffset();
+    store.inspectionStore.clearFieldsData();
   };
 
   const contentRoutes = () => {
@@ -176,67 +207,7 @@ export const MainPage = observer((props: IMainPage) => {
           path="/"
         />
         {/*Sent and new inspections table on main page*/}
-
-        <Route
-          element={
-            store.mainPageStore.inspections.length ? (
-              <InspectionsTable
-                resetFilters={() => store.mainPageStore.resetFilters()}
-                handleDeleteFilter={handleFilterChange}
-                filterFieldsValues={store.mainPageStore.filterFieldsValues}
-                handleFilterChange={handleFilterChange}
-                handlePaginationChange={handlePaginationChange}
-                subGroupsActionsTypes={SubGroupsActionsTypes.Sent}
-                fieldsData={store.inspectionStore.fieldsData}
-                handleOpenFilter={handleOpenFilter}
-                handleDeleteSentButtonClick={(id: string) => {
-                  handleDelete(id, SubGroupsActionsTypes.Sent);
-                }}
-                inspectionsCount={store.mainPageStore.inspectionsCount}
-                handleDeleteNewInspectionButtonClick={(id: string) => {
-                  handleDelete(id, SubGroupsActionsTypes.NewInspections);
-                }}
-                handleEditInspection={handleEditInspection}
-                handleEditLocalInspection={handleEditLocalInspection}
-                inspections={store.mainPageStore.inspections}
-              />
-            ) : (
-              renderLoader()
-            )
-          }
-          path={SubGroupsActionsTypes.Sent}
-        />
-        <Route
-          element={
-            store.mainPageStore.localInspections.length ? (
-              <InspectionsTable
-                resetFilters={() => store.mainPageStore.resetFilters()}
-                handleDeleteFilter={handleFilterChange}
-                filterFieldsValues={store.mainPageStore.filterFieldsValues}
-                handleFilterChange={handleFilterChange}
-                handlePaginationChange={handlePaginationChange}
-                subGroupsActionsTypes={SubGroupsActionsTypes.Sent}
-                fieldsData={store.inspectionStore.fieldsData}
-                handleOpenFilter={handleOpenFilter}
-                handleDeleteSentButtonClick={(id: string) => {
-                  handleDelete(id, SubGroupsActionsTypes.Sent);
-                }}
-                inspectionsCount={store.mainPageStore.inspectionsCount}
-                handleDeleteNewInspectionButtonClick={(id: string) => {
-                  handleDelete(id, SubGroupsActionsTypes.NewInspections);
-                }}
-                handleEditInspection={handleEditInspection}
-                handleEditLocalInspection={handleEditLocalInspection}
-                inspections={store.mainPageStore.localInspections}
-              />
-            ) : (
-              renderLoader()
-            )
-          }
-          path={SubGroupsActionsTypes.NewInspections}
-        />
-
-        {/* {[
+        {[
           store.mainPageStore.localInspections,
           store.mainPageStore.inspections,
         ].map((inspections, index) => {
@@ -245,6 +216,9 @@ export const MainPage = observer((props: IMainPage) => {
               element={
                 inspections.length ? (
                   <InspectionsTable
+                      onInspectionTextFieldClose={handleInspectionTextFieldClose}
+                    onScrollToBottom={handleScrollFieldToBottom}
+                    onSearchValueChange={handleSearchValueChange}
                     resetFilters={() => store.mainPageStore.resetFilters()}
                     handleDeleteFilter={handleFilterChange}
                     filterFieldsValues={store.mainPageStore.filterFieldsValues}
@@ -279,7 +253,7 @@ export const MainPage = observer((props: IMainPage) => {
               }
             />
           );
-        })}*/}
+        })}
         {/*BarriersCarts and BarriersApps on main page*/}
         <Route
           element={<EmptyBoxPage />}

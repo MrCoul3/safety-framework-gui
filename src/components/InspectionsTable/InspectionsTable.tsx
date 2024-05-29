@@ -21,7 +21,11 @@ import { InspectionFormTypes } from "../../enums/InspectionFormTypes";
 import { onCellClick } from "@consta/uikit/__internal__/src/components/Table/Table";
 import CustomFilter from "../CustomFilter/CustomFilter";
 import { INSPECTIONS_ON_PAGE } from "../../constants/config";
-import { IFieldsData } from "../../stores/InspectionStore";
+import {
+  IFieldsData,
+  IFormDateFieldValue,
+  Item,
+} from "../../stores/InspectionStore";
 import { SubGroupsActionsTypes } from "../../enums/SubGroupsTypes";
 import { useLocation } from "react-router";
 import { toJS } from "mobx";
@@ -36,14 +40,17 @@ interface IInspectionsTable {
   inspectionsCount?: number | null;
   subGroupsActionsTypes: SubGroupsActionsTypes;
   handleOpenFilter(field: InspectionFormTypes): void;
-    resetFilters(): void;
-  handleDeleteFilter(value: IFilterFieldValue): void;
+  resetFilters(): void;
+  handleDeleteFilter(value: IFilterFieldValue | IFormDateFieldValue): void;
   handlePaginationChange(pageNumber: number): void;
   handleDeleteSentButtonClick(id: number | string): void;
   handleDeleteNewInspectionButtonClick(id: string): void;
   handleEditInspection(id: number | string): void;
   handleEditLocalInspection(id: string): void;
-  handleFilterChange(value: IFilterFieldValue): void;
+  handleFilterChange(value: IFilterFieldValue | IFormDateFieldValue): void;
+  onSearchValueChange?(value: string | null): void;
+  onScrollToBottom?(inspectionType: InspectionFormTypes): void;
+  onInspectionTextFieldClose?(): void;
 }
 
 const InspectionsTable = observer((props: IInspectionsTable) => {
@@ -68,8 +75,8 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
   };
 
   useEffect(() => {
-      console.log('inspections!!!', toJS(props.inspections))
-  }, [props.inspections])
+    console.log("inspections!!!", toJS(props.inspections));
+  }, [props.inspections]);
 
   useEffect(() => {
     getTableSize();
@@ -114,7 +121,7 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
   );
   const rows = useMemo(
     () =>
-        props.inspections.map((item, index) => ({
+      props.inspections.map((item, index) => ({
         id: item.id ?? "",
         [InspectionFormTypes.InspectionForm]:
           item[InspectionFormTypes.InspectionForm]?.title,
@@ -148,10 +155,9 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
     [props.inspections],
   );
 
-    console.log('rows!!!', toJS(rows))
+  console.log("rows!!!", toJS(rows));
 
   const keys = Object.values(InspectionFormTypes);
-
 
   const columns: TableColumn<(typeof rows)[number]>[] = keys
     .filter((key) => !excludeFields.includes(key))
@@ -182,9 +188,12 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
       name: CustomFilter,
       props: {
         handleChange: props.handleFilterChange,
-        type: field,
+        inspectionType: field,
+        onScrollToBottom: props.onScrollToBottom,
+        onClose: props.onInspectionTextFieldClose,
+        onSearchValueChange: props.onSearchValueChange,
         filterFieldsValues: props.filterFieldsValues?.[field],
-        fieldData: props.fieldsData.find((data) => data[field]),
+        fieldsData: props.fieldsData,
         onOpen: () => handleOpenFilter(field),
       },
     },
@@ -203,10 +212,17 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
     props.handlePaginationChange(val);
   };
 
+  const [sortSetting, setSortSetting] = useState<SortByProps<any> | null>(null);
+
+  useEffect(() => {
+    console.log('sortSetting', sortSetting)
+  }, [sortSetting])
+
   return (
     <div ref={tableContainerRef} className={style.InspectionsTable}>
       {isSentInspectionsCondition() && (
-        <FilterTags resetFilters={props.resetFilters}
+        <FilterTags
+          resetFilters={props.resetFilters}
           handleDeleteFilter={props.handleDeleteFilter}
           filterFieldsValues={props.filterFieldsValues}
         />
@@ -220,6 +236,7 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
         stickyColumns={1}
         columns={columns}
         className={style.table}
+        onSortBy={setSortSetting}
         onCellClick={handleCellClick}
       />
 
