@@ -176,7 +176,7 @@ export class MainPageStore {
 
     const sortFilterValues = getSortFilter(this.sortSettings)
 
-    const sortFilter = sortFilterValues ? `&$orderby=${sortFilterValues}` : "";
+    const sortFilter = sortFilterValues ? `&$orderby=${sortFilterValues}` : `&$orderby=createdWhen desc`;
 
     try {
       const response = await instance.get(

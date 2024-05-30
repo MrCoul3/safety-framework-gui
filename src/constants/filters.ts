@@ -59,5 +59,7 @@ export const getSortFilter = (sortSettings: SortByProps<any> | null) => {
   if (sortSettings?.sortingBy === InspectionFormTypes.AuditDate) {
     return `${sortSettings?.sortingBy} ${sortSettings?.sortOrder}`;
   }
-  return `${sortSettings?.sortingBy as string}/title ${sortSettings?.sortOrder}`;
+  if (sortSettings?.sortingBy && sortSettings?.sortOrder) {
+      return `${sortSettings?.sortingBy as string}/title ${sortSettings?.sortOrder}`;
+  }
 };
