@@ -223,18 +223,30 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
           filterFieldsValues={props.filterFieldsValues}
         />
       )}
-      <Table
-        isResizable
-        rows={rows}
-        stickyHeader
-        ref={tableRef}
-        filters={filters}
-        stickyColumns={1}
-        columns={columns}
-        className={style.table}
-        onSortBy={props.handleSort}
-        onCellClick={handleCellClick}
-      />
+      {isSentInspectionsCondition() ?  <Table
+          isResizable
+          rows={rows}
+          stickyHeader
+          ref={tableRef}
+          stickyColumns={1}
+          columns={columns}
+          className={style.table}
+          onSortBy={props.handleSort}
+          onCellClick={handleCellClick}
+          filters={filters}
+      /> : <Table
+          isResizable
+          rows={rows}
+          stickyHeader
+          ref={tableRef}
+          stickyColumns={1}
+          columns={columns}
+          className={style.table}
+          onSortBy={props.handleSort}
+          onCellClick={handleCellClick}
+      />}
+
+
 
       {props.inspectionsCount &&
         props.inspectionsCount > INSPECTIONS_ON_PAGE &&

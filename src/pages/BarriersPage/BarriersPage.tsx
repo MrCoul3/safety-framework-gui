@@ -137,11 +137,9 @@ const BarriersPage = observer((props: IBarriersPage) => {
                 />
               ))
             ) : (
-                <div>
-
-                  <EmptyBoxPage disableActions text={"Не найдено барьеров"} />
-
-                </div>
+              <div>
+                <EmptyBoxPage disableActions text={"Не найдено барьеров"} />
+              </div>
             )
           }
         />

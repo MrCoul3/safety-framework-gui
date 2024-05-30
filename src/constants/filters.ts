@@ -28,7 +28,7 @@ export const getTableFilters = (filterFieldsValues: {
                 const value = values.filter((val) => val)[0];
                 const endDay = moment(value).endOf("day").toDate();
                 return value
-                  ? `createdWhen ge ${transformDateToServerFormat(value)} and createdWhen le ${transformDateToServerFormat(endDay)}`
+                  ? `${InspectionFormTypes.AuditDate} ge ${transformDateToServerFormat(value)} and ${InspectionFormTypes.AuditDate} le ${transformDateToServerFormat(endDay)}`
                   : "";
               }
               return values
@@ -38,7 +38,7 @@ export const getTableFilters = (filterFieldsValues: {
                     : moment(value).endOf("day").toDate();
                   if (val)
                     return value
-                      ? `createdWhen ${!index ? "ge" : "le"} ${transformDateToServerFormat(val)}`
+                      ? `${InspectionFormTypes.AuditDate} ${!index ? "ge" : "le"} ${transformDateToServerFormat(val)}`
                       : "";
                 })
                 .join(" and ");
