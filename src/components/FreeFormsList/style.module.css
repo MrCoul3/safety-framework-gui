@@ -1,0 +1,19 @@
+.FreeFormsList {
+  background-color: var(--lightGray);
+  height: calc(100vh - var(--navPanelHeight) - var(--mainHeaderHeight) - 32px);
+  overflow: auto;
+  padding-top: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.freeFormsListWrap {
+  padding-bottom: 24px;
+  width: 60%;
+}
+
+.controls {
+  /*width: 100%;*/
+  /*margin-left: 40px;*/
+}

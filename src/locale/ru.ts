@@ -43,6 +43,7 @@ export const ru = {
     editInspectionData: "Редактировать данные инспекции",
     createInspection: "Создать инспекцию",
     saveInspection: "Сохранить инспекцию",
+    addFreeForm: "Добавить свободную форму",
     toPassports: "К паспортам",
     toInspectionForm: "К данным инспекции",
     saveChanges: "Сохранить изменения",

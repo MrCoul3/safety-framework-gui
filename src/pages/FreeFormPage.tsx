@@ -9,6 +9,8 @@ import { IBreadCrumbs } from "../interfaces/IBreadCrumbs";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router";
 import { useStore } from "../hooks/useStore";
+import { IconAdd } from "@consta/icons/IconAdd";
+import FreeFormsList from "../components/FreeFormsList/FreeFormsList";
 
 interface IFreeFormPage {}
 
@@ -52,6 +54,8 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
     });
   };
 
+  const handleAddFreeForm = () => {};
+
   return (
     <Layout
       navPanel={
@@ -69,7 +73,17 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
           description={t("completionFreeFormDescription")}
         />
       }
-      content={<div>content</div>}
+      content={
+        <FreeFormsList control={<Button
+            iconRight={IconAdd}
+            onClick={handleAddFreeForm}
+            label={t("addFreeForm")}
+        />}
+          content={
+            <div>content</div>
+          }
+        />
+      }
     />
   );
 });

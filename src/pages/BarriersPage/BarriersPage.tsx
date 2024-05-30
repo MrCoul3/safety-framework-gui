@@ -13,6 +13,7 @@ import Search from "../../components/Search/Search";
 import { CheckEntityTypes } from "../../enums/CheckEntityTypes";
 import { IBarrier } from "../../interfaces/IBarrier";
 import EmptyBoxPage from "../../components/EmptyBoxPage/EmptyBoxPage";
+import CollapseElement from "../../components/CollapseElement/CollapseElement";
 
 interface IBarriersPage {}
 
@@ -130,10 +131,10 @@ const BarriersPage = observer((props: IBarriersPage) => {
           content={
             barriers().length ? (
               barriers().map((barrier) => (
-                <BarrierElement
-                  content={<div>conetnt</div>}
+                <CollapseElement
+                  label={<BarrierElement data={barrier} />}
                   key={barrier.Id}
-                  data={barrier}
+                  content={<div>conetnt</div>}
                 />
               ))
             ) : (

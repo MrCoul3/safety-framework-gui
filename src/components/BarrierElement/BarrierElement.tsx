@@ -17,41 +17,14 @@ const BarrierElement = observer((props: IBarrierElement) => {
 
   const name = title?.replace(code ?? "", "");
 
-  useEffect(() => {
-    console.log("name", name);
-  }, []);
-
-  const [isOpen, setOpen] = useState<boolean>(false);
-
-  const handleDecrease = (e: React.MouseEvent) => {};
-
-  const onClick = (e: React.MouseEvent) => {
-    const target = e.target as HTMLButtonElement;
-    if (target.closest(".button")) {
-      e.preventDefault();
-      return;
-    }
-    setOpen(!isOpen);
-  };
-
   return (
-    <Collapse
-      iconView="ghost"
-      iconPosition={"right"}
-      isOpen={isOpen}
-      onClick={onClick}
-      label={
-        <div className={style.BarrierElement}>
-          <div className={style.title}>
-            <span className={style.code}>{code}</span>
-            <span className={style.name}>{name}</span>
-          </div>
-          <Counter />
+      <div className={style.BarrierElement}>
+        <div className={style.title}>
+          <span className={style.code}>{code}</span>
+          <span className={style.name}>{name}</span>
         </div>
-      }
-    >
-      {props.content}
-    </Collapse>
+        <Counter />
+      </div>
   );
 });
 

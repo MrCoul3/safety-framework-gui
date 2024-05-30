@@ -30,25 +30,33 @@ import {
   IFieldsData,
   IFilterDateRangeFieldValue,
   IFilterFieldValue,
-  IFormDateFieldValue
+  IFormDateFieldValue,
 } from "../../interfaces/IFieldInterfaces";
-import {ISortByParams} from "../../interfaces/ISortByParams";
+import { ISortByParams } from "../../interfaces/ISortByParams";
+import LoaderPage from "../LoaderPage/LoaderPage";
+import { ResponsesNothingFound } from "@consta/uikit/ResponsesNothingFound";
+import { LoaderType } from "../../interfaces/LoaderType";
 
 interface IInspectionsTable {
   inspections: IInspection[];
   fieldsData: IFieldsData[];
   filterFieldsValues: IInspectionFilters | null;
   inspectionsCount?: number | null;
+  loader?: LoaderType;
   subGroupsActionsTypes: SubGroupsActionsTypes;
   handleOpenFilter(field: InspectionFormTypes): void;
   resetFilters(): void;
-  handleDeleteFilter(value: IFilterFieldValue | IFilterDateRangeFieldValue): void;
+  handleDeleteFilter(
+    value: IFilterFieldValue | IFilterDateRangeFieldValue,
+  ): void;
   handlePaginationChange(pageNumber: number): void;
   handleDeleteSentButtonClick(id: number | string): void;
   handleDeleteNewInspectionButtonClick(id: string): void;
   handleEditInspection(id: number | string): void;
   handleEditLocalInspection(id: string): void;
-  handleFilterChange(value: IFilterFieldValue | IFilterDateRangeFieldValue): void;
+  handleFilterChange(
+    value: IFilterFieldValue | IFilterDateRangeFieldValue,
+  ): void;
   onSearchValueChange?(value: string | null): void;
   onScrollToBottom?(inspectionType: InspectionFormTypes): void;
   onInspectionTextFieldClose?(): void;
@@ -214,6 +222,20 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
     props.handlePaginationChange(val);
   };
 
+  const renderLoader = () => {
+    if (props.loader === "wait") {
+      return <LoaderPage />;
+    } else {
+      return (
+        <ResponsesNothingFound
+          title={t("emptyNewInspections")}
+          description={" "}
+          actions={" "}
+        />
+      );
+    }
+  };
+
   return (
     <div ref={tableContainerRef} className={style.InspectionsTable}>
       {isSentInspectionsCondition() && (
@@ -223,7 +245,9 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
           filterFieldsValues={props.filterFieldsValues}
         />
       )}
-      {isSentInspectionsCondition() ?  <Table
+
+      {props.inspections.length ? (
+        <Table
           isResizable
           rows={rows}
           stickyHeader
@@ -233,24 +257,15 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
           className={style.table}
           onSortBy={props.handleSort}
           onCellClick={handleCellClick}
-          filters={filters}
-      /> : <Table
-          isResizable
-          rows={rows}
-          stickyHeader
-          ref={tableRef}
-          stickyColumns={1}
-          columns={columns}
-          className={style.table}
-          onSortBy={props.handleSort}
-          onCellClick={handleCellClick}
-      />}
-
-
+          filters={isSentInspectionsCondition() ? filters : false}
+        />
+      ) : (
+        renderLoader()
+      )}
 
       {props.inspectionsCount &&
         props.inspectionsCount > INSPECTIONS_ON_PAGE &&
-        isSentInspectionsCondition() && (
+        isSentInspectionsCondition() && props.inspections.length && (
           <Pagination
             showFirstPage
             showLastPage

@@ -33,6 +33,7 @@
 }
 .cardContainerForNewGroup {
   grid-template-columns:  1fr;
+  grid-template-rows: max-content;
 }
 .inspectionGroupHeader {
   height: var(--inspectionGroupHeader);

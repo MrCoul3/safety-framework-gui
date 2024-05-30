@@ -29,7 +29,7 @@ import {
   IFilterFieldValue,
   IFormDateFieldValue,
 } from "../interfaces/IFieldInterfaces";
-import {SortByProps} from "@consta/uikit/Table";
+import { SortByProps } from "@consta/uikit/Table";
 
 interface IMainPage {}
 
@@ -136,20 +136,6 @@ export const MainPage = observer((props: IMainPage) => {
     store.mainPageStore.getInspectionsByScrollToBottomOnDashboard();
   };
 
-  const renderLoader = () => {
-    if (store.loaderStore.loader === "wait") {
-      return <LoaderPage />;
-    } else {
-      return (
-        <ResponsesNothingFound
-          title={t("emptyNewInspections")}
-          description={" "}
-          actions={<Button onClick={toHome} view="ghost" label={t("toHome")} />}
-        />
-      );
-    }
-  };
-
   const handleFilterChange = (
     value: IFilterFieldValue | IFilterDateRangeFieldValue,
   ) => {
@@ -220,38 +206,39 @@ export const MainPage = observer((props: IMainPage) => {
           return (
             <Route
               element={
-                inspections.length ? (
-                  <InspectionsTable
-                    handleSort={handleSort}
-                    onInspectionTextFieldClose={handleInspectionTextFieldClose}
-                    onScrollToBottom={handleScrollFieldToBottom}
-                    onSearchValueChange={handleSearchValueChange}
-                    resetFilters={() => store.mainPageStore.resetFilters()}
-                    handleDeleteFilter={handleFilterChange}
-                    filterFieldsValues={store.mainPageStore.filterFieldsValues}
-                    handleFilterChange={handleFilterChange}
-                    handlePaginationChange={handlePaginationChange}
-                    subGroupsActionsTypes={
-                      !index
-                        ? SubGroupsActionsTypes.NewInspections
-                        : SubGroupsActionsTypes.Sent
-                    }
-                    fieldsData={store.inspectionStore.fieldsData}
-                    handleOpenFilter={handleOpenFilter}
-                    handleDeleteSentButtonClick={(id: string) => {
-                      handleDelete(id, SubGroupsActionsTypes.Sent);
-                    }}
-                    inspectionsCount={store.mainPageStore.inspectionsCount}
-                    handleDeleteNewInspectionButtonClick={(id: string) => {
-                      handleDelete(id, SubGroupsActionsTypes.NewInspections);
-                    }}
-                    handleEditInspection={handleEditInspection}
-                    handleEditLocalInspection={handleEditLocalInspection}
-                    inspections={inspections}
-                  />
-                ) : (
+                /*inspections.length ? (*/
+                <InspectionsTable
+                  loader={store.loaderStore.loader}
+                  handleSort={handleSort}
+                  onInspectionTextFieldClose={handleInspectionTextFieldClose}
+                  onScrollToBottom={handleScrollFieldToBottom}
+                  onSearchValueChange={handleSearchValueChange}
+                  resetFilters={() => store.mainPageStore.resetFilters()}
+                  handleDeleteFilter={handleFilterChange}
+                  filterFieldsValues={store.mainPageStore.filterFieldsValues}
+                  handleFilterChange={handleFilterChange}
+                  handlePaginationChange={handlePaginationChange}
+                  subGroupsActionsTypes={
+                    !index
+                      ? SubGroupsActionsTypes.NewInspections
+                      : SubGroupsActionsTypes.Sent
+                  }
+                  fieldsData={store.inspectionStore.fieldsData}
+                  handleOpenFilter={handleOpenFilter}
+                  handleDeleteSentButtonClick={(id: string) => {
+                    handleDelete(id, SubGroupsActionsTypes.Sent);
+                  }}
+                  inspectionsCount={store.mainPageStore.inspectionsCount}
+                  handleDeleteNewInspectionButtonClick={(id: string) => {
+                    handleDelete(id, SubGroupsActionsTypes.NewInspections);
+                  }}
+                  handleEditInspection={handleEditInspection}
+                  handleEditLocalInspection={handleEditLocalInspection}
+                  inspections={inspections}
+                />
+                /*  ) : (
                   renderLoader()
-                )
+                )*/
               }
               path={
                 !index
