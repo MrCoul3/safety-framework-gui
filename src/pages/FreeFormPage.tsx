@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import { observer } from "mobx-react-lite";
 import NavPanel from "../components/NavPanel/NavPanel";
 import { Button } from "@consta/uikit/Button";
@@ -19,6 +19,7 @@ import { IFreeForm } from "../interfaces/IFreeForm";
 import BarrierElement from "../components/BarrierElement/BarrierElement";
 import CollapseElement from "../components/CollapseElement/CollapseElement";
 import FreeFormElementLabel from "../components/FreeFormElementLabel/FreeFormElementLabel";
+import {toJS} from "mobx";
 
 interface IFreeFormPage {}
 
@@ -53,6 +54,7 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
   };
 
   const handleSaveInspection = () => {
+    setSavingState(false);
     saveInspection();
     navigate(-2);
     store.snackBarStore.setSnackBarItem({
@@ -64,22 +66,34 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
 
   const handleAddFreeForm = () => {};
 
+  const [savingState, setSavingState] = useState(false);
+
   const handleChange = (value: IFormFieldValue) => {
     console.log("handleChange", value);
-    // store.inspectionStore.updateFormFieldsValues(value);
-    // setSavingState(true);
-    // store.inspectionStore.checkIsFormSuccess();
+    setSavingState(true);
+    store.inspectionStore.updateFormFieldsValues(value);
+    store.inspectionStore.checkIsFormSuccess();
   };
 
   const handleOpenField = (type: InspectionFormTypes) => {
-    // store.inspectionStore.handleOpenField(type);
+    store.inspectionStore.handleOpenField(type);
     // setOpenFilterType(type);
   };
+  const handleClearForm = () => {
+    // store.inspectionStore.handleOpenField(type);
+    // setOpenFilterType(type);
+    setSavingState(true);
+  };
+
+  useEffect(() => {
+    console.log('store.inspectionStore.formFieldsValues', toJS(store.inspectionStore.formFieldsValues))
+  }, [Object.values(store.inspectionStore.formFieldsValues)])
 
   return (
     <Layout
       navPanel={
         <NavPanel
+          disableSaveButton={!savingState}
           actions={
             <Button
               onClick={() => navigate(-1)}
@@ -108,13 +122,19 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
               key={0}
               content={
                 <FreeForm
+                    onInit={() => store.inspectionStore.setIsValidate(false)}
+                  handleChange={handleChange}
+                  handleOpenField={handleOpenField}
+                  handleClearForm={handleClearForm}
+                  formFieldsValuesLength={
+                    !!Object.values(store.inspectionStore.formFieldsValues)
+                      .length
+                  }
                   fieldsData={store.inspectionStore.fieldsData}
                   isValidate={store.inspectionStore.isValidate}
                   formFieldsValues={
                     store.inspectionStore.formFieldsValues as IFreeForm
                   }
-                  handleOpenField={handleOpenField}
-                  handleChange={handleChange}
                 />
               }
             />

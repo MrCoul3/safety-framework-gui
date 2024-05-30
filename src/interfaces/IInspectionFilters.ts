@@ -1,9 +1,9 @@
 import { CheckEntityTypes } from "../enums/CheckEntityTypes";
 import { InspectionFormTypes } from "../enums/InspectionFormTypes";
-import {IEmployees, IEntity} from "./IInspection";
+import { IEmployees } from "./IInspection";
+import {IEntity} from "./IEntity";
 
 export interface IInspectionFilters {
-
   id?: string;
 
   [InspectionFormTypes.AuditDate]?: [Date, Date];
@@ -15,7 +15,6 @@ export interface IInspectionFilters {
   [InspectionFormTypes.DoStruct]?: IEntity[];
   [InspectionFormTypes.DoObject]?: IEntity[];
 
-
   [InspectionFormTypes.Contractor]?: IEntity[];
   [InspectionFormTypes.ContractorStruct]?: IEntity[];
   [InspectionFormTypes.SubContractor]?: IEntity[];
@@ -23,6 +22,4 @@ export interface IInspectionFilters {
   [InspectionFormTypes.Auditor]?: IEmployees[];
   [InspectionFormTypes.Auditee]?: IEmployees[];
   [InspectionFormTypes.Supervisor]?: IEmployees[];
-
 }
-

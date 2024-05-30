@@ -47,8 +47,6 @@ export const MainPage = observer((props: IMainPage) => {
     getLocalInspections();
     if (isDevelop) {
       store.mainPageStore.getInspectionsDev();
-      store.mainPageStore.getInspections();
-
     } else {
       store.mainPageStore.getInspections();
     }

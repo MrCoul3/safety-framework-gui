@@ -63,7 +63,6 @@ const NavPanel = observer((props: INavPanel) => {
           />
         )}*/}
         <Button
-          // iconLeft={IconSave}
           disabled={props.disableSaveButton}
           onClick={props.handleSaveInspection}
           label={t("saveInspection")}

@@ -16,7 +16,6 @@ import { InspectionStatusesTypes } from "enums/InspectionStatusesTypes";
 import moment from "moment";
 import { SubGroupsActionsTypes } from "../../enums/SubGroupsTypes";
 import { InspectionFormTypes } from "../../enums/InspectionFormTypes";
-import { IEntity } from "../../interfaces/IInspection";
 
 interface IInspectionCard {
   id: string;

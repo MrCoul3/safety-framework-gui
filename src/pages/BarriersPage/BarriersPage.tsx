@@ -14,6 +14,7 @@ import { CheckEntityTypes } from "../../enums/CheckEntityTypes";
 import { IBarrier } from "../../interfaces/IBarrier";
 import EmptyBoxPage from "../../components/EmptyBoxPage/EmptyBoxPage";
 import CollapseElement from "../../components/CollapseElement/CollapseElement";
+import {isDevelop} from "../../constants/config";
 
 interface IBarriersPage {}
 
@@ -39,8 +40,12 @@ const BarriersPage = observer((props: IBarriersPage) => {
   const init = () => {
     if (passportId) {
       console.log("passport", passport);
-      store.barriersStore.getBarriersDev(passportId);
-      // store.barriersStore.getBarriers(passportId)
+
+      if (isDevelop) {
+        store.barriersStore.getBarriersDev(passportId);
+
+      } else {
+        store.barriersStore.getBarriers(passportId)      }
     }
   };
 

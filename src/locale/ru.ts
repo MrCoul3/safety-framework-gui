@@ -13,6 +13,7 @@ export const ru = {
     from: "с",
     to: "по",
     reset: "Сбросить",
+    save: "Сохранить",
     cancel: "Отменить",
     next: "Продолжить",
     resetFilter: "Сбросить фильтр",

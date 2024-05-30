@@ -8,3 +8,18 @@
 .form {
 
 }
+
+.buttonsGroup {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 64px 24px 0;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.flexContainer {
+    display: flex;
+    gap: 10px;
+}

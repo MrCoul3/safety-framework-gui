@@ -1,28 +1,38 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
 import { FreeFormTypes } from "../../enums/FreeFormTypes";
 import InspectionTextField from "../InspectionTextField/InspectionTextField";
 import { InspectionFormTypes } from "../../enums/InspectionFormTypes";
-import {IFieldsData, IFormFieldValue} from "../../interfaces/IFieldInterfaces";
-import {IInspection} from "../../interfaces/IInspection";
-import {IFreeForm} from "../../interfaces/IFreeForm";
+import {
+  IFieldsData,
+  IFormFieldValue,
+} from "../../interfaces/IFieldInterfaces";
+import { IInspection } from "../../interfaces/IInspection";
+import { IFreeForm } from "../../interfaces/IFreeForm";
+import { Button } from "@consta/uikit/Button";
+import { useTranslation } from "react-i18next";
+import ConfirmDialog from "../ConfirmDialog/ConfirmDialog";
+import {toJS} from "mobx";
 
 interface IFreeFormProps {
   onInspectionTextFieldClose?(): void;
   onScrollToBottom?(inspectionType: InspectionFormTypes): void;
   onSearchValueChange?(value: string | null): void;
 
-
   handleChange(value: IFormFieldValue): void;
+  handleClearForm?(): void;
   handleOpenField(type: InspectionFormTypes): void;
+  onInit?(): void;
   fieldsData: IFieldsData[];
   isValidate: boolean;
   formFieldsValues: IFreeForm | null;
-
+  formFieldsValuesLength?: boolean;
 }
 
 const FreeForm = observer((props: IFreeFormProps) => {
+  const { t } = useTranslation("dict");
+
   const fields = [
     FreeFormTypes.ViolationCategories,
     FreeFormTypes.ViolationTypes,
@@ -34,6 +44,10 @@ const FreeForm = observer((props: IFreeFormProps) => {
     FreeFormTypes.OdOuCategories,
     FreeFormTypes.RiskLevels,
   ];
+
+  useEffect(() => {
+    props.onInit?.();
+  }, []);
 
   const requiredConditions = (field: FreeFormTypes) => {
     const notReqFields = [FreeFormTypes.CorpDicts];
@@ -51,6 +65,23 @@ const FreeForm = observer((props: IFreeFormProps) => {
     return "success";
   };
 
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
+
+  const handleSave = () => {};
+
+  const handleDelete = () => {};
+
+  const getValue = (field: FreeFormTypes): string => {
+    if (props.formFieldsValues) {
+      return props.formFieldsValues[field]?.title as string;
+    }
+    return "";
+  };
+
+  useEffect(() => {
+    console.log('props.formFieldsValues', toJS(props.formFieldsValues))
+  }, [props.formFieldsValues])
+
   return (
     <div className={style.FreeForm}>
       <div className={style.form}>
@@ -61,7 +92,7 @@ const FreeForm = observer((props: IFreeFormProps) => {
             onSearchValueChange={props.onSearchValueChange}
             required={requiredConditions(field)}
             inspectionType={field}
-            // value={getValue(inspectionType)}
+            value={getValue(field)}
             fieldsData={props.fieldsData}
             handleChange={props.handleChange}
             handleOpenField={props.handleOpenField}
@@ -69,6 +100,26 @@ const FreeForm = observer((props: IFreeFormProps) => {
           />
         ))}
       </div>
+
+      <div className={style.buttonsGroup}>
+        <Button onClick={handleDelete} view="ghost" label={t("delete")} />
+        <div className={style.flexContainer}>
+          <Button
+            onClick={() => props.formFieldsValuesLength && setIsModalOpen(true)}
+            view="clear"
+            label={t("clear")}
+          />
+          <Button onClick={handleSave} type="submit" label={t("save")} />
+        </div>
+      </div>
+      <ConfirmDialog
+        cancelActionLabel={t("cancel")}
+        confirmActionLabel={t("clear")}
+        title={t("dialogClearFields")}
+        action={() => props.handleClearForm?.()}
+        onClose={() => setIsModalOpen(false)}
+        open={isModalOpen}
+      />
     </div>
   );
 });

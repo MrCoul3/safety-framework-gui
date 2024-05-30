@@ -1,13 +1,14 @@
 import { FreeFormTypes } from "../enums/FreeFormTypes";
+import {IEntity} from "./IEntity";
 
 export interface IFreeForm {
-  [FreeFormTypes.ViolationCategories]: string;
-  [FreeFormTypes.ViolationTypes]: string;
-  [FreeFormTypes.Violations]: string;
-  [FreeFormTypes.WorkTypes]: string;
-  [FreeFormTypes.CorpDicts]: string;
-  [FreeFormTypes.Nmds]: string;
-  [FreeFormTypes.NmdRules]: string;
-  [FreeFormTypes.OdOuCategories]: string;
-  [FreeFormTypes.RiskLevels]: string;
+  [FreeFormTypes.ViolationCategories]: IEntity;
+  [FreeFormTypes.ViolationTypes]: IEntity;
+  [FreeFormTypes.Violations]: IEntity;
+  [FreeFormTypes.WorkTypes]: IEntity;
+  [FreeFormTypes.CorpDicts]: IEntity;
+  [FreeFormTypes.Nmds]: IEntity;
+  [FreeFormTypes.NmdRules]: IEntity;
+  [FreeFormTypes.OdOuCategories]: IEntity;
+  [FreeFormTypes.RiskLevels]: IEntity;
 }

@@ -1,6 +1,7 @@
 import { CheckEntityTypes } from "../enums/CheckEntityTypes";
 import { InspectionFormTypes } from "../enums/InspectionFormTypes";
 import {FreeFormTypes} from "../enums/FreeFormTypes";
+import {IEntity} from "./IEntity";
 
 export interface IInspection {
   id?: string;
@@ -29,14 +30,7 @@ export interface IInspection {
 }
 
 
-export interface IEntity {
-  "title": string,
-  "uniqueId": string,
-  "isActual": boolean,
-  "dateCreated": Date,
-  "dateModified": Date,
-  "id": number
-}
+
 
 export interface IEmployees {
   "personFio": string,

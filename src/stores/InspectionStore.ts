@@ -1,10 +1,9 @@
 import { AppStore } from "./AppStore";
 import { makeAutoObservable, toJS } from "mobx";
-import { EMPLOYEES, InspectionFormTypes } from "../enums/InspectionFormTypes";
+import {COMMON_FIELDS, EMPLOYEES, InspectionFormTypes} from "../enums/InspectionFormTypes";
 import { employeesEndpoint, instance } from "../api/endpoints";
 import {
   ELEMENTS_ON_FIELD,
-  INSPECTIONS_ON_PAGE,
   isDevelop,
   LOCAL_STORE_INSPECTIONS,
 } from "../constants/config";
@@ -18,7 +17,7 @@ import {
   IFormFieldValue,
   Item,
 } from "../interfaces/IFieldInterfaces";
-import {IFreeForm} from "../interfaces/IFreeForm";
+import { IFreeForm } from "../interfaces/IFreeForm";
 
 export class InspectionStore {
   private store: AppStore;
@@ -38,6 +37,80 @@ export class InspectionStore {
     console.log("this.searchFieldValue", this.searchFieldValue);
   }
   formFieldsValues: IInspection | IFreeForm | {} = {};
+
+  async getFieldDataDev(type: InspectionFormTypes) {
+    let requestType: any = type;
+
+    if (COMMON_FIELDS.includes(type)) {
+      requestType = type + 's';
+    }
+
+    if (EMPLOYEES.includes(type)) {
+      requestType = employeesEndpoint;
+    }
+
+    try {
+      const response = await instance.get(requestType);
+      this.setFieldsData({
+        [type + "Count"]: 321,
+      });
+      if (!response.data.error) {
+        this.setFieldsData({ [type]: response.data });
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  async getFieldData(type: InspectionFormTypes) {
+    let requestType: any = type + 's';
+
+    const searchFieldValue = this.searchFieldValue ?? "";
+
+    const itemValue: Item = { title: "title", personFio: "personFio" };
+
+    let filter = searchFieldValue
+        ? `$filter=contains(${itemValue.title},'${searchFieldValue}')`
+        : "";
+
+    let offset = searchFieldValue
+        ? ""
+        : `&$skip=${this.offset}&$top=${ELEMENTS_ON_FIELD}`;
+
+    if (COMMON_FIELDS.includes(type)) {
+      requestType = type + 's';
+    }
+
+    if (EMPLOYEES.includes(type)) {
+      requestType = employeesEndpoint;
+      filter = searchFieldValue
+          ? `$filter=contains(${itemValue.personFio},'${searchFieldValue}')`
+          : "";
+    }
+
+    const countFilter = this.searchFieldValue ? "" : `&$count=true`;
+
+    try {
+      const response = await instance.get(
+          `${requestType}?${filter}${offset}${countFilter}`,
+      );
+      if (!response.data.error) {
+        const count = response.data["@odata.count"];
+        if (count) {
+          this.setFieldsData({
+            [type + "Count"]: count,
+          });
+        }
+        if (response.data.value) {
+          this.setFieldsData({
+            [type]: response.data.value,
+          });
+        }
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
 
   setFieldsData(value: IFieldsData) {
     console.log("setFieldsData value", value);
@@ -95,28 +168,6 @@ export class InspectionStore {
 
     console.debug("formFieldsValues: ", toJS(this.formFieldsValues));
   }
-
-  async getFieldDataDev(type: InspectionFormTypes) {
-    let requestType: any = type + "s";
-
-    if (EMPLOYEES.includes(type)) {
-      requestType = employeesEndpoint;
-    }
-
-    try {
-      const response = await instance.get(requestType);
-      this.setFieldsData({
-        [type + "Count"]: 321,
-      });
-      if (!response.data.error) {
-        this.setFieldsData({ [type]: response.data });
-        console.log("getFieldDataDev");
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  }
-
   offset: number = 0;
   setOffset(value: number) {
     this.offset = value;
@@ -129,52 +180,6 @@ export class InspectionStore {
   clearOffset() {
     this.offset = 0;
     console.log("field offset", this.offset);
-  }
-
-  async getFieldData(type: InspectionFormTypes) {
-    let requestType: any = type + "s";
-
-    const searchFieldValue = this.searchFieldValue ?? "";
-
-    const itemValue: Item = { title: "title", personFio: "personFio" };
-
-    let filter = searchFieldValue
-      ? `$filter=contains(${itemValue.title},'${searchFieldValue}')`
-      : "";
-
-    let offset = searchFieldValue
-      ? ""
-      : `&$skip=${this.offset}&$top=${ELEMENTS_ON_FIELD}`;
-
-    if (EMPLOYEES.includes(type)) {
-      requestType = employeesEndpoint;
-      filter = searchFieldValue
-        ? `$filter=contains(${itemValue.personFio},'${searchFieldValue}')`
-        : "";
-    }
-
-    const countFilter = this.searchFieldValue ? "" : `&$count=true`;
-
-    try {
-      const response = await instance.get(
-        `${requestType}?${filter}${offset}${countFilter}`,
-      );
-      if (!response.data.error) {
-        const count = response.data["@odata.count"];
-        if (count) {
-          this.setFieldsData({
-            [type + "Count"]: count,
-          });
-        }
-        if (response.data.value) {
-          this.setFieldsData({
-            [type]: response.data.value,
-          });
-        }
-      }
-    } catch (e) {
-      console.error(e);
-    }
   }
 
   async getInspectionDev(editInspectionId: string) {
@@ -303,15 +308,10 @@ export class InspectionStore {
   }
 
   handleOpenField(type: InspectionFormTypes) {
-    const foundField = !!this.fieldsData.find((data) =>
-      Object.keys(data).includes(type),
-    );
-    if (!foundField) {
-      if (isDevelop) {
-        this.getFieldDataDev(type);
-      } else {
-        this.getFieldData(type);
-      }
+    if (isDevelop) {
+      this.getFieldDataDev(type);
+    } else {
+      this.getFieldData(type);
     }
   }
 }

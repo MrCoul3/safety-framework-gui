@@ -36,3 +36,4 @@ export const EMPLOYEES = [
   InspectionFormTypes.Auditee,
   InspectionFormTypes.Supervisor,
 ];
+export const COMMON_FIELDS = Object.values(InspectionFormTypes)

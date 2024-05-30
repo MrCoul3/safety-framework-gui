@@ -11,8 +11,12 @@ import { RoutesTypes } from "../enums/RoutesTypes";
 import { IBreadCrumbs } from "../interfaces/IBreadCrumbs";
 import Layout from "../layouts/Layout/Layout";
 import { isDevelop } from "../constants/config";
-import {IFormDateFieldValue, IFormFieldValue} from "../interfaces/IFieldInterfaces";
-import {IInspection} from "../interfaces/IInspection";
+import {
+  IFormDateFieldValue,
+  IFormFieldValue,
+} from "../interfaces/IFieldInterfaces";
+import { IInspection } from "../interfaces/IInspection";
+import { Button } from "@consta/uikit/Button";
 
 interface IInspectionPage {}
 
@@ -40,7 +44,6 @@ const InspectionPage = observer((props: IInspectionPage) => {
       if (location.pathname.includes(RoutesTypes.EditInspection)) {
         if (isDevelop) {
           store.inspectionStore.getInspectionDev(editInspectionId);
-
         } else {
           store.inspectionStore.getInspectionById(editInspectionId);
         }
@@ -149,7 +152,7 @@ const InspectionPage = observer((props: IInspectionPage) => {
   };
 
   const handleScrollFieldToBottom = (inspectionType: InspectionFormTypes) => {
-    console.log('handleScrollFieldToBottom!!!')
+    console.log("handleScrollFieldToBottom!!!");
     store.inspectionStore.increaseOffset();
     store.inspectionStore.getFieldData(inspectionType);
   };
@@ -164,6 +167,13 @@ const InspectionPage = observer((props: IInspectionPage) => {
       <Layout
         navPanel={
           <NavPanel
+            actions={
+              <Button
+                onClick={() => navigate(-1)}
+                label={t("toInspectionForm")}
+                view={"secondary"}
+              />
+            }
             crumbs={crumbs}
             disableSaveButton={!savingState}
             handleEditPassports={handleEditPassports}
@@ -194,7 +204,9 @@ const InspectionPage = observer((props: IInspectionPage) => {
             }}
             setIsValidate={() => store.inspectionStore.setIsValidate(true)}
             isValidate={store.inspectionStore.isValidate}
-            formFieldsValues={store.inspectionStore.formFieldsValues as IInspection}
+            formFieldsValues={
+              store.inspectionStore.formFieldsValues as IInspection
+            }
             handleChange={handleChange}
             handleDateChange={handleDateChange}
             fieldsData={store.inspectionStore.fieldsData}
