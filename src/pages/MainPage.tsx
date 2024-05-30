@@ -20,12 +20,16 @@ import {
 import { ResponsesNothingFound } from "@consta/uikit/ResponsesNothingFound";
 import ConfirmDialog from "../components/ConfirmDialog/ConfirmDialog";
 import { InspectionFormTypes } from "../enums/InspectionFormTypes";
-import { IconAllDone } from "@consta/icons/IconAllDone";
-
-import { SnackBar } from "@consta/uikit/SnackBar";
 import EmptyBoxPage from "../components/EmptyBoxPage/EmptyBoxPage";
-import { Loader } from "@consta/uikit/Loader";
 import SnackBarCustom from "../components/SnackBarCustom/SnackBarCustom";
+import LoaderPage from "../components/LoaderPage/LoaderPage";
+import { toJS } from "mobx";
+import {
+  IFilterDateRangeFieldValue,
+  IFilterFieldValue,
+  IFormDateFieldValue,
+} from "../interfaces/IFieldInterfaces";
+import {SortByProps} from "@consta/uikit/Table";
 
 interface IMainPage {}
 
@@ -35,6 +39,8 @@ export const MainPage = observer((props: IMainPage) => {
   const { t } = useTranslation("dict");
 
   const navigate = useNavigate();
+
+  const location = useLocation();
 
   const init = () => {
     store.mainPageStore.clearInspectionOffset();
@@ -115,8 +121,9 @@ export const MainPage = observer((props: IMainPage) => {
 
   const [isModalOpen, setIsModalOpen] = React.useState(false);
 
-  const handleOpenFilter = (field: InspectionFormTypes) => {
-    store.inspectionStore.handleOpenField(field);
+  const handleOpenFilter = (type: InspectionFormTypes) => {
+    store.inspectionStore.handleOpenField(type);
+    setOpenFilterType(type);
   };
 
   const handlePaginationChange = (pageNumber: number) => {
@@ -127,6 +134,58 @@ export const MainPage = observer((props: IMainPage) => {
   const onScrollToBottom = () => {
     store.mainPageStore.increaseInspectionOffset();
     store.mainPageStore.getInspectionsByScrollToBottomOnDashboard();
+  };
+
+  const renderLoader = () => {
+    if (store.loaderStore.loader === "wait") {
+      return <LoaderPage />;
+    } else {
+      return (
+        <ResponsesNothingFound
+          title={t("emptyNewInspections")}
+          description={" "}
+          actions={<Button onClick={toHome} view="ghost" label={t("toHome")} />}
+        />
+      );
+    }
+  };
+
+  const handleFilterChange = (
+    value: IFilterFieldValue | IFilterDateRangeFieldValue,
+  ) => {
+    console.log("table handleChange", toJS(value));
+    store.mainPageStore.updateFormFieldsValues(value);
+    store.mainPageStore.getInspections();
+  };
+
+  const [openFilterType, setOpenFilterType] =
+    useState<InspectionFormTypes | null>(null);
+
+  const handleScrollFieldToBottom = (inspectionType: InspectionFormTypes) => {
+    console.log("handleScrollFieldToBottom!!!");
+    store.inspectionStore.increaseOffset();
+    store.inspectionStore.getFieldData(inspectionType);
+  };
+
+  const handleSearchValueChange = (value: string | null) => {
+    console.log("handleSearchValueChange value!!!", value);
+    store.inspectionStore.setSearchFieldValue(value);
+    if (!value || value === "") {
+      store.inspectionStore.clearOffset();
+    }
+    if ((value || value === "") && openFilterType) {
+      store.inspectionStore.getFieldData(openFilterType);
+    }
+  };
+  const handleInspectionTextFieldClose = () => {
+    setOpenFilterType(null);
+    store.inspectionStore.clearOffset();
+    store.inspectionStore.clearFieldsData();
+  };
+
+  const handleSort = (value: SortByProps<any> | null) => {
+    store.mainPageStore.setSortSetting(value);
+    store.mainPageStore.getInspections();
   };
 
   const contentRoutes = () => {
@@ -157,47 +216,51 @@ export const MainPage = observer((props: IMainPage) => {
         {[
           store.mainPageStore.localInspections,
           store.mainPageStore.inspections,
-        ].map((inspections, index) => (
-          <Route
-            element={
-              inspections.length ? (
-                <InspectionsTable
-                  handlePaginationChange={handlePaginationChange}
-                  subGroupsActionsTypes={
-                    !index
-                      ? SubGroupsActionsTypes.NewInspections
-                      : SubGroupsActionsTypes.Sent
-                  }
-                  fieldsData={store.inspectionStore.fieldsData}
-                  handleOpenFilter={handleOpenFilter}
-                  handleDeleteSentButtonClick={(id: string) => {
-                    handleDelete(id, SubGroupsActionsTypes.Sent);
-                  }}
-                  inspectionsCount={store.mainPageStore.inspectionsCount}
-                  handleDeleteNewInspectionButtonClick={(id: string) => {
-                    handleDelete(id, SubGroupsActionsTypes.NewInspections);
-                  }}
-                  handleEditInspection={handleEditInspection}
-                  handleEditLocalInspection={handleEditLocalInspection}
-                  inspections={inspections}
-                />
-              ) : (
-                <ResponsesNothingFound
-                  title={t("emptyNewInspections")}
-                  description={" "}
-                  actions={
-                    <Button onClick={toHome} view="ghost" label={t("toHome")} />
-                  }
-                />
-              )
-            }
-            path={
-              !index
-                ? SubGroupsActionsTypes.NewInspections
-                : SubGroupsActionsTypes.Sent
-            }
-          />
-        ))}
+        ].map((inspections, index) => {
+          return (
+            <Route
+              element={
+                inspections.length ? (
+                  <InspectionsTable
+                    handleSort={handleSort}
+                    onInspectionTextFieldClose={handleInspectionTextFieldClose}
+                    onScrollToBottom={handleScrollFieldToBottom}
+                    onSearchValueChange={handleSearchValueChange}
+                    resetFilters={() => store.mainPageStore.resetFilters()}
+                    handleDeleteFilter={handleFilterChange}
+                    filterFieldsValues={store.mainPageStore.filterFieldsValues}
+                    handleFilterChange={handleFilterChange}
+                    handlePaginationChange={handlePaginationChange}
+                    subGroupsActionsTypes={
+                      !index
+                        ? SubGroupsActionsTypes.NewInspections
+                        : SubGroupsActionsTypes.Sent
+                    }
+                    fieldsData={store.inspectionStore.fieldsData}
+                    handleOpenFilter={handleOpenFilter}
+                    handleDeleteSentButtonClick={(id: string) => {
+                      handleDelete(id, SubGroupsActionsTypes.Sent);
+                    }}
+                    inspectionsCount={store.mainPageStore.inspectionsCount}
+                    handleDeleteNewInspectionButtonClick={(id: string) => {
+                      handleDelete(id, SubGroupsActionsTypes.NewInspections);
+                    }}
+                    handleEditInspection={handleEditInspection}
+                    handleEditLocalInspection={handleEditLocalInspection}
+                    inspections={inspections}
+                  />
+                ) : (
+                  renderLoader()
+                )
+              }
+              path={
+                !index
+                  ? SubGroupsActionsTypes.NewInspections
+                  : SubGroupsActionsTypes.Sent
+              }
+            />
+          );
+        })}
         {/*BarriersCarts and BarriersApps on main page*/}
         <Route
           element={<EmptyBoxPage />}
@@ -211,9 +274,17 @@ export const MainPage = observer((props: IMainPage) => {
     );
   };
 
+  const getSubHeaderTitle = () => {
+    if (location.pathname.includes(SubGroupsActionsTypes.Sent)) {
+      return t(SubGroupsActionsTypes.Sent);
+    }
+    if (location.pathname.includes(SubGroupsActionsTypes.NewInspections)) {
+      return t(SubGroupsActionsTypes.NewInspections);
+    }
+  };
+
   return (
     <div>
-
       <SnackBarCustom
         onItemClose={() => store.snackBarStore.clearSnackBar()}
         item={store.snackBarStore.snackBarItem}
@@ -226,7 +297,12 @@ export const MainPage = observer((props: IMainPage) => {
             subGroupsState={store.mainPageStore.subGroupsState}
           />
         }
-        contentHeader={<SubHeader handleAddInspection={handleAddInspection} />}
+        contentHeader={
+          <SubHeader
+            title={getSubHeaderTitle()}
+            handleAddInspection={handleAddInspection}
+          />
+        }
         content={contentRoutes()}
       />
       <ConfirmDialog

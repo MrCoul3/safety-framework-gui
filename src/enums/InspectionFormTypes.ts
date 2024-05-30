@@ -1,7 +1,7 @@
 export enum InspectionFormTypes {
   //Общее
   AuditDate = "auditDate", //Дата проверки
-  InspectionForm = "inspectionFormTypes", //Форма проверки
+  InspectionForm = "inspectionFormType", //Форма проверки
   InspectionType = "inspectionType", //Тип проверки
   Function = "function", //Функция
 
@@ -19,8 +19,10 @@ export enum InspectionFormTypes {
 
   Auditor = "auditor", // ФИО составителя акта ?
   Auditee = 'auditee',// ФИО проверяемого ?
-  Supervisor = "supervisor"// ФИО супервайзера ?
+  Supervisor = "supervisor", // ФИО супервайзера ?
+
 }
+
 
 export enum InspectionFormGroups {
   Common = "common",

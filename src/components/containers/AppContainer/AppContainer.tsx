@@ -13,6 +13,7 @@ import { SubGroupsActionsTypes } from "../../../enums/SubGroupsTypes";
 import PassportsPage from "../../../pages/PassportsPage";
 import BarriersPage from "../../../pages/BarriersPage/BarriersPage";
 import EmptyBoxPage from "../../EmptyBoxPage/EmptyBoxPage";
+import FreeFormPage from "../../../pages/FreeFormPage";
 export const AppContainer = observer(() => {
   const { t } = useTranslation("dict");
 
@@ -45,14 +46,11 @@ export const AppContainer = observer(() => {
         <Route path={"/*"} element={<MainPage />} />
 
         <Route
-            element={<EmptyBoxPage />}
-            path={SubGroupsActionsTypes.EliminationOfViolations}
+          element={<EmptyBoxPage />}
+          path={SubGroupsActionsTypes.EliminationOfViolations}
         />
 
-        <Route
-          path={RoutesTypes.NewInspection}
-          element={<InspectionPage />}
-        />
+        <Route path={RoutesTypes.NewInspection} element={<InspectionPage />} />
         <Route
           path={RoutesTypes.EditInspection + "/:editInspectionId"}
           element={<InspectionPage />}
@@ -82,8 +80,6 @@ export const AppContainer = observer(() => {
           path={RoutesTypes.NewInspection + "/" + RoutesTypes.Passports}
           element={<PassportsPage />}
         />
-
-
 
         <Route
           path={
@@ -119,6 +115,29 @@ export const AppContainer = observer(() => {
             "/:passportId"
           }
           element={<BarriersPage />}
+        />
+
+        <Route
+          path={RoutesTypes.NewInspection + "/" + RoutesTypes.FreeForm}
+          element={<FreeFormPage />}
+        />
+        <Route
+          path={
+            RoutesTypes.EditInspection +
+            "/:editInspectionId" +
+            "/" +
+            RoutesTypes.FreeForm
+          }
+          element={<FreeFormPage />}
+        />
+        <Route
+          path={
+            RoutesTypes.EditLocalInspection +
+            "/:editInspectionId" +
+            "/" +
+            RoutesTypes.FreeForm
+          }
+          element={<FreeFormPage />}
         />
 
         <Route path="*" element={render404()} />

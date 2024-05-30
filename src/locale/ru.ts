@@ -14,6 +14,7 @@ export const ru = {
     reset: "Сбросить",
     cancel: "Отменить",
     next: "Продолжить",
+    resetFilter: "Сбросить фильтр",
     farther: "Дальше",
     edit: "Редактировать",
     recover: "Восстановить",
@@ -53,9 +54,10 @@ export const ru = {
 
     [SubGroupsTypes.Statistic]: "Статистика",
     [SubGroupsActionsTypes.MainList]: "Общий список",
+    mainListOfInspections: "Общий список иснпекций",
     [SubGroupsTypes.Inspections]: "Инспекции",
-    [SubGroupsActionsTypes.NewInspections]: "Новые инспекции",
-    [SubGroupsActionsTypes.Sent]: "Отправленные",
+    [SubGroupsActionsTypes.NewInspections]: "Неотправленные инспекции",
+    [SubGroupsActionsTypes.Sent]: "Отправленные инспекции",
     [SubGroupsActionsTypes.Deleted]: "Удаленные",
     [SubGroupsActionsTypes.EliminationOfViolations]: "Устранение нарушений",
     [SubGroupsTypes.Information]: "Информация",
@@ -85,6 +87,7 @@ export const ru = {
     emptySentInspections: "Нет отправленных инспекций",
     emptyInspections: "Нет инспекций",
     noData: "Нет данных",
+    noFilled: "Не заполнено",
 
     // Данные формы
     [InspectionFormGroups.Common]: "Общее",

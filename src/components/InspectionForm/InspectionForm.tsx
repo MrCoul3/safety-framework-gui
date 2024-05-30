@@ -8,16 +8,14 @@ import {
 import { useTranslation } from "react-i18next";
 import { Button } from "@consta/uikit/Button";
 import { IconForward } from "@consta/icons/IconForward";
-import {
-  IFieldsData,
-  IFormDateFieldValue,
-  IFormFieldValue,
-} from "../../stores/InspectionStore";
+
 import InspectionTextField from "../InspectionTextField/InspectionTextField";
 import InspectionDataField from "../InspectionDataField/InspectionDataField";
 import ItemGroupTitle from "../ItemGroupTitle/ItemGroupTitle";
 import ConfirmDialog from "../ConfirmDialog/ConfirmDialog";
 import { IInspection } from "../../interfaces/IInspection";
+import { toJS } from "mobx";
+import {IFieldsData, IFormDateFieldValue, IFormFieldValue} from "../../interfaces/IFieldInterfaces";
 
 interface IInspectionForm {
   handleOpenField(type: InspectionFormTypes): void;
@@ -103,13 +101,18 @@ const InspectionForm = observer((props: IInspectionForm) => {
   };
 
   const handleNextStep = () => {
-    /* if (
-      props.formFieldsValues[InspectionFormTypes.InspectionForm] === "Барьеры"
-    ) {
+    console.log(
+      "handleNextStep props.formFieldsValues",
+      toJS(props.formFieldsValues),
+    );
+    const formType =
+      props.formFieldsValues?.[InspectionFormTypes.InspectionForm]?.id;
+    // id = 1 barriers, id = 2 freeForm
+    if (formType === 1) {
       props.handleNextStepToBarriers();
     } else {
       props.handleNextStepToFreeForm();
-    }*/
+    }
     props.setIsValidate(true);
   };
   const disabledConditions = (inspectionType: InspectionFormTypes) => {
@@ -161,7 +164,8 @@ const InspectionForm = observer((props: IInspectionForm) => {
                   );
                 }
                 return (
-                  <InspectionTextField onClose={props.onInspectionTextFieldClose}
+                  <InspectionTextField
+                    onClose={props.onInspectionTextFieldClose}
                     onScrollToBottom={props.onScrollToBottom}
                     onSearchValueChange={props.onSearchValueChange}
                     required={requiredConditions(inspectionType)}

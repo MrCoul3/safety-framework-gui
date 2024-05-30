@@ -5128,11 +5128,19 @@
   ],
   "inspectionFormTypes": [
     {
-      "title": "Барьеры",
+      "title": "Барьер",
+      "uniqueId": "46032038-aefe-489e-9edb-ef6b13556cc7",
+      "isActual": true,
+      "dateCreated": "2024-05-15T12:06:04.053+05:00",
+      "dateModified": "2024-05-15T12:06:04.053+05:00",
       "id": 1
     },
     {
       "title": "Свободная форма",
+      "uniqueId": "92bd1256-1ac7-4b5b-906a-8ec24fbf1588",
+      "isActual": true,
+      "dateCreated": "2024-05-15T12:06:07.227+05:00",
+      "dateModified": "2024-05-15T12:06:07.227+05:00",
       "id": 2
     }
   ],

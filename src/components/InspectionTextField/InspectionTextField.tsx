@@ -7,17 +7,12 @@ import {
 } from "../../enums/InspectionFormTypes";
 import { Combobox } from "@consta/uikit/Combobox";
 import { useFlag } from "@consta/uikit/useFlag";
-import {
-  IFieldsData,
-  IFormFieldValue,
-  Item,
-} from "../../stores/InspectionStore";
 import { useTranslation } from "react-i18next";
 import { PropStatus } from "@consta/uikit/__internal__/src/components/SelectComponents/types";
 import { toJS } from "mobx";
-import { Simulate } from "react-dom/test-utils";
-import load = Simulate.load;
 import { ELEMENTS_ON_FIELD } from "../../constants/config";
+import { useDebounce } from "@consta/uikit/useDebounce";
+import {IFieldsData, IFormFieldValue, Item} from "../../interfaces/IFieldInterfaces";
 
 interface IFieldInspectionType {
   onClose?(): void;
@@ -61,6 +56,7 @@ const InspectionTextField = observer((props: IFieldInspectionType) => {
   }, [props.value]);
 
   const handleChange = (value: Item | null) => {
+    console.log('handleChange!!!! Item', value)
     props.handleChange({
       [props.inspectionType]: value,
     });
@@ -117,8 +113,16 @@ const InspectionTextField = observer((props: IFieldInspectionType) => {
       }
     }
   };
+
+  const debounceSetSearchValue = useDebounce(
+    (value) => props.onSearchValueChange?.(value),
+    300,
+  );
+
+  useEffect(() => debounceSetSearchValue(searchValue), [searchValue]);
+
   const onSearchValueChange = (value: string | null) => {
-    props.onSearchValueChange?.(value);
+    console.log("onSearchValueChange", value);
     setSearchValue(value);
   };
 

@@ -4,4 +4,5 @@ export enum RoutesTypes {
     EditLocalInspection = 'editLocalInspection',
     Passports = 'passports',
     Barriers = 'barriers',
+    FreeForm = 'freeForm',
 }

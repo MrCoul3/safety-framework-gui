@@ -96,7 +96,7 @@ const DashBoard = observer((props: IDashBoard) => {
           contractor={item[InspectionFormTypes.Contractor]?.title}
           contractorStruct={item[InspectionFormTypes.ContractorStruct]?.title}
           inspectionType={item[InspectionFormTypes.InspectionType]?.title}
-          inspectionForm={item[InspectionFormTypes.InspectionForm]}
+          inspectionForm={item[InspectionFormTypes.InspectionForm]?.title}
           index={newInspectionCondition(subGroup) && index + 1}
         />
       ))

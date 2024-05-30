@@ -1,4 +1,4 @@
-import {IFieldsData, Item} from "../stores/InspectionStore";
+import {IFieldsData, Item} from "../interfaces/IFieldInterfaces";
 
 export function joinObjectValues(a: IFieldsData, b: IFieldsData) {
     const valsB = Object.values(b)[0] as Item[]

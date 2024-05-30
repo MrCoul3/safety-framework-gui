@@ -11,6 +11,21 @@ import { IconStorage } from "@consta/icons/IconStorage";
 import { IconHelmet } from "@consta/icons/IconHelmet";
 import { ISubGroupState } from "../interfaces/ISubGroupState";
 import { INSPECTIONS_ON_PAGE } from "../constants/config";
+import {
+  expandFilter,
+  getSortFilter, getTableFilters,
+} from "../constants/filters";
+import { IInspectionFilters } from "../interfaces/IInspectionFilters";
+import { InspectionFormTypes } from "../enums/InspectionFormTypes";
+import { transformDateToServerFormat } from "../utils/transformDateToServerFormat";
+import {
+  IFilterDateRangeFieldValue,
+  IFilterFieldValue,
+  IFormDateFieldValue,
+  Item,
+} from "../interfaces/IFieldInterfaces";
+import { SortByProps } from "@consta/uikit/Table";
+import { ISortByParams } from "../interfaces/ISortByParams";
 
 export interface IDeletingInspectionType {
   type: SubGroupsActionsTypes;
@@ -112,6 +127,7 @@ export class MainPageStore {
   }
   setLocalInspections(value: IInspection[]) {
     this.localInspections = value;
+    console.log("this.localInspections", toJS(this.localInspections));
   }
   setSideBarItemValue(value: SubGroupsActionsTypes) {
     this.sideBarItemValue = value;
@@ -129,17 +145,16 @@ export class MainPageStore {
     this.inspectionOffset = 0;
   }
 
-  expand: string = `$expand=auditor,auditee,supervisor,contractor,subContractor,contractorStruct,oilfield,doStruct,doObject,function,inspectionType`;
   async getInspectionsDev() {
-    this.store.loaderStore.setLoader('wait')
+    this.store.loaderStore.setLoader("wait");
     try {
       const response = await instance.get(`${inspectionsEndpoint}`);
       if (!response.data.error) {
-        setTimeout(() => {
-          this.setInspectionsCount(48546);
-          this.setInspections(response.data);
-          this.store.loaderStore.setLoader('ready')
-        }, 1000)
+        setTimeout(() => {}, 0);
+
+        this.setInspectionsCount(48546);
+        this.setInspections(response.data);
+        this.store.loaderStore.setLoader("ready");
       }
     } catch (e) {
       console.error(e);
@@ -147,17 +162,31 @@ export class MainPageStore {
   }
 
   async getInspections() {
-    this.store.loaderStore.setLoader('wait')
+    this.store.loaderStore.setLoader("wait");
+    const filterFieldsValues = this.filterFieldsValues as {
+      [key: string]: Item[] | [Date?, Date?];
+    };
+
+    const tableFilterValues = getTableFilters(filterFieldsValues);
+
+    const tableFilter = tableFilterValues
+      ? `&$filter=${tableFilterValues}`
+      : "";
+
+    const sortFilterValues = getSortFilter(this.sortSettings)
+
+    const sortFilter = sortFilterValues ? `&$orderby=${sortFilterValues}` : "";
+
     try {
       const response = await instance.get(
-        `${inspectionsEndpoint}?$skip=${this.inspectionOffset}&$top=${INSPECTIONS_ON_PAGE}&${this.expand}&$count=true`,
+        `${inspectionsEndpoint}?$skip=${this.inspectionOffset}&$top=${INSPECTIONS_ON_PAGE}&$expand=${expandFilter}${tableFilter}${sortFilter}&$count=true`,
       );
       if (!response.data.error) {
         this.setInspectionsCount(response.data["@odata.count"]);
         if (response.data.value) {
           this.setInspections(response.data.value);
         }
-        this.store.loaderStore.setLoader('ready')
+        this.store.loaderStore.setLoader("ready");
       }
     } catch (e) {
       console.error(e);
@@ -166,7 +195,7 @@ export class MainPageStore {
   async getInspectionsByScrollToBottomOnDashboard() {
     try {
       const response = await instance.get(
-        `${inspectionsEndpoint}?$skip=${this.inspectionOffset}&$top=${INSPECTIONS_ON_PAGE}&${this.expand}&$count=true`,
+        `${inspectionsEndpoint}?$skip=${this.inspectionOffset}&$top=${INSPECTIONS_ON_PAGE}&$expand=${expandFilter}&$count=true`,
       );
       if (!response.data.error) {
         this.setInspectionsCount(response.data["@odata.count"]);
@@ -179,7 +208,6 @@ export class MainPageStore {
     }
   }
 
-
   async deleteSentInspection(id?: string) {
     console.log("deleteSentInspection");
     try {
@@ -189,5 +217,24 @@ export class MainPageStore {
     } catch (e) {
       console.error(e);
     }
+  }
+  filterFieldsValues: IInspectionFilters | {} = {};
+
+  resetFilters() {
+    this.filterFieldsValues = {};
+  }
+  updateFormFieldsValues(
+    value: IFilterFieldValue | IFilterDateRangeFieldValue,
+  ) {
+    Object.assign(this.filterFieldsValues, value);
+    console.debug(
+      "updateFormFieldsValues formFieldsValues: ",
+      toJS(this.filterFieldsValues),
+    );
+  }
+  sortSettings: SortByProps<any> | null = null;
+  setSortSetting(value: SortByProps<any> | null) {
+    this.sortSettings = value;
+    console.log("this.sortSetting", toJS(this.sortSettings));
   }
 }

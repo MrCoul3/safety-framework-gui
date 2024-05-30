@@ -9,10 +9,12 @@ import { Combobox } from "@consta/uikit/Combobox";
 
 interface ISubHeader {
   handleAddInspection(): void;
+  title?: string;
 }
 
 type Item = {
   label: string;
+
   id: string | number;
   groupId?: string | number;
 };
@@ -20,10 +22,11 @@ type Item = {
 const SubHeader = observer((props: ISubHeader) => {
   const { t } = useTranslation("dict");
 
-
   return (
     <div className={style.SubHeader}>
-      <span className={style.title}>{t(SubGroupsTypes.Inspections)}</span>
+      <span className={style.title}>
+        {props.title ? props.title : t("mainListOfInspections")}
+      </span>
       <div className={style.flexRow}>
         <Button
           onClick={props.handleAddInspection}

@@ -11,22 +11,12 @@ import {
 import moment from "moment/moment";
 import { IInspection } from "../interfaces/IInspection";
 import { joinObjectValues } from "../utils/joinObjectValues";
+import { expandFilter } from "../constants/filters";
+import {IFieldsData, IFormDateFieldValue, IFormFieldValue, Item} from "../interfaces/IFieldInterfaces";
 
-export interface IFieldsData {
-  [key: string]: Item[] | number;
-}
-export type Item = {
-  title: string;
-  id?: string;
-  personFio?: string;
-};
 
-export interface IFormFieldValue {
-  [key: string]: Item | null;
-}
-export interface IFormDateFieldValue {
-  [key: string]: [Date?, Date?] | null;
-}
+
+
 export class InspectionStore {
   private store: AppStore;
 
@@ -47,14 +37,22 @@ export class InspectionStore {
   formFieldsValues: IInspection | {} = {};
 
   setFieldsData(value: IFieldsData) {
+    console.log("setFieldsData value", value);
     const keyValue = Object.keys(value)[0];
-    const foundField = this.fieldsData.find((field) =>
-      Object.keys(field).includes(keyValue),
-    );
-    if (foundField) {
-      const newValue = joinObjectValues(foundField, value);
-      this.fieldsData = [...this.fieldsData, newValue];
-      return;
+    console.log("setFieldsData keyValue", keyValue);
+
+    if (!keyValue.includes("Count")) {
+      const foundField = this.fieldsData.find((field) =>
+        Object.keys(field).includes(keyValue),
+      );
+      console.log("setFieldsData foundField", foundField);
+
+      if (foundField) {
+        const newValue = joinObjectValues(foundField, value);
+        console.log("setFieldsData newValue", newValue);
+        this.fieldsData = [...this.fieldsData, newValue];
+        return;
+      }
     }
     this.fieldsData = [...this.fieldsData, value];
     console.log("this.fieldsData", toJS(this.fieldsData));
@@ -126,13 +124,19 @@ export class InspectionStore {
 
     const itemValue: Item = { title: "title", personFio: "personFio" };
 
-    let filter = searchFieldValue ? `$filter=contains(${itemValue.title},'${searchFieldValue}')` : "";
+    let filter = searchFieldValue
+      ? `$filter=contains(${itemValue.title},'${searchFieldValue}')`
+      : "";
 
-    let offset = searchFieldValue ? "" : `&$skip=${this.offset}&$top=${ELEMENTS_ON_FIELD}`
+    let offset = searchFieldValue
+      ? ""
+      : `&$skip=${this.offset}&$top=${ELEMENTS_ON_FIELD}`;
 
     if (EMPLOYEES.includes(type)) {
       requestType = employeesEndpoint;
-      filter = searchFieldValue ? `$filter=contains(${itemValue.personFio},'${searchFieldValue}')` : "";
+      filter = searchFieldValue
+        ? `$filter=contains(${itemValue.personFio},'${searchFieldValue}')`
+        : "";
     }
 
     const countFilter = this.searchFieldValue ? "" : `&$count=true`;
@@ -169,16 +173,34 @@ export class InspectionStore {
           auditDate: moment(result.auditDate).toDate(),
         };
         this.setFormFieldsValues(inspection);
+        console.log('getInspectionDev')
       }
     } catch (e) {
       console.error(e);
     }
   }
 
+  cropExtraValuesFromInspection() {
+    const inspectionFormTypesValues = Object.values(InspectionFormTypes);
+    const formFieldsValuesKeys = Object.keys(this.formFieldsValues);
+    const formFieldsValues = this.formFieldsValues as {[key: string]: Item};
+    formFieldsValuesKeys.forEach((formFieldsValuesKey) => {
+          if (
+            !inspectionFormTypesValues.includes(
+                formFieldsValuesKey as InspectionFormTypes,
+            )
+          ) {
+            delete formFieldsValues[formFieldsValuesKey]
+          }
+        }
+    );
+    return formFieldsValues
+  }
+
   async getInspectionById(editInspectionId: string) {
     try {
       const response = await instance.get(
-        `Inspections?$filter=(id eq ${editInspectionId})`,
+        `Inspections?$filter=(id eq ${editInspectionId})&$expand=${expandFilter}`,
       );
       if (!response.data.error) {
         if (response.data.value) {
@@ -200,11 +222,13 @@ export class InspectionStore {
   }
 
   checkIsFormSuccess() {
-    if (this.formFieldsValues) {
+    const formFieldsValues = this.cropExtraValuesFromInspection()
+
+    if (formFieldsValues) {
       return (
         Object.keys(InspectionFormTypes).length ===
-          Object.keys(this.formFieldsValues).length &&
-        !Object.values(this.formFieldsValues).some((field) => field === null)
+          Object.keys(formFieldsValues).length &&
+        !Object.values(formFieldsValues).some((field) => field === null)
       );
     }
     return false;
@@ -272,7 +296,6 @@ export class InspectionStore {
     if (!foundField) {
       if (isDevelop) {
         this.getFieldDataDev(type);
-        this.getFieldData(type);
       } else {
         this.getFieldData(type);
       }

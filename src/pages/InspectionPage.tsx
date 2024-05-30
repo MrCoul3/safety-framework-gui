@@ -5,15 +5,13 @@ import InspectionForm from "../components/InspectionForm/InspectionForm";
 import { useTranslation } from "react-i18next";
 import { InspectionFormTypes } from "../enums/InspectionFormTypes";
 import { useStore } from "../hooks/useStore";
-import {
-  IFormDateFieldValue,
-  IFormFieldValue,
-} from "../stores/InspectionStore";
+
 import { Outlet, useLocation, useNavigate, useParams } from "react-router";
 import { RoutesTypes } from "../enums/RoutesTypes";
 import { IBreadCrumbs } from "../interfaces/IBreadCrumbs";
 import Layout from "../layouts/Layout/Layout";
 import { isDevelop } from "../constants/config";
+import {IFormDateFieldValue, IFormFieldValue} from "../interfaces/IFieldInterfaces";
 
 interface IInspectionPage {}
 
@@ -41,6 +39,7 @@ const InspectionPage = observer((props: IInspectionPage) => {
       if (location.pathname.includes(RoutesTypes.EditInspection)) {
         if (isDevelop) {
           store.inspectionStore.getInspectionDev(editInspectionId);
+
         } else {
           store.inspectionStore.getInspectionById(editInspectionId);
         }
@@ -107,7 +106,7 @@ const InspectionPage = observer((props: IInspectionPage) => {
 
   const handleEditPassports = () => {};
 
-  const handleNextStepToBarriers = () => {
+  const handleNextStepToPassports = () => {
     const isValid = store.inspectionStore.checkIsFormSuccess();
     console.log("isValid", isValid);
     if (isValid) {
@@ -121,7 +120,7 @@ const InspectionPage = observer((props: IInspectionPage) => {
     console.log("isValid", isValid);
     if (isValid) {
       // saveInspection();
-      // navigate(RoutesTypes.Passports);
+      navigate(RoutesTypes.FreeForm);
     }
   };
 
@@ -182,7 +181,7 @@ const InspectionPage = observer((props: IInspectionPage) => {
             onScrollToBottom={handleScrollFieldToBottom}
             onSearchValueChange={handleSearchValueChange}
             onInit={() => store.inspectionStore.setIsValidate(false)}
-            handleNextStepToBarriers={handleNextStepToBarriers}
+            handleNextStepToBarriers={handleNextStepToPassports}
             handleNextStepToFreeForm={handleNextStepToFreeForm}
             formFieldsValuesLength={
               !!Object.values(store.inspectionStore.formFieldsValues).length
