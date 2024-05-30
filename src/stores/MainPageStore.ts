@@ -13,8 +13,7 @@ import { ISubGroupState } from "../interfaces/ISubGroupState";
 import { INSPECTIONS_ON_PAGE } from "../constants/config";
 import {
   expandFilter,
-  getSortFilter,
-  tableFilters,
+  getSortFilter, getTableFilters,
 } from "../constants/filters";
 import { IInspectionFilters } from "../interfaces/IInspectionFilters";
 import { InspectionFormTypes } from "../enums/InspectionFormTypes";
@@ -168,7 +167,7 @@ export class MainPageStore {
       [key: string]: Item[] | [Date?, Date?];
     };
 
-    const tableFilterValues = tableFilters(filterFieldsValues);
+    const tableFilterValues = getTableFilters(filterFieldsValues);
 
     const tableFilter = tableFilterValues
       ? `&$filter=${tableFilterValues}`
