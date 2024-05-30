@@ -4,14 +4,14 @@ import style from "./style.module.css";
 
 interface IFreeFormsList {
   content: ReactNode;
-  control: ReactNode
+  control: ReactNode;
 }
 
 const FreeFormsList = observer((props: IFreeFormsList) => {
   return (
     <div className={style.FreeFormsList}>
-        <div className={style.controls}>{props.control}</div>
       <div className={style.freeFormsListWrap}>{props.content}</div>
+      <div className={style.controls}>{props.control}</div>
     </div>
   );
 });

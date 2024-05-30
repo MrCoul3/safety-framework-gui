@@ -12,6 +12,7 @@ import { IBreadCrumbs } from "../interfaces/IBreadCrumbs";
 import Layout from "../layouts/Layout/Layout";
 import { isDevelop } from "../constants/config";
 import {IFormDateFieldValue, IFormFieldValue} from "../interfaces/IFieldInterfaces";
+import {IInspection} from "../interfaces/IInspection";
 
 interface IInspectionPage {}
 
@@ -193,7 +194,7 @@ const InspectionPage = observer((props: IInspectionPage) => {
             }}
             setIsValidate={() => store.inspectionStore.setIsValidate(true)}
             isValidate={store.inspectionStore.isValidate}
-            formFieldsValues={store.inspectionStore.formFieldsValues}
+            formFieldsValues={store.inspectionStore.formFieldsValues as IInspection}
             handleChange={handleChange}
             handleDateChange={handleDateChange}
             fieldsData={store.inspectionStore.fieldsData}

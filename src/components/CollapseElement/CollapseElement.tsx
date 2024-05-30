@@ -1,7 +1,7 @@
 import React, { ReactNode, useState } from "react";
 import { observer } from "mobx-react-lite";
 import { Collapse } from "@consta/uikit/Collapse";
-
+import style from './style.module.css'
 interface ICollapseElement {
   content?: ReactNode;
   label?: ReactNode;
@@ -20,7 +20,7 @@ const CollapseElement = observer((props: ICollapseElement) => {
   };
 
   return (
-    <Collapse
+    <Collapse className={style.collapse}
       iconView="ghost"
       iconPosition={"right"}
       isOpen={isOpen}

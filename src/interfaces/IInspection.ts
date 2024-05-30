@@ -1,5 +1,6 @@
 import { CheckEntityTypes } from "../enums/CheckEntityTypes";
 import { InspectionFormTypes } from "../enums/InspectionFormTypes";
+import {FreeFormTypes} from "../enums/FreeFormTypes";
 
 export interface IInspection {
   id?: string;
@@ -21,6 +22,10 @@ export interface IInspection {
   [InspectionFormTypes.Auditor]?: IEmployees;
   [InspectionFormTypes.Auditee]?: IEmployees;
   [InspectionFormTypes.Supervisor]?: IEmployees;
+
+  freeForm: {
+
+  }
 }
 
 

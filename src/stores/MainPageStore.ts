@@ -163,6 +163,7 @@ export class MainPageStore {
 
   async getInspections() {
     this.store.loaderStore.setLoader("wait");
+
     const filterFieldsValues = this.filterFieldsValues as {
       [key: string]: Item[] | [Date?, Date?];
     };

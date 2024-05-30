@@ -13,19 +13,20 @@ import { toJS } from "mobx";
 import { ELEMENTS_ON_FIELD } from "../../constants/config";
 import { useDebounce } from "@consta/uikit/useDebounce";
 import {IFieldsData, IFormFieldValue, Item} from "../../interfaces/IFieldInterfaces";
+import {FreeFormTypes} from "../../enums/FreeFormTypes";
 
 interface IFieldInspectionType {
   onClose?(): void;
-  handleOpenField(type: InspectionFormTypes): void;
+  handleOpenField(type: InspectionFormTypes | FreeFormTypes): void;
   handleChange(value: IFormFieldValue): void;
-  onScrollToBottom?(inspectionType: InspectionFormTypes): void;
+  onScrollToBottom?(inspectionType: InspectionFormTypes | FreeFormTypes): void;
   onSearchValueChange?(value: string | null): void;
   status: PropStatus | undefined;
   fieldsData: IFieldsData[];
   value?: string;
   disabled?: boolean;
   required?: boolean;
-  inspectionType: InspectionFormTypes;
+  inspectionType: InspectionFormTypes | FreeFormTypes;
 }
 
 const InspectionTextField = observer((props: IFieldInspectionType) => {
@@ -62,7 +63,7 @@ const InspectionTextField = observer((props: IFieldInspectionType) => {
     });
   };
 
-  const getItems = (type: InspectionFormTypes) => {
+  const getItems = (type: InspectionFormTypes | FreeFormTypes) => {
     const found = props.fieldsData.find((data) =>
       Object.keys(data).includes(props.inspectionType),
     );
@@ -80,13 +81,13 @@ const InspectionTextField = observer((props: IFieldInspectionType) => {
   }, [combobox]);
 
   const getItemLabel = (item: Item) => {
-    if (EMPLOYEES.includes(props.inspectionType)) {
+    if (EMPLOYEES.includes(props.inspectionType as InspectionFormTypes)) {
       return item.personFio ?? "";
     }
     return item.title;
   };
   const getItemKey = (item: Item) => {
-    if (EMPLOYEES.includes(props.inspectionType)) {
+    if (EMPLOYEES.includes(props.inspectionType as InspectionFormTypes)) {
       return item.personFio ?? "";
     }
     return item.title;

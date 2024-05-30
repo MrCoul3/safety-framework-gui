@@ -1,9 +1,4 @@
-.BarrierElement {
+.collapse {
     background-color: white;
-    padding: 18px 22px;
-    border-radius: 4px;
-    max-height: 150px;
-    display: flex;
-    justify-content: space-between;
-    overflow: hidden;
+    padding: 0 20px;
 }

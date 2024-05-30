@@ -11,6 +11,14 @@ import { useNavigate, useParams } from "react-router";
 import { useStore } from "../hooks/useStore";
 import { IconAdd } from "@consta/icons/IconAdd";
 import FreeFormsList from "../components/FreeFormsList/FreeFormsList";
+import FreeForm from "../components/FreeForm/FreeForm";
+import { IFormFieldValue } from "../interfaces/IFieldInterfaces";
+import { InspectionFormTypes } from "../enums/InspectionFormTypes";
+import { IInspection } from "../interfaces/IInspection";
+import { IFreeForm } from "../interfaces/IFreeForm";
+import BarrierElement from "../components/BarrierElement/BarrierElement";
+import CollapseElement from "../components/CollapseElement/CollapseElement";
+import FreeFormElementLabel from "../components/FreeFormElementLabel/FreeFormElementLabel";
 
 interface IFreeFormPage {}
 
@@ -56,6 +64,18 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
 
   const handleAddFreeForm = () => {};
 
+  const handleChange = (value: IFormFieldValue) => {
+    console.log("handleChange", value);
+    // store.inspectionStore.updateFormFieldsValues(value);
+    // setSavingState(true);
+    // store.inspectionStore.checkIsFormSuccess();
+  };
+
+  const handleOpenField = (type: InspectionFormTypes) => {
+    // store.inspectionStore.handleOpenField(type);
+    // setOpenFilterType(type);
+  };
+
   return (
     <Layout
       navPanel={
@@ -74,13 +94,30 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
         />
       }
       content={
-        <FreeFormsList control={<Button
-            iconRight={IconAdd}
-            onClick={handleAddFreeForm}
-            label={t("addFreeForm")}
-        />}
+        <FreeFormsList
+          control={
+            <Button
+              iconRight={IconAdd}
+              onClick={handleAddFreeForm}
+              label={t("addFreeForm")}
+            />
+          }
           content={
-            <div>content</div>
+            <CollapseElement
+              label={<FreeFormElementLabel title={t("freeForm")} />}
+              key={0}
+              content={
+                <FreeForm
+                  fieldsData={store.inspectionStore.fieldsData}
+                  isValidate={store.inspectionStore.isValidate}
+                  formFieldsValues={
+                    store.inspectionStore.formFieldsValues as IFreeForm
+                  }
+                  handleOpenField={handleOpenField}
+                  handleChange={handleChange}
+                />
+              }
+            />
           }
         />
       }

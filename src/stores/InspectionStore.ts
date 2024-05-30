@@ -18,6 +18,7 @@ import {
   IFormFieldValue,
   Item,
 } from "../interfaces/IFieldInterfaces";
+import {IFreeForm} from "../interfaces/IFreeForm";
 
 export class InspectionStore {
   private store: AppStore;
@@ -36,7 +37,7 @@ export class InspectionStore {
     this.searchFieldValue = value;
     console.log("this.searchFieldValue", this.searchFieldValue);
   }
-  formFieldsValues: IInspection | {} = {};
+  formFieldsValues: IInspection | IFreeForm | {} = {};
 
   setFieldsData(value: IFieldsData) {
     console.log("setFieldsData value", value);
