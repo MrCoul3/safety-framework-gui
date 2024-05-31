@@ -25,6 +25,7 @@ interface IFreeFormProps {
   handleOpenField(type: InspectionFormTypes): void;
   onInit?(): void;
   handleSaveForm(): void;
+  handleDelete?(): void;
 
   setIsValidate(value: boolean): void;
 
@@ -69,12 +70,12 @@ const FreeForm = observer((props: IFreeFormProps) => {
     return "success";
   };
 
-  const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [isClearModalOpen, setIsClearModalOpen] = React.useState(false);
+  const [isDelModalOpen, setIsDelModalOpen] = React.useState(false);
   const handleSave = () => {
     props.setIsValidate(true);
     props.handleSaveForm()
   };
-  const handleDelete = () => {};
 
   const getValue = (field: FreeFormTypes): string => {
     if (props.formFieldsValues) {
@@ -104,10 +105,10 @@ const FreeForm = observer((props: IFreeFormProps) => {
       </div>
 
       <div className={style.buttonsGroup}>
-        <Button onClick={handleDelete} view="ghost" label={t("delete")} />
+        <Button onClick={() => setIsDelModalOpen(true)} view="ghost" label={t("delete")} />
         <div className={style.flexContainer}>
           <Button
-            onClick={() => props.formFieldsValuesLength && setIsModalOpen(true)}
+            onClick={() => props.formFieldsValuesLength && setIsClearModalOpen(true)}
             view="clear"
             label={t("clear")}
           />
@@ -119,8 +120,16 @@ const FreeForm = observer((props: IFreeFormProps) => {
         confirmActionLabel={t("clear")}
         title={t("dialogClearFields")}
         action={() => props.handleClearForm?.()}
-        onClose={() => setIsModalOpen(false)}
-        open={isModalOpen}
+        onClose={() => setIsClearModalOpen(false)}
+        open={isClearModalOpen}
+      />
+      <ConfirmDialog
+        cancelActionLabel={t("cancel")}
+        confirmActionLabel={t("delete")}
+        title={t("dialogDeleteFreeForm")}
+        action={() => props.handleDelete?.()}
+        onClose={() => setIsDelModalOpen(false)}
+        open={isDelModalOpen}
       />
     </div>
   );

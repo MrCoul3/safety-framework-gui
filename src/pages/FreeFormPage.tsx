@@ -116,6 +116,11 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
     setSavingState(true);
   };
 
+  const handleDelete = (index: number) => {
+    store.freeFormStore.deleteFreeForm(index)
+    setSavingState(true);
+  };
+
   return (
     <Layout
       navPanel={
@@ -150,7 +155,7 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
               }
               key={0}
               content={
-                <FreeForm
+                <FreeForm handleDelete={() => handleDelete(index)}
                   setIsValidate={() =>
                     store.inspectionStore.setIsValidate(true)
                   }

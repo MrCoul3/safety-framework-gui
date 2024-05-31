@@ -170,6 +170,7 @@ export const ru = {
     [FreeFormTypes.RiskLevels + "Placeholder"]: "Введите степень риска",
 
     dialogClearFields: "Очистить все заполненные поля?",
+    dialogDeleteFreeForm: "Удалить свободную форму?",
     dialogDeleteNewInspection: "Удалить неотправленную инспекцию?",
     dialogDeleteSentInspection: "Удалить отправленную инспекцию?",
     dialogGoToMain: "Перейти на главную ? Все несохраненные данные будут потеряны.",

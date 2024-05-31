@@ -23,6 +23,10 @@ export class FreeFormStore {
     console.log("this.freeForms", toJS(this.freeForms));
   }
 
+  deleteFreeForm(index: number) {
+    this.freeForms = this.freeForms.filter((item, i) => index !== i)
+  }
+
   clearFreeForm() {
     this.freeForms = [];
   }
