@@ -17,7 +17,7 @@ import { Button } from "@consta/uikit/Button";
 import { IconEdit } from "@consta/icons/IconEdit";
 import { IconTrash } from "@consta/icons/IconTrash";
 import { IconMail } from "@consta/icons/IconMail";
-import { InspectionFormTypes } from "../../enums/InspectionFormTypes";
+import {INSPECTION_FORM_COMMON_FIELDS, InspectionFormTypes} from "../../enums/InspectionFormTypes";
 import { onCellClick } from "@consta/uikit/__internal__/src/components/Table/Table";
 import CustomFilter from "../CustomFilter/CustomFilter";
 import { INSPECTIONS_ON_PAGE } from "../../constants/config";
@@ -167,7 +167,7 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
 
   console.log("rows!!!", toJS(rows));
 
-  const keys = Object.values(InspectionFormTypes);
+  const keys = INSPECTION_FORM_COMMON_FIELDS;
 
   const columns: TableColumn<(typeof rows)[number]>[] = keys
     .filter((key) => !excludeFields.includes(key))
@@ -190,7 +190,7 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
     props.handleOpenFilter(field);
   };
 
-  const filters: any = Object.values(InspectionFormTypes).map((field) => ({
+  const filters: any = INSPECTION_FORM_COMMON_FIELDS.map((field) => ({
     id: field,
     name: t(field) + ": ",
     field: field,

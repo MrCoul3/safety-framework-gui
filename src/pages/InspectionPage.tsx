@@ -17,6 +17,7 @@ import {
 } from "../interfaces/IFieldInterfaces";
 import { IInspection } from "../interfaces/IInspection";
 import { Button } from "@consta/uikit/Button";
+import {toJS} from "mobx";
 
 interface IInspectionPage {}
 
@@ -79,6 +80,7 @@ const InspectionPage = observer((props: IInspectionPage) => {
     store.inspectionStore.updateFormFieldsValues(value);
     setSavingState(true);
     store.inspectionStore.checkIsFormSuccess();
+
   };
 
   const saveInspection = () => {
@@ -97,15 +99,19 @@ const InspectionPage = observer((props: IInspectionPage) => {
     store.inspectionStore.setIsValidate(false);
   };
 
-  const handleSaveInspection = () => {
-    setSavingState(false);
-    saveInspection();
-    navigate(-1);
+  const renderSaveSnackBar = () => {
     store.snackBarStore.setSnackBarItem({
       message: t("snackBarSuccessSave"),
       key: "1",
       status: "success",
     });
+  }
+
+  const handleSaveInspection = () => {
+    setSavingState(false);
+    saveInspection();
+    navigate(-1);
+    renderSaveSnackBar()
   };
 
   const handleEditPassports = () => {};
@@ -114,7 +120,8 @@ const InspectionPage = observer((props: IInspectionPage) => {
     const isValid = store.inspectionStore.checkIsFormSuccess();
     console.log("isValid", isValid);
     if (isValid) {
-      // saveInspection();
+      saveInspection();
+      renderSaveSnackBar();
       navigate(RoutesTypes.Passports);
     }
   };
@@ -123,7 +130,8 @@ const InspectionPage = observer((props: IInspectionPage) => {
     const isValid = store.inspectionStore.checkIsFormSuccess();
     console.log("isValid", isValid);
     if (isValid) {
-      // saveInspection();
+      saveInspection();
+      renderSaveSnackBar();
       navigate(RoutesTypes.FreeForm);
     }
   };

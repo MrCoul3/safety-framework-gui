@@ -3,7 +3,7 @@ import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
 import {
   InspectionFormGroups,
-  InspectionFormTypes,
+  InspectionFormTypes, INSPECTION_FORM_NOT_REQUIRED_FIELDS,
 } from "../../enums/InspectionFormTypes";
 import { useTranslation } from "react-i18next";
 import { Button } from "@consta/uikit/Button";
@@ -116,30 +116,26 @@ const InspectionForm = observer((props: IInspectionForm) => {
     props.setIsValidate(true);
   };
   const disabledConditions = (inspectionType: InspectionFormTypes) => {
-    const ifContractor =
+    /*const ifContractor =
       props.formFieldsValues &&
       !props.formFieldsValues[InspectionFormTypes.Contractor];
-    /* enable doStruct if contractor enabled */
+    /!* enable doStruct if contractor enabled *!/
     if (inspectionType === InspectionFormTypes.DoStruct) {
       if (ifContractor) {
         return true;
       }
     }
-    /* enable doStruct if contractor enabled */
+    /!* enable doStruct if contractor enabled *!/
     if (inspectionType === InspectionFormTypes.Supervisor) {
       if (ifContractor) {
         return true;
       }
-    }
+    }*/
+    return false
   };
 
   const requiredConditions = (inspectionType: InspectionFormTypes) => {
-    const notReqFields = [
-      InspectionFormTypes.Contractor,
-      InspectionFormTypes.SubContractor,
-      InspectionFormTypes.Supervisor,
-    ];
-    return !notReqFields.includes(inspectionType);
+        return !INSPECTION_FORM_NOT_REQUIRED_FIELDS.includes(inspectionType);
   };
 
   return (

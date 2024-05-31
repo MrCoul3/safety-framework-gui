@@ -1,4 +1,4 @@
-import {EMPLOYEES, InspectionFormTypes} from "../enums/InspectionFormTypes";
+import {EMPLOYEES, INSPECTION_FORM_COMMON_FIELDS, InspectionFormTypes} from "../enums/InspectionFormTypes";
 import { toJS } from "mobx";
 import { transformDateToServerFormat } from "../utils/transformDateToServerFormat";
 import { Item } from "../interfaces/IFieldInterfaces";
@@ -7,7 +7,7 @@ import { SortByProps } from "@consta/uikit/Table";
 
 const excludedFields = [InspectionFormTypes.AuditDate];
 
-const expandFilterValues = Object.values(InspectionFormTypes)
+const expandFilterValues = INSPECTION_FORM_COMMON_FIELDS
   .filter((val) => !excludedFields.includes(val))
   .join(",");
 

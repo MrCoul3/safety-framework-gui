@@ -77,8 +77,6 @@ const FreeForm = observer((props: IFreeFormProps) => {
   const handleDelete = () => {};
 
   const getValue = (field: FreeFormTypes): string => {
-    console.log('getValue props.formFieldsValues', toJS(props.formFieldsValues))
-
     if (props.formFieldsValues) {
       return props.formFieldsValues[field]?.title as string;
     }

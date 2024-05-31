@@ -44,20 +44,21 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
     },
   ];
   const saveInspection = () => {
-    editInspectionId
+  /*  editInspectionId
       ? store.inspectionStore.updateInspectionToLocalStorage(editInspectionId)
-      : store.inspectionStore.setInspectionToLocalStorage();
+      : store.inspectionStore.setInspectionToLocalStorage();*/
   };
 
   const handleSaveInspection = () => {
     setSavingState(false);
     saveInspection();
+    /*
     navigate(-2);
     store.snackBarStore.setSnackBarItem({
       message: t("snackBarSuccessSave"),
       key: "1",
       status: "success",
-    });
+    });*/
   };
 
   const handleAddFreeForm = () => {};

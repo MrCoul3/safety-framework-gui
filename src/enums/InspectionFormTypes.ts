@@ -18,11 +18,9 @@ export enum InspectionFormTypes {
   // Участники инспекции
 
   Auditor = "auditor", // ФИО составителя акта ?
-  Auditee = 'auditee',// ФИО проверяемого ?
+  Auditee = "auditee", // ФИО проверяемого ?
   Supervisor = "supervisor", // ФИО супервайзера ?
-
 }
-
 
 export enum InspectionFormGroups {
   Common = "common",
@@ -36,4 +34,14 @@ export const EMPLOYEES = [
   InspectionFormTypes.Auditee,
   InspectionFormTypes.Supervisor,
 ];
-export const COMMON_FIELDS = Object.values(InspectionFormTypes)
+export const INSPECTION_FORM_COMMON_FIELDS = Object.values(InspectionFormTypes);
+
+export const INSPECTION_FORM_NOT_REQUIRED_FIELDS = [
+  InspectionFormTypes.Contractor,
+  InspectionFormTypes.SubContractor,
+  InspectionFormTypes.Supervisor,
+];
+export const INSPECTION_FORM_REQUIRED_FIELDS =
+  INSPECTION_FORM_COMMON_FIELDS.filter(
+    (field) => !INSPECTION_FORM_NOT_REQUIRED_FIELDS.includes(field),
+  );

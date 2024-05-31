@@ -11,3 +11,8 @@ export enum FreeFormTypes {
   OdOuCategories = "ffOdOuCategories", // Категория ОД/ОУ
   RiskLevels = "ffRiskLevels", // Степень риска
 }
+export const FREE_FORM_COMMON_FIELDS = Object.values(FreeFormTypes);
+export const FREE_FORM_NOT_REQUIRED_FIELDS = [""];
+export const FREE_FORM_REQUIRED_FIELDS = FREE_FORM_COMMON_FIELDS.filter(
+  (field) => !FREE_FORM_NOT_REQUIRED_FIELDS.includes(field),
+);

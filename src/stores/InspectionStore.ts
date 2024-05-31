@@ -1,6 +1,11 @@
 import { AppStore } from "./AppStore";
 import { makeAutoObservable, toJS } from "mobx";
-import {COMMON_FIELDS, EMPLOYEES, InspectionFormTypes} from "../enums/InspectionFormTypes";
+import {
+  EMPLOYEES,
+  INSPECTION_FORM_COMMON_FIELDS,
+  INSPECTION_FORM_REQUIRED_FIELDS,
+  InspectionFormTypes,
+} from "../enums/InspectionFormTypes";
 import { employeesEndpoint, instance } from "../api/endpoints";
 import {
   ELEMENTS_ON_FIELD,
@@ -18,7 +23,10 @@ import {
   Item,
 } from "../interfaces/IFieldInterfaces";
 import { IFreeForm } from "../interfaces/IFreeForm";
-import {FreeFormTypes} from "../enums/FreeFormTypes";
+import {
+  FREE_FORM_REQUIRED_FIELDS,
+  FreeFormTypes,
+} from "../enums/FreeFormTypes";
 
 export class InspectionStore {
   private store: AppStore;
@@ -42,8 +50,8 @@ export class InspectionStore {
   async getFieldDataDev(type: InspectionFormTypes) {
     let requestType: any = type;
 
-    if (COMMON_FIELDS.includes(type)) {
-      requestType = type + 's';
+    if (INSPECTION_FORM_COMMON_FIELDS.includes(type)) {
+      requestType = type + "s";
     }
 
     if (EMPLOYEES.includes(type)) {
@@ -71,29 +79,29 @@ export class InspectionStore {
     const itemValue: Item = { title: "title", personFio: "personFio" };
 
     let filter = searchFieldValue
-        ? `$filter=contains(${itemValue.title},'${searchFieldValue}')`
-        : "";
+      ? `$filter=contains(${itemValue.title},'${searchFieldValue}')`
+      : "";
 
     let offset = searchFieldValue
-        ? ""
-        : `&$skip=${this.offset}&$top=${ELEMENTS_ON_FIELD}`;
+      ? ""
+      : `&$skip=${this.offset}&$top=${ELEMENTS_ON_FIELD}`;
 
-    if (COMMON_FIELDS.includes(type)) {
-      requestType = type + 's';
+    if (INSPECTION_FORM_COMMON_FIELDS.includes(type)) {
+      requestType = type + "s";
     }
 
     if (EMPLOYEES.includes(type)) {
       requestType = employeesEndpoint;
       filter = searchFieldValue
-          ? `$filter=contains(${itemValue.personFio},'${searchFieldValue}')`
-          : "";
+        ? `$filter=contains(${itemValue.personFio},'${searchFieldValue}')`
+        : "";
     }
 
     const countFilter = this.searchFieldValue ? "" : `&$count=true`;
 
     try {
       const response = await instance.get(
-          `${requestType}?${filter}${offset}${countFilter}`,
+        `${requestType}?${filter}${offset}${countFilter}`,
       );
       if (!response.data.error) {
         const count = response.data["@odata.count"];
@@ -201,7 +209,8 @@ export class InspectionStore {
   }
 
   cropExtraValuesFromInspection() {
-    const inspectionFormTypesValues = Object.values(InspectionFormTypes);
+    console.log("REQUIRED_FIELDS", INSPECTION_FORM_REQUIRED_FIELDS);
+    const inspectionFormTypesValues = INSPECTION_FORM_REQUIRED_FIELDS;
     const formFieldsValuesKeys = Object.keys(this.formFieldsValues);
     const formFieldsValues = this.formFieldsValues as { [key: string]: Item };
     formFieldsValuesKeys.forEach((formFieldsValuesKey) => {
@@ -220,11 +229,7 @@ export class InspectionStore {
     const formFieldsValuesKeys = Object.keys(this.formFieldsValues);
     const formFieldsValues = this.formFieldsValues as { [key: string]: Item };
     formFieldsValuesKeys.forEach((formFieldsValuesKey) => {
-      if (
-        !freeFormTypesValues.includes(
-          formFieldsValuesKey as FreeFormTypes,
-        )
-      ) {
+      if (!freeFormTypesValues.includes(formFieldsValuesKey as FreeFormTypes)) {
         delete formFieldsValues[formFieldsValuesKey];
       }
     });
@@ -253,33 +258,40 @@ export class InspectionStore {
 
   clearInspectionForm() {
     this.formFieldsValues = {};
-    console.log('clearInspectionForm this.formFieldsValues', toJS(this.formFieldsValues))
+    console.log(
+      "clearInspectionForm this.formFieldsValues",
+      toJS(this.formFieldsValues),
+    );
   }
 
   checkIsFormSuccess() {
-    const formFieldsValues = this.cropExtraValuesFromInspection();
-
-    if (formFieldsValues) {
-      return (
-        Object.keys(InspectionFormTypes).length ===
-          Object.keys(formFieldsValues).length &&
-        !Object.values(formFieldsValues).some((field) => field === null)
-      );
-    }
-    return false;
+    const formFieldsValues: { [key: string]: any } = this.formFieldsValues;
+    const filtered = Object.keys(formFieldsValues)
+      .map((key) => {
+        if (
+          INSPECTION_FORM_REQUIRED_FIELDS.includes(key as InspectionFormTypes)
+        ) {
+          return { [key]: formFieldsValues[key] };
+        }
+      })
+      .filter((val) => val);
+    return filtered.every((value) => {
+      return Object.values(value ?? {})[0];
+    });
   }
 
   checkIsFreeFormSuccess() {
-    const formFieldsValues = this.cropExtraValuesFromFreeForm();
-
-    if (formFieldsValues) {
-      return (
-        Object.keys(FreeFormTypes).length ===
-          Object.keys(FreeFormTypes).length &&
-        !Object.values(formFieldsValues).some((field) => field === null)
-      );
-    }
-    return false;
+    const formFieldsValues: { [key: string]: any } = this.formFieldsValues;
+    const filtered = Object.keys(formFieldsValues)
+      .map((key) => {
+        if (FREE_FORM_REQUIRED_FIELDS.includes(key as FreeFormTypes)) {
+          return { [key]: formFieldsValues[key] };
+        }
+      })
+      .filter((val) => val);
+    return filtered.every((value) => {
+      return Object.values(value ?? {})[0];
+    });
   }
 
   setInspectionToLocalStorage() {
