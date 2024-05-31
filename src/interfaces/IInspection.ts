@@ -21,7 +21,7 @@ export interface IInspection {
   [InspectionFormTypes.Auditor]?: IEmployees;
   [InspectionFormTypes.Auditee]?: IEmployees;
   [InspectionFormTypes.Supervisor]?: IEmployees;
-  freeForms: IFreeForm[];
+  filledFreeForms: IFreeForm[];
 }
 
 export interface IEmployees {

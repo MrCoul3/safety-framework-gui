@@ -302,22 +302,29 @@ export class InspectionStore {
 
   setInspectionToLocalStorage() {
     delete (this.formFieldsValues as IInspection)?.id;
-    const freeForms = this.store.freeFormStore.freeForms
+    const filledFreeForms = this.store.freeFormStore.filledFreeForms
+    console.log('freeForms', toJS(filledFreeForms))
     const localInspections = localStorage.getItem(LOCAL_STORE_INSPECTIONS);
+
+    let values = this.formFieldsValues
+    if (filledFreeForms.length) { // если есть свободные формы добавляем к занчениям формы еще и freeForms
+      values = {...this.formFieldsValues, filledFreeForms}
+    }
+
     if (localInspections) {
+      console.log('setInspectionToLocalStorage1', values)
+
       const localInspectionsParsed = JSON.parse(localInspections);
       if (localInspectionsParsed) {
-
-        let values = this.formFieldsValues
-        if (freeForms.length) { // если есть свободные формы добавляем к занчениям формы еще и freeForms
-          values = {...this.formFieldsValues, freeForms}
-        }
         localInspectionsParsed.unshift(values);
       }
       const newInspectionsJson = JSON.stringify(localInspectionsParsed);
       localStorage.setItem(LOCAL_STORE_INSPECTIONS, newInspectionsJson);
     } else {
-      const newInspectionJson = JSON.stringify([this.formFieldsValues]);
+      console.log('setInspectionToLocalStorage2', values)
+
+      const newInspectionJson = JSON.stringify([values]);
+      console.log('newInspectionJson', newInspectionJson)
       localStorage.setItem(LOCAL_STORE_INSPECTIONS, newInspectionJson);
     }
   }

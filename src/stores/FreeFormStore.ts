@@ -5,6 +5,11 @@ import { IFreeForm } from "../interfaces/IFreeForm";
 import { FreeFormTypes } from "../enums/FreeFormTypes";
 import { IEntity } from "../interfaces/IEntity";
 import { IInspection } from "../interfaces/IInspection";
+import {
+  IFormDateFieldValue,
+  IFormFieldValue,
+  Item,
+} from "../interfaces/IFieldInterfaces";
 
 export class FreeFormStore {
   private store: AppStore;
@@ -14,21 +19,21 @@ export class FreeFormStore {
     makeAutoObservable(this);
   }
 
-  freeForms: (IFreeForm | {})[] = [];
+  filledFreeForms: (IFreeForm | {})[] = [];
   setFreeForm(value: IFreeForm[]) {
-    this.freeForms = value;
+    this.filledFreeForms = value;
   }
   addFreeForm() {
-    this.freeForms = [...this.freeForms, this.getFreeFormTemplate()];
-    console.log("this.freeForms", toJS(this.freeForms));
+    this.filledFreeForms = [...this.filledFreeForms, this.getFreeFormTemplate()];
+    console.log("this.filledFreeForms", toJS(this.filledFreeForms));
   }
 
   deleteFreeForm(index: number) {
-    this.freeForms = this.freeForms.filter((item, i) => index !== i)
+    this.filledFreeForms = this.filledFreeForms.filter((item, i) => index !== i);
   }
 
   clearFreeForm() {
-    this.freeForms = [];
+    this.filledFreeForms = [];
   }
 
   getFreeFormTemplate() {
@@ -47,12 +52,30 @@ export class FreeFormStore {
       const localInspectionsParsed = JSON.parse(localInspections);
       if (localInspectionsParsed.length) {
         const targetInspection = localInspectionsParsed[index];
-        targetInspection.freeForms = this.freeForms;
+        targetInspection.filledFreeForms = this.filledFreeForms;
         localInspectionsParsed.splice(index, 1);
         localInspectionsParsed.push(targetInspection);
         const newInspectionsJson = JSON.stringify(localInspectionsParsed);
         localStorage.setItem(LOCAL_STORE_INSPECTIONS, newInspectionsJson);
       }
     }
+  }
+  updateFormFieldsValues(
+    value: IFormFieldValue | IFormDateFieldValue,
+    index: number,
+  ) {
+    console.log("updateFormFieldsValues", value);
+    const formFieldsValues = this.filledFreeForms[index];
+    if (formFieldsValues) {
+      const key = Object.keys(value)[0];
+      const values = Object.values(value)[0] as Item;
+      const valueId = {
+        [key + "Id"]: values ? (values.id ? +values.id : values.id) : null,
+      };
+      Object.assign(formFieldsValues, valueId);
+      Object.assign(formFieldsValues, value);
+    }
+    this.filledFreeForms[index] = formFieldsValues;
+    console.debug("freeform this.filledFreeForms: ", toJS(this.filledFreeForms));
   }
 }

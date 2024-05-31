@@ -5,7 +5,7 @@ import { Button } from "@consta/uikit/Button";
 import Layout from "../layouts/Layout/Layout";
 import { IBreadCrumbs } from "../interfaces/IBreadCrumbs";
 import { useTranslation } from "react-i18next";
-import {useLocation, useNavigate, useParams} from "react-router";
+import { useLocation, useNavigate, useParams } from "react-router";
 import { useStore } from "../hooks/useStore";
 import { IconAdd } from "@consta/icons/IconAdd";
 import FreeFormsList from "../components/FreeFormsList/FreeFormsList";
@@ -15,10 +15,7 @@ import { InspectionFormTypes } from "../enums/InspectionFormTypes";
 import { IFreeForm } from "../interfaces/IFreeForm";
 import CollapseElement from "../components/CollapseElement/CollapseElement";
 import FreeFormElementLabel from "../components/FreeFormElementLabel/FreeFormElementLabel";
-import { toJS } from "mobx";
-import {RoutesTypes} from "../enums/RoutesTypes";
-import {isDevelop} from "../constants/config";
-import {IInspection} from "../interfaces/IInspection";
+import { IInspection } from "../interfaces/IInspection";
 
 interface IFreeFormPage {}
 
@@ -49,47 +46,48 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
     },
   ];
   const getFreeFormsFromFormFieldsData = () => {
-    const freeForms = (store.inspectionStore.formFieldsValues as IInspection)['freeForms'];
+    const freeForms = (store.inspectionStore.formFieldsValues as IInspection)[
+      "filledFreeForms"
+    ];
     if (freeForms) {
-      store.freeFormStore.setFreeForm(freeForms)
+      store.freeFormStore.setFreeForm(freeForms);
     }
-  }
+  };
 
   const loadInspection = () => {
     if (editInspectionId) {
-      store.inspectionStore.loadInspection(editInspectionId)
+      store.inspectionStore.loadInspection(editInspectionId);
     }
-  }
+  };
   const init = () => {
-    loadInspection()
-    getFreeFormsFromFormFieldsData()
-
-  }
+    loadInspection();
+    getFreeFormsFromFormFieldsData();
+  };
 
   useEffect(() => {
-    init()
-  }, [])
+    init();
+  }, []);
 
   const saveInspection = () => {
-      editInspectionId
+    editInspectionId
       ? store.freeFormStore.updateInspectionToLocalStorage(editInspectionId)
       : store.inspectionStore.setInspectionToLocalStorage();
   };
 
-  const handleSaveForm = () => {
+  const handleSaveForm = (index: number) => {
+    console.log("handleSaveForm", index);
     // store.freeFormStore.updateInspectionToLocalStorage(editInspectionId)
   };
 
   const handleSaveInspection = () => {
     setSavingState(false);
     saveInspection();
-    /*
     navigate(-2);
     store.snackBarStore.setSnackBarItem({
       message: t("snackBarSuccessSave"),
       key: "1",
       status: "success",
-    });*/
+    });
   };
 
   const handleAddFreeForm = () => {
@@ -99,10 +97,10 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
 
   const [savingState, setSavingState] = useState(false);
 
-  const handleChange = (value: IFormFieldValue) => {
+  const handleChange = (value: IFormFieldValue, index: number) => {
     console.log("handleChange", value);
     setSavingState(true);
-    store.inspectionStore.updateFormFieldsValues(value);
+    store.freeFormStore.updateFormFieldsValues(value, index);
     store.inspectionStore.checkIsFreeFormSuccess();
   };
 
@@ -117,7 +115,7 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
   };
 
   const handleDelete = (index: number) => {
-    store.freeFormStore.deleteFreeForm(index)
+    store.freeFormStore.deleteFreeForm(index);
     setSavingState(true);
   };
 
@@ -148,35 +146,39 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
               label={t("addFreeForm")}
             />
           }
-          content={store.freeFormStore.freeForms.map((form, index) => (
-            <CollapseElement
-              label={
-                <FreeFormElementLabel title={`${t("freeForm")} ${index + 1}`} />
-              }
-              key={0}
-              content={
-                <FreeForm handleDelete={() => handleDelete(index)}
-                  setIsValidate={() =>
-                    store.inspectionStore.setIsValidate(true)
-                  }
-                  handleSaveForm={handleSaveForm}
-                  onInit={() => store.inspectionStore.setIsValidate(false)}
-                  handleChange={handleChange}
-                  handleOpenField={handleOpenField}
-                  handleClearForm={handleClearForm}
-                  formFieldsValuesLength={
-                    !!Object.values(store.inspectionStore.formFieldsValues)
-                      .length
-                  }
-                  fieldsData={store.inspectionStore.fieldsData}
-                  isValidate={store.inspectionStore.isValidate}
-                  formFieldsValues={
-                    store.inspectionStore.formFieldsValues as IFreeForm
-                  }
-                />
-              }
-            />
-          ))}
+          content={store.freeFormStore.filledFreeForms.map(
+            (formFieldsValues, index) => (
+              <CollapseElement
+                label={
+                  <FreeFormElementLabel
+                    title={`${t("freeForm")} ${index + 1}`}
+                  />
+                }
+                key={index}
+                content={
+                  <FreeForm
+                    handleDelete={() => handleDelete(index)}
+                    setIsValidate={() =>
+                      store.inspectionStore.setIsValidate(true)
+                    }
+                    handleSaveForm={() => handleSaveForm(index)}
+                    onInit={() => store.inspectionStore.setIsValidate(false)}
+                    handleChange={(value: IFormFieldValue) =>
+                      handleChange(value, index)
+                    }
+                    handleOpenField={handleOpenField}
+                    handleClearForm={handleClearForm}
+                    formFieldsValuesLength={
+                      !!Object.values(formFieldsValues).length
+                    }
+                    fieldsData={store.inspectionStore.fieldsData}
+                    isValidate={store.inspectionStore.isValidate}
+                    formFieldsValues={formFieldsValues as IFreeForm}
+                  />
+                }
+              />
+            ),
+          )}
         />
       }
     />

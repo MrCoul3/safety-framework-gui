@@ -43,7 +43,6 @@ const FreeForm = observer((props: IFreeFormProps) => {
     FreeFormTypes.ViolationTypes,
     FreeFormTypes.Violations,
     FreeFormTypes.WorkTypes,
-    FreeFormTypes.CorpDicts,
     FreeFormTypes.Nmds,
     FreeFormTypes.NmdRules,
     FreeFormTypes.OdOuCategories,
@@ -55,7 +54,7 @@ const FreeForm = observer((props: IFreeFormProps) => {
   }, []);
 
   const requiredConditions = (field: FreeFormTypes) => {
-    const notReqFields = [FreeFormTypes.CorpDicts];
+    const notReqFields = [""];
 
     return !notReqFields.includes(field);
   };
@@ -73,7 +72,7 @@ const FreeForm = observer((props: IFreeFormProps) => {
   const [isClearModalOpen, setIsClearModalOpen] = React.useState(false);
   const [isDelModalOpen, setIsDelModalOpen] = React.useState(false);
   const handleSave = () => {
-    props.setIsValidate(true);
+    // props.setIsValidate(true);
     props.handleSaveForm()
   };
 
