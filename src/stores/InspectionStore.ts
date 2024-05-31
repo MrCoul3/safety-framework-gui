@@ -18,6 +18,7 @@ import {
   Item,
 } from "../interfaces/IFieldInterfaces";
 import { IFreeForm } from "../interfaces/IFreeForm";
+import {FreeFormTypes} from "../enums/FreeFormTypes";
 
 export class InspectionStore {
   private store: AppStore;
@@ -63,7 +64,7 @@ export class InspectionStore {
   }
 
   async getFieldData(type: InspectionFormTypes) {
-    let requestType: any = type + 's';
+    let requestType: any = type;
 
     const searchFieldValue = this.searchFieldValue ?? "";
 
@@ -214,6 +215,21 @@ export class InspectionStore {
     });
     return formFieldsValues;
   }
+  cropExtraValuesFromFreeForm() {
+    const freeFormTypesValues = Object.values(FreeFormTypes);
+    const formFieldsValuesKeys = Object.keys(this.formFieldsValues);
+    const formFieldsValues = this.formFieldsValues as { [key: string]: Item };
+    formFieldsValuesKeys.forEach((formFieldsValuesKey) => {
+      if (
+        !freeFormTypesValues.includes(
+          formFieldsValuesKey as FreeFormTypes,
+        )
+      ) {
+        delete formFieldsValues[formFieldsValuesKey];
+      }
+    });
+    return formFieldsValues;
+  }
 
   async getInspectionById(editInspectionId: string) {
     try {
@@ -237,6 +253,7 @@ export class InspectionStore {
 
   clearInspectionForm() {
     this.formFieldsValues = {};
+    console.log('clearInspectionForm this.formFieldsValues', toJS(this.formFieldsValues))
   }
 
   checkIsFormSuccess() {
@@ -246,6 +263,19 @@ export class InspectionStore {
       return (
         Object.keys(InspectionFormTypes).length ===
           Object.keys(formFieldsValues).length &&
+        !Object.values(formFieldsValues).some((field) => field === null)
+      );
+    }
+    return false;
+  }
+
+  checkIsFreeFormSuccess() {
+    const formFieldsValues = this.cropExtraValuesFromFreeForm();
+
+    if (formFieldsValues) {
+      return (
+        Object.keys(FreeFormTypes).length ===
+          Object.keys(FreeFormTypes).length &&
         !Object.values(formFieldsValues).some((field) => field === null)
       );
     }

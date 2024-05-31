@@ -24,6 +24,10 @@ interface IFreeFormProps {
   handleClearForm?(): void;
   handleOpenField(type: InspectionFormTypes): void;
   onInit?(): void;
+  handleSaveForm(): void;
+
+  setIsValidate(value: boolean): void;
+
   fieldsData: IFieldsData[];
   isValidate: boolean;
   formFieldsValues: IFreeForm | null;
@@ -66,21 +70,21 @@ const FreeForm = observer((props: IFreeFormProps) => {
   };
 
   const [isModalOpen, setIsModalOpen] = React.useState(false);
-
-  const handleSave = () => {};
-
+  const handleSave = () => {
+    props.setIsValidate(true);
+    props.handleSaveForm()
+  };
   const handleDelete = () => {};
 
   const getValue = (field: FreeFormTypes): string => {
+    console.log('getValue props.formFieldsValues', toJS(props.formFieldsValues))
+
     if (props.formFieldsValues) {
       return props.formFieldsValues[field]?.title as string;
     }
     return "";
   };
 
-  useEffect(() => {
-    console.log('props.formFieldsValues', toJS(props.formFieldsValues))
-  }, [props.formFieldsValues])
 
   return (
     <div className={style.FreeForm}>

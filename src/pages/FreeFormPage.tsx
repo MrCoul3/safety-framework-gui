@@ -1,9 +1,7 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
 import NavPanel from "../components/NavPanel/NavPanel";
 import { Button } from "@consta/uikit/Button";
-import PassportsList from "../components/PassportsList/PassportsList";
-import PassportElement from "../components/PassportElement/PassportElement";
 import Layout from "../layouts/Layout/Layout";
 import { IBreadCrumbs } from "../interfaces/IBreadCrumbs";
 import { useTranslation } from "react-i18next";
@@ -14,12 +12,10 @@ import FreeFormsList from "../components/FreeFormsList/FreeFormsList";
 import FreeForm from "../components/FreeForm/FreeForm";
 import { IFormFieldValue } from "../interfaces/IFieldInterfaces";
 import { InspectionFormTypes } from "../enums/InspectionFormTypes";
-import { IInspection } from "../interfaces/IInspection";
 import { IFreeForm } from "../interfaces/IFreeForm";
-import BarrierElement from "../components/BarrierElement/BarrierElement";
 import CollapseElement from "../components/CollapseElement/CollapseElement";
 import FreeFormElementLabel from "../components/FreeFormElementLabel/FreeFormElementLabel";
-import {toJS} from "mobx";
+import { toJS } from "mobx";
 
 interface IFreeFormPage {}
 
@@ -72,7 +68,7 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
     console.log("handleChange", value);
     setSavingState(true);
     store.inspectionStore.updateFormFieldsValues(value);
-    store.inspectionStore.checkIsFormSuccess();
+    store.inspectionStore.checkIsFreeFormSuccess();
   };
 
   const handleOpenField = (type: InspectionFormTypes) => {
@@ -84,10 +80,9 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
     // setOpenFilterType(type);
     setSavingState(true);
   };
+  const handleSaveForm = () => {
 
-  useEffect(() => {
-    console.log('store.inspectionStore.formFieldsValues', toJS(store.inspectionStore.formFieldsValues))
-  }, [Object.values(store.inspectionStore.formFieldsValues)])
+  };
 
   return (
     <Layout
@@ -122,7 +117,11 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
               key={0}
               content={
                 <FreeForm
-                    onInit={() => store.inspectionStore.setIsValidate(false)}
+                  setIsValidate={() =>
+                    store.inspectionStore.setIsValidate(true)
+                  }
+                  handleSaveForm={handleSaveForm}
+                  onInit={() => store.inspectionStore.setIsValidate(false)}
                   handleChange={handleChange}
                   handleOpenField={handleOpenField}
                   handleClearForm={handleClearForm}

@@ -1,4 +1,4 @@
-import { InspectionFormTypes } from "../enums/InspectionFormTypes";
+import {EMPLOYEES, InspectionFormTypes} from "../enums/InspectionFormTypes";
 import { toJS } from "mobx";
 import { transformDateToServerFormat } from "../utils/transformDateToServerFormat";
 import { Item } from "../interfaces/IFieldInterfaces";
@@ -58,6 +58,9 @@ export const getTableFilters = (filterFieldsValues: {
 export const getSortFilter = (sortSettings: SortByProps<any> | null) => {
   if (sortSettings?.sortingBy === InspectionFormTypes.AuditDate) {
     return `${sortSettings?.sortingBy} ${sortSettings?.sortOrder}`;
+  }
+  if (EMPLOYEES.includes(sortSettings?.sortingBy as InspectionFormTypes)) {
+      return `${sortSettings?.sortingBy as string}/personFio ${sortSettings?.sortOrder}`;
   }
   if (sortSettings?.sortingBy && sortSettings?.sortOrder) {
       return `${sortSettings?.sortingBy as string}/title ${sortSettings?.sortOrder}`;

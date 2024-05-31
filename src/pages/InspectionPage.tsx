@@ -167,13 +167,6 @@ const InspectionPage = observer((props: IInspectionPage) => {
       <Layout
         navPanel={
           <NavPanel
-            actions={
-              <Button
-                onClick={() => navigate(-1)}
-                label={t("toInspectionForm")}
-                view={"secondary"}
-              />
-            }
             crumbs={crumbs}
             disableSaveButton={!savingState}
             handleEditPassports={handleEditPassports}
