@@ -44,6 +44,7 @@ export const MainPage = observer((props: IMainPage) => {
 
   const init = () => {
     store.mainPageStore.clearInspectionOffset();
+    store.freeFormStore.clearFreeForm();
     getLocalInspections();
     if (isDevelop) {
       store.mainPageStore.getInspectionsDev();
@@ -65,11 +66,6 @@ export const MainPage = observer((props: IMainPage) => {
       return;
     }
     navigate(`/${item.label}`);
-  };
-
-  const toHome = () => {
-    store.mainPageStore.resetSideBarToHome();
-    navigate(`/`);
   };
 
   const getLocalInspections = () => {

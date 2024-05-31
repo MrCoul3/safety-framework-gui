@@ -17,7 +17,7 @@ import {
 } from "../interfaces/IFieldInterfaces";
 import { IInspection } from "../interfaces/IInspection";
 import { Button } from "@consta/uikit/Button";
-import {toJS} from "mobx";
+import { toJS } from "mobx";
 
 interface IInspectionPage {}
 
@@ -37,19 +37,13 @@ const InspectionPage = observer((props: IInspectionPage) => {
   const [openFilterType, setOpenFilterType] =
     useState<InspectionFormTypes | null>(null);
 
-  const init = () => {
+  const loadInspection = () => {
     if (editInspectionId) {
-      if (location.pathname.includes(RoutesTypes.EditLocalInspection)) {
-        store.inspectionStore.loadInspectionFromLocalStorage(editInspectionId);
-      }
-      if (location.pathname.includes(RoutesTypes.EditInspection)) {
-        if (isDevelop) {
-          store.inspectionStore.getInspectionDev(editInspectionId);
-        } else {
-          store.inspectionStore.getInspectionById(editInspectionId);
-        }
-      }
+      store.inspectionStore.loadInspection(editInspectionId);
     }
+  };
+  const init = () => {
+    loadInspection();
   };
 
   useEffect(() => {
@@ -77,10 +71,10 @@ const InspectionPage = observer((props: IInspectionPage) => {
   };
 
   const handleDateChange = (value: IFormDateFieldValue) => {
+    console.log("handleDateChange", value);
     store.inspectionStore.updateFormFieldsValues(value);
     setSavingState(true);
     store.inspectionStore.checkIsFormSuccess();
-
   };
 
   const saveInspection = () => {
@@ -105,13 +99,13 @@ const InspectionPage = observer((props: IInspectionPage) => {
       key: "1",
       status: "success",
     });
-  }
+  };
 
   const handleSaveInspection = () => {
     setSavingState(false);
     saveInspection();
     navigate(-1);
-    renderSaveSnackBar()
+    renderSaveSnackBar();
   };
 
   const handleEditPassports = () => {};
@@ -130,7 +124,7 @@ const InspectionPage = observer((props: IInspectionPage) => {
     const isValid = store.inspectionStore.checkIsFormSuccess();
     console.log("isValid", isValid);
     if (isValid) {
-      saveInspection();
+      // saveInspection();
       renderSaveSnackBar();
       navigate(RoutesTypes.FreeForm);
     }

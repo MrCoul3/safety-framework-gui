@@ -27,6 +27,7 @@ import {
   FREE_FORM_REQUIRED_FIELDS,
   FreeFormTypes,
 } from "../enums/FreeFormTypes";
+import {RoutesTypes} from "../enums/RoutesTypes";
 
 export class InspectionStore {
   private store: AppStore;
@@ -45,7 +46,7 @@ export class InspectionStore {
     this.searchFieldValue = value;
     console.log("this.searchFieldValue", this.searchFieldValue);
   }
-  formFieldsValues: IInspection | IFreeForm | {} = {};
+  formFieldsValues: IInspection | {} = {};
 
   async getFieldDataDev(type: InspectionFormTypes) {
     let requestType: any = type;
@@ -162,6 +163,7 @@ export class InspectionStore {
     console.debug("formFieldsValues: ", toJS(this.formFieldsValues));
   }
   updateFormFieldsValues(value: IFormFieldValue | IFormDateFieldValue) {
+    console.log('updateFormFieldsValues', value)
     if (this.formFieldsValues) {
       const key = Object.keys(value)[0];
       if (key !== InspectionFormTypes.AuditDate) {
@@ -275,9 +277,11 @@ export class InspectionStore {
         }
       })
       .filter((val) => val);
-    return filtered.every((value) => {
-      return Object.values(value ?? {})[0];
-    });
+    return (
+      filtered.every((value) => {
+        return Object.values(value ?? {})[0];
+      }) && filtered.length === INSPECTION_FORM_REQUIRED_FIELDS.length
+    );
   }
 
   checkIsFreeFormSuccess() {
@@ -289,19 +293,26 @@ export class InspectionStore {
         }
       })
       .filter((val) => val);
-    return filtered.every((value) => {
-      return Object.values(value ?? {})[0];
-    });
+    return (
+      filtered.every((value) => {
+        return Object.values(value ?? {})[0];
+      }) && filtered.length === FREE_FORM_REQUIRED_FIELDS.length
+    );
   }
 
   setInspectionToLocalStorage() {
     delete (this.formFieldsValues as IInspection)?.id;
-
+    const freeForms = this.store.freeFormStore.freeForms
     const localInspections = localStorage.getItem(LOCAL_STORE_INSPECTIONS);
     if (localInspections) {
       const localInspectionsParsed = JSON.parse(localInspections);
       if (localInspectionsParsed) {
-        localInspectionsParsed.unshift(this.formFieldsValues);
+
+        let values = this.formFieldsValues
+        if (freeForms.length) { // если есть свободные формы добавляем к занчениям формы еще и freeForms
+          values = {...this.formFieldsValues, freeForms}
+        }
+        localInspectionsParsed.unshift(values);
       }
       const newInspectionsJson = JSON.stringify(localInspectionsParsed);
       localStorage.setItem(LOCAL_STORE_INSPECTIONS, newInspectionsJson);
@@ -356,4 +367,17 @@ export class InspectionStore {
       this.getFieldData(type);
     }
   }
+
+  loadInspection(editInspectionId: string) {
+      if (location.pathname.includes(RoutesTypes.EditLocalInspection)) {
+        this.loadInspectionFromLocalStorage(editInspectionId);
+      }
+      if (location.pathname.includes(RoutesTypes.EditInspection)) {
+        if (isDevelop) {
+          this.getInspectionDev(editInspectionId);
+        } else {
+          this.getInspectionById(editInspectionId);
+        }
+      }
+    }
 }

@@ -5,7 +5,7 @@ import { Button } from "@consta/uikit/Button";
 import Layout from "../layouts/Layout/Layout";
 import { IBreadCrumbs } from "../interfaces/IBreadCrumbs";
 import { useTranslation } from "react-i18next";
-import { useNavigate, useParams } from "react-router";
+import {useLocation, useNavigate, useParams} from "react-router";
 import { useStore } from "../hooks/useStore";
 import { IconAdd } from "@consta/icons/IconAdd";
 import FreeFormsList from "../components/FreeFormsList/FreeFormsList";
@@ -16,6 +16,9 @@ import { IFreeForm } from "../interfaces/IFreeForm";
 import CollapseElement from "../components/CollapseElement/CollapseElement";
 import FreeFormElementLabel from "../components/FreeFormElementLabel/FreeFormElementLabel";
 import { toJS } from "mobx";
+import {RoutesTypes} from "../enums/RoutesTypes";
+import {isDevelop} from "../constants/config";
+import {IInspection} from "../interfaces/IInspection";
 
 interface IFreeFormPage {}
 
@@ -27,6 +30,8 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
   const store = useStore();
 
   const navigate = useNavigate();
+
+  const location = useLocation();
 
   const crumbs: IBreadCrumbs[] = [
     {
@@ -43,10 +48,36 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
       label: t("completionFreeForm"),
     },
   ];
+  const getFreeFormsFromFormFieldsData = () => {
+    const freeForms = (store.inspectionStore.formFieldsValues as IInspection)['freeForms'];
+    if (freeForms) {
+      store.freeFormStore.setFreeForm(freeForms)
+    }
+  }
+
+  const loadInspection = () => {
+    if (editInspectionId) {
+      store.inspectionStore.loadInspection(editInspectionId)
+    }
+  }
+  const init = () => {
+    loadInspection()
+    getFreeFormsFromFormFieldsData()
+
+  }
+
+  useEffect(() => {
+    init()
+  }, [])
+
   const saveInspection = () => {
-  /*  editInspectionId
-      ? store.inspectionStore.updateInspectionToLocalStorage(editInspectionId)
-      : store.inspectionStore.setInspectionToLocalStorage();*/
+      editInspectionId
+      ? store.freeFormStore.updateInspectionToLocalStorage(editInspectionId)
+      : store.inspectionStore.setInspectionToLocalStorage();
+  };
+
+  const handleSaveForm = () => {
+    // store.freeFormStore.updateInspectionToLocalStorage(editInspectionId)
   };
 
   const handleSaveInspection = () => {
@@ -61,7 +92,10 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
     });*/
   };
 
-  const handleAddFreeForm = () => {};
+  const handleAddFreeForm = () => {
+    store.freeFormStore.addFreeForm();
+    setSavingState(true);
+  };
 
   const [savingState, setSavingState] = useState(false);
 
@@ -80,9 +114,6 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
     // store.inspectionStore.handleOpenField(type);
     // setOpenFilterType(type);
     setSavingState(true);
-  };
-  const handleSaveForm = () => {
-
   };
 
   return (
@@ -112,9 +143,11 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
               label={t("addFreeForm")}
             />
           }
-          content={
+          content={store.freeFormStore.freeForms.map((form, index) => (
             <CollapseElement
-              label={<FreeFormElementLabel title={t("freeForm")} />}
+              label={
+                <FreeFormElementLabel title={`${t("freeForm")} ${index + 1}`} />
+              }
               key={0}
               content={
                 <FreeForm
@@ -138,7 +171,7 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
                 />
               }
             />
-          }
+          ))}
         />
       }
     />
