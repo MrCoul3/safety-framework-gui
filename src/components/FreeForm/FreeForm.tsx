@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
 import {FREE_FORM_COMMON_FIELDS, FreeFormFieldTypes, FreeFormTypes} from "../../enums/FreeFormTypes";
@@ -44,6 +44,8 @@ const FreeForm = observer((props: IFreeFormProps) => {
     props.onInit?.();
   }, []);
 
+  const [savingState, setSavingState] = useState(false);
+
   const requiredConditions = (field: FreeFormFieldTypes) => {
     const notReqFields = [""];
 
@@ -63,7 +65,7 @@ const FreeForm = observer((props: IFreeFormProps) => {
   const [isClearModalOpen, setIsClearModalOpen] = React.useState(false);
   const [isDelModalOpen, setIsDelModalOpen] = React.useState(false);
   const handleSave = () => {
-    // props.setIsValidate(true);
+    setSavingState(false);
     props.handleSaveForm()
   };
 
@@ -73,6 +75,11 @@ const FreeForm = observer((props: IFreeFormProps) => {
     }
     return "";
   };
+
+  const handleChange = (value: IFormFieldValue) => {
+    props.handleChange(value);
+    setSavingState(true)
+  }
 
 
   return (
@@ -87,7 +94,7 @@ const FreeForm = observer((props: IFreeFormProps) => {
             inspectionType={field}
             value={getValue(field)}
             fieldsData={props.fieldsData}
-            handleChange={props.handleChange}
+            handleChange={handleChange}
             handleOpenField={props.handleOpenField}
             status={props.isValidate ? getStatus(field) : undefined}
           />
@@ -102,7 +109,7 @@ const FreeForm = observer((props: IFreeFormProps) => {
             view="clear"
             label={t("clear")}
           />
-          <Button onClick={handleSave} type="submit" label={t("save")} />
+          <Button disabled={!savingState} onClick={handleSave} type="submit" label={t("save")} />
         </div>
       </div>
       <ConfirmDialog
