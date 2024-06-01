@@ -2,7 +2,7 @@ import { AppStore } from "./AppStore";
 import { makeAutoObservable, toJS } from "mobx";
 import { LOCAL_STORE_INSPECTIONS } from "../constants/config";
 import { IFreeForm } from "../interfaces/IFreeForm";
-import {FreeFormFieldTypes, FreeFormTypes} from "../enums/FreeFormTypes";
+import { FreeFormFieldTypes, FreeFormTypes } from "../enums/FreeFormTypes";
 import { IEntity } from "../interfaces/IEntity";
 import { IInspection } from "../interfaces/IInspection";
 import {
@@ -24,15 +24,23 @@ export class FreeFormStore {
     this.filledFreeForms = value;
   }
   addFreeForm() {
-    this.filledFreeForms = [...this.filledFreeForms, this.getFreeFormTemplate()];
+    this.filledFreeForms = [
+      ...this.filledFreeForms,
+      this.getFreeFormTemplate(),
+    ];
     console.log("this.filledFreeForms", toJS(this.filledFreeForms));
   }
 
+  clearFreeForm(index: number) {
+    this.filledFreeForms[index] = this.getFreeFormTemplate()
+  }
   deleteFreeForm(index: number) {
-    this.filledFreeForms = this.filledFreeForms.filter((item, i) => index !== i);
+    this.filledFreeForms = this.filledFreeForms.filter(
+      (item, i) => index !== i,
+    );
   }
 
-  clearFreeForm() {
+  clearFreeForms() {
     this.filledFreeForms = [];
   }
 
@@ -76,6 +84,9 @@ export class FreeFormStore {
       Object.assign(formFieldsValues, value);
     }
     this.filledFreeForms[index] = formFieldsValues;
-    console.debug("freeform this.filledFreeForms: ", toJS(this.filledFreeForms));
+    console.debug(
+      "freeform this.filledFreeForms: ",
+      toJS(this.filledFreeForms),
+    );
   }
 }

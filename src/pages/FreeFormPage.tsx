@@ -108,9 +108,10 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
     store.inspectionStore.handleOpenField(type);
     // setOpenFilterType(type);
   };
-  const handleClearForm = () => {
+  const handleClearForm = (index: number) => {
     // store.inspectionStore.handleOpenField(type);
     // setOpenFilterType(type);
+    store.freeFormStore.clearFreeForm(index);
     setSavingState(true);
   };
 
@@ -167,7 +168,7 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
                       handleChange(value, index)
                     }
                     handleOpenField={handleOpenField}
-                    handleClearForm={handleClearForm}
+                    handleClearForm={() => handleClearForm(index)}
                     formFieldsValuesLength={
                       !!Object.values(formFieldsValues).length
                     }

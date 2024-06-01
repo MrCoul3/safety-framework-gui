@@ -44,7 +44,7 @@ export const MainPage = observer((props: IMainPage) => {
 
   const init = () => {
     store.mainPageStore.clearInspectionOffset();
-    store.freeFormStore.clearFreeForm();
+    store.freeFormStore.clearFreeForms();
     getLocalInspections();
     if (isDevelop) {
       store.mainPageStore.getInspectionsDev();
