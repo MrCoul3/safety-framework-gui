@@ -76,7 +76,9 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
 
   const handleSaveForm = (index: number) => {
     console.log("handleSaveForm", index);
-    // store.freeFormStore.updateInspectionToLocalStorage(editInspectionId)
+    editInspectionId
+        ? store.freeFormStore.saveFreeFormToLocalStorage(editInspectionId, index)
+        : ""
   };
 
   const handleSaveInspection = () => {
@@ -106,11 +108,8 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
 
   const handleOpenField = (type: InspectionFormTypes) => {
     store.inspectionStore.handleOpenField(type);
-    // setOpenFilterType(type);
   };
   const handleClearForm = (index: number) => {
-    // store.inspectionStore.handleOpenField(type);
-    // setOpenFilterType(type);
     store.freeFormStore.clearFreeForm(index);
     setSavingState(true);
   };

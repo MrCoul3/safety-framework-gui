@@ -32,7 +32,7 @@ export class FreeFormStore {
   }
 
   clearFreeForm(index: number) {
-    this.filledFreeForms[index] = this.getFreeFormTemplate()
+    this.filledFreeForms[index] = this.getFreeFormTemplate();
   }
   deleteFreeForm(index: number) {
     this.filledFreeForms = this.filledFreeForms.filter(
@@ -52,10 +52,29 @@ export class FreeFormStore {
     return template;
   }
 
+  saveFreeFormToLocalStorage(editInspectionId: string, freeFormIndex: number) {
+    const index = +editInspectionId - 1;
+
+    const localInspections = localStorage.getItem(LOCAL_STORE_INSPECTIONS);
+    if (localInspections) {
+      const localInspectionsParsed = JSON.parse(localInspections);
+      if (localInspectionsParsed.length) {
+        const targetInspection = localInspectionsParsed[index];
+        if (targetInspection.filledFreeForms[freeFormIndex]) {
+          targetInspection.filledFreeForms[freeFormIndex] = this.filledFreeForms[freeFormIndex];
+        } else {
+          targetInspection.filledFreeForms.push(this.filledFreeForms[freeFormIndex])
+        }
+        localInspectionsParsed.splice(index, 1);
+        localInspectionsParsed.push(targetInspection);
+        const newInspectionsJson = JSON.stringify(localInspectionsParsed);
+        localStorage.setItem(LOCAL_STORE_INSPECTIONS, newInspectionsJson);
+      }
+    }
+  }
   updateInspectionToLocalStorage(editInspectionId: string) {
     const index = +editInspectionId - 1;
     const localInspections = localStorage.getItem(LOCAL_STORE_INSPECTIONS);
-
     if (localInspections) {
       const localInspectionsParsed = JSON.parse(localInspections);
       if (localInspectionsParsed.length) {
