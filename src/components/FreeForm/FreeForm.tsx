@@ -1,7 +1,7 @@
 import React, {useEffect} from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
-import { FreeFormTypes } from "../../enums/FreeFormTypes";
+import {FREE_FORM_COMMON_FIELDS, FreeFormFieldTypes, FreeFormTypes} from "../../enums/FreeFormTypes";
 import InspectionTextField from "../InspectionTextField/InspectionTextField";
 import { InspectionFormTypes } from "../../enums/InspectionFormTypes";
 import {
@@ -38,28 +38,19 @@ interface IFreeFormProps {
 const FreeForm = observer((props: IFreeFormProps) => {
   const { t } = useTranslation("dict");
 
-  const fields = [
-    FreeFormTypes.ViolationCategories,
-    FreeFormTypes.ViolationTypes,
-    FreeFormTypes.Violations,
-    FreeFormTypes.WorkTypes,
-    FreeFormTypes.Nmds,
-    FreeFormTypes.NmdRules,
-    FreeFormTypes.OdOuCategories,
-    FreeFormTypes.RiskLevels,
-  ];
+  const fields = FREE_FORM_COMMON_FIELDS
 
   useEffect(() => {
     props.onInit?.();
   }, []);
 
-  const requiredConditions = (field: FreeFormTypes) => {
+  const requiredConditions = (field: FreeFormFieldTypes) => {
     const notReqFields = [""];
 
     return !notReqFields.includes(field);
   };
 
-  const getStatus = (type: FreeFormTypes) => {
+  const getStatus = (type: FreeFormFieldTypes) => {
     if (props.formFieldsValues) {
       const condition = props.formFieldsValues[type];
       if (!condition) {
@@ -76,7 +67,7 @@ const FreeForm = observer((props: IFreeFormProps) => {
     props.handleSaveForm()
   };
 
-  const getValue = (field: FreeFormTypes): string => {
+  const getValue = (field: FreeFormFieldTypes): string => {
     if (props.formFieldsValues) {
       return props.formFieldsValues[field]?.title as string;
     }

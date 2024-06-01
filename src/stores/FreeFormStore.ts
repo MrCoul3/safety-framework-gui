@@ -2,7 +2,7 @@ import { AppStore } from "./AppStore";
 import { makeAutoObservable, toJS } from "mobx";
 import { LOCAL_STORE_INSPECTIONS } from "../constants/config";
 import { IFreeForm } from "../interfaces/IFreeForm";
-import { FreeFormTypes } from "../enums/FreeFormTypes";
+import {FreeFormFieldTypes, FreeFormTypes} from "../enums/FreeFormTypes";
 import { IEntity } from "../interfaces/IEntity";
 import { IInspection } from "../interfaces/IInspection";
 import {
@@ -38,7 +38,7 @@ export class FreeFormStore {
 
   getFreeFormTemplate() {
     const template = {};
-    Object.values(FreeFormTypes).forEach((type) => {
+    Object.values(FreeFormFieldTypes).forEach((type) => {
       Object.assign(template, { [type]: null });
     });
     return template;

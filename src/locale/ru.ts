@@ -5,7 +5,7 @@ import {
   InspectionFormGroups,
   InspectionFormTypes,
 } from "../enums/InspectionFormTypes";
-import {FreeFormTypes} from "../enums/FreeFormTypes";
+import {FreeFormFieldTypes, FreeFormTypes} from "../enums/FreeFormTypes";
 
 export const ru = {
   dict: {
@@ -116,14 +116,14 @@ export const ru = {
     actions: "Действия",
 
     // свободная форма
-    [FreeFormTypes.ViolationCategories]: "Категория нарушения",
-    [FreeFormTypes.ViolationTypes]: "Типовое нарушение",
-    [FreeFormTypes.Violations]: "Нарушение",
-    [FreeFormTypes.WorkTypes]: "Вид работ нарушения",
-    [FreeFormTypes.Nmds]: "НМД",
-    [FreeFormTypes.NmdRules]: "Пункт правил НМД",
-    [FreeFormTypes.OdOuCategories]: "Категория ОД/ОУ",
-    [FreeFormTypes.RiskLevels]: "Степень риска",
+    [FreeFormFieldTypes.ViolationCategory]: "Категория нарушения",
+    [FreeFormFieldTypes.ViolationType]: "Типовое нарушение",
+    [FreeFormFieldTypes.Violation]: "Нарушение",
+    [FreeFormFieldTypes.WorkType]: "Вид работ нарушения",
+    [FreeFormFieldTypes.Nmd]: "НМД",
+    [FreeFormFieldTypes.NmdRule]: "Пункт правил НМД",
+    [FreeFormFieldTypes.OdOuCategory]: "Категория ОД/ОУ",
+    [FreeFormFieldTypes.RiskLevel]: "Степень риска",
 
     freeForm: "Свободная форма",
 
@@ -158,14 +158,14 @@ export const ru = {
     [InspectionFormTypes.Auditee + "Placeholder"]: "введите ФИО проверяемого",
     [InspectionFormTypes.Supervisor + "Placeholder"]: "введите ФИО супервайзера",
 
-    [FreeFormTypes.ViolationCategories + "Placeholder"]: "Введите категорию нарушения",
-    [FreeFormTypes.ViolationTypes + "Placeholder"]: "Введите типовое нарушение",
-    [FreeFormTypes.Violations + "Placeholder"]: "Введите название нарушения",
-    [FreeFormTypes.WorkTypes + "Placeholder"]: "Введите вид работ нарушения",
-    [FreeFormTypes.Nmds + "Placeholder"]: "Введите НМД",
-    [FreeFormTypes.NmdRules + "Placeholder"]: "Введите пункт правил НМД",
-    [FreeFormTypes.OdOuCategories + "Placeholder"]: "Введите категорию ОД/ОУ",
-    [FreeFormTypes.RiskLevels + "Placeholder"]: "Введите степень риска",
+    [FreeFormFieldTypes.ViolationCategory + "Placeholder"]: "Введите категорию нарушения",
+    [FreeFormFieldTypes.ViolationType + "Placeholder"]: "Введите типовое нарушение",
+    [FreeFormFieldTypes.Violation + "Placeholder"]: "Введите название нарушения",
+    [FreeFormFieldTypes.WorkType + "Placeholder"]: "Введите вид работ нарушения",
+    [FreeFormFieldTypes.Nmd + "Placeholder"]: "Введите НМД",
+    [FreeFormFieldTypes.NmdRule + "Placeholder"]: "Введите пункт правил НМД",
+    [FreeFormFieldTypes.OdOuCategory + "Placeholder"]: "Введите категорию ОД/ОУ",
+    [FreeFormFieldTypes.RiskLevel + "Placeholder"]: "Введите степень риска",
 
     dialogClearFields: "Очистить все заполненные поля?",
     dialogDeleteFreeForm: "Удалить свободную форму?",

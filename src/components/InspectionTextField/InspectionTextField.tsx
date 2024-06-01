@@ -13,20 +13,20 @@ import { toJS } from "mobx";
 import { ELEMENTS_ON_FIELD } from "../../constants/config";
 import { useDebounce } from "@consta/uikit/useDebounce";
 import {IFieldsData, IFormFieldValue, Item} from "../../interfaces/IFieldInterfaces";
-import {FreeFormTypes} from "../../enums/FreeFormTypes";
+import {FreeFormFieldTypes, FreeFormTypes} from "../../enums/FreeFormTypes";
 
 interface IFieldInspectionType {
   onClose?(): void;
-  handleOpenField(type: InspectionFormTypes | FreeFormTypes): void;
+  handleOpenField(type: InspectionFormTypes | FreeFormFieldTypes): void;
   handleChange(value: IFormFieldValue): void;
-  onScrollToBottom?(inspectionType: InspectionFormTypes | FreeFormTypes): void;
+  onScrollToBottom?(inspectionType: InspectionFormTypes | FreeFormFieldTypes): void;
   onSearchValueChange?(value: string | null): void;
   status: PropStatus | undefined;
   fieldsData: IFieldsData[];
   value?: string;
   disabled?: boolean;
   required?: boolean;
-  inspectionType: InspectionFormTypes | FreeFormTypes;
+  inspectionType: InspectionFormTypes | FreeFormFieldTypes;
 }
 
 const InspectionTextField = observer((props: IFieldInspectionType) => {
@@ -63,7 +63,7 @@ const InspectionTextField = observer((props: IFieldInspectionType) => {
     });
   };
 
-  const getItems = (type: InspectionFormTypes | FreeFormTypes) => {
+  const getItems = (type: InspectionFormTypes | FreeFormFieldTypes) => {
     const found = props.fieldsData.find((data) =>
       Object.keys(data).includes(props.inspectionType),
     );

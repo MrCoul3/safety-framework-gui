@@ -24,7 +24,8 @@ import {
 } from "../interfaces/IFieldInterfaces";
 import { IFreeForm } from "../interfaces/IFreeForm";
 import {
-  FREE_FORM_REQUIRED_FIELDS,
+  FREE_FORM_COMMON_FIELDS,
+  FREE_FORM_REQUIRED_FIELDS, freeFormDictNames, FreeFormFieldTypes,
   FreeFormTypes,
 } from "../enums/FreeFormTypes";
 import {RoutesTypes} from "../enums/RoutesTypes";
@@ -48,14 +49,16 @@ export class InspectionStore {
   }
   formFieldsValues: IInspection | {} = {};
 
-  async getFieldDataDev(type: InspectionFormTypes) {
+  async getFieldDataDev(type: InspectionFormTypes | FreeFormFieldTypes) {
     let requestType: any = type;
 
-    if (INSPECTION_FORM_COMMON_FIELDS.includes(type)) {
+    if (INSPECTION_FORM_COMMON_FIELDS.includes(type as InspectionFormTypes)) {
       requestType = type + "s";
     }
-
-    if (EMPLOYEES.includes(type)) {
+    if (FREE_FORM_COMMON_FIELDS.includes(type as FreeFormFieldTypes)) {
+      requestType = freeFormDictNames[type as FreeFormFieldTypes]
+    }
+    if (EMPLOYEES.includes(type as InspectionFormTypes)) {
       requestType = employeesEndpoint;
     }
 
@@ -288,7 +291,7 @@ export class InspectionStore {
     const formFieldsValues: { [key: string]: any } = this.formFieldsValues;
     const filtered = Object.keys(formFieldsValues)
       .map((key) => {
-        if (FREE_FORM_REQUIRED_FIELDS.includes(key as FreeFormTypes)) {
+        if (FREE_FORM_REQUIRED_FIELDS.includes(key as FreeFormFieldTypes)) {
           return { [key]: formFieldsValues[key] };
         }
       })
