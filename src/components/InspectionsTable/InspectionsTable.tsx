@@ -17,7 +17,10 @@ import { Button } from "@consta/uikit/Button";
 import { IconEdit } from "@consta/icons/IconEdit";
 import { IconTrash } from "@consta/icons/IconTrash";
 import { IconMail } from "@consta/icons/IconMail";
-import {INSPECTION_FORM_COMMON_FIELDS, InspectionFormTypes} from "../../enums/InspectionFormTypes";
+import {
+  INSPECTION_FORM_COMMON_FIELDS,
+  InspectionFormTypes,
+} from "../../enums/InspectionFormTypes";
 import { onCellClick } from "@consta/uikit/__internal__/src/components/Table/Table";
 import CustomFilter from "../CustomFilter/CustomFilter";
 import { INSPECTIONS_ON_PAGE } from "../../constants/config";
@@ -36,6 +39,7 @@ import { ISortByParams } from "../../interfaces/ISortByParams";
 import LoaderPage from "../LoaderPage/LoaderPage";
 import { ResponsesNothingFound } from "@consta/uikit/ResponsesNothingFound";
 import { LoaderType } from "../../interfaces/LoaderType";
+import { useStore } from "../../hooks/useStore";
 
 interface IInspectionsTable {
   inspections: IInspection[];
@@ -60,11 +64,14 @@ interface IInspectionsTable {
   onSearchValueChange?(value: string | null): void;
   onScrollToBottom?(inspectionType: InspectionFormTypes): void;
   onInspectionTextFieldClose?(): void;
+  sendInspection(index: number): void;
   handleSort?(value: SortByProps<any> | null): void;
 }
 
 const InspectionsTable = observer((props: IInspectionsTable) => {
   const { t } = useTranslation("dict");
+
+  const store = useStore();
 
   const [page, setPage] = useState(1);
 
@@ -112,8 +119,16 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
         iconRight={IconEdit}
         onlyIcon
       />
+
       {props.subGroupsActionsTypes === SubGroupsActionsTypes.NewInspections && (
-        <Button size="s" view="ghost" iconRight={IconMail} onlyIcon />
+        <Button
+          disabled={!store.mainPageStore.checkIsInspectionReadyToSend(+index)}
+          onClick={() => props.sendInspection(+index)}
+          size="s"
+          view="ghost"
+          iconRight={IconMail}
+          onlyIcon
+        />
       )}
 
       <Button
@@ -157,15 +172,13 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
           item[InspectionFormTypes.Auditee]?.personFio,
         [InspectionFormTypes.Supervisor]:
           item[InspectionFormTypes.Supervisor]?.personFio,
-        actions: renderActions((index + 1).toString(), item),
+        actions: renderActions((index).toString(), item),
         [InspectionFormTypes.AuditDate]: moment(item.auditDate).format(
           "DD.MM.YYYY",
         ),
       })),
     [props.inspections],
   );
-
-  console.log("rows!!!", toJS(rows));
 
   const keys = INSPECTION_FORM_COMMON_FIELDS;
 
@@ -176,13 +189,14 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
       accessor: key,
       sortable: true,
       align: "left",
-      // maxWidth: 200,
+      width: 200,
     }));
 
   columns.unshift({
     title: <span className={style.colTitle}>{t("actions")}</span>,
     accessor: "actions",
     align: "left",
+    width: 150,
   });
 
   const handleOpenFilter = (field: InspectionFormTypes) => {
@@ -265,7 +279,8 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
 
       {props.inspectionsCount &&
         props.inspectionsCount > INSPECTIONS_ON_PAGE &&
-        isSentInspectionsCondition() && props.inspections.length && (
+        isSentInspectionsCondition() &&
+        props.inspections.length && (
           <Pagination
             showFirstPage
             showLastPage

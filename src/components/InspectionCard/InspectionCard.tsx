@@ -49,6 +49,8 @@ const InspectionCard = observer((props: IInspectionCard) => {
     <Card
       className={classNames(style.card, {
         [style.sentCard]: props.subGroup === SubGroupsActionsTypes.Sent,
+        [style.await]: !props.isReadyToSend && props.subGroup === SubGroupsActionsTypes.NewInspections,
+        [style.success]: props.isReadyToSend && props.subGroup === SubGroupsActionsTypes.NewInspections,
         // [style.await]: awaitCond(),
         // [style.error]: errorCond(),
       })}
@@ -65,12 +67,14 @@ const InspectionCard = observer((props: IInspectionCard) => {
       )}*/}
 
       <div className={style.title}>
-        {props.index && t("inspectionName") + props.index}
-        {props.id && t("inspectionName") + props.id}
+        {props.id
+          ? props.id && t("inspectionName") + props.id
+          : props.index && t("inspectionName") + props.index}
         <Button
           onClick={() =>
             props.handleDeleteButtonClick(
-              props.index ? props.index.toString() : props.id.toString(), props.subGroup
+              props.index ? props.index.toString() : props.id.toString(),
+              props.subGroup,
             )
           }
           iconSize="s"
@@ -132,7 +136,8 @@ const InspectionCard = observer((props: IInspectionCard) => {
       </div>
       <div className={style.controlButtonGroup}>
         {props.subGroup === SubGroupsActionsTypes.NewInspections && (
-          <Button disabled={!props.isReadyToSend}
+          <Button
+            disabled={!props.isReadyToSend}
             onClick={() =>
               props.index ? props.sendInspection(props.index as number) : ""
             }

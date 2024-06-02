@@ -64,7 +64,7 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
   const init = () => {
     loadInspection();
     getFreeFormsFromFormFieldsData();
-    setIsFormsValidForSending(store.inspectionStore.checkIsFreeFormSuccess());
+    setIsFormsValidForSending(store.freeFormStore.checkIsFreeFormSuccess());
   };
 
   useEffect(() => {
@@ -80,8 +80,11 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
   const handleSaveForm = (index: number) => {
     console.log("handleSaveForm", index);
     editInspectionId
-      ? store.freeFormStore.saveFreeFormToLocalStorage(editInspectionId, index)
-      : "";
+      ? store.freeFormStore.saveEditInspectionFreeFormToLocalStorage(
+          editInspectionId,
+          index,
+        )
+      : handleSaveInspection();
   };
 
   const handleSaveInspection = () => {
@@ -108,10 +111,12 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
     console.log("handleChange", value);
     setSavingState(true);
     store.freeFormStore.updateFormFieldsValues(value, index);
-    const isValid = store.inspectionStore.checkIsFreeFormSuccess();
+    const isValid = store.freeFormStore.checkIsFreeFormSuccess();
     console.log("handleSendInspection isValid", isValid);
     setIsFormsValidForSending(isValid);
   };
+
+
 
   const handleOpenField = (type: InspectionFormTypes) => {
     store.inspectionStore.handleOpenField(type);
@@ -126,7 +131,7 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
     setSavingState(true);
   };
   const handleSendInspection = async () => {
-    const isValid = store.inspectionStore.checkIsFreeFormSuccess();
+    const isValid = store.freeFormStore.checkIsFreeFormSuccess();
     store.inspectionStore.setIsValidate(true);
     console.log("handleSendInspection isValid", isValid);
     if (isValid) {
@@ -134,7 +139,7 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
       if (result) {
         if (editInspectionId)
           store.inspectionStore.deleteInspectionFromLocalStorage(
-            editInspectionId,
+            +editInspectionId - 1,
           );
         navigate(-2);
         store.snackBarStore.setSnackBarItem({

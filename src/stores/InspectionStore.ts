@@ -53,9 +53,10 @@ export class InspectionStore {
   formFieldsValues: IInspection | {} = {};
 
   async sendInspection() {
+
     try {
       const response = await instance.post(`Inspections`, {
-        ...this.formFieldsValues,
+        ...this.formFieldsValues, filledFreeForms: this.store.freeFormStore.filledFreeForms
       });
       if (!response.data.error) {
         return "success";
@@ -306,21 +307,23 @@ export class InspectionStore {
       "checkIsFreeFormSuccess formFieldsValues ",
       toJS(formFieldsValues),
     );
+    if (formFieldsValues && formFieldsValues.length) {
+      const filtered = formFieldsValues.map((freeForm) =>
+        filterByRequiredFields(freeForm, FREE_FORM_REQUIRED_FIELDS),
+      );
 
-    const filtered = formFieldsValues.map((freeForm) =>
-      filterByRequiredFields(freeForm, FREE_FORM_REQUIRED_FIELDS),
-    );
+      console.log("filtered", toJS(filtered));
 
-    console.log("filtered", toJS(filtered));
-
-    const result = filtered.map((freeForm) =>
-      Object.values(freeForm).every(
-        (value) =>
-          Object.values(value ?? {})[0] &&
-          Object.values(freeForm).length === FREE_FORM_REQUIRED_FIELDS.length,
-      ),
-    ); // [bool, bool]
-    return result.every((res) => res);
+      const result = filtered.map((freeForm) =>
+        Object.values(freeForm).every(
+          (value) =>
+            Object.values(value ?? {})[0] &&
+            Object.values(freeForm).length === FREE_FORM_REQUIRED_FIELDS.length,
+        ),
+      ); // [bool, bool]
+      return result.every((res) => res);
+    }
+    return false;
   }
 
   setInspectionToLocalStorage() {
@@ -366,8 +369,8 @@ export class InspectionStore {
     }
   }
 
-  deleteInspectionFromLocalStorage(editInspectionId: string) {
-    const index = +editInspectionId - 1;
+  deleteInspectionFromLocalStorage(editInspectionId: number) {
+    const index = +editInspectionId;
     const localInspections = localStorage.getItem(LOCAL_STORE_INSPECTIONS);
     if (localInspections) {
       const localInspectionsParsed = JSON.parse(localInspections);

@@ -2,7 +2,11 @@ import { AppStore } from "./AppStore";
 import { makeAutoObservable, toJS } from "mobx";
 import { LOCAL_STORE_INSPECTIONS } from "../constants/config";
 import { IFreeForm } from "../interfaces/IFreeForm";
-import { FreeFormFieldTypes, FreeFormTypes } from "../enums/FreeFormTypes";
+import {
+  FREE_FORM_REQUIRED_FIELDS,
+  FreeFormFieldTypes,
+  FreeFormTypes,
+} from "../enums/FreeFormTypes";
 import { IEntity } from "../interfaces/IEntity";
 import { IInspection } from "../interfaces/IInspection";
 import {
@@ -10,6 +14,7 @@ import {
   IFormFieldValue,
   Item,
 } from "../interfaces/IFieldInterfaces";
+import { filterByRequiredFields } from "../utils/filterByRequiredFields";
 
 export class FreeFormStore {
   private store: AppStore;
@@ -52,18 +57,32 @@ export class FreeFormStore {
     return template;
   }
 
-  saveFreeFormToLocalStorage(editInspectionId: string, freeFormIndex: number) {
+  saveEditInspectionFreeFormToLocalStorage(
+    editInspectionId: string,
+    freeFormIndex: number,
+  ) {
     const index = +editInspectionId - 1;
+    console.log("saveFreeFormToLocalStorage index", toJS(index));
 
     const localInspections = localStorage.getItem(LOCAL_STORE_INSPECTIONS);
     if (localInspections) {
       const localInspectionsParsed = JSON.parse(localInspections);
       if (localInspectionsParsed.length) {
         const targetInspection = localInspectionsParsed[index];
-        if (targetInspection.filledFreeForms[freeFormIndex]) {
-          targetInspection.filledFreeForms[freeFormIndex] = this.filledFreeForms[freeFormIndex];
+        console.log(
+          "saveFreeFormToLocalStorage targetInspection",
+          toJS(targetInspection),
+        );
+        if (
+          targetInspection.filledFreeForms &&
+          targetInspection.filledFreeForms[freeFormIndex]
+        ) {
+          targetInspection.filledFreeForms[freeFormIndex] =
+            this.filledFreeForms[freeFormIndex];
         } else {
-          targetInspection.filledFreeForms.push(this.filledFreeForms[freeFormIndex])
+          targetInspection.filledFreeForms.push(
+            this.filledFreeForms[freeFormIndex],
+          );
         }
         localInspectionsParsed.splice(index, 1);
         localInspectionsParsed.push(targetInspection);
@@ -72,6 +91,7 @@ export class FreeFormStore {
       }
     }
   }
+
   updateInspectionToLocalStorage(editInspectionId: string) {
     const index = +editInspectionId - 1;
     const localInspections = localStorage.getItem(LOCAL_STORE_INSPECTIONS);
@@ -107,5 +127,33 @@ export class FreeFormStore {
       "freeform this.filledFreeForms: ",
       toJS(this.filledFreeForms),
     );
+  }
+
+  checkIsFreeFormSuccess() {
+    const formFieldsValues: { [key: string]: any }[] = this
+      .filledFreeForms as IFreeForm[];
+
+
+    console.log(
+      "checkIsFreeFormSuccess formFieldsValues ",
+      toJS(formFieldsValues),
+    );
+    if (formFieldsValues && formFieldsValues.length) {
+      const filtered = formFieldsValues.map((freeForm) =>
+        filterByRequiredFields(freeForm, FREE_FORM_REQUIRED_FIELDS),
+      );
+
+      console.log("filtered", toJS(filtered));
+
+      const result = filtered.map((freeForm) =>
+        Object.values(freeForm).every(
+          (value) =>
+            Object.values(value ?? {})[0] &&
+            Object.values(freeForm).length === FREE_FORM_REQUIRED_FIELDS.length,
+        ),
+      ); // [bool, bool]
+      return result.every((res) => res);
+    }
+    return false;
   }
 }

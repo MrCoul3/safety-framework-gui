@@ -159,7 +159,6 @@ export class MainPageStore {
       const response = await instance.get(`${inspectionsEndpoint}`);
       if (!response.data.error) {
         setTimeout(() => {}, 0);
-
         this.setInspectionsCount(48546);
         this.setInspections(response.data);
         this.store.loaderStore.setLoader("ready");
@@ -254,6 +253,11 @@ export class MainPageStore {
     const localInspections = localStorage.getItem(LOCAL_STORE_INSPECTIONS);
     if (localInspections) {
       const localInspectionsParsed = JSON.parse(localInspections);
+
+      console.log(
+        "getLocalInspection localInspectionsParsed[index]",
+        toJS(localInspectionsParsed[index]),
+      );
       return localInspectionsParsed[index];
     }
   }
@@ -264,32 +268,49 @@ export class MainPageStore {
       console.log("checkIsInspectionReadyToSend inspection", toJS(inspection));
       const freeForms: IFreeForm[] = inspection["filledFreeForms"] ?? [];
       console.log("checkIsInspectionReadyToSend freeForms", toJS(freeForms));
-      const filteredCommonFields = filterByRequiredFields(
-        inspection,
-        INSPECTION_FORM_REQUIRED_FIELDS,
-      );
-      const filteredFreeFormsFields = freeForms.map((freeForm) =>
-        filterByRequiredFields(freeForm, FREE_FORM_REQUIRED_FIELDS),
-      );
-      const freeFormsResult = filteredFreeFormsFields.map((freeForm) =>
-        Object.values(freeForm).every(
-          (value) =>
-            Object.values(value ?? {})[0] &&
-            Object.values(freeForm).length === FREE_FORM_REQUIRED_FIELDS.length,
-        ),
-      ); // [bool, bool]
+      if (freeForms.length) {
+        const filteredCommonFields = filterByRequiredFields(
+          inspection,
+          INSPECTION_FORM_REQUIRED_FIELDS,
+        );
+        const filteredFreeFormsFields = freeForms.map((freeForm) =>
+          filterByRequiredFields(freeForm, FREE_FORM_REQUIRED_FIELDS),
+        );
+        const freeFormsResult = filteredFreeFormsFields.map((freeForm) =>
+          Object.values(freeForm).every(
+            (value) =>
+              Object.values(value ?? {})[0] &&
+              Object.values(freeForm).length ===
+                FREE_FORM_REQUIRED_FIELDS.length,
+          ),
+        ); // [bool, bool]
 
-      const commonFieldsResult =
-        filteredCommonFields.every((value) => {
-          return Object.values(value ?? {})[0];
-        }) &&
-        filteredCommonFields.length === INSPECTION_FORM_REQUIRED_FIELDS.length;
+        const commonFieldsResult =
+          filteredCommonFields.every((value) => {
+            return Object.values(value ?? {})[0];
+          }) &&
+          filteredCommonFields.length ===
+            INSPECTION_FORM_REQUIRED_FIELDS.length;
 
-      const result = [...freeFormsResult, commonFieldsResult].every(
-        (val) => val,
-      );
-      console.log("checkIsInspectionReadyToSend result", toJS(result));
-      return result;
+        const result = [...freeFormsResult, commonFieldsResult].every(
+          (val) => val,
+        );
+        console.log("checkIsInspectionReadyToSend result", index, toJS(result));
+        return result;
+      }
+    }
+  }
+
+  async sendInspection(index: number) {
+    try {
+      const response = await instance.post(`Inspections`, {
+        ...this.getLocalInspection(index),
+      });
+      if (!response.data.error) {
+        return "success";
+      }
+    } catch (e) {
+      console.error(e);
     }
   }
 }
