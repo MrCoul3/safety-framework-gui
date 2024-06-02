@@ -8,6 +8,7 @@ import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate, useParams } from "react-router";
 import { useStore } from "../hooks/useStore";
 import { IconAdd } from "@consta/icons/IconAdd";
+import { IconWarning } from "@consta/icons/IconWarning";
 import FreeFormsList from "../components/FreeFormsList/FreeFormsList";
 import FreeForm from "../components/FreeForm/FreeForm";
 import { IFormFieldValue } from "../interfaces/IFieldInterfaces";
@@ -16,19 +17,20 @@ import { IFreeForm } from "../interfaces/IFreeForm";
 import CollapseElement from "../components/CollapseElement/CollapseElement";
 import FreeFormElementLabel from "../components/FreeFormElementLabel/FreeFormElementLabel";
 import { IInspection } from "../interfaces/IInspection";
+import SnackBarCustom from "../components/SnackBarCustom/SnackBarCustom";
 
 interface IFreeFormPage {}
 
 const FreeFormPage = observer((props: IFreeFormPage) => {
   const { t } = useTranslation("dict");
 
-  let { editInspectionId } = useParams();
-
   const store = useStore();
 
   const navigate = useNavigate();
 
   const location = useLocation();
+
+  let { editInspectionId } = useParams();
 
   const crumbs: IBreadCrumbs[] = [
     {
@@ -62,6 +64,7 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
   const init = () => {
     loadInspection();
     getFreeFormsFromFormFieldsData();
+    setIsFormsValidForSending(store.inspectionStore.checkIsFreeFormSuccess());
   };
 
   useEffect(() => {
@@ -77,8 +80,8 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
   const handleSaveForm = (index: number) => {
     console.log("handleSaveForm", index);
     editInspectionId
-        ? store.freeFormStore.saveFreeFormToLocalStorage(editInspectionId, index)
-        : ""
+      ? store.freeFormStore.saveFreeFormToLocalStorage(editInspectionId, index)
+      : "";
   };
 
   const handleSaveInspection = () => {
@@ -99,11 +102,15 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
 
   const [savingState, setSavingState] = useState(false);
 
+  const [isFormsValidForSending, setIsFormsValidForSending] = useState(false);
+
   const handleChange = (value: IFormFieldValue, index: number) => {
     console.log("handleChange", value);
     setSavingState(true);
     store.freeFormStore.updateFormFieldsValues(value, index);
-    store.inspectionStore.checkIsFreeFormSuccess();
+    const isValid = store.inspectionStore.checkIsFreeFormSuccess();
+    console.log("handleSendInspection isValid", isValid);
+    setIsFormsValidForSending(isValid);
   };
 
   const handleOpenField = (type: InspectionFormTypes) => {
@@ -118,11 +125,45 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
     store.freeFormStore.deleteFreeForm(index);
     setSavingState(true);
   };
+  const handleSendInspection = async () => {
+    const isValid = store.inspectionStore.checkIsFreeFormSuccess();
+    store.inspectionStore.setIsValidate(true);
+    console.log("handleSendInspection isValid", isValid);
+    if (isValid) {
+      const result = await store.inspectionStore.sendInspection();
+      if (result) {
+        if (editInspectionId)
+          store.inspectionStore.deleteInspectionFromLocalStorage(
+            editInspectionId,
+          );
+        navigate(-2);
+        store.snackBarStore.setSnackBarItem({
+          message: t("snackBarSuccessSend"),
+          key: "1",
+          status: "success",
+        });
+      } else {
+        store.snackBarStore.setSnackBarItem({
+          message: t("snackBarErrorSend"),
+          key: "1",
+          status: "alert",
+          icon: IconWarning,
+        });
+      }
+    }
+  };
 
   return (
     <Layout
       navPanel={
         <NavPanel
+          sendButton={
+            <Button
+              disabled={!isFormsValidForSending}
+              onClick={handleSendInspection}
+              label={t("sendInspection")}
+            />
+          }
           disableSaveButton={!savingState}
           actions={
             <Button

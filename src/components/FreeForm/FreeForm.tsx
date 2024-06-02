@@ -81,6 +81,10 @@ const FreeForm = observer((props: IFreeFormProps) => {
     setSavingState(true)
   }
 
+  useEffect(() => {
+    console.log('props.isValidate', props.isValidate)
+  }, [props.isValidate])
+
 
   return (
     <div className={style.FreeForm}>

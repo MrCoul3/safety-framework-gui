@@ -45,6 +45,7 @@ export const ru = {
     editInspectionData: "Редактировать данные инспекции",
     createInspection: "Создать инспекцию",
     saveInspection: "Сохранить инспекцию",
+    sendInspection: "Отправить инспекцию",
     addFreeForm: "Добавить свободную форму",
     toPassports: "К паспортам",
     toInspectionForm: "К данным инспекции",
@@ -175,6 +176,7 @@ export const ru = {
 
     snackBarSuccessSave: "Инспекция успешно сохранена",
     snackBarSuccessSend: "Инспекция успешно отправлена",
+    snackBarErrorSend: "Ошибка отправки инспекции",
 
     barriersSelect: "Выбрано барьеров",
   },

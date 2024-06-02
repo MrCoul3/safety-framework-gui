@@ -14,6 +14,7 @@ import PassportsPage from "../../../pages/PassportsPage";
 import BarriersPage from "../../../pages/BarriersPage/BarriersPage";
 import EmptyBoxPage from "../../EmptyBoxPage/EmptyBoxPage";
 import FreeFormPage from "../../../pages/FreeFormPage";
+import SnackBarCustom from "../../SnackBarCustom/SnackBarCustom";
 export const AppContainer = observer(() => {
   const { t } = useTranslation("dict");
 
@@ -41,6 +42,10 @@ export const AppContainer = observer(() => {
   return (
     <>
       <MainHeader handleLogoClick={toHome} />
+      <SnackBarCustom
+          onItemClose={() => store.snackBarStore.clearSnackBar()}
+          item={store.snackBarStore.snackBarItem}
+      />
       <Routes>
         <Route index element={<MainPage />} />
         <Route path={"/*"} element={<MainPage />} />

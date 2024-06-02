@@ -26,12 +26,14 @@ interface IInspectionCard {
   oilfield?: string;
   doObject?: string;
   contractor?: string;
+  isReadyToSend?: boolean;
   contractorStruct?: string;
   index?: number | boolean;
   inspectionForm?: string;
-  subGroup?: SubGroupsActionsTypes;
+  subGroup: SubGroupsActionsTypes;
   handleEditButtonClick(id: string): void;
-  handleDeleteButtonClick(id: string): void;
+  handleDeleteButtonClick(id: string, subGroup: SubGroupsActionsTypes): void;
+  sendInspection(index: number): void;
 }
 
 const InspectionCard = observer((props: IInspectionCard) => {
@@ -68,7 +70,7 @@ const InspectionCard = observer((props: IInspectionCard) => {
         <Button
           onClick={() =>
             props.handleDeleteButtonClick(
-              props.index ? props.index.toString() : props.id.toString(),
+              props.index ? props.index.toString() : props.id.toString(), props.subGroup
             )
           }
           iconSize="s"
@@ -130,7 +132,10 @@ const InspectionCard = observer((props: IInspectionCard) => {
       </div>
       <div className={style.controlButtonGroup}>
         {props.subGroup === SubGroupsActionsTypes.NewInspections && (
-          <Button
+          <Button disabled={!props.isReadyToSend}
+            onClick={() =>
+              props.index ? props.sendInspection(props.index as number) : ""
+            }
             size={"s"}
             iconSize="s"
             view="secondary"

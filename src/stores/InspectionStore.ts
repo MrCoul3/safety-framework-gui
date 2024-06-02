@@ -25,10 +25,13 @@ import {
 import { IFreeForm } from "../interfaces/IFreeForm";
 import {
   FREE_FORM_COMMON_FIELDS,
-  FREE_FORM_REQUIRED_FIELDS, freeFormDictNames, FreeFormFieldTypes,
+  FREE_FORM_REQUIRED_FIELDS,
+  freeFormDictNames,
+  FreeFormFieldTypes,
   FreeFormTypes,
 } from "../enums/FreeFormTypes";
-import {RoutesTypes} from "../enums/RoutesTypes";
+import { RoutesTypes } from "../enums/RoutesTypes";
+import { filterByRequiredFields } from "../utils/filterByRequiredFields";
 
 export class InspectionStore {
   private store: AppStore;
@@ -49,6 +52,19 @@ export class InspectionStore {
   }
   formFieldsValues: IInspection | {} = {};
 
+  async sendInspection() {
+    try {
+      const response = await instance.post(`Inspections`, {
+        ...this.formFieldsValues,
+      });
+      if (!response.data.error) {
+        return "success";
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
   async getFieldDataDev(type: InspectionFormTypes | FreeFormFieldTypes) {
     let requestType: any = type;
 
@@ -56,7 +72,7 @@ export class InspectionStore {
       requestType = type + "s";
     }
     if (FREE_FORM_COMMON_FIELDS.includes(type as FreeFormFieldTypes)) {
-      requestType = freeFormDictNames[type as FreeFormFieldTypes]
+      requestType = freeFormDictNames[type as FreeFormFieldTypes];
     }
     if (EMPLOYEES.includes(type as InspectionFormTypes)) {
       requestType = employeesEndpoint;
@@ -166,7 +182,7 @@ export class InspectionStore {
     console.debug("formFieldsValues: ", toJS(this.formFieldsValues));
   }
   updateFormFieldsValues(value: IFormFieldValue | IFormDateFieldValue) {
-    console.log('updateFormFieldsValues', value)
+    console.log("updateFormFieldsValues", value);
     if (this.formFieldsValues) {
       const key = Object.keys(value)[0];
       if (key !== InspectionFormTypes.AuditDate) {
@@ -271,15 +287,10 @@ export class InspectionStore {
 
   checkIsFormSuccess() {
     const formFieldsValues: { [key: string]: any } = this.formFieldsValues;
-    const filtered = Object.keys(formFieldsValues)
-      .map((key) => {
-        if (
-          INSPECTION_FORM_REQUIRED_FIELDS.includes(key as InspectionFormTypes)
-        ) {
-          return { [key]: formFieldsValues[key] };
-        }
-      })
-      .filter((val) => val);
+    const filtered = filterByRequiredFields(
+      formFieldsValues,
+      INSPECTION_FORM_REQUIRED_FIELDS,
+    );
     return (
       filtered.every((value) => {
         return Object.values(value ?? {})[0];
@@ -288,34 +299,44 @@ export class InspectionStore {
   }
 
   checkIsFreeFormSuccess() {
-    const formFieldsValues: { [key: string]: any } = this.formFieldsValues;
-    const filtered = Object.keys(formFieldsValues)
-      .map((key) => {
-        if (FREE_FORM_REQUIRED_FIELDS.includes(key as FreeFormFieldTypes)) {
-          return { [key]: formFieldsValues[key] };
-        }
-      })
-      .filter((val) => val);
-    return (
-      filtered.every((value) => {
-        return Object.values(value ?? {})[0];
-      }) && filtered.length === FREE_FORM_REQUIRED_FIELDS.length
+    const formFieldsValues: { [key: string]: any }[] = (
+      this.formFieldsValues as IInspection
+    )["filledFreeForms"];
+    console.log(
+      "checkIsFreeFormSuccess formFieldsValues ",
+      toJS(formFieldsValues),
     );
+
+    const filtered = formFieldsValues.map((freeForm) =>
+      filterByRequiredFields(freeForm, FREE_FORM_REQUIRED_FIELDS),
+    );
+
+    console.log("filtered", toJS(filtered));
+
+    const result = filtered.map((freeForm) =>
+      Object.values(freeForm).every(
+        (value) =>
+          Object.values(value ?? {})[0] &&
+          Object.values(freeForm).length === FREE_FORM_REQUIRED_FIELDS.length,
+      ),
+    ); // [bool, bool]
+    return result.every((res) => res);
   }
 
   setInspectionToLocalStorage() {
     delete (this.formFieldsValues as IInspection)?.id;
-    const filledFreeForms = this.store.freeFormStore.filledFreeForms
-    console.log('freeForms', toJS(filledFreeForms))
+    const filledFreeForms = this.store.freeFormStore.filledFreeForms;
+    console.log("freeForms", toJS(filledFreeForms));
     const localInspections = localStorage.getItem(LOCAL_STORE_INSPECTIONS);
 
-    let values = this.formFieldsValues
-    if (filledFreeForms.length) { // если есть свободные формы добавляем к занчениям формы еще и freeForms
-      values = {...this.formFieldsValues, filledFreeForms}
+    let values = this.formFieldsValues;
+    if (filledFreeForms.length) {
+      // если есть свободные формы добавляем к занчениям формы еще и freeForms
+      values = { ...this.formFieldsValues, filledFreeForms };
     }
 
     if (localInspections) {
-      console.log('setInspectionToLocalStorage1', values)
+      console.log("setInspectionToLocalStorage1", values);
 
       const localInspectionsParsed = JSON.parse(localInspections);
       if (localInspectionsParsed) {
@@ -324,10 +345,10 @@ export class InspectionStore {
       const newInspectionsJson = JSON.stringify(localInspectionsParsed);
       localStorage.setItem(LOCAL_STORE_INSPECTIONS, newInspectionsJson);
     } else {
-      console.log('setInspectionToLocalStorage2', values)
+      console.log("setInspectionToLocalStorage2", values);
 
       const newInspectionJson = JSON.stringify([values]);
-      console.log('newInspectionJson', newInspectionJson)
+      console.log("newInspectionJson", newInspectionJson);
       localStorage.setItem(LOCAL_STORE_INSPECTIONS, newInspectionJson);
     }
   }
@@ -379,15 +400,15 @@ export class InspectionStore {
   }
 
   loadInspection(editInspectionId: string) {
-      if (location.pathname.includes(RoutesTypes.EditLocalInspection)) {
-        this.loadInspectionFromLocalStorage(editInspectionId);
-      }
-      if (location.pathname.includes(RoutesTypes.EditInspection)) {
-        if (isDevelop) {
-          this.getInspectionDev(editInspectionId);
-        } else {
-          this.getInspectionById(editInspectionId);
-        }
+    if (location.pathname.includes(RoutesTypes.EditLocalInspection)) {
+      this.loadInspectionFromLocalStorage(editInspectionId);
+    }
+    if (location.pathname.includes(RoutesTypes.EditInspection)) {
+      if (isDevelop) {
+        this.getInspectionDev(editInspectionId);
+      } else {
+        this.getInspectionById(editInspectionId);
       }
     }
+  }
 }

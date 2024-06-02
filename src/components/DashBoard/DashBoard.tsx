@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {ReactNode, useEffect, useState} from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
 import { SubGroupsActionsTypes } from "enums/SubGroupsTypes";
@@ -13,14 +13,15 @@ import { ProgressSpin } from "@consta/uikit/ProgressSpin";
 
 import { LoaderType } from "../../interfaces/LoaderType";
 import LoaderPage from "../LoaderPage/LoaderPage";
+import {useStore} from "../../hooks/useStore";
 
 interface IDashBoard {
   inspections: IInspection[];
   inspectionsCount: number | null;
-
   loader?: LoaderType;
-
+  content: ReactNode;
   localInspections: IInspection[];
+  sendInspection(index: number): void;
   onScrollToBottom(): void;
   handleEditInspection(id: string): void;
   handleEditLocalInspection(id: string): void;
@@ -79,6 +80,7 @@ const DashBoard = observer((props: IDashBoard) => {
     return data.length ? (
       data.map((item, index) => (
         <InspectionCard
+          sendInspection={props.sendInspection}
           handleDeleteButtonClick={(id: string) =>
             handleDeleteButtonClick(subGroup, id)
           }
@@ -165,14 +167,15 @@ const DashBoard = observer((props: IDashBoard) => {
                   loadMore={() => props.onScrollToBottom()}
                   loader={<ProgressSpin key={0} size="m" />}
                 >
-                  {renderContent(subGroup, props.inspections)}
+                  {props.content}
                 </InfiniteScroll>
               ) : (
                 renderLoader(subGroup)
               )
-            ) : (
-              renderContent(subGroup, props.localInspections)
-            )}
+            ) : props.content
+
+              // renderContent(subGroup, props.localInspections)
+            }
           </div>
         </div>
       ))}

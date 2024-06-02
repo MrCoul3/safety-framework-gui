@@ -114,8 +114,8 @@ const InspectionPage = observer((props: IInspectionPage) => {
     const isValid = store.inspectionStore.checkIsFormSuccess();
     console.log("isValid", isValid);
     if (isValid) {
-      saveInspection();
-      renderSaveSnackBar();
+      // saveInspection();
+      // renderSaveSnackBar();
       navigate(RoutesTypes.Passports);
     }
   };
@@ -125,7 +125,7 @@ const InspectionPage = observer((props: IInspectionPage) => {
     console.log("isValid", isValid);
     if (isValid) {
       // saveInspection();
-      renderSaveSnackBar();
+      // renderSaveSnackBar();
       navigate(RoutesTypes.FreeForm);
     }
   };

@@ -6,7 +6,13 @@ import SubHeader from "components/SubHeader/SubHeader";
 import { useStore } from "hooks/useStore";
 import { IAction } from "interfaces/IAction";
 import { SubGroupsActionsTypes } from "enums/SubGroupsTypes";
-import { Route, Routes, useLocation, useNavigate } from "react-router";
+import {
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+  useParams,
+} from "react-router";
 import DashBoard from "../components/DashBoard/DashBoard";
 import InspectionsTable from "../components/InspectionsTable/InspectionsTable";
 import { Button } from "@consta/uikit/Button";
@@ -30,6 +36,7 @@ import {
   IFormDateFieldValue,
 } from "../interfaces/IFieldInterfaces";
 import { SortByProps } from "@consta/uikit/Table";
+import InspectionCard from "../components/InspectionCard/InspectionCard";
 
 interface IMainPage {}
 
@@ -92,13 +99,14 @@ export const MainPage = observer((props: IMainPage) => {
       getLocalInspections();
     }
   };
-  const handleDeleteSentInspection = () => {
+  const handleDeleteSentInspection = async () => {
     if (isDevelop) {
       store.mainPageStore.getInspectionsDev();
     } else {
-      store.mainPageStore.deleteSentInspection(
+      await store.mainPageStore.deleteSentInspection(
         store.mainPageStore.deletingInspectionType?.id,
       );
+      store.mainPageStore.clearInspections();
       store.mainPageStore.getInspections();
     }
   };
@@ -170,6 +178,29 @@ export const MainPage = observer((props: IMainPage) => {
     store.mainPageStore.getInspections();
   };
 
+  const handleSendInspection = (index: number) => {
+    const isValid = store.mainPageStore.checkIsInspectionReadyToSend(index - 1);
+    if (isValid) {
+    }
+    console.log("isValid", isValid);
+  };
+  const sentInspectionsCondition = (subGroup: SubGroupsActionsTypes) =>
+      subGroup === SubGroupsActionsTypes.Sent;
+  const newInspectionCondition = (subGroup: SubGroupsActionsTypes) =>
+      subGroup === SubGroupsActionsTypes.NewInspections;
+
+  const handleDeleteInspection = (
+      subGroup: SubGroupsActionsTypes,
+      id: string,
+  ) => {
+    if (sentInspectionsCondition(subGroup)) {
+      props.handleDeleteSentButtonClick(id);
+    }
+    if (newInspectionCondition(subGroup)) {
+      props.handleDeleteNewInspectionButtonClick(id);
+    }
+  };
+
   const contentRoutes = () => {
     return (
       <Routes>
@@ -177,6 +208,33 @@ export const MainPage = observer((props: IMainPage) => {
         <Route
           element={
             <DashBoard
+              content={store.mainPageStore.localInspections.map(
+                (item, index) => (
+                  <InspectionCard isReadyToSend={store.mainPageStore.checkIsInspectionReadyToSend(index)}
+                    sendInspection={handleSendInspection}
+                    handleDeleteButtonClick={handleDeleteInspection}
+                    handleEditButtonClick={() => {}}
+                    id={item.id ?? ""}
+                    key={item.id}
+                    subGroup={SubGroupsActionsTypes.NewInspections}
+                    checkVerifyDate={item[InspectionFormTypes.AuditDate]}
+                    oilfield={item[InspectionFormTypes.OilField]?.title}
+                    doObject={item[InspectionFormTypes.DoObject]?.title}
+                    contractor={item[InspectionFormTypes.Contractor]?.title}
+                    contractorStruct={
+                      item[InspectionFormTypes.ContractorStruct]?.title
+                    }
+                    inspectionType={
+                      item[InspectionFormTypes.InspectionType]?.title
+                    }
+                    inspectionForm={
+                      item[InspectionFormTypes.InspectionForm]?.title
+                    }
+                    index={index + 1}
+                  />
+                ),
+              )}
+              sendInspection={handleSendInspection}
               loader={store.loaderStore.loader}
               onScrollToBottom={onScrollToBottom}
               inspectionsCount={store.mainPageStore.inspectionsCount}
@@ -268,11 +326,6 @@ export const MainPage = observer((props: IMainPage) => {
 
   return (
     <div>
-      <SnackBarCustom
-        onItemClose={() => store.snackBarStore.clearSnackBar()}
-        item={store.snackBarStore.snackBarItem}
-      />
-
       <MainPageLayout
         sideBar={
           <SideBar

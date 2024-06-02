@@ -27,11 +27,23 @@
   display: flex;
   gap: 8px;
   align-items: center;
-  padding: 24px 0 0;
-
+  padding: 24px 0 ;
+  justify-content: space-between;
 }
 .rightBorder {
   border-right: 1px solid var(--border);
   padding-right: 8px;
   height: 24px;
+}
+.flexContainer {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+
+.backwardBtn {
+  width: 25px;
+}
+.Breadcrumbs {
+  width: 100%;
 }
