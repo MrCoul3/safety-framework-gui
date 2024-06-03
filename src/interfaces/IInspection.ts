@@ -1,5 +1,6 @@
-import { CheckEntityTypes } from "../enums/CheckEntityTypes";
 import { InspectionFormTypes } from "../enums/InspectionFormTypes";
+import { IEntity } from "./IEntity";
+import { IFreeForm } from "./IFreeForm";
 
 export interface IInspection {
   id?: string;
@@ -13,7 +14,6 @@ export interface IInspection {
   [InspectionFormTypes.DoStruct]?: IEntity;
   [InspectionFormTypes.DoObject]?: IEntity;
 
-
   [InspectionFormTypes.Contractor]?: IEntity;
   [InspectionFormTypes.ContractorStruct]?: IEntity;
   [InspectionFormTypes.SubContractor]?: IEntity;
@@ -21,28 +21,19 @@ export interface IInspection {
   [InspectionFormTypes.Auditor]?: IEmployees;
   [InspectionFormTypes.Auditee]?: IEmployees;
   [InspectionFormTypes.Supervisor]?: IEmployees;
-}
-
-
-export interface IEntity {
-  "title": string,
-  "uniqueId": string,
-  "isActual": boolean,
-  "dateCreated": Date,
-  "dateModified": Date,
-  "id": number
+  filledFreeForms: IFreeForm[];
 }
 
 export interface IEmployees {
-  "personFio": string,
-  "companyId": string,
-  "department": null | string,
-  "position": string,
-  "verified": boolean,
-  "uniqueId": string,
-  "isActual": boolean,
-  "propuskId": null | string,
-  "dateCreated": Date,
-  "dateModified": Date,
-  "id": string
+  personFio: string;
+  companyId: string;
+  department: null | string;
+  position: string;
+  verified: boolean;
+  uniqueId: string;
+  isActual: boolean;
+  propuskId: null | string;
+  dateCreated: Date;
+  dateModified: Date;
+  id: string;
 }

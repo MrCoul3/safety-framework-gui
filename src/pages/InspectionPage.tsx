@@ -11,7 +11,13 @@ import { RoutesTypes } from "../enums/RoutesTypes";
 import { IBreadCrumbs } from "../interfaces/IBreadCrumbs";
 import Layout from "../layouts/Layout/Layout";
 import { isDevelop } from "../constants/config";
-import {IFormDateFieldValue, IFormFieldValue} from "../interfaces/IFieldInterfaces";
+import {
+  IFormDateFieldValue,
+  IFormFieldValue,
+} from "../interfaces/IFieldInterfaces";
+import { IInspection } from "../interfaces/IInspection";
+import { Button } from "@consta/uikit/Button";
+import { toJS } from "mobx";
 
 interface IInspectionPage {}
 
@@ -31,20 +37,13 @@ const InspectionPage = observer((props: IInspectionPage) => {
   const [openFilterType, setOpenFilterType] =
     useState<InspectionFormTypes | null>(null);
 
-  const init = () => {
+  const loadInspection = () => {
     if (editInspectionId) {
-      if (location.pathname.includes(RoutesTypes.EditLocalInspection)) {
-        store.inspectionStore.loadInspectionFromLocalStorage(editInspectionId);
-      }
-      if (location.pathname.includes(RoutesTypes.EditInspection)) {
-        if (isDevelop) {
-          store.inspectionStore.getInspectionDev(editInspectionId);
-
-        } else {
-          store.inspectionStore.getInspectionById(editInspectionId);
-        }
-      }
+      store.inspectionStore.loadInspection(editInspectionId);
     }
+  };
+  const init = () => {
+    loadInspection();
   };
 
   useEffect(() => {
@@ -72,6 +71,7 @@ const InspectionPage = observer((props: IInspectionPage) => {
   };
 
   const handleDateChange = (value: IFormDateFieldValue) => {
+    console.log("handleDateChange", value);
     store.inspectionStore.updateFormFieldsValues(value);
     setSavingState(true);
     store.inspectionStore.checkIsFormSuccess();
@@ -93,15 +93,19 @@ const InspectionPage = observer((props: IInspectionPage) => {
     store.inspectionStore.setIsValidate(false);
   };
 
-  const handleSaveInspection = () => {
-    setSavingState(false);
-    saveInspection();
-    navigate(-1);
+  const renderSaveSnackBar = () => {
     store.snackBarStore.setSnackBarItem({
       message: t("snackBarSuccessSave"),
       key: "1",
       status: "success",
     });
+  };
+
+  const handleSaveInspection = () => {
+    setSavingState(false);
+    saveInspection();
+    navigate(-1);
+    renderSaveSnackBar();
   };
 
   const handleEditPassports = () => {};
@@ -111,6 +115,7 @@ const InspectionPage = observer((props: IInspectionPage) => {
     console.log("isValid", isValid);
     if (isValid) {
       // saveInspection();
+      // renderSaveSnackBar();
       navigate(RoutesTypes.Passports);
     }
   };
@@ -120,6 +125,7 @@ const InspectionPage = observer((props: IInspectionPage) => {
     console.log("isValid", isValid);
     if (isValid) {
       // saveInspection();
+      // renderSaveSnackBar();
       navigate(RoutesTypes.FreeForm);
     }
   };
@@ -148,7 +154,7 @@ const InspectionPage = observer((props: IInspectionPage) => {
   };
 
   const handleScrollFieldToBottom = (inspectionType: InspectionFormTypes) => {
-    console.log('handleScrollFieldToBottom!!!')
+    console.log("handleScrollFieldToBottom!!!");
     store.inspectionStore.increaseOffset();
     store.inspectionStore.getFieldData(inspectionType);
   };
@@ -193,7 +199,9 @@ const InspectionPage = observer((props: IInspectionPage) => {
             }}
             setIsValidate={() => store.inspectionStore.setIsValidate(true)}
             isValidate={store.inspectionStore.isValidate}
-            formFieldsValues={store.inspectionStore.formFieldsValues}
+            formFieldsValues={
+              store.inspectionStore.formFieldsValues as IInspection
+            }
             handleChange={handleChange}
             handleDateChange={handleDateChange}
             fieldsData={store.inspectionStore.fieldsData}

@@ -6,10 +6,11 @@ import NavPanel from "../components/NavPanel/NavPanel";
 import { useTranslation } from "react-i18next";
 import PassportsList from "../components/PassportsList/PassportsList";
 import { RoutesTypes } from "../enums/RoutesTypes";
-import {  useNavigate, useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { IBreadCrumbs } from "../interfaces/IBreadCrumbs";
 import Layout from "../layouts/Layout/Layout";
 import { Button } from "@consta/uikit/Button";
+import { isDevelop } from "../constants/config";
 
 interface IPassportsPage {}
 
@@ -25,7 +26,13 @@ const PassportsPage = observer((props: IPassportsPage) => {
   const navigate = useNavigate();
 
   const init = () => {
-    store.passportsStore.getPassportsDev();
+    if (isDevelop) {
+      store.passportsStore.getPassportsDev();
+      store.passportsStore.getPassports();
+
+    } else {
+      store.passportsStore.getPassports();
+    }
     // store.passportsStore.getPassports()
   };
 

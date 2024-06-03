@@ -1,4 +1,4 @@
-import { InspectionFormTypes } from "../enums/InspectionFormTypes";
+import {EMPLOYEES, INSPECTION_FORM_COMMON_FIELDS, InspectionFormTypes} from "../enums/InspectionFormTypes";
 import { toJS } from "mobx";
 import { transformDateToServerFormat } from "../utils/transformDateToServerFormat";
 import { Item } from "../interfaces/IFieldInterfaces";
@@ -7,7 +7,7 @@ import { SortByProps } from "@consta/uikit/Table";
 
 const excludedFields = [InspectionFormTypes.AuditDate];
 
-const expandFilterValues = Object.values(InspectionFormTypes)
+const expandFilterValues = INSPECTION_FORM_COMMON_FIELDS
   .filter((val) => !excludedFields.includes(val))
   .join(",");
 
@@ -28,7 +28,7 @@ export const getTableFilters = (filterFieldsValues: {
                 const value = values.filter((val) => val)[0];
                 const endDay = moment(value).endOf("day").toDate();
                 return value
-                  ? `createdWhen ge ${transformDateToServerFormat(value)} and createdWhen le ${transformDateToServerFormat(endDay)}`
+                  ? `${InspectionFormTypes.AuditDate} ge ${transformDateToServerFormat(value)} and ${InspectionFormTypes.AuditDate} le ${transformDateToServerFormat(endDay)}`
                   : "";
               }
               return values
@@ -38,7 +38,7 @@ export const getTableFilters = (filterFieldsValues: {
                     : moment(value).endOf("day").toDate();
                   if (val)
                     return value
-                      ? `createdWhen ${!index ? "ge" : "le"} ${transformDateToServerFormat(val)}`
+                      ? `${InspectionFormTypes.AuditDate} ${!index ? "ge" : "le"} ${transformDateToServerFormat(val)}`
                       : "";
                 })
                 .join(" and ");
@@ -59,5 +59,10 @@ export const getSortFilter = (sortSettings: SortByProps<any> | null) => {
   if (sortSettings?.sortingBy === InspectionFormTypes.AuditDate) {
     return `${sortSettings?.sortingBy} ${sortSettings?.sortOrder}`;
   }
-  return `${sortSettings?.sortingBy as string}/title ${sortSettings?.sortOrder}`;
+  if (EMPLOYEES.includes(sortSettings?.sortingBy as InspectionFormTypes)) {
+      return `${sortSettings?.sortingBy as string}/personFio ${sortSettings?.sortOrder}`;
+  }
+  if (sortSettings?.sortingBy && sortSettings?.sortOrder) {
+      return `${sortSettings?.sortingBy as string}/title ${sortSettings?.sortOrder}`;
+  }
 };

@@ -1,4 +1,4 @@
-import React, {ReactNode, useEffect} from "react";
+import React, { ReactNode, useEffect } from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
 import { Breadcrumbs } from "@consta/uikit/Breadcrumbs";
@@ -7,6 +7,7 @@ import { IBreadCrumbs } from "interfaces/IBreadCrumbs";
 import { Button } from "@consta/uikit/Button";
 import { useTranslation } from "react-i18next";
 import ConfirmDialog from "../ConfirmDialog/ConfirmDialog";
+import { IconBackward } from "@consta/icons/IconBackward";
 
 interface INavPanel {
   title: string;
@@ -14,6 +15,7 @@ interface INavPanel {
   crumbs: IBreadCrumbs[];
   disableSaveButton?: boolean;
   actions?: ReactNode;
+  sendButton?: ReactNode;
   actionText?: string;
   handleSaveInspection?(): void;
   handleEditPassports?(): void;
@@ -26,12 +28,10 @@ const NavPanel = observer((props: INavPanel) => {
 
   const [isModalOpen, setIsModalOpen] = React.useState(false);
 
-  const [pageIndex, setPageIndex] = React.useState<number>();
-
   const onItemClick = (item: IBreadCrumbs) => {
-    if (item.path === 'main') {
-      setIsModalOpen(true)
-      setPageIndex(item.index)
+    if (item.path === "main") {
+      // setIsModalOpen(true);
+      handleConfirm()
       return;
     }
     if (item.index) {
@@ -39,16 +39,27 @@ const NavPanel = observer((props: INavPanel) => {
     }
   };
   const handleConfirm = () => {
-      navigate('/');
-  }
+    navigate("/");
+  };
   return (
     <div className={style.NavPanel}>
       <div className={style.flexCol}>
-        <Breadcrumbs
-          getItemLabel={(item: IBreadCrumbs) => item.label}
-          onItemClick={onItemClick}
-          items={props.crumbs}
-        />
+        <div className={style.flexContainer}>
+          <Button onClick={() => navigate(-1)}
+            className={style.backwardBtn}
+            size={"s"}
+            view={"clear"}
+            onlyIcon
+            iconLeft={IconBackward}
+          />
+          <Breadcrumbs
+            className={style.Breadcrumbs}
+            getItemLabel={(item: IBreadCrumbs) => item.label}
+            onItemClick={onItemClick}
+            items={props.crumbs}
+          />
+        </div>
+
         <div className={style.title}>{props.title}</div>
         <div className={style.description}>{props.description}</div>
       </div>
@@ -62,22 +73,24 @@ const NavPanel = observer((props: INavPanel) => {
             iconLeft={IconEdit}
           />
         )}*/}
-        <Button
-          // iconLeft={IconSave}
-          disabled={props.disableSaveButton}
-          onClick={props.handleSaveInspection}
-          label={t("saveInspection")}
-        />
-        {props.actions}
+        <div className={style.flexContainer}>
+          <Button
+            disabled={props.disableSaveButton}
+            onClick={props.handleSaveInspection}
+            label={t("saveInspection")}
+          />
+          {props.actions}
+        </div>
+        {props.sendButton}
       </div>
-      <ConfirmDialog
-          cancelActionLabel={t("cancel")}
-          confirmActionLabel={t("go")}
-          title={t("dialogGoToMain")}
-          action={handleConfirm}
-          onClose={() => setIsModalOpen(false)}
-          open={isModalOpen}
-      />
+      {/*<ConfirmDialog
+        cancelActionLabel={t("cancel")}
+        confirmActionLabel={t("go")}
+        title={t("dialogGoToMain")}
+        action={handleConfirm}
+        onClose={() => setIsModalOpen(false)}
+        open={isModalOpen}
+      />*/}
     </div>
   );
 });

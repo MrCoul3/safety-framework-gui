@@ -17,7 +17,10 @@ import { Button } from "@consta/uikit/Button";
 import { IconEdit } from "@consta/icons/IconEdit";
 import { IconTrash } from "@consta/icons/IconTrash";
 import { IconMail } from "@consta/icons/IconMail";
-import { InspectionFormTypes } from "../../enums/InspectionFormTypes";
+import {
+  INSPECTION_FORM_COMMON_FIELDS,
+  InspectionFormTypes,
+} from "../../enums/InspectionFormTypes";
 import { onCellClick } from "@consta/uikit/__internal__/src/components/Table/Table";
 import CustomFilter from "../CustomFilter/CustomFilter";
 import { INSPECTIONS_ON_PAGE } from "../../constants/config";
@@ -30,33 +33,45 @@ import {
   IFieldsData,
   IFilterDateRangeFieldValue,
   IFilterFieldValue,
-  IFormDateFieldValue
+  IFormDateFieldValue,
 } from "../../interfaces/IFieldInterfaces";
-import {ISortByParams} from "../../interfaces/ISortByParams";
+import { ISortByParams } from "../../interfaces/ISortByParams";
+import LoaderPage from "../LoaderPage/LoaderPage";
+import { ResponsesNothingFound } from "@consta/uikit/ResponsesNothingFound";
+import { LoaderType } from "../../interfaces/LoaderType";
+import { useStore } from "../../hooks/useStore";
 
 interface IInspectionsTable {
   inspections: IInspection[];
   fieldsData: IFieldsData[];
   filterFieldsValues: IInspectionFilters | null;
   inspectionsCount?: number | null;
+  loader?: LoaderType;
   subGroupsActionsTypes: SubGroupsActionsTypes;
   handleOpenFilter(field: InspectionFormTypes): void;
   resetFilters(): void;
-  handleDeleteFilter(value: IFilterFieldValue | IFilterDateRangeFieldValue): void;
+  handleDeleteFilter(
+    value: IFilterFieldValue | IFilterDateRangeFieldValue,
+  ): void;
   handlePaginationChange(pageNumber: number): void;
   handleDeleteSentButtonClick(id: number | string): void;
   handleDeleteNewInspectionButtonClick(id: string): void;
   handleEditInspection(id: number | string): void;
   handleEditLocalInspection(id: string): void;
-  handleFilterChange(value: IFilterFieldValue | IFilterDateRangeFieldValue): void;
+  handleFilterChange(
+    value: IFilterFieldValue | IFilterDateRangeFieldValue,
+  ): void;
   onSearchValueChange?(value: string | null): void;
   onScrollToBottom?(inspectionType: InspectionFormTypes): void;
   onInspectionTextFieldClose?(): void;
+  sendInspection(index: number): void;
   handleSort?(value: SortByProps<any> | null): void;
 }
 
 const InspectionsTable = observer((props: IInspectionsTable) => {
   const { t } = useTranslation("dict");
+
+  const store = useStore();
 
   const [page, setPage] = useState(1);
 
@@ -104,8 +119,16 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
         iconRight={IconEdit}
         onlyIcon
       />
+
       {props.subGroupsActionsTypes === SubGroupsActionsTypes.NewInspections && (
-        <Button size="s" view="ghost" iconRight={IconMail} onlyIcon />
+        <Button
+          disabled={!store.mainPageStore.checkIsInspectionReadyToSend(+index)}
+          onClick={() => props.sendInspection(+index)}
+          size="s"
+          view="ghost"
+          iconRight={IconMail}
+          onlyIcon
+        />
       )}
 
       <Button
@@ -149,7 +172,7 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
           item[InspectionFormTypes.Auditee]?.personFio,
         [InspectionFormTypes.Supervisor]:
           item[InspectionFormTypes.Supervisor]?.personFio,
-        actions: renderActions((index + 1).toString(), item),
+        actions: renderActions((index).toString(), item),
         [InspectionFormTypes.AuditDate]: moment(item.auditDate).format(
           "DD.MM.YYYY",
         ),
@@ -157,9 +180,7 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
     [props.inspections],
   );
 
-  console.log("rows!!!", toJS(rows));
-
-  const keys = Object.values(InspectionFormTypes);
+  const keys = INSPECTION_FORM_COMMON_FIELDS;
 
   const columns: TableColumn<(typeof rows)[number]>[] = keys
     .filter((key) => !excludeFields.includes(key))
@@ -168,21 +189,24 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
       accessor: key,
       sortable: true,
       align: "left",
-      // maxWidth: 200,
+      width: 200,
     }));
 
   columns.unshift({
     title: <span className={style.colTitle}>{t("actions")}</span>,
     accessor: "actions",
     align: "left",
+    width: 150,
   });
+
+  console.log('columns!!!', columns)
 
   const handleOpenFilter = (field: InspectionFormTypes) => {
     console.log("onopen", field);
     props.handleOpenFilter(field);
   };
 
-  const filters: any = Object.values(InspectionFormTypes).map((field) => ({
+  const filters: any = INSPECTION_FORM_COMMON_FIELDS.map((field) => ({
     id: field,
     name: t(field) + ": ",
     field: field,
@@ -214,6 +238,20 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
     props.handlePaginationChange(val);
   };
 
+  const renderLoader = () => {
+    if (props.loader === "wait") {
+      return <LoaderPage />;
+    } else {
+      return (
+        <ResponsesNothingFound
+          title={t("emptyNewInspections")}
+          description={" "}
+          actions={" "}
+        />
+      );
+    }
+  };
+
   return (
     <div ref={tableContainerRef} className={style.InspectionsTable}>
       {isSentInspectionsCondition() && (
@@ -223,22 +261,28 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
           filterFieldsValues={props.filterFieldsValues}
         />
       )}
-      <Table
-        isResizable
-        rows={rows}
-        stickyHeader
-        ref={tableRef}
-        filters={filters}
-        stickyColumns={1}
-        columns={columns}
-        className={style.table}
-        onSortBy={props.handleSort}
-        onCellClick={handleCellClick}
-      />
+
+      {props.inspections.length ? (
+        <Table
+          isResizable
+          rows={rows}
+          stickyHeader
+          ref={tableRef}
+          stickyColumns={1}
+          columns={columns}
+          className={style.table}
+          onSortBy={props.handleSort}
+          onCellClick={handleCellClick}
+          filters={filters}
+        />
+      ) : (
+        renderLoader()
+      )}
 
       {props.inspectionsCount &&
         props.inspectionsCount > INSPECTIONS_ON_PAGE &&
-        isSentInspectionsCondition() && (
+        isSentInspectionsCondition() &&
+        props.inspections.length && (
           <Pagination
             showFirstPage
             showLastPage

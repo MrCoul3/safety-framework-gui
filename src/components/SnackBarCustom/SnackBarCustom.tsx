@@ -16,7 +16,7 @@ const SnackBarCustom = observer((props: ISnackBarCustom) => {
     props.item && (
       <SnackBar
         className={style.SnackBarCustom}
-        getItemIcon={() => IconAllDone}
+        getItemIcon={() => props.item?.icon ? props.item?.icon : IconAllDone}
         onItemClose={props.onItemClose}
         getItemAutoClose={() => 3}
         items={[props.item]}

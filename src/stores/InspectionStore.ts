@@ -1,10 +1,14 @@
 import { AppStore } from "./AppStore";
 import { makeAutoObservable, toJS } from "mobx";
-import { EMPLOYEES, InspectionFormTypes } from "../enums/InspectionFormTypes";
+import {
+  EMPLOYEES,
+  INSPECTION_FORM_COMMON_FIELDS,
+  INSPECTION_FORM_REQUIRED_FIELDS,
+  InspectionFormTypes,
+} from "../enums/InspectionFormTypes";
 import { employeesEndpoint, instance } from "../api/endpoints";
 import {
   ELEMENTS_ON_FIELD,
-  INSPECTIONS_ON_PAGE,
   isDevelop,
   LOCAL_STORE_INSPECTIONS,
 } from "../constants/config";
@@ -12,10 +16,22 @@ import moment from "moment/moment";
 import { IInspection } from "../interfaces/IInspection";
 import { joinObjectValues } from "../utils/joinObjectValues";
 import { expandFilter } from "../constants/filters";
-import {IFieldsData, IFormDateFieldValue, IFormFieldValue, Item} from "../interfaces/IFieldInterfaces";
-
-
-
+import {
+  IFieldsData,
+  IFormDateFieldValue,
+  IFormFieldValue,
+  Item,
+} from "../interfaces/IFieldInterfaces";
+import { IFreeForm } from "../interfaces/IFreeForm";
+import {
+  FREE_FORM_COMMON_FIELDS,
+  FREE_FORM_REQUIRED_FIELDS,
+  freeFormDictNames,
+  FreeFormFieldTypes,
+  FreeFormTypes,
+} from "../enums/FreeFormTypes";
+import { RoutesTypes } from "../enums/RoutesTypes";
+import { filterByRequiredFields } from "../utils/filterByRequiredFields";
 
 export class InspectionStore {
   private store: AppStore;
@@ -36,57 +52,30 @@ export class InspectionStore {
   }
   formFieldsValues: IInspection | {} = {};
 
-  setFieldsData(value: IFieldsData) {
-    console.log("setFieldsData value", value);
-    const keyValue = Object.keys(value)[0];
-    console.log("setFieldsData keyValue", keyValue);
-
-    if (!keyValue.includes("Count")) {
-      const foundField = this.fieldsData.find((field) =>
-        Object.keys(field).includes(keyValue),
-      );
-      console.log("setFieldsData foundField", foundField);
-
-      if (foundField) {
-        const newValue = joinObjectValues(foundField, value);
-        console.log("setFieldsData newValue", newValue);
-        this.fieldsData = [...this.fieldsData, newValue];
-        return;
+  async sendInspection() {
+    try {
+      const response = await instance.post(`Inspections`, {
+        ...this.formFieldsValues,
+        filledFreeForms: this.store.freeFormStore.filledFreeForms,
+      });
+      if (!response.data.error) {
+        return "success";
       }
+    } catch (e) {
+      console.error(e);
     }
-    this.fieldsData = [...this.fieldsData, value];
-    console.log("this.fieldsData", toJS(this.fieldsData));
-  }
-  clearFieldsData() {
-    this.fieldsData = [];
-    console.log("this.fieldsData", toJS(this.fieldsData));
   }
 
-  setFormFieldsValues(value: IInspection) {
-    this.formFieldsValues = value;
-    console.debug("formFieldsValues: ", toJS(this.formFieldsValues));
-  }
-  updateFormFieldsValues(value: IFormFieldValue | IFormDateFieldValue) {
-    if (this.formFieldsValues) {
-      const key = Object.keys(value)[0];
-      if (key !== InspectionFormTypes.AuditDate) {
-        const values = Object.values(value)[0] as Item;
-        const valueId = {
-          [key + "Id"]: values ? (values.id ? +values.id : values.id) : null,
-        };
-        Object.assign(this.formFieldsValues, valueId);
-      }
-      Object.assign(this.formFieldsValues, value);
+  async getFieldDataDev(type: InspectionFormTypes | FreeFormFieldTypes) {
+    let requestType: any = type;
+
+    if (INSPECTION_FORM_COMMON_FIELDS.includes(type as InspectionFormTypes)) {
+      requestType = type + "s";
     }
-    Object.assign(this.formFieldsValues, value);
-
-    console.debug("formFieldsValues: ", toJS(this.formFieldsValues));
-  }
-
-  async getFieldDataDev(type: InspectionFormTypes) {
-    let requestType: any = type + "s";
-
-    if (EMPLOYEES.includes(type)) {
+    if (FREE_FORM_COMMON_FIELDS.includes(type as FreeFormFieldTypes)) {
+      requestType = freeFormDictNames[type as FreeFormFieldTypes];
+    }
+    if (EMPLOYEES.includes(type as InspectionFormTypes)) {
       requestType = employeesEndpoint;
     }
 
@@ -103,22 +92,8 @@ export class InspectionStore {
     }
   }
 
-  offset: number = 0;
-  setOffset(value: number) {
-    this.offset = value;
-    console.log("field offset", this.offset);
-  }
-  increaseOffset() {
-    this.offset = this.offset + ELEMENTS_ON_FIELD;
-    console.log("field offset", this.offset);
-  }
-  clearOffset() {
-    this.offset = 0;
-    console.log("field offset", this.offset);
-  }
-
-  async getFieldData(type: InspectionFormTypes) {
-    let requestType: any = type + "s";
+  async getFieldData(type: InspectionFormTypes | FreeFormFieldTypes) {
+    let requestType: any = type;
 
     const searchFieldValue = this.searchFieldValue ?? "";
 
@@ -132,11 +107,14 @@ export class InspectionStore {
       ? ""
       : `&$skip=${this.offset}&$top=${ELEMENTS_ON_FIELD}`;
 
-    if (EMPLOYEES.includes(type)) {
+    if (INSPECTION_FORM_COMMON_FIELDS.includes(type as InspectionFormTypes)) {
+      requestType = type + "s";
+    }
+    if (FREE_FORM_COMMON_FIELDS.includes(type as FreeFormFieldTypes)) {
+      requestType = freeFormDictNames[type as FreeFormFieldTypes];
+    }
+    if (EMPLOYEES.includes(type as InspectionFormTypes)) {
       requestType = employeesEndpoint;
-      filter = searchFieldValue
-        ? `$filter=contains(${itemValue.personFio},'${searchFieldValue}')`
-        : "";
     }
 
     const countFilter = this.searchFieldValue ? "" : `&$count=true`;
@@ -163,6 +141,77 @@ export class InspectionStore {
     }
   }
 
+  setFieldsData(value: IFieldsData) {
+    console.log("setFieldsData value", value);
+    const keyValue = Object.keys(value)[0];
+    console.log("setFieldsData keyValue", keyValue);
+    if (!keyValue.includes("Count")) {
+      const foundField = this.fieldsData.find((field) =>
+        Object.keys(field).includes(keyValue),
+      );
+      console.log("setFieldsData foundField", foundField);
+
+      if (foundField) {
+        const newValue = joinObjectValues(foundField, value);
+        console.log("setFieldsData newValue", newValue);
+        const countField = this.fieldsData.find((field) => {
+          if (Object.keys(field)[0].includes("Count")) {
+            return field;
+          }
+        });
+        console.log("setFieldsData countField", toJS(countField));
+        if (countField) {
+          this.fieldsData = [countField, newValue];
+        } else {
+          this.fieldsData = [newValue];
+        }
+        console.log("setFieldsData fieldsData", toJS(this.fieldsData));
+        return;
+      }
+    }
+    this.fieldsData = [...this.fieldsData, value];
+    console.log("this.fieldsData", toJS(this.fieldsData));
+  }
+  clearFieldsData() {
+    this.fieldsData = [];
+    console.log("this.fieldsData", toJS(this.fieldsData));
+  }
+
+  setFormFieldsValues(value: IInspection) {
+    this.formFieldsValues = value;
+    console.debug("formFieldsValues: ", toJS(this.formFieldsValues));
+  }
+  updateFormFieldsValues(value: IFormFieldValue | IFormDateFieldValue) {
+    console.log("updateFormFieldsValues", value);
+    if (this.formFieldsValues) {
+      const key = Object.keys(value)[0];
+      if (key !== InspectionFormTypes.AuditDate) {
+        const values = Object.values(value)[0] as Item;
+        const valueId = {
+          [key + "Id"]: values ? (values.id ? +values.id : values.id) : null,
+        };
+        Object.assign(this.formFieldsValues, valueId);
+      }
+      Object.assign(this.formFieldsValues, value);
+    }
+    Object.assign(this.formFieldsValues, value);
+
+    console.debug("formFieldsValues: ", toJS(this.formFieldsValues));
+  }
+  offset: number = 0;
+  setOffset(value: number) {
+    this.offset = value;
+    console.log("field offset", this.offset);
+  }
+  increaseOffset() {
+    this.offset = this.offset + ELEMENTS_ON_FIELD;
+    console.log("field offset", this.offset);
+  }
+  clearOffset() {
+    this.offset = 0;
+    console.log("field offset", this.offset);
+  }
+
   async getInspectionDev(editInspectionId: string) {
     try {
       const response = await instance.get(`inspections/${editInspectionId}`);
@@ -173,7 +222,7 @@ export class InspectionStore {
           auditDate: moment(result.auditDate).toDate(),
         };
         this.setFormFieldsValues(inspection);
-        console.log('getInspectionDev')
+        console.log("getInspectionDev");
       }
     } catch (e) {
       console.error(e);
@@ -181,20 +230,31 @@ export class InspectionStore {
   }
 
   cropExtraValuesFromInspection() {
-    const inspectionFormTypesValues = Object.values(InspectionFormTypes);
+    console.log("REQUIRED_FIELDS", INSPECTION_FORM_REQUIRED_FIELDS);
+    const inspectionFormTypesValues = INSPECTION_FORM_REQUIRED_FIELDS;
     const formFieldsValuesKeys = Object.keys(this.formFieldsValues);
-    const formFieldsValues = this.formFieldsValues as {[key: string]: Item};
+    const formFieldsValues = this.formFieldsValues as { [key: string]: Item };
     formFieldsValuesKeys.forEach((formFieldsValuesKey) => {
-          if (
-            !inspectionFormTypesValues.includes(
-                formFieldsValuesKey as InspectionFormTypes,
-            )
-          ) {
-            delete formFieldsValues[formFieldsValuesKey]
-          }
-        }
-    );
-    return formFieldsValues
+      if (
+        !inspectionFormTypesValues.includes(
+          formFieldsValuesKey as InspectionFormTypes,
+        )
+      ) {
+        delete formFieldsValues[formFieldsValuesKey];
+      }
+    });
+    return formFieldsValues;
+  }
+  cropExtraValuesFromFreeForm() {
+    const freeFormTypesValues = Object.values(FreeFormTypes);
+    const formFieldsValuesKeys = Object.keys(this.formFieldsValues);
+    const formFieldsValues = this.formFieldsValues as { [key: string]: Item };
+    formFieldsValuesKeys.forEach((formFieldsValuesKey) => {
+      if (!freeFormTypesValues.includes(formFieldsValuesKey as FreeFormTypes)) {
+        delete formFieldsValues[formFieldsValuesKey];
+      }
+    });
+    return formFieldsValues;
   }
 
   async getInspectionById(editInspectionId: string) {
@@ -219,34 +279,78 @@ export class InspectionStore {
 
   clearInspectionForm() {
     this.formFieldsValues = {};
+    console.log(
+      "clearInspectionForm this.formFieldsValues",
+      toJS(this.formFieldsValues),
+    );
   }
 
   checkIsFormSuccess() {
-    const formFieldsValues = this.cropExtraValuesFromInspection()
+    const formFieldsValues: { [key: string]: any } = this.formFieldsValues;
+    const filtered = filterByRequiredFields(
+      formFieldsValues,
+      INSPECTION_FORM_REQUIRED_FIELDS,
+    );
+    return (
+      filtered.every((value) => {
+        return Object.values(value ?? {})[0];
+      }) && filtered.length === INSPECTION_FORM_REQUIRED_FIELDS.length
+    );
+  }
 
-    if (formFieldsValues) {
-      return (
-        Object.keys(InspectionFormTypes).length ===
-          Object.keys(formFieldsValues).length &&
-        !Object.values(formFieldsValues).some((field) => field === null)
+  checkIsFreeFormSuccess() {
+    const formFieldsValues: { [key: string]: any }[] = (
+      this.formFieldsValues as IInspection
+    )["filledFreeForms"];
+    console.log(
+      "checkIsFreeFormSuccess formFieldsValues ",
+      toJS(formFieldsValues),
+    );
+    if (formFieldsValues && formFieldsValues.length) {
+      const filtered = formFieldsValues.map((freeForm) =>
+        filterByRequiredFields(freeForm, FREE_FORM_REQUIRED_FIELDS),
       );
+
+      console.log("filtered", toJS(filtered));
+
+      const result = filtered.map((freeForm) =>
+        Object.values(freeForm).every(
+          (value) =>
+            Object.values(value ?? {})[0] &&
+            Object.values(freeForm).length === FREE_FORM_REQUIRED_FIELDS.length,
+        ),
+      ); // [bool, bool]
+      return result.every((res) => res);
     }
     return false;
   }
 
   setInspectionToLocalStorage() {
     delete (this.formFieldsValues as IInspection)?.id;
-
+    const filledFreeForms = this.store.freeFormStore.filledFreeForms;
+    console.log("freeForms", toJS(filledFreeForms));
     const localInspections = localStorage.getItem(LOCAL_STORE_INSPECTIONS);
+
+    let values = this.formFieldsValues;
+    if (filledFreeForms.length) {
+      // если есть свободные формы добавляем к занчениям формы еще и freeForms
+      values = { ...this.formFieldsValues, filledFreeForms };
+    }
+
     if (localInspections) {
+      console.log("setInspectionToLocalStorage1", values);
+
       const localInspectionsParsed = JSON.parse(localInspections);
       if (localInspectionsParsed) {
-        localInspectionsParsed.unshift(this.formFieldsValues);
+        localInspectionsParsed.unshift(values);
       }
       const newInspectionsJson = JSON.stringify(localInspectionsParsed);
       localStorage.setItem(LOCAL_STORE_INSPECTIONS, newInspectionsJson);
     } else {
-      const newInspectionJson = JSON.stringify([this.formFieldsValues]);
+      console.log("setInspectionToLocalStorage2", values);
+
+      const newInspectionJson = JSON.stringify([values]);
+      console.log("newInspectionJson", newInspectionJson);
       localStorage.setItem(LOCAL_STORE_INSPECTIONS, newInspectionJson);
     }
   }
@@ -264,8 +368,8 @@ export class InspectionStore {
     }
   }
 
-  deleteInspectionFromLocalStorage(editInspectionId: string) {
-    const index = +editInspectionId - 1;
+  deleteInspectionFromLocalStorage(editInspectionId: number) {
+    const index = +editInspectionId;
     const localInspections = localStorage.getItem(LOCAL_STORE_INSPECTIONS);
     if (localInspections) {
       const localInspectionsParsed = JSON.parse(localInspections);
@@ -290,14 +394,23 @@ export class InspectionStore {
   }
 
   handleOpenField(type: InspectionFormTypes) {
-    const foundField = !!this.fieldsData.find((data) =>
-      Object.keys(data).includes(type),
-    );
-    if (!foundField) {
+    if (isDevelop) {
+      this.getFieldDataDev(type);
+      this.getFieldData(type);
+    } else {
+      this.getFieldData(type);
+    }
+  }
+
+  loadInspection(editInspectionId: string) {
+    if (location.pathname.includes(RoutesTypes.EditLocalInspection)) {
+      this.loadInspectionFromLocalStorage(editInspectionId);
+    }
+    if (location.pathname.includes(RoutesTypes.EditInspection)) {
       if (isDevelop) {
-        this.getFieldDataDev(type);
+        this.getInspectionDev(editInspectionId);
       } else {
-        this.getFieldData(type);
+        this.getInspectionById(editInspectionId);
       }
     }
   }

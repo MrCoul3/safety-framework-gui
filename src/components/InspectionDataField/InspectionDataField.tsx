@@ -33,6 +33,8 @@ const InspectionDataField = observer((props: IInspectionDataField) => {
 
   useEffect(() => {
     setVal(props.value ?? null);
+
+    console.log('props.value', props.value)
   }, [props.value]);
 
   const [val, setVal] = useState<Date | null>(null);

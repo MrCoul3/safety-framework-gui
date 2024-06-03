@@ -5,6 +5,7 @@ import {
   InspectionFormGroups,
   InspectionFormTypes,
 } from "../enums/InspectionFormTypes";
+import {FreeFormFieldTypes, FreeFormTypes} from "../enums/FreeFormTypes";
 
 export const ru = {
   dict: {
@@ -12,6 +13,7 @@ export const ru = {
     from: "с",
     to: "по",
     reset: "Сбросить",
+    save: "Сохранить",
     cancel: "Отменить",
     next: "Продолжить",
     resetFilter: "Сбросить фильтр",
@@ -43,12 +45,14 @@ export const ru = {
     editInspectionData: "Редактировать данные инспекции",
     createInspection: "Создать инспекцию",
     saveInspection: "Сохранить инспекцию",
+    sendInspection: "Отправить инспекцию",
+    addFreeForm: "Добавить свободную форму",
     toPassports: "К паспортам",
     toInspectionForm: "К данным инспекции",
     saveChanges: "Сохранить изменения",
     editPassports: "Редактировать паспорта инспекции",
     completionBarrier: "Заполнение барьера по паспорту",
-    completionBarrierDescription: "Выберите необходимые паспорта, нажав на кнопку “+” и заполните требуемые поля, чтобы отправить инспекцию.",
+    completionFreeForm: "Заполнение свободной формы",
 
     toHome: "На главную",
 
@@ -112,12 +116,27 @@ export const ru = {
     editDate: "Дата редактирования",
     actions: "Действия",
 
+    // свободная форма
+    [FreeFormFieldTypes.ViolationCategory]: "Категория нарушения",
+    [FreeFormFieldTypes.ViolationType]: "Типовое нарушение",
+    [FreeFormFieldTypes.Violation]: "Нарушение",
+    [FreeFormFieldTypes.WorkType]: "Вид работ нарушения",
+    [FreeFormFieldTypes.Nmd]: "НМД",
+    [FreeFormFieldTypes.NmdRule]: "Пункт правил НМД",
+    [FreeFormFieldTypes.OdOuCategory]: "Категория ОД/ОУ",
+    [FreeFormFieldTypes.RiskLevel]: "Степень риска",
+
+    freeForm: "Свободная форма",
+
+
     addInspectionTitle: "Заполнение данных инспекции",
     editInspectionTitle: "Редактирование данных инспекции",
     addInspectionDescription:
-      "Заполните все ключевые поля, чтобы перейти дальше по структуре заполнения",
+      "Заполните все ключевые поля, чтобы перейти дальше.",
     selectPassport: "Выбор паспорта барьера",
     selectPassportDescription: "Выберите необходимый паспорт для заполнения. В этом окне будут отображаться все выбранные паспорта.",
+    completionBarrierDescription: "Выберите необходимые паспорта, нажав на кнопку “+” и заполните требуемые поля, чтобы отправить инспекцию.",
+    completionFreeFormDescription: "Заполните свободную форму, чтобы отправить инспекцию. Добавить новые свободные форму можно нажав на кнопку “Добавить свободную форму”.",
 
 
     [InspectionFormTypes.InspectionForm + "Placeholder"]:
@@ -140,13 +159,24 @@ export const ru = {
     [InspectionFormTypes.Auditee + "Placeholder"]: "введите ФИО проверяемого",
     [InspectionFormTypes.Supervisor + "Placeholder"]: "введите ФИО супервайзера",
 
+    [FreeFormFieldTypes.ViolationCategory + "Placeholder"]: "Введите категорию нарушения",
+    [FreeFormFieldTypes.ViolationType + "Placeholder"]: "Введите типовое нарушение",
+    [FreeFormFieldTypes.Violation + "Placeholder"]: "Введите название нарушения",
+    [FreeFormFieldTypes.WorkType + "Placeholder"]: "Введите вид работ нарушения",
+    [FreeFormFieldTypes.Nmd + "Placeholder"]: "Введите НМД",
+    [FreeFormFieldTypes.NmdRule + "Placeholder"]: "Введите пункт правил НМД",
+    [FreeFormFieldTypes.OdOuCategory + "Placeholder"]: "Введите категорию ОД/ОУ",
+    [FreeFormFieldTypes.RiskLevel + "Placeholder"]: "Введите степень риска",
+
     dialogClearFields: "Очистить все заполненные поля?",
+    dialogDeleteFreeForm: "Удалить свободную форму?",
     dialogDeleteNewInspection: "Удалить неотправленную инспекцию?",
     dialogDeleteSentInspection: "Удалить отправленную инспекцию?",
     dialogGoToMain: "Перейти на главную ? Все несохраненные данные будут потеряны.",
 
     snackBarSuccessSave: "Инспекция успешно сохранена",
     snackBarSuccessSend: "Инспекция успешно отправлена",
+    snackBarErrorSend: "Ошибка отправки инспекции",
 
     barriersSelect: "Выбрано барьеров",
   },

@@ -1,9 +1,12 @@
 import { AppStore } from "./AppStore";
 import { makeAutoObservable } from "mobx";
+import { IconComponent } from '@consta/icons/Icon';
+
 export type Item = {
   key: string
   message: string;
   status?: "alert" | "success";
+  icon?: IconComponent;
 };
 export class SnackBarStore {
   private store: AppStore;

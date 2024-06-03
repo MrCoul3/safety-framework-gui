@@ -6,7 +6,13 @@ import SubHeader from "components/SubHeader/SubHeader";
 import { useStore } from "hooks/useStore";
 import { IAction } from "interfaces/IAction";
 import { SubGroupsActionsTypes } from "enums/SubGroupsTypes";
-import { Route, Routes, useLocation, useNavigate } from "react-router";
+import {
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+  useParams,
+} from "react-router";
 import DashBoard from "../components/DashBoard/DashBoard";
 import InspectionsTable from "../components/InspectionsTable/InspectionsTable";
 import { Button } from "@consta/uikit/Button";
@@ -29,7 +35,9 @@ import {
   IFilterFieldValue,
   IFormDateFieldValue,
 } from "../interfaces/IFieldInterfaces";
-import {SortByProps} from "@consta/uikit/Table";
+import { SortByProps } from "@consta/uikit/Table";
+import InspectionCard from "../components/InspectionCard/InspectionCard";
+import { IconWarning } from "@consta/icons/IconWarning";
 
 interface IMainPage {}
 
@@ -44,6 +52,7 @@ export const MainPage = observer((props: IMainPage) => {
 
   const init = () => {
     store.mainPageStore.clearInspectionOffset();
+    store.freeFormStore.clearFreeForms();
     getLocalInspections();
     if (isDevelop) {
       store.mainPageStore.getInspectionsDev();
@@ -67,11 +76,6 @@ export const MainPage = observer((props: IMainPage) => {
     navigate(`/${item.label}`);
   };
 
-  const toHome = () => {
-    store.mainPageStore.resetSideBarToHome();
-    navigate(`/`);
-  };
-
   const getLocalInspections = () => {
     let localInspectionsParsed = [];
     const localInspections = localStorage.getItem(LOCAL_STORE_INSPECTIONS);
@@ -91,18 +95,19 @@ export const MainPage = observer((props: IMainPage) => {
   const handleDeleteNewInspection = () => {
     if (store.mainPageStore.deletingInspectionType) {
       store.inspectionStore.deleteInspectionFromLocalStorage(
-        store.mainPageStore.deletingInspectionType?.id,
+        +store.mainPageStore.deletingInspectionType?.id - 1,
       );
       getLocalInspections();
     }
   };
-  const handleDeleteSentInspection = () => {
+  const handleDeleteSentInspection = async () => {
     if (isDevelop) {
       store.mainPageStore.getInspectionsDev();
     } else {
-      store.mainPageStore.deleteSentInspection(
+      await store.mainPageStore.deleteSentInspection(
         store.mainPageStore.deletingInspectionType?.id,
       );
+      store.mainPageStore.clearInspections();
       store.mainPageStore.getInspections();
     }
   };
@@ -134,20 +139,6 @@ export const MainPage = observer((props: IMainPage) => {
   const onScrollToBottom = () => {
     store.mainPageStore.increaseInspectionOffset();
     store.mainPageStore.getInspectionsByScrollToBottomOnDashboard();
-  };
-
-  const renderLoader = () => {
-    if (store.loaderStore.loader === "wait") {
-      return <LoaderPage />;
-    } else {
-      return (
-        <ResponsesNothingFound
-          title={t("emptyNewInspections")}
-          description={" "}
-          actions={<Button onClick={toHome} view="ghost" label={t("toHome")} />}
-        />
-      );
-    }
   };
 
   const handleFilterChange = (
@@ -188,6 +179,93 @@ export const MainPage = observer((props: IMainPage) => {
     store.mainPageStore.getInspections();
   };
 
+  const handleSendInspection = async (ind: number) => {
+    const index = ind - 1;
+    console.log("handleSendInspection index", index);
+    const isValid = store.mainPageStore.checkIsInspectionReadyToSend(index);
+    console.log("handleSendInspection isValid", isValid);
+    if (isValid) {
+      const result = await store.mainPageStore.sendInspection(index);
+      if (result) {
+        store.inspectionStore.deleteInspectionFromLocalStorage(index);
+        getLocalInspections();
+        store.snackBarStore.setSnackBarItem({
+          message: t("snackBarSuccessSend"),
+          key: "1",
+          status: "success",
+        });
+      } else {
+        store.snackBarStore.setSnackBarItem({
+          message: t("snackBarErrorSend"),
+          key: "1",
+          status: "alert",
+          icon: IconWarning,
+        });
+      }
+    }
+    console.log("isValid", isValid);
+  };
+  const sentInspectionsCondition = (subGroup: SubGroupsActionsTypes) =>
+    subGroup === SubGroupsActionsTypes.Sent;
+  const newInspectionCondition = (subGroup: SubGroupsActionsTypes) =>
+    subGroup === SubGroupsActionsTypes.NewInspections;
+
+  const handleDeleteInspection = (
+    id: string,
+    subGroup: SubGroupsActionsTypes,
+  ) => {
+    if (sentInspectionsCondition(subGroup)) {
+      handleDelete(id, SubGroupsActionsTypes.Sent);
+    }
+    if (newInspectionCondition(subGroup)) {
+      handleDelete(id, SubGroupsActionsTypes.NewInspections);
+    }
+  };
+
+  const renderInspections = (subGroup: SubGroupsActionsTypes) => {
+    const inspections = sentInspectionsCondition(subGroup)
+      ? store.mainPageStore.inspections
+      : store.mainPageStore.localInspections;
+    return inspections.length ? (
+      inspections.map((item, index) => (
+        <InspectionCard
+          isReadyToSend={
+            newInspectionCondition(subGroup) &&
+            store.mainPageStore.checkIsInspectionReadyToSend(index)
+          }
+          sendInspection={handleSendInspection}
+          handleDeleteButtonClick={handleDeleteInspection}
+          handleEditButtonClick={
+            sentInspectionsCondition(subGroup)
+              ? handleEditInspection
+              : handleEditLocalInspection
+          }
+          id={item.id ?? ""}
+          key={index}
+          subGroup={subGroup}
+          checkVerifyDate={item[InspectionFormTypes.AuditDate]}
+          oilfield={item[InspectionFormTypes.OilField]?.title}
+          doObject={item[InspectionFormTypes.DoObject]?.title}
+          contractor={item[InspectionFormTypes.Contractor]?.title}
+          contractorStruct={item[InspectionFormTypes.ContractorStruct]?.title}
+          inspectionType={item[InspectionFormTypes.InspectionType]?.title}
+          inspectionForm={item[InspectionFormTypes.InspectionForm]?.title}
+          index={index + 1}
+        />
+      ))
+    ) : (
+      <ResponsesNothingFound
+        title={
+          sentInspectionsCondition(subGroup)
+            ? t("emptySentInspections")
+            : t("emptyNewInspections")
+        }
+        description={" "}
+        actions={" "}
+      />
+    );
+  };
+
   const contentRoutes = () => {
     return (
       <Routes>
@@ -195,15 +273,15 @@ export const MainPage = observer((props: IMainPage) => {
         <Route
           element={
             <DashBoard
+              sentInspectionsContent={renderInspections(
+                SubGroupsActionsTypes.Sent,
+              )}
+              localInspectionsContent={renderInspections(
+                SubGroupsActionsTypes.NewInspections,
+              )}
               loader={store.loaderStore.loader}
               onScrollToBottom={onScrollToBottom}
               inspectionsCount={store.mainPageStore.inspectionsCount}
-              handleDeleteSentButtonClick={(id: string) => {
-                handleDelete(id, SubGroupsActionsTypes.Sent);
-              }}
-              handleDeleteNewInspectionButtonClick={(id: string) => {
-                handleDelete(id, SubGroupsActionsTypes.NewInspections);
-              }}
               handleEditInspection={handleEditInspection}
               handleEditLocalInspection={handleEditLocalInspection}
               localInspections={store.mainPageStore.localInspections}
@@ -220,38 +298,37 @@ export const MainPage = observer((props: IMainPage) => {
           return (
             <Route
               element={
-                inspections.length ? (
-                  <InspectionsTable
-                    handleSort={handleSort}
-                    onInspectionTextFieldClose={handleInspectionTextFieldClose}
-                    onScrollToBottom={handleScrollFieldToBottom}
-                    onSearchValueChange={handleSearchValueChange}
-                    resetFilters={() => store.mainPageStore.resetFilters()}
-                    handleDeleteFilter={handleFilterChange}
-                    filterFieldsValues={store.mainPageStore.filterFieldsValues}
-                    handleFilterChange={handleFilterChange}
-                    handlePaginationChange={handlePaginationChange}
-                    subGroupsActionsTypes={
-                      !index
-                        ? SubGroupsActionsTypes.NewInspections
-                        : SubGroupsActionsTypes.Sent
-                    }
-                    fieldsData={store.inspectionStore.fieldsData}
-                    handleOpenFilter={handleOpenFilter}
-                    handleDeleteSentButtonClick={(id: string) => {
-                      handleDelete(id, SubGroupsActionsTypes.Sent);
-                    }}
-                    inspectionsCount={store.mainPageStore.inspectionsCount}
-                    handleDeleteNewInspectionButtonClick={(id: string) => {
-                      handleDelete(id, SubGroupsActionsTypes.NewInspections);
-                    }}
-                    handleEditInspection={handleEditInspection}
-                    handleEditLocalInspection={handleEditLocalInspection}
-                    inspections={inspections}
-                  />
-                ) : (
-                  renderLoader()
-                )
+                /*inspections.length ? (*/
+                <InspectionsTable
+                  sendInspection={handleSendInspection}
+                  loader={store.loaderStore.loader}
+                  handleSort={handleSort}
+                  onInspectionTextFieldClose={handleInspectionTextFieldClose}
+                  onScrollToBottom={handleScrollFieldToBottom}
+                  onSearchValueChange={handleSearchValueChange}
+                  resetFilters={() => store.mainPageStore.resetFilters()}
+                  handleDeleteFilter={handleFilterChange}
+                  filterFieldsValues={store.mainPageStore.filterFieldsValues}
+                  handleFilterChange={handleFilterChange}
+                  handlePaginationChange={handlePaginationChange}
+                  subGroupsActionsTypes={
+                    !index
+                      ? SubGroupsActionsTypes.NewInspections
+                      : SubGroupsActionsTypes.Sent
+                  }
+                  fieldsData={store.inspectionStore.fieldsData}
+                  handleOpenFilter={handleOpenFilter}
+                  handleDeleteSentButtonClick={(id: string) => {
+                    handleDelete(id, SubGroupsActionsTypes.Sent);
+                  }}
+                  inspectionsCount={store.mainPageStore.inspectionsCount}
+                  handleDeleteNewInspectionButtonClick={(id: string) => {
+                    handleDelete(id, SubGroupsActionsTypes.NewInspections);
+                  }}
+                  handleEditInspection={handleEditInspection}
+                  handleEditLocalInspection={handleEditLocalInspection}
+                  inspections={inspections}
+                />
               }
               path={
                 !index
@@ -285,11 +362,6 @@ export const MainPage = observer((props: IMainPage) => {
 
   return (
     <div>
-      <SnackBarCustom
-        onItemClose={() => store.snackBarStore.clearSnackBar()}
-        item={store.snackBarStore.snackBarItem}
-      />
-
       <MainPageLayout
         sideBar={
           <SideBar

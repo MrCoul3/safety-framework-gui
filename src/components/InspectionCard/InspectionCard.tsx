@@ -16,7 +16,6 @@ import { InspectionStatusesTypes } from "enums/InspectionStatusesTypes";
 import moment from "moment";
 import { SubGroupsActionsTypes } from "../../enums/SubGroupsTypes";
 import { InspectionFormTypes } from "../../enums/InspectionFormTypes";
-import { IEntity } from "../../interfaces/IInspection";
 
 interface IInspectionCard {
   id: string;
@@ -27,12 +26,14 @@ interface IInspectionCard {
   oilfield?: string;
   doObject?: string;
   contractor?: string;
+  isReadyToSend?: boolean;
   contractorStruct?: string;
-  index?: number | boolean;
+  index: number | boolean;
   inspectionForm?: string;
-  subGroup?: SubGroupsActionsTypes;
+  subGroup: SubGroupsActionsTypes;
   handleEditButtonClick(id: string): void;
-  handleDeleteButtonClick(id: string): void;
+  handleDeleteButtonClick(id: string, subGroup: SubGroupsActionsTypes): void;
+  sendInspection(index: number): void;
 }
 
 const InspectionCard = observer((props: IInspectionCard) => {
@@ -48,6 +49,12 @@ const InspectionCard = observer((props: IInspectionCard) => {
     <Card
       className={classNames(style.card, {
         [style.sentCard]: props.subGroup === SubGroupsActionsTypes.Sent,
+        [style.await]:
+          !props.isReadyToSend &&
+          props.subGroup === SubGroupsActionsTypes.NewInspections,
+        [style.success]:
+          props.isReadyToSend &&
+          props.subGroup === SubGroupsActionsTypes.NewInspections,
         // [style.await]: awaitCond(),
         // [style.error]: errorCond(),
       })}
@@ -64,12 +71,14 @@ const InspectionCard = observer((props: IInspectionCard) => {
       )}*/}
 
       <div className={style.title}>
-        {props.index && t("inspectionName") + props.index}
-        {props.id && t("inspectionName") + props.id}
+        {props.id
+          ? props.id && t("inspectionName") + props.id
+          : props.index && t("inspectionName") + props.index}
         <Button
           onClick={() =>
             props.handleDeleteButtonClick(
-              props.index ? props.index.toString() : props.id.toString(),
+              props.id ? props.id.toString() : props.index.toString(),
+              props.subGroup,
             )
           }
           iconSize="s"
@@ -132,6 +141,10 @@ const InspectionCard = observer((props: IInspectionCard) => {
       <div className={style.controlButtonGroup}>
         {props.subGroup === SubGroupsActionsTypes.NewInspections && (
           <Button
+            disabled={!props.isReadyToSend}
+            onClick={() =>
+              props.index ? props.sendInspection(props.index as number) : ""
+            }
             size={"s"}
             iconSize="s"
             view="secondary"
@@ -142,7 +155,7 @@ const InspectionCard = observer((props: IInspectionCard) => {
         <Button
           onClick={() =>
             props.handleEditButtonClick(
-              props.index ? props.index.toString() : props.id.toString(),
+              props.id ? props.id.toString() : props.index.toString(),
             )
           }
           size={"s"}

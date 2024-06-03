@@ -10,22 +10,26 @@ import { IconDocFilled } from "@consta/icons/IconDocFilled";
 import { IconStorage } from "@consta/icons/IconStorage";
 import { IconHelmet } from "@consta/icons/IconHelmet";
 import { ISubGroupState } from "../interfaces/ISubGroupState";
-import { INSPECTIONS_ON_PAGE } from "../constants/config";
+import {
+  INSPECTIONS_ON_PAGE,
+  LOCAL_STORE_INSPECTIONS,
+} from "../constants/config";
 import {
   expandFilter,
-  getSortFilter, getTableFilters,
+  getSortFilter,
+  getTableFilters,
 } from "../constants/filters";
 import { IInspectionFilters } from "../interfaces/IInspectionFilters";
-import { InspectionFormTypes } from "../enums/InspectionFormTypes";
-import { transformDateToServerFormat } from "../utils/transformDateToServerFormat";
+import { INSPECTION_FORM_REQUIRED_FIELDS } from "../enums/InspectionFormTypes";
 import {
   IFilterDateRangeFieldValue,
   IFilterFieldValue,
-  IFormDateFieldValue,
   Item,
 } from "../interfaces/IFieldInterfaces";
 import { SortByProps } from "@consta/uikit/Table";
-import { ISortByParams } from "../interfaces/ISortByParams";
+import { filterByRequiredFields } from "../utils/filterByRequiredFields";
+import { FREE_FORM_REQUIRED_FIELDS } from "../enums/FreeFormTypes";
+import { IFreeForm } from "../interfaces/IFreeForm";
 
 export interface IDeletingInspectionType {
   type: SubGroupsActionsTypes;
@@ -117,6 +121,10 @@ export class MainPageStore {
     this.inspections = value;
     console.log("this.inspections", toJS(this.inspections));
   }
+  clearInspections() {
+    this.inspections = [];
+    console.log("this.inspections", toJS(this.inspections));
+  }
   updateInspections(value: IInspection[]) {
     this.inspections = [...this.inspections, ...value];
     console.log("this.inspections", toJS(this.inspections));
@@ -151,7 +159,6 @@ export class MainPageStore {
       const response = await instance.get(`${inspectionsEndpoint}`);
       if (!response.data.error) {
         setTimeout(() => {}, 0);
-
         this.setInspectionsCount(48546);
         this.setInspections(response.data);
         this.store.loaderStore.setLoader("ready");
@@ -163,6 +170,7 @@ export class MainPageStore {
 
   async getInspections() {
     this.store.loaderStore.setLoader("wait");
+
     const filterFieldsValues = this.filterFieldsValues as {
       [key: string]: Item[] | [Date?, Date?];
     };
@@ -173,9 +181,11 @@ export class MainPageStore {
       ? `&$filter=${tableFilterValues}`
       : "";
 
-    const sortFilterValues = getSortFilter(this.sortSettings)
+    const sortFilterValues = getSortFilter(this.sortSettings);
 
-    const sortFilter = sortFilterValues ? `&$orderby=${sortFilterValues}` : "";
+    const sortFilter = sortFilterValues
+      ? `&$orderby=${sortFilterValues}`
+      : `&$orderby=createdWhen desc`;
 
     try {
       const response = await instance.get(
@@ -236,5 +246,71 @@ export class MainPageStore {
   setSortSetting(value: SortByProps<any> | null) {
     this.sortSettings = value;
     console.log("this.sortSetting", toJS(this.sortSettings));
+  }
+
+  getLocalInspection(index: number) {
+    console.log("getLocalInspection", index);
+    const localInspections = localStorage.getItem(LOCAL_STORE_INSPECTIONS);
+    if (localInspections) {
+      const localInspectionsParsed = JSON.parse(localInspections);
+
+      console.log(
+        "getLocalInspection localInspectionsParsed[index]",
+        toJS(localInspectionsParsed[index]),
+      );
+      return localInspectionsParsed[index];
+    }
+  }
+
+  checkIsInspectionReadyToSend(index: number) {
+    const inspection: IInspection = this.getLocalInspection(index);
+    if (inspection) {
+      console.log("checkIsInspectionReadyToSend inspection", toJS(inspection));
+      const freeForms: IFreeForm[] = inspection["filledFreeForms"] ?? [];
+      console.log("checkIsInspectionReadyToSend freeForms", toJS(freeForms));
+      if (freeForms.length) {
+        const filteredCommonFields = filterByRequiredFields(
+          inspection,
+          INSPECTION_FORM_REQUIRED_FIELDS,
+        );
+        const filteredFreeFormsFields = freeForms.map((freeForm) =>
+          filterByRequiredFields(freeForm, FREE_FORM_REQUIRED_FIELDS),
+        );
+        const freeFormsResult = filteredFreeFormsFields.map((freeForm) =>
+          Object.values(freeForm).every(
+            (value) =>
+              Object.values(value ?? {})[0] &&
+              Object.values(freeForm).length ===
+                FREE_FORM_REQUIRED_FIELDS.length,
+          ),
+        ); // [bool, bool]
+
+        const commonFieldsResult =
+          filteredCommonFields.every((value) => {
+            return Object.values(value ?? {})[0];
+          }) &&
+          filteredCommonFields.length ===
+            INSPECTION_FORM_REQUIRED_FIELDS.length;
+
+        const result = [...freeFormsResult, commonFieldsResult].every(
+          (val) => val,
+        );
+        console.log("checkIsInspectionReadyToSend result", index, toJS(result));
+        return result;
+      }
+    }
+  }
+
+  async sendInspection(index: number) {
+    try {
+      const response = await instance.post(`Inspections`, {
+        ...this.getLocalInspection(index),
+      });
+      if (!response.data.error) {
+        return "success";
+      }
+    } catch (e) {
+      console.error(e);
+    }
   }
 }
