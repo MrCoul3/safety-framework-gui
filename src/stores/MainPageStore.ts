@@ -313,4 +313,30 @@ export class MainPageStore {
       console.error(e);
     }
   }
+
+  login: { login: string; title: string } | null = null;
+  responseStatus: number | null = null;
+  setLogin(value: { login: string; title: string }) {
+    this.login = value;
+    console.debug("login: ", toJS(this.login));
+  }
+  setResponseStatus(value: number) {
+    this.responseStatus = value;
+    console.debug("responseStatus: ", toJS(this.responseStatus));
+  }
+  async getMemberInfo() {
+    this.store.loaderStore.setLoader('wait')
+    try {
+      const response = await instance.get(`MemberInfo`);
+      console.log("response!!", response);
+      if (!response.data.error) {
+        this.setLogin(response.data);
+        this.store.loaderStore.setLoader('ready')
+      }
+    } catch (e: any) {
+      console.error("error", e);
+      this.setResponseStatus(e.response.status);
+      this.store.loaderStore.setLoader('ready')
+    }
+  }
 }

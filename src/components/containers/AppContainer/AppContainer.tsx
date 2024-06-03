@@ -15,6 +15,12 @@ import BarriersPage from "../../../pages/BarriersPage/BarriersPage";
 import EmptyBoxPage from "../../EmptyBoxPage/EmptyBoxPage";
 import FreeFormPage from "../../../pages/FreeFormPage";
 import SnackBarCustom from "../../SnackBarCustom/SnackBarCustom";
+import { Responses403 } from "@consta/uikit/Responses403";
+import style from "./style.module.css";
+import { Responses500 } from "@consta/uikit/Responses500";
+import { Responses503 } from "@consta/uikit/Responses503";
+import { isDevelop } from "../../../constants/config";
+import LoaderPage from "../../LoaderPage/LoaderPage";
 export const AppContainer = observer(() => {
   const { t } = useTranslation("dict");
 
@@ -22,11 +28,20 @@ export const AppContainer = observer(() => {
 
   const store = useStore();
 
-  useEffect(() => {
+  const init = async () => {
+    await store.mainPageStore.getMemberInfo();
+  };
+
+  const getSideBarState = () => {
     const path = decodeURIComponent(window.location.pathname).replace("/", "");
     if (path) {
       store.mainPageStore.updateSubGroupsState(path as SubGroupsActionsTypes);
     }
+  };
+
+  useEffect(() => {
+    init();
+    getSideBarState();
   }, []);
 
   const toHome = () => {
@@ -35,16 +50,53 @@ export const AppContainer = observer(() => {
   };
 
   const render404 = () => (
-    <Responses404
-      actions={<Button onClick={toHome} view="ghost" label={t("toHome")} />}
-    />
+    <div className={style.container}>
+      <Responses404
+        actions={<Button onClick={toHome} view="ghost" label={t("toHome")} />}
+      />{" "}
+    </div>
   );
-  return (
+  const render403 = () => (
+    <div className={style.container}>
+      <Responses403 actions={" "} />
+    </div>
+  );
+  const render500 = () => (
+    <div className={style.container}>
+      <Responses500 actions={" "} />
+    </div>
+  );
+  const render503 = () => (
+    <div className={style.container}>
+      <Responses503 actions={" "} />
+    </div>
+  );
+  const renderResponses = () => {
+    if (store.loaderStore.loader === "wait") {
+      return <LoaderPage />;
+    } else {
+      if (store.mainPageStore.responseStatus === 403) {
+        return render403();
+      }
+      if (store.mainPageStore.responseStatus === 404) {
+        return render404();
+      }
+      if (store.mainPageStore.responseStatus === 503) {
+        return render503();
+      }
+      return render500();
+    }
+  };
+  return store.mainPageStore.login ? (
     <>
-      <MainHeader handleLogoClick={toHome} />
+      <MainHeader
+        handleLogoClick={toHome}
+        login={store.mainPageStore.login.login}
+        info={store.mainPageStore.login.title}
+      />
       <SnackBarCustom
-          onItemClose={() => store.snackBarStore.clearSnackBar()}
-          item={store.snackBarStore.snackBarItem}
+        onItemClose={() => store.snackBarStore.clearSnackBar()}
+        item={store.snackBarStore.snackBarItem}
       />
       <Routes>
         <Route index element={<MainPage />} />
@@ -148,5 +200,7 @@ export const AppContainer = observer(() => {
         <Route path="*" element={render404()} />
       </Routes>
     </>
+  ) : (
+    renderResponses()
   );
 });
