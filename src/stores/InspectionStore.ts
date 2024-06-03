@@ -53,10 +53,10 @@ export class InspectionStore {
   formFieldsValues: IInspection | {} = {};
 
   async sendInspection() {
-
     try {
       const response = await instance.post(`Inspections`, {
-        ...this.formFieldsValues, filledFreeForms: this.store.freeFormStore.filledFreeForms
+        ...this.formFieldsValues,
+        filledFreeForms: this.store.freeFormStore.filledFreeForms,
       });
       if (!response.data.error) {
         return "success";
@@ -92,7 +92,7 @@ export class InspectionStore {
     }
   }
 
-  async getFieldData(type: InspectionFormTypes) {
+  async getFieldData(type: InspectionFormTypes | FreeFormFieldTypes) {
     let requestType: any = type;
 
     const searchFieldValue = this.searchFieldValue ?? "";
@@ -107,15 +107,14 @@ export class InspectionStore {
       ? ""
       : `&$skip=${this.offset}&$top=${ELEMENTS_ON_FIELD}`;
 
-    if (INSPECTION_FORM_COMMON_FIELDS.includes(type)) {
+    if (INSPECTION_FORM_COMMON_FIELDS.includes(type as InspectionFormTypes)) {
       requestType = type + "s";
     }
-
-    if (EMPLOYEES.includes(type)) {
+    if (FREE_FORM_COMMON_FIELDS.includes(type as FreeFormFieldTypes)) {
+      requestType = freeFormDictNames[type as FreeFormFieldTypes];
+    }
+    if (EMPLOYEES.includes(type as InspectionFormTypes)) {
       requestType = employeesEndpoint;
-      filter = searchFieldValue
-        ? `$filter=contains(${itemValue.personFio},'${searchFieldValue}')`
-        : "";
     }
 
     const countFilter = this.searchFieldValue ? "" : `&$count=true`;
@@ -397,6 +396,7 @@ export class InspectionStore {
   handleOpenField(type: InspectionFormTypes) {
     if (isDevelop) {
       this.getFieldDataDev(type);
+      this.getFieldData(type);
     } else {
       this.getFieldData(type);
     }

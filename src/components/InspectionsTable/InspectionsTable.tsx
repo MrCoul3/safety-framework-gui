@@ -199,6 +199,8 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
     width: 150,
   });
 
+  console.log('columns!!!', columns)
+
   const handleOpenFilter = (field: InspectionFormTypes) => {
     console.log("onopen", field);
     props.handleOpenFilter(field);
@@ -271,7 +273,7 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
           className={style.table}
           onSortBy={props.handleSort}
           onCellClick={handleCellClick}
-          filters={isSentInspectionsCondition() ? filters : false}
+          filters={filters}
         />
       ) : (
         renderLoader()
