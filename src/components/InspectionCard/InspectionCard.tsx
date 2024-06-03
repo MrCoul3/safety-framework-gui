@@ -28,7 +28,7 @@ interface IInspectionCard {
   contractor?: string;
   isReadyToSend?: boolean;
   contractorStruct?: string;
-  index?: number | boolean;
+  index: number | boolean;
   inspectionForm?: string;
   subGroup: SubGroupsActionsTypes;
   handleEditButtonClick(id: string): void;
@@ -49,8 +49,12 @@ const InspectionCard = observer((props: IInspectionCard) => {
     <Card
       className={classNames(style.card, {
         [style.sentCard]: props.subGroup === SubGroupsActionsTypes.Sent,
-        [style.await]: !props.isReadyToSend && props.subGroup === SubGroupsActionsTypes.NewInspections,
-        [style.success]: props.isReadyToSend && props.subGroup === SubGroupsActionsTypes.NewInspections,
+        [style.await]:
+          !props.isReadyToSend &&
+          props.subGroup === SubGroupsActionsTypes.NewInspections,
+        [style.success]:
+          props.isReadyToSend &&
+          props.subGroup === SubGroupsActionsTypes.NewInspections,
         // [style.await]: awaitCond(),
         // [style.error]: errorCond(),
       })}
@@ -73,7 +77,7 @@ const InspectionCard = observer((props: IInspectionCard) => {
         <Button
           onClick={() =>
             props.handleDeleteButtonClick(
-              props.index ? props.index.toString() : props.id.toString(),
+              props.id ? props.id.toString() : props.index.toString(),
               props.subGroup,
             )
           }
@@ -151,7 +155,7 @@ const InspectionCard = observer((props: IInspectionCard) => {
         <Button
           onClick={() =>
             props.handleEditButtonClick(
-              props.index ? props.index.toString() : props.id.toString(),
+              props.id ? props.id.toString() : props.index.toString(),
             )
           }
           size={"s"}
