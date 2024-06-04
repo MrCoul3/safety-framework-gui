@@ -43,6 +43,8 @@ const BarriersPage = observer((props: IBarriersPage) => {
 
       if (isDevelop) {
         store.barriersStore.getBarriersDev(passportId);
+        store.barriersStore.getBarriers(passportId);
+
       } else {
         store.barriersStore.getBarriers(passportId);
       }
