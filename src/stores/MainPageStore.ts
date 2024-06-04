@@ -231,6 +231,7 @@ export class MainPageStore {
 
   resetFilters() {
     this.filterFieldsValues = {};
+    this.getInspections();
   }
   updateFormFieldsValues(
     value: IFilterFieldValue | IFilterDateRangeFieldValue,
