@@ -3,7 +3,7 @@ import { makeAutoObservable, toJS } from "mobx";
 import {
   EMPLOYEES,
   INSPECTION_FORM_COMMON_FIELDS,
-  INSPECTION_FORM_REQUIRED_FIELDS,
+  INSPECTION_FORM_REQUIRED_FIELDS, inspectionFieldsDictNames,
   InspectionFormTypes,
 } from "../enums/InspectionFormTypes";
 import { employeesEndpoint, instance } from "../api/endpoints";
@@ -70,7 +70,7 @@ export class InspectionStore {
     let requestType: any = type;
 
     if (INSPECTION_FORM_COMMON_FIELDS.includes(type as InspectionFormTypes)) {
-      requestType = type + "s";
+      requestType = inspectionFieldsDictNames[type as InspectionFormTypes];
     }
     if (FREE_FORM_COMMON_FIELDS.includes(type as FreeFormFieldTypes)) {
       requestType = freeFormDictNames[type as FreeFormFieldTypes];
@@ -108,7 +108,7 @@ export class InspectionStore {
       : `&$skip=${this.offset}&$top=${ELEMENTS_ON_FIELD}`;
 
     if (INSPECTION_FORM_COMMON_FIELDS.includes(type as InspectionFormTypes)) {
-      requestType = type + "s";
+      requestType = inspectionFieldsDictNames[type as InspectionFormTypes];
     }
     if (FREE_FORM_COMMON_FIELDS.includes(type as FreeFormFieldTypes)) {
       requestType = freeFormDictNames[type as FreeFormFieldTypes];
@@ -264,7 +264,7 @@ export class InspectionStore {
       );
       if (!response.data.error) {
         if (response.data.value) {
-          const result = response.data.value;
+          const result = response.data.value[0];
           const inspection = {
             ...result,
             auditDate: moment(result.auditDate).toDate(),
@@ -409,6 +409,7 @@ export class InspectionStore {
     if (location.pathname.includes(RoutesTypes.EditInspection)) {
       if (isDevelop) {
         this.getInspectionDev(editInspectionId);
+        this.getInspectionById(editInspectionId);
       } else {
         this.getInspectionById(editInspectionId);
       }
