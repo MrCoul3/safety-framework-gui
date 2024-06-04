@@ -9,6 +9,9 @@ export interface IFieldsData {
 export interface IFormFieldValue {
     [key: string]: Item | null;
 }
+export interface IFormFieldTextValue {
+    [key: string]: string | null;
+}
 export interface IFormDateFieldValue {
     [key: string]: Date | null;
 }

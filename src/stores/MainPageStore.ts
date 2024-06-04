@@ -28,7 +28,6 @@ import {
 } from "../interfaces/IFieldInterfaces";
 import { SortByProps } from "@consta/uikit/Table";
 import { filterByRequiredFields } from "../utils/filterByRequiredFields";
-import { FREE_FORM_REQUIRED_FIELDS } from "../enums/FreeFormTypes";
 import { IFreeForm } from "../interfaces/IFreeForm";
 
 export interface IDeletingInspectionType {
@@ -273,17 +272,24 @@ export class MainPageStore {
           inspection,
           INSPECTION_FORM_REQUIRED_FIELDS,
         );
-        const filteredFreeFormsFields = freeForms.map((freeForm) =>
-          filterByRequiredFields(freeForm, FREE_FORM_REQUIRED_FIELDS),
-        );
-        const freeFormsResult = filteredFreeFormsFields.map((freeForm) =>
-          Object.values(freeForm).every(
-            (value) =>
-              Object.values(value ?? {})[0] &&
-              Object.values(freeForm).length ===
-                FREE_FORM_REQUIRED_FIELDS.length,
-          ),
-        ); // [bool, bool]
+        const filteredFreeFormsFields = freeForms.map((freeForm) => {
+          const requireFields =
+            this.store.freeFormStore.getFreeFormRequireFields(freeForm);
+          return filterByRequiredFields(freeForm, requireFields);
+        });
+        const freeFormsResult = filteredFreeFormsFields.map((freeForm) => {
+          if (freeForm) {
+            const requireFields =
+                this.store.freeFormStore.getFreeFormRequireFields(freeForm as unknown as IFreeForm);
+
+            return Object.values(freeForm).every(
+                (value) =>
+                    Object.values(value ?? {})[0] &&
+                    Object.values(freeForm).length === requireFields.length,
+            );
+          }
+
+        }); // [bool, bool]
 
         const commonFieldsResult =
           filteredCommonFields.every((value) => {
@@ -325,18 +331,18 @@ export class MainPageStore {
     console.debug("responseStatus: ", toJS(this.responseStatus));
   }
   async getMemberInfo() {
-    this.store.loaderStore.setLoader('wait')
+    this.store.loaderStore.setLoader("wait");
     try {
       const response = await instance.get(`MemberInfo`);
       console.log("response!!", response);
       if (!response.data.error) {
         this.setLogin(response.data);
-        this.store.loaderStore.setLoader('ready')
+        this.store.loaderStore.setLoader("ready");
       }
     } catch (e: any) {
       console.error("error", e);
       this.setResponseStatus(e.response.status);
-      this.store.loaderStore.setLoader('ready')
+      this.store.loaderStore.setLoader("ready");
     }
   }
 }

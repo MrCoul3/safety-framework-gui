@@ -119,7 +119,8 @@ export const ru = {
     // свободная форма
     [FreeFormFieldTypes.ViolationCategory]: "Категория нарушения",
     [FreeFormFieldTypes.ViolationType]: "Типовое нарушение",
-    [FreeFormFieldTypes.Violation]: "Нарушение",
+    [FreeFormFieldTypes.Violation]: "Описание по справочнику",
+    [FreeFormFieldTypes.ViolationManual]: "Описание пользовательское",
     [FreeFormFieldTypes.WorkType]: "Вид работ нарушения",
     [FreeFormFieldTypes.Nmd]: "НМД",
     [FreeFormFieldTypes.NmdRule]: "Пункт правил НМД",
@@ -161,7 +162,8 @@ export const ru = {
 
     [FreeFormFieldTypes.ViolationCategory + "Placeholder"]: "Введите категорию нарушения",
     [FreeFormFieldTypes.ViolationType + "Placeholder"]: "Введите типовое нарушение",
-    [FreeFormFieldTypes.Violation + "Placeholder"]: "Введите название нарушения",
+    [FreeFormFieldTypes.Violation + "Placeholder"]: "Введите описание по справочнику",
+    [FreeFormFieldTypes.ViolationManual + "Placeholder"]: "Введите описание",
     [FreeFormFieldTypes.WorkType + "Placeholder"]: "Введите вид работ нарушения",
     [FreeFormFieldTypes.Nmd + "Placeholder"]: "Введите НМД",
     [FreeFormFieldTypes.NmdRule + "Placeholder"]: "Введите пункт правил НМД",

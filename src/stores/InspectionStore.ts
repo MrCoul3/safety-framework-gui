@@ -25,7 +25,6 @@ import {
 import { IFreeForm } from "../interfaces/IFreeForm";
 import {
   FREE_FORM_COMMON_FIELDS,
-  FREE_FORM_REQUIRED_FIELDS,
   freeFormDictNames,
   FreeFormFieldTypes,
   FreeFormTypes,
@@ -73,7 +72,9 @@ export class InspectionStore {
       requestType = inspectionFieldsDictNames[type as InspectionFormTypes];
     }
     if (FREE_FORM_COMMON_FIELDS.includes(type as FreeFormFieldTypes)) {
-      requestType = freeFormDictNames[type as FreeFormFieldTypes];
+      if (type !== FreeFormFieldTypes.ViolationManual) {
+        requestType = freeFormDictNames[type as FreeFormFieldTypes];
+      }
     }
     if (EMPLOYEES.includes(type as InspectionFormTypes)) {
       requestType = employeesEndpoint;
@@ -298,32 +299,7 @@ export class InspectionStore {
     );
   }
 
-  checkIsFreeFormSuccess() {
-    const formFieldsValues: { [key: string]: any }[] = (
-      this.formFieldsValues as IInspection
-    )["filledFreeForms"];
-    console.log(
-      "checkIsFreeFormSuccess formFieldsValues ",
-      toJS(formFieldsValues),
-    );
-    if (formFieldsValues && formFieldsValues.length) {
-      const filtered = formFieldsValues.map((freeForm) =>
-        filterByRequiredFields(freeForm, FREE_FORM_REQUIRED_FIELDS),
-      );
 
-      console.log("filtered", toJS(filtered));
-
-      const result = filtered.map((freeForm) =>
-        Object.values(freeForm).every(
-          (value) =>
-            Object.values(value ?? {})[0] &&
-            Object.values(freeForm).length === FREE_FORM_REQUIRED_FIELDS.length,
-        ),
-      ); // [bool, bool]
-      return result.every((res) => res);
-    }
-    return false;
-  }
 
   setInspectionToLocalStorage() {
     delete (this.formFieldsValues as IInspection)?.id;

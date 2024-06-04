@@ -116,8 +116,6 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
     setIsFormsValidForSending(isValid);
   };
 
-
-
   const handleOpenField = (type: InspectionFormTypes) => {
     store.inspectionStore.handleOpenField(type);
   };
@@ -203,6 +201,9 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
                 key={index}
                 content={
                   <FreeForm
+                    isOtherCondition={store.freeFormStore.isOtherCondition(
+                      formFieldsValues as IFreeForm,
+                    )}
                     handleDelete={() => handleDelete(index)}
                     setIsValidate={() =>
                       store.inspectionStore.setIsValidate(true)
