@@ -40,6 +40,7 @@ import LoaderPage from "../LoaderPage/LoaderPage";
 import { ResponsesNothingFound } from "@consta/uikit/ResponsesNothingFound";
 import { LoaderType } from "../../interfaces/LoaderType";
 import { useStore } from "../../hooks/useStore";
+import NothingFound from "../NothingFound/NothingFound";
 
 interface IInspectionsTable {
   inspections: IInspection[];
@@ -172,7 +173,7 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
           item[InspectionFormTypes.Auditee]?.personFio,
         [InspectionFormTypes.Supervisor]:
           item[InspectionFormTypes.Supervisor]?.personFio,
-        actions: renderActions((index).toString(), item),
+        actions: renderActions(index.toString(), item),
         [InspectionFormTypes.AuditDate]: moment(item.auditDate).format(
           "DD.MM.YYYY",
         ),
@@ -199,7 +200,7 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
     width: 150,
   });
 
-  console.log('columns!!!', columns)
+  console.log("columns!!!", columns);
 
   const handleOpenFilter = (field: InspectionFormTypes) => {
     console.log("onopen", field);
@@ -237,16 +238,19 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
     setPage(val);
     props.handlePaginationChange(val);
   };
-
-  const renderLoader = () => {
+  const sentInspectionsCondition = (subGroup: SubGroupsActionsTypes) =>
+    subGroup === SubGroupsActionsTypes.Sent;
+  const renderLoader = (subGroup: SubGroupsActionsTypes) => {
     if (props.loader === "wait") {
       return <LoaderPage />;
     } else {
       return (
-        <ResponsesNothingFound
-          title={t("emptyNewInspections")}
-          description={" "}
-          actions={" "}
+        <NothingFound
+          info={
+            sentInspectionsCondition(subGroup)
+              ? t("emptySentInspections")
+              : t("emptyNewInspections")
+          }
         />
       );
     }
@@ -276,7 +280,7 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
           filters={filters}
         />
       ) : (
-        renderLoader()
+        renderLoader(props.subGroupsActionsTypes)
       )}
 
       {props.inspectionsCount &&

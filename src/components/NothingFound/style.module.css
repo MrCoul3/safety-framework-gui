@@ -1,0 +1,6 @@
+.ResponsesNothingFound {
+    display: flex!important;
+    height: 70vh !important;
+    align-items: center;
+    justify-content: center;
+}

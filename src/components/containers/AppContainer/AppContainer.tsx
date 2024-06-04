@@ -44,7 +44,7 @@ export const AppContainer = observer(() => {
     getSideBarState();
   }, []);
 
-  const toHome = () => {
+   const toHome = () => {
     store.mainPageStore.resetSideBarToHome();
     navigate(`/`);
   };

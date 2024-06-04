@@ -13,6 +13,7 @@ import { ProgressSpin } from "@consta/uikit/ProgressSpin";
 
 import { LoaderType } from "../../interfaces/LoaderType";
 import LoaderPage from "../LoaderPage/LoaderPage";
+import NothingFound from "../NothingFound/NothingFound";
 
 interface IDashBoard {
   inspections: IInspection[];
@@ -59,20 +60,17 @@ const DashBoard = observer((props: IDashBoard) => {
   const newInspectionCondition = (subGroup: SubGroupsActionsTypes) =>
     subGroup === SubGroupsActionsTypes.NewInspections;
 
-
   const renderLoader = (subGroup: SubGroupsActionsTypes) => {
     if (props.loader === "wait") {
       return <LoaderPage />;
     } else {
       return (
-        <ResponsesNothingFound
-          title={
+        <NothingFound
+          info={
             sentInspectionsCondition(subGroup)
               ? t("emptySentInspections")
               : t("emptyNewInspections")
           }
-          description={" "}
-          actions={" "}
         />
       );
     }
@@ -97,31 +95,29 @@ const DashBoard = observer((props: IDashBoard) => {
                 newInspectionCondition(subGroup) || !props.inspections.length,
             })}
           >
-            {
-              sentInspectionsCondition(subGroup) ? (
-                props.inspections.length ? (
-                  <InfiniteScroll
-                    pageStart={0}
-                    hasMore={
-                      props.inspectionsCount
-                        ? props.inspectionsCount > props.inspections.length
-                        : true
-                    }
-                    threshold={500}
-                    useWindow={false}
-                    className={style.virtualScrollWrap}
-                    loadMore={() => props.onScrollToBottom()}
-                    loader={<ProgressSpin key={0} size="m" />}
-                  >
-                    {props.sentInspectionsContent}
-                  </InfiniteScroll>
-                ) : (
-                  renderLoader(subGroup)
-                )
+            {sentInspectionsCondition(subGroup) ? (
+              props.inspections.length ? (
+                <InfiniteScroll
+                  pageStart={0}
+                  hasMore={
+                    props.inspectionsCount
+                      ? props.inspectionsCount > props.inspections.length
+                      : true
+                  }
+                  threshold={500}
+                  useWindow={false}
+                  className={style.virtualScrollWrap}
+                  loadMore={() => props.onScrollToBottom()}
+                  loader={<ProgressSpin key={0} size="m" />}
+                >
+                  {props.sentInspectionsContent}
+                </InfiniteScroll>
               ) : (
-                props.localInspectionsContent
+                renderLoader(subGroup)
               )
-            }
+            ) : (
+              props.localInspectionsContent
+            )}
           </div>
         </div>
       ))}
