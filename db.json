@@ -7213,8 +7213,7 @@
       "dateCreated": "2023-08-30T15:20:01.153+05:00",
       "dateModified": "2023-08-30T15:20:01.17+05:00",
       "id": 1,
-      "icon": null,
-      "barriers": []
+      "icon": null
     },
     {
       "code": "ВЗР",
@@ -7225,8 +7224,7 @@
       "dateCreated": "2023-08-30T15:20:01.153+05:00",
       "dateModified": "2023-08-30T15:20:01.17+05:00",
       "id": 2,
-      "icon": null,
-      "barriers": []
+      "icon": null
     },
     {
       "code": "ГАЗ",
@@ -7237,8 +7235,7 @@
       "dateCreated": "2023-08-30T15:20:01.153+05:00",
       "dateModified": "2023-08-30T15:20:01.17+05:00",
       "id": 3,
-      "icon": null,
-      "barriers": []
+      "icon": null
     },
     {
       "code": "ГНВП",
@@ -7249,8 +7246,7 @@
       "dateCreated": "2023-08-30T15:20:01.153+05:00",
       "dateModified": "2023-08-30T15:20:01.17+05:00",
       "id": 4,
-      "icon": null,
-      "barriers": []
+      "icon": null
     },
     {
       "code": "ГРУЗ",
@@ -7261,8 +7257,7 @@
       "dateCreated": "2023-08-30T15:20:01.153+05:00",
       "dateModified": "2023-08-30T15:20:01.17+05:00",
       "id": 5,
-      "icon": null,
-      "barriers": []
+      "icon": null
     },
     {
       "code": "ДТП",
@@ -7273,8 +7268,7 @@
       "dateCreated": "2023-08-30T15:20:01.153+05:00",
       "dateModified": "2023-08-30T15:20:01.17+05:00",
       "id": 7,
-      "icon": null,
-      "barriers": []
+      "icon": null
     },
     {
       "code": "ЗЕМЛ",
@@ -7285,8 +7279,7 @@
       "dateCreated": "2023-08-30T15:20:01.153+05:00",
       "dateModified": "2023-08-30T15:20:01.17+05:00",
       "id": 8,
-      "icon": null,
-      "barriers": []
+      "icon": null
     },
     {
       "code": "ОЗ",
@@ -7297,8 +7290,7 @@
       "dateCreated": "2023-08-30T15:20:01.153+05:00",
       "dateModified": "2023-08-30T15:20:01.17+05:00",
       "id": 9,
-      "icon": null,
-      "barriers": []
+      "icon": null
     },
     {
       "code": "РВ",
@@ -7309,8 +7301,7 @@
       "dateCreated": "2023-08-30T15:20:01.153+05:00",
       "dateModified": "2023-08-30T15:20:01.17+05:00",
       "id": 11,
-      "icon": null,
-      "barriers": []
+      "icon": null
     },
     {
       "code": "СБУ",
@@ -7321,8 +7312,7 @@
       "dateCreated": "2023-08-30T15:20:01.153+05:00",
       "dateModified": "2023-08-30T15:20:01.17+05:00",
       "id": 12,
-      "icon": null,
-      "barriers": []
+      "icon": null
     },
     {
       "code": "ЭлБ",
@@ -7333,8 +7323,7 @@
       "dateCreated": "2023-08-30T15:20:01.153+05:00",
       "dateModified": "2023-08-30T15:20:01.17+05:00",
       "id": 15,
-      "icon": null,
-      "barriers": []
+      "icon": null
     },
     {
       "code": "ДОП",
@@ -7345,8 +7334,7 @@
       "dateCreated": "2023-08-30T15:20:01.153+05:00",
       "dateModified": "2023-08-30T15:20:01.17+05:00",
       "id": 16,
-      "icon": null,
-      "barriers": []
+      "icon": null
     },
     {
       "code": "ПОЖ",
@@ -7357,8 +7345,7 @@
       "dateCreated": "2024-01-14T16:41:50.623+05:00",
       "dateModified": "2024-01-14T16:41:50.623+05:00",
       "id": 17,
-      "icon": null,
-      "barriers": []
+      "icon": null
     }
   ],
   "barriers": [

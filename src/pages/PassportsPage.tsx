@@ -29,18 +29,16 @@ const PassportsPage = observer((props: IPassportsPage) => {
     if (isDevelop) {
       store.passportsStore.getPassportsDev();
       store.passportsStore.getPassports();
-
     } else {
       store.passportsStore.getPassports();
     }
-    // store.passportsStore.getPassports()
   };
 
   useEffect(() => {
     init();
   }, []);
 
-  const handlePassportClick = (id: number) => {
+  const handlePassportClick = (id: string) => {
     navigate(RoutesTypes.Barriers + `/${id}`);
   };
 
@@ -98,6 +96,8 @@ const PassportsPage = observer((props: IPassportsPage) => {
             .filter((passport) => passport.code)
             .map((passport) => (
               <PassportElement
+                id={passport.id}
+                code={passport.code}
                 onClick={handlePassportClick}
                 key={passport.id}
                 data={passport}

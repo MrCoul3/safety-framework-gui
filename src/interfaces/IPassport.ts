@@ -1,12 +1,11 @@
 export interface IPassport {
   code: string;
+  dateCreated: string;
+  dateModified: string;
+  id: string;
+  isActual: boolean;
   sortOrder: null;
   title: string;
   uniqueId: string;
-  isActual: boolean;
-  dateCreated: string;
-  dateModified: string;
-  id: number;
-  barriers: string[],
   icon: null | string
 }

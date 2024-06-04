@@ -1,5 +1,5 @@
 import { AppStore } from "./AppStore";
-import { makeAutoObservable } from "mobx";
+import {makeAutoObservable, toJS} from "mobx";
 import { instance, localDevInstance } from "../api/endpoints";
 import { IPassport } from "../interfaces/IPassport";
 
@@ -13,6 +13,7 @@ export class PassportsStore {
   passports: IPassport[] = [];
   setPassports(value: IPassport[]) {
     this.passports = value;
+    console.debug('passports: ', toJS(this.passports))
   }
 
   async getPassportsDev() {

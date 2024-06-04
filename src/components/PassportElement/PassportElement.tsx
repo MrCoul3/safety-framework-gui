@@ -4,10 +4,14 @@ import style from "./style.module.css";
 import { IPassport } from "../../interfaces/IPassport";
 import { useTranslation } from "react-i18next";
 import { Badge } from "@consta/uikit/Badge";
+import {icon3} from "../../assets/icons";
 
 interface IPassportElement {
+  code: string
+  id: string
+  icon?: string
   data: IPassport;
-  onClick(id: number): void;
+  onClick(id: string): void;
 }
 
 const PassportElement = observer((props: IPassportElement) => {
@@ -15,18 +19,18 @@ const PassportElement = observer((props: IPassportElement) => {
 
   return (
     <div
-      onClick={() => props.onClick(props.data.id)}
+      onClick={() => props.onClick(props.id)}
       className={style.PassportElement}
     >
       <div className={style.logo}>
-        <img className={style.logoIcon} src={props.data.icon ?? ""} alt="" />
+        <img className={style.logoIcon} src={props.icon ?? icon3} alt="" />
       </div>
-      <span className={style.name}>{props.data.code}</span>
+      <span className={style.name}>{props.code}</span>
       <span className={style.barriersCount}>
         {t("barriersSelect")}
         <Badge
           size={"s"}
-          label={props.data.barriers.length.toString()}
+          label={'0'}
           status={"system"}
           form={"round"}
         />
