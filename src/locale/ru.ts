@@ -87,7 +87,7 @@ export const ru = {
     checkDetails: "Детали проверки",
     inspectionNumber: "Номер инспекции",
     inspectionName: "Инспекция № ",
-    emptyNewInspections: "Нет новых инспекций",
+    emptyNewInspections: "Нет неотправленных инспекций",
     emptySentInspections: "Нет отправленных инспекций",
     emptyInspections: "Нет инспекций",
     noData: "Нет данных",

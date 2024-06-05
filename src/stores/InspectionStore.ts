@@ -358,6 +358,7 @@ export class InspectionStore {
   }
 
   loadInspectionFromLocalStorage(id: string) {
+    console.log('loadInspectionFromLocalStorage')
     const localInspections = localStorage.getItem(LOCAL_STORE_INSPECTIONS);
     if (localInspections) {
       const localInspectionsParsed = JSON.parse(localInspections);
@@ -379,6 +380,7 @@ export class InspectionStore {
   }
 
   loadInspection(editInspectionId: string) {
+    console.log('loadInspection')
     if (location.pathname.includes(RoutesTypes.EditLocalInspection)) {
       this.loadInspectionFromLocalStorage(editInspectionId);
     }

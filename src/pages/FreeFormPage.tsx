@@ -18,6 +18,7 @@ import CollapseElement from "../components/CollapseElement/CollapseElement";
 import FreeFormElementLabel from "../components/FreeFormElementLabel/FreeFormElementLabel";
 import { IInspection } from "../interfaces/IInspection";
 import SnackBarCustom from "../components/SnackBarCustom/SnackBarCustom";
+import {toJS} from "mobx";
 
 interface IFreeFormPage {}
 
@@ -27,8 +28,6 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
   const store = useStore();
 
   const navigate = useNavigate();
-
-  const location = useLocation();
 
   let { editInspectionId } = useParams();
 
@@ -48,6 +47,7 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
     },
   ];
   const getFreeFormsFromFormFieldsData = () => {
+    console.log('getFreeFormsFromFormFieldsData', toJS(store.inspectionStore.formFieldsValues))
     const freeForms = (store.inspectionStore.formFieldsValues as IInspection)[
       "filledFreeForms"
     ];
