@@ -157,7 +157,7 @@ export const AppContainer = observer(() => {
             RoutesTypes.Passports +
             "/" +
             RoutesTypes.Barriers +
-            "/:id"
+            "/:passportId"
           }
           element={<BarriersPage />}
         />

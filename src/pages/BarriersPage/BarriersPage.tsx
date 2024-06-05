@@ -37,7 +37,6 @@ const BarriersPage = observer((props: IBarriersPage) => {
   );
 
   const init = () => {
-
     console.log('passportId', passportId)
     if (passportId) {
       console.log("passport", passport);
