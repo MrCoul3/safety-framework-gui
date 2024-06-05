@@ -98,15 +98,9 @@ export class InspectionStore {
 
     const searchFieldValue = this.searchFieldValue ?? "";
 
-    const itemValue: Item = { title: "title", personFio: "personFio" };
+    const item: Item = { title: "title", personFio: "personFio" };
 
-    let filter = searchFieldValue
-      ? `$filter=contains(${itemValue.title},'${searchFieldValue}')`
-      : "";
-
-    let offset = searchFieldValue
-      ? ""
-      : `&$skip=${this.offset}&$top=${ELEMENTS_ON_FIELD}`;
+    let itemValue = item.title
 
     if (INSPECTION_FORM_COMMON_FIELDS.includes(type as InspectionFormTypes)) {
       requestType = inspectionFieldsDictNames[type as InspectionFormTypes];
@@ -116,7 +110,16 @@ export class InspectionStore {
     }
     if (EMPLOYEES.includes(type as InspectionFormTypes)) {
       requestType = employeesEndpoint;
+      itemValue = item.personFio as string;
     }
+
+    let filter = searchFieldValue
+        ? `$filter=contains(${itemValue},'${searchFieldValue}')`
+        : "";
+
+    let offset = searchFieldValue
+        ? ""
+        : `&$skip=${this.offset}&$top=${ELEMENTS_ON_FIELD}`;
 
     const countFilter = this.searchFieldValue ? "" : `&$count=true`;
 
