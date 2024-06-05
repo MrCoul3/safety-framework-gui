@@ -14,6 +14,11 @@ import { CheckEntityTypes } from "../../enums/CheckEntityTypes";
 import EmptyBoxPage from "../../components/EmptyBoxPage/EmptyBoxPage";
 import CollapseElement from "../../components/CollapseElement/CollapseElement";
 import { isDevelop } from "../../constants/config";
+import { toJS } from "mobx";
+import { IBarrier } from "../../interfaces/IBarrier";
+import BarrierForm from "../../components/BarrierForm/BarrierForm";
+import BarriersPanel from "../../components/BarriersPanel/BarriersPanel";
+import { IFormFieldValue } from "../../interfaces/IFieldInterfaces";
 
 interface IBarriersPage {}
 
@@ -28,6 +33,8 @@ const BarriersPage = observer((props: IBarriersPage) => {
 
   const store = useStore();
 
+  const [savingState, setSavingState] = useState(false);
+
   const passport = useMemo(
     () =>
       store.passportsStore.passports.find(
@@ -37,14 +44,13 @@ const BarriersPage = observer((props: IBarriersPage) => {
   );
 
   const init = () => {
-    console.log('passportId', passportId)
+    console.log("passportId", passportId);
     if (passportId) {
-      console.log("passport", passport);
+      console.log("passport", toJS(passport));
 
       if (isDevelop) {
-        store.barriersStore.getBarriersDev(passportId);
+        store.barriersStore.getBarriersDev();
         store.barriersStore.getBarriers(passportId);
-
       } else {
         store.barriersStore.getBarriers(passportId);
       }
@@ -100,7 +106,7 @@ const BarriersPage = observer((props: IBarriersPage) => {
   const getFilteredBarriers = () => {
     if (searchText) {
       return store.barriersStore.barriers.filter((item) =>
-        item.Title?.includes(searchText),
+        item.title?.includes(searchText),
       );
     }
     return [];
@@ -108,6 +114,28 @@ const BarriersPage = observer((props: IBarriersPage) => {
 
   const barriers = () => {
     return searchText ? getFilteredBarriers() : store.barriersStore.barriers;
+  };
+
+  const handleCounterClick = (countType: number, barrier: IBarrier) => {
+    console.log("handleCounterClick", countType, toJS(barrier));
+
+    if (countType === 1) {
+      // "+"
+    }
+    if (countType === 0) {
+      // "-"
+    }
+  };
+
+  const [isFormsValidForSending, setIsFormsValidForSending] = useState(false);
+
+  const handleChange = (value: IBarrier) => {
+    console.log("handleChange", value);
+    setSavingState(true);
+    // store.freeFormStore.updateFormFieldsValues(value, index);
+    // const isValid = store.freeFormStore.checkIsFreeFormSuccess();
+    // console.log("handleSendInspection isValid", isValid);
+    // setIsFormsValidForSending(isValid);
   };
 
   return (
@@ -139,14 +167,29 @@ const BarriersPage = observer((props: IBarriersPage) => {
             barriers().length ? (
               barriers().map((barrier) => (
                 <CollapseElement
-                  label={<BarrierElement data={barrier} />}
-                  key={barrier.Id}
-                  content={<div>conetnt</div>}
+                  label={
+                    <BarrierElement
+                      handleCounterClick={(countType) =>
+                        handleCounterClick(countType, barrier)
+                      }
+                      title={barrier.title}
+                    />
+                  }
+                  key={barrier.id}
+                  content={
+                    <>
+                      <BarriersPanel />
+                      <BarrierForm
+                        handleChange={(value: IBarrier) => handleChange(value)}
+                        isValidate={store.inspectionStore.isValidate}
+                      />
+                    </>
+                  }
                 />
               ))
             ) : (
               <div>
-                <EmptyBoxPage disableActions text={"Не найдено барьеров"} />
+                <EmptyBoxPage disableActions text={t("noBarriers")} />
               </div>
             )
           }

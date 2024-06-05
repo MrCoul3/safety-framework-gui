@@ -5,10 +5,18 @@ import { Button } from "@consta/uikit/Button";
 import { IconRemove } from "@consta/icons/IconRemove";
 import { IconAdd } from "@consta/icons/IconAdd";
 import { Badge } from "@consta/uikit/Badge";
-interface ICounter {}
+interface ICounter {
+  onClick(countType: number): void;
+}
 
 const Counter = observer((props: ICounter) => {
-  const handleDecrease = (e: React.MouseEvent) => {};
+  const handleDecrease = () => {
+    props.onClick(0);
+  };
+
+  const handleIncrease = () => {
+    props.onClick(1);
+  };
 
   return (
     <div className={style.Counter}>
@@ -27,6 +35,7 @@ const Counter = observer((props: ICounter) => {
         form={"round"}
         size={"s"}
         view={"clear"}
+        onClick={handleIncrease}
         onlyIcon
         iconLeft={IconAdd}
       />

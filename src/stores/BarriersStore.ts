@@ -16,10 +16,10 @@ export class BarriersStore {
     console.debug("barriers: ", toJS(this.barriers));
   }
 
-  async getBarriersDev(passportId: string) {
+  async getBarriersDev() {
     try {
       const response = await localDevInstance.get(
-        `barriers?PassportId=${passportId}`,
+        `barriers`,
       );
       if (!response.data.error) {
         this.setBarriers(response.data);
@@ -31,7 +31,7 @@ export class BarriersStore {
   async getBarriers(passportId: string) {
     try {
       const response = await instance.get(
-        `Barriers?$filter=(PassportId eq ${passportId})and(IsActual eq true)and(IsPk ne null)&$count=true`,
+        `Barriers?$filter=(passportId eq ${passportId})and(IsActual eq true)and(IsPk ne null)&$count=true`,
       );
       if (!response.data.error) {
         if (response.data.value) {

@@ -1,0 +1,12 @@
+.BarrierForm {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0 30px;
+    box-sizing: border-box;
+}
+
+.barrierFormWrap {
+    width: 70%;
+}

@@ -12,15 +12,19 @@ import { FreeFormFieldTypes } from "../../enums/FreeFormTypes";
 import { PropStatus } from "@consta/uikit/__internal__/src/components/SelectComponents/types";
 import { useTranslation } from "react-i18next";
 import classNames from "classnames";
+import { BarrierTypes } from "../../enums/BarrierTypes";
 
 interface IInspectionTextArea {
   handleChange(value: IFormFieldTextValue): void;
   value?: string;
+  className?: string;
+  minRows?: number;
 
   display?: boolean;
+  labelPos?: "left" | "top";
   required?: boolean;
   status: PropStatus | undefined;
-  inspectionType: InspectionFormTypes | FreeFormFieldTypes;
+  type: InspectionFormTypes | FreeFormFieldTypes | BarrierTypes;
 }
 
 const InspectionTextArea = observer((props: IInspectionTextArea) => {
@@ -29,29 +33,31 @@ const InspectionTextArea = observer((props: IInspectionTextArea) => {
 
   useEffect(() => {
     (textField.current?.childNodes[1] as HTMLDivElement).classList.add(
-      "customField",
+      props.className ? props.className : "customField",
     );
   }, [textField]);
   const handleChange = (value: string | null) => {
     props.handleChange({
-      [props.inspectionType]: value,
+      [props.type]: value,
     });
   };
   return (
     <TextField
+      status={props.status}
       required={props.required}
-      minRows={2}
+      minRows={props.minRows ?? 2}
       className={classNames(style.textArea, {
         [style.show]: props.display,
       })}
       ref={textField}
-      labelPosition="left"
-      label={t(props.inspectionType)}
+      // labelPosition={props.labelPos ?? "top"}
+      labelPosition={"top"}
+      label={t(props.type)}
       onChange={handleChange}
       value={props.value}
       type="textarea"
       cols={200}
-      placeholder={t(`${props.inspectionType}Placeholder`)}
+      placeholder={t(`${props.type}Placeholder`)}
     />
   );
 });

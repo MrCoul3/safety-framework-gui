@@ -107,8 +107,10 @@ const InspectionForm = observer((props: IInspectionForm) => {
     );
     const formType =
       props.formFieldsValues?.[InspectionFormTypes.InspectionForm]?.id;
+
+    console.log('handleNextStep formType', formType)
     // id = 1 barriers, id = 2 freeForm
-    if (formType === 1) {
+    if (formType?.toString() === '1') {
       props.handleNextStepToBarriers();
     } else {
       props.handleNextStepToFreeForm();

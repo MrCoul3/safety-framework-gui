@@ -114,7 +114,7 @@ const FreeForm = observer((props: IFreeFormProps) => {
                 display={props.isOtherCondition}
                 value={getValue(field)}
                 handleChange={handleChange}
-                inspectionType={field}
+                type={field}
                 status={props.isValidate ? getStatus(field) : undefined}
               />
             );
