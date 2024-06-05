@@ -5,7 +5,7 @@ import { Button } from "@consta/uikit/Button";
 import { useTranslation } from "react-i18next";
 import { useStore } from "../../hooks/useStore";
 import { useNavigate } from "react-router";
-
+import style from './style.module.css'
 interface IEmptyBoxPage {
   text?: string;
   disableActions?: boolean;
@@ -22,7 +22,7 @@ const EmptyBoxPage = observer((props: IEmptyBoxPage) => {
     navigate(`/`);
   };
   return (
-    <ResponsesEmptyBox
+    <ResponsesEmptyBox className={style.ResponsesEmptyBox}
       description={" "}
       title={props.text ?? ""}
       actions={

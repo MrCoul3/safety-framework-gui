@@ -11,7 +11,6 @@ import BarrierElement from "../../components/BarrierElement/BarrierElement";
 import { Button } from "@consta/uikit/Button";
 import Search from "../../components/Search/Search";
 import { CheckEntityTypes } from "../../enums/CheckEntityTypes";
-import { IBarrier } from "../../interfaces/IBarrier";
 import EmptyBoxPage from "../../components/EmptyBoxPage/EmptyBoxPage";
 import CollapseElement from "../../components/CollapseElement/CollapseElement";
 import { isDevelop } from "../../constants/config";
@@ -38,6 +37,8 @@ const BarriersPage = observer((props: IBarriersPage) => {
   );
 
   const init = () => {
+
+    console.log('passportId', passportId)
     if (passportId) {
       console.log("passport", passport);
 
