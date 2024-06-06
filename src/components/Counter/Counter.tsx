@@ -7,6 +7,7 @@ import { IconAdd } from "@consta/icons/IconAdd";
 import { Badge } from "@consta/uikit/Badge";
 interface ICounter {
   onClick(countType: number): void;
+    length?: string
 }
 
 const Counter = observer((props: ICounter) => {
@@ -29,7 +30,7 @@ const Counter = observer((props: ICounter) => {
         onlyIcon
         iconLeft={IconRemove}
       />
-      <Badge label={"0"} status={"system"} form={"round"} />
+      <Badge label={props.length} status={"system"} form={"round"} />
       <Button
         className={"button"}
         form={"round"}

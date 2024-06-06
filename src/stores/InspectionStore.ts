@@ -307,13 +307,19 @@ export class InspectionStore {
   setInspectionToLocalStorage() {
     delete (this.formFieldsValues as IInspection)?.id;
     const filledFreeForms = this.store.freeFormStore.filledFreeForms;
-    console.log("freeForms", toJS(filledFreeForms));
+    const filledBarriers = this.store.barriersStore.filledBarriers;
+    console.log("setInspectionToLocalStorage filledFreeForms", toJS(filledFreeForms));
+    console.log("setInspectionToLocalStorage filledBarriers", toJS(filledBarriers));
     const localInspections = localStorage.getItem(LOCAL_STORE_INSPECTIONS);
 
     let values = this.formFieldsValues;
     if (filledFreeForms.length) {
       // если есть свободные формы добавляем к занчениям формы еще и freeForms
       values = { ...this.formFieldsValues, filledFreeForms };
+    }
+    if (filledBarriers.length) {
+      // если есть барьеры добавляем к занчениям формы еще и filledBarriers
+      values = { ...this.formFieldsValues, filledBarriers };
     }
 
     if (localInspections) {

@@ -18,7 +18,12 @@ import { toJS } from "mobx";
 import { IBarrier } from "../../interfaces/IBarrier";
 import BarrierForm from "../../components/BarrierForm/BarrierForm";
 import BarriersPanel from "../../components/BarriersPanel/BarriersPanel";
-import { IFormFieldValue } from "../../interfaces/IFieldInterfaces";
+import {
+  IFormFieldTextValue,
+  IFormFieldValue,
+} from "../../interfaces/IFieldInterfaces";
+import { IFilledBarrier } from "../../interfaces/IFilledBarrier";
+import { BarrierFieldTypes } from "../../enums/BarrierTypes";
 
 interface IBarriersPage {}
 
@@ -84,18 +89,18 @@ const BarriersPage = observer((props: IBarriersPage) => {
 
   const saveInspection = () => {
     editInspectionId
-      ? store.inspectionStore.updateInspectionToLocalStorage(editInspectionId)
+      ? store.barriersStore.updateInspectionToLocalStorage(editInspectionId)
       : store.inspectionStore.setInspectionToLocalStorage();
   };
 
   const handleSaveInspection = () => {
-    /* saveInspection();
+    saveInspection();
     navigate(-3);
     store.snackBarStore.setSnackBarItem({
       message: t("snackBarSuccessSave"),
       key: "1",
       status: "success",
-    });*/
+    });
   };
 
   const [searchText, setSearchText] = useState<string | null>(null);
@@ -116,32 +121,70 @@ const BarriersPage = observer((props: IBarriersPage) => {
     return searchText ? getFilteredBarriers() : store.barriersStore.barriers;
   };
 
-  const handleCounterClick = (countType: number, barrier: IBarrier) => {
-    console.log("handleCounterClick", countType, toJS(barrier));
+  const handleAddBarrier = (countType: number, barrier: IBarrier) => {
+    console.log("handleAddBarrier", countType, toJS(barrier));
+
+    const foundBarriersById = store.barriersStore.getFoundBarriersById(
+      barrier.id,
+    );
+    console.log("handleAddBarrier foundBarriersById", toJS(foundBarriersById));
+
+    const value: IFilledBarrier = {
+      [BarrierFieldTypes.Mub]: "",
+      isActive: !foundBarriersById.length,
+      barrierId: barrier.id,
+      filledRequirements: null,
+      title: barrier.title ?? "",
+    };
 
     if (countType === 1) {
+      store.barriersStore.addFilledBarriers(value);
       // "+"
     }
     if (countType === 0) {
+      store.barriersStore.removeFilledBarriers(value.barrierId);
       // "-"
     }
   };
 
   const [isFormsValidForSending, setIsFormsValidForSending] = useState(false);
 
-  const handleChange = (value: IBarrier) => {
-    console.log("handleChange", value);
+  const handleChange = (value: IFormFieldTextValue, barrierId: number) => {
+    console.log("handleChange", value, barrierId);
     setSavingState(true);
+    store.barriersStore.changeFormFieldsValues(value, barrierId);
     // store.freeFormStore.updateFormFieldsValues(value, index);
     // const isValid = store.freeFormStore.checkIsFreeFormSuccess();
     // console.log("handleSendInspection isValid", isValid);
     // setIsFormsValidForSending(isValid);
   };
 
+  const getBarriersById = (barrierId: number) => {
+    return store.barriersStore.filledBarriers.filter(
+      (item) => item.barrierId === barrierId,
+    );
+  };
+  const getActiveBarrierById = (barrierId: number) => {
+    const filteredBarriers = getBarriersById(barrierId);
+    if (filteredBarriers && filteredBarriers.length) {
+      const activeBarrier = filteredBarriers.find(
+        (barrier) => barrier.isActive,
+      );
+      if (activeBarrier) {
+        return activeBarrier;
+      }
+      return filteredBarriers[0];
+    }
+  };
+  const handleBarrierInPanelClick = (barrierId: number, index: number) => {
+    store.barriersStore.setIsActiveParamToBarrier(barrierId, index);
+  };
+
   return (
     <Layout
       navPanel={
         <NavPanel
+          disableSaveButton={!savingState}
           actions={
             <Button
               onClick={() => navigate(-1)}
@@ -169,8 +212,9 @@ const BarriersPage = observer((props: IBarriersPage) => {
                 <CollapseElement
                   label={
                     <BarrierElement
+                      barriersLength={getBarriersById(barrier.id)?.length}
                       handleCounterClick={(countType) =>
-                        handleCounterClick(countType, barrier)
+                        handleAddBarrier(countType, barrier)
                       }
                       title={barrier.title}
                     />
@@ -178,9 +222,16 @@ const BarriersPage = observer((props: IBarriersPage) => {
                   key={barrier.id}
                   content={
                     <>
-                      <BarriersPanel />
+                      <BarriersPanel
+                        onItemClick={handleBarrierInPanelClick}
+                        barriers={getBarriersById(barrier.id)}
+                      />
+
                       <BarrierForm
-                        handleChange={(value: IBarrier) => handleChange(value)}
+                        formFields={getActiveBarrierById(barrier.id)}
+                        handleChange={(value: IFormFieldTextValue) =>
+                          handleChange(value, barrier.id)
+                        }
                         isValidate={store.inspectionStore.isValidate}
                       />
                     </>

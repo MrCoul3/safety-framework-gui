@@ -7,34 +7,38 @@ import {
   IFormFieldTextValue,
   IFormFieldValue,
 } from "../../interfaces/IFieldInterfaces";
-import { BarrierTypes } from "../../enums/BarrierTypes";
+import { BarrierFieldTypes } from "../../enums/BarrierTypes";
 import { PropStatus } from "@consta/uikit/__internal__/src/components/SelectComponents/types";
+import { IFilledBarrier } from "../../interfaces/IFilledBarrier";
 
 interface IBarrierForm {
   isValidate: boolean;
 
-  handleChange(value: any): void;
+  formFields?: IFilledBarrier;
+
+  handleChange(value: IFormFieldTextValue): void;
 }
 
 const BarrierForm = observer((props: IBarrierForm) => {
+
   const [savingState, setSavingState] = useState(false);
 
-  const getValue = (): string => {
-    /* if (props.formFieldsValues) {
-            if (field === FreeFormFieldTypes.ViolationManual) {
-                return props.formFieldsValues[field] as string;
-            }
-            return props.formFieldsValues[field]?.title as string;
-        }*/
+  const getValue = (type: BarrierFieldTypes): string => {
+    if (props.formFields) {
+      if (type === BarrierFieldTypes.Mub) {
+        return props.formFields[type] as string;
+      }
+      // return props.formFields[type]?.title as string;
+    }
     return "";
   };
-  const handleChange = (value: any) => {
-    console.log("handleChange", value);
+  const handleChange = (value: IFormFieldTextValue) => {
+    // console.log("handleChange", value);
     props.handleChange(value);
     setSavingState(true);
   };
 
-  const getStatus = (type: BarrierTypes) => {
+  const getStatus = (type: BarrierFieldTypes) => {
     /* if (props.formFieldsValues) {
       const condition = props.formFieldsValues[type];
       if (!condition) {
@@ -46,23 +50,25 @@ const BarrierForm = observer((props: IBarrierForm) => {
 
   return (
     <div className={style.BarrierForm}>
-      <div className={style.barrierFormWrap}>
-        <InspectionTextArea
-          className={"none"}
-          labelPos={"top"}
-          minRows={5}
-          required={true}
-          display={true}
-          value={getValue()}
-          handleChange={handleChange}
-          type={BarrierTypes.Mub}
-          status={
-            props.isValidate
-              ? (getStatus(BarrierTypes.Mub) as PropStatus)
-              : undefined
-          }
-        />
-      </div>
+      {props.formFields && (
+        <div className={style.barrierFormWrap}>
+          <InspectionTextArea
+            className={"none"}
+            labelPos={"top"}
+            minRows={5}
+            required={true}
+            display={true}
+            value={getValue(BarrierFieldTypes.Mub)}
+            handleChange={handleChange}
+            type={BarrierFieldTypes.Mub}
+            status={
+              props.isValidate
+                ? (getStatus(BarrierFieldTypes.Mub) as PropStatus)
+                : undefined
+            }
+          />
+        </div>
+      )}
     </div>
   );
 });

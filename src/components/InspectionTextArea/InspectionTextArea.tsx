@@ -12,7 +12,7 @@ import { FreeFormFieldTypes } from "../../enums/FreeFormTypes";
 import { PropStatus } from "@consta/uikit/__internal__/src/components/SelectComponents/types";
 import { useTranslation } from "react-i18next";
 import classNames from "classnames";
-import { BarrierTypes } from "../../enums/BarrierTypes";
+import { BarrierFieldTypes } from "../../enums/BarrierTypes";
 
 interface IInspectionTextArea {
   handleChange(value: IFormFieldTextValue): void;
@@ -24,7 +24,7 @@ interface IInspectionTextArea {
   labelPos?: "left" | "top";
   required?: boolean;
   status: PropStatus | undefined;
-  type: InspectionFormTypes | FreeFormFieldTypes | BarrierTypes;
+  type: InspectionFormTypes | FreeFormFieldTypes | BarrierFieldTypes;
 }
 
 const InspectionTextArea = observer((props: IInspectionTextArea) => {

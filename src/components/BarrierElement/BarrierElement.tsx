@@ -7,6 +7,7 @@ import { Collapse } from "@consta/uikit/Collapse";
 
 interface IBarrierElement {
   title?: string | null;
+    barriersLength?: number
   handleCounterClick(countType: number): void;
 }
 
@@ -23,7 +24,7 @@ const BarrierElement = observer((props: IBarrierElement) => {
         <span className={style.code}>{code}</span>
         <span className={style.name}>{name}</span>
       </div>
-      <Counter onClick={props.handleCounterClick} />
+      <Counter length={props.barriersLength?.toString()} onClick={props.handleCounterClick} />
     </div>
   );
 });

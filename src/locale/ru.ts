@@ -6,6 +6,7 @@ import {
   InspectionFormTypes,
 } from "../enums/InspectionFormTypes";
 import {FreeFormFieldTypes, FreeFormTypes} from "../enums/FreeFormTypes";
+import {BarrierFieldTypes} from "../enums/BarrierTypes";
 
 export const ru = {
   dict: {
@@ -93,6 +94,7 @@ export const ru = {
     noData: "Нет данных",
     noFilled: "Не заполнено",
     noBarriers: "Не найдено барьеров",
+    noBarrierPanelElements: "Что бы добавить барьер нажмите '+'",
 
     // Данные формы
     [InspectionFormGroups.Common]: "Общее",
@@ -129,6 +131,10 @@ export const ru = {
     [FreeFormFieldTypes.RiskLevel]: "Степень риска",
 
     freeForm: "Свободная форма",
+
+    barrier: "Барьер",
+
+    [BarrierFieldTypes.Mub]: "Место установки барьера (МУБ)",
 
 
     addInspectionTitle: "Заполнение данных инспекции",
@@ -170,6 +176,9 @@ export const ru = {
     [FreeFormFieldTypes.NmdRule + "Placeholder"]: "Введите пункт правил НМД",
     [FreeFormFieldTypes.OdOuCategory + "Placeholder"]: "Введите категорию ОД/ОУ",
     [FreeFormFieldTypes.RiskLevel + "Placeholder"]: "Введите степень риска",
+
+    [BarrierFieldTypes.Mub + "Placeholder"]: "Укажите место установки барьера",
+
 
     dialogClearFields: "Очистить все заполненные поля?",
     dialogDeleteFreeForm: "Удалить свободную форму?",

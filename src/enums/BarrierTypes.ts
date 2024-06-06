@@ -1,3 +1,3 @@
-export enum BarrierTypes {
-    Mub= "mub"
+export enum BarrierFieldTypes {
+    Mub = "mub"
 }
