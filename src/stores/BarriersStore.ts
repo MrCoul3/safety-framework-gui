@@ -51,9 +51,9 @@ export class BarriersStore {
         (barrier) => barrier.barrierId !== barrierId,
     );
   }
-  changeFormFieldsValues(value: IFormFieldTextValue, barrierId: number) {
+  changeFormFieldsValues(value: IFormFieldTextValue, barrierId: number, index: number) {
     const foundBarriersById = this.getFoundBarriersById(barrierId);
-    const activeBarrier = foundBarriersById.find((item) => item.isActive);
+    const activeBarrier = foundBarriersById[index]
     const key = Object.keys(value)[0];
     const val = Object.values(value)[0];
     if (activeBarrier) {

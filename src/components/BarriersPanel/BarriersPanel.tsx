@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {ReactNode, useState} from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
 import { IFilledBarrier } from "../../interfaces/IFilledBarrier";
@@ -8,6 +8,7 @@ import classNames from "classnames";
 interface IBarriersPanel {
   barriers: IFilledBarrier[];
   onItemClick(id: number, index: number): void;
+  renderForm(index: number): ReactNode
 }
 
 const BarriersPanel = observer((props: IBarriersPanel) => {
@@ -23,26 +24,29 @@ const BarriersPanel = observer((props: IBarriersPanel) => {
   return (
     <div>
       <div className={style.BarriersPanelWrap}>
-        {props.barriers.length ? (
-          <div className={style.barriersPanel}>
-            {props.barriers.map((item, index) => (
-              <div
-                onClick={() => onItemClick(item, index)}
-                className={classNames(style.panelElement, {
-                  [style.panelElementActive]: isActiveIndex === index,
-                })}
-              >
-                {/* {t("barrier")}*/} {code(item.title ?? "")} - {index + 1}{" "}
-                <span>&#8226;</span>
-              </div>
-            ))}
-          </div>
-        ) : (
+        {
+          props.barriers.length ? (
+            <div className={style.barriersPanel}>
+              {props.barriers.map((item, index) => (
+                <div
+                  onClick={() => onItemClick(item, index)}
+                  className={classNames(style.panelElement, {
+                    [style.panelElementActive]: isActiveIndex === index,
+                  })}
+                >
+                  {/* {t("barrier")}*/} {code(item.title ?? "")} - {index + 1}{" "}
+                  <span>&#8226;</span>
+                </div>
+              ))}
+            </div>
+          ) : null /*: (
           <span className={style.noBarrierPanelElements}>
             {t("noBarrierPanelElements")}
           </span>
-        )}
+        )*/
+        }
       </div>
+      {props.renderForm(isActiveIndex)}
     </div>
   );
 });

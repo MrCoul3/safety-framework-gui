@@ -48,6 +48,7 @@ export const ru = {
     saveInspection: "Сохранить инспекцию",
     sendInspection: "Отправить инспекцию",
     addFreeForm: "Добавить свободную форму",
+    addBarrier: "Добавить барьер",
     toPassports: "К паспортам",
     toInspectionForm: "К данным инспекции",
     saveChanges: "Сохранить изменения",

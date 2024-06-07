@@ -25,6 +25,7 @@ import {
 import { IFilledBarrier } from "../../interfaces/IFilledBarrier";
 import { BarrierFieldTypes } from "../../enums/BarrierTypes";
 import { IInspection } from "../../interfaces/IInspection";
+import AddBarrierButton from "../../components/AddBarrierButton/AddBarrierButton";
 
 interface IBarriersPage {}
 
@@ -56,10 +57,9 @@ const BarriersPage = observer((props: IBarriersPage) => {
   };
 
   const getFilledBarriersFromFieldsData = () => {
-
-    const filledBarriers = (store.inspectionStore.formFieldsValues as IInspection)[
-      "filledBarriers"
-    ];
+    const filledBarriers = (
+      store.inspectionStore.formFieldsValues as IInspection
+    )["filledBarriers"];
     if (filledBarriers) {
       store.barriersStore.setFilledBarriers(filledBarriers);
     }
@@ -140,8 +140,9 @@ const BarriersPage = observer((props: IBarriersPage) => {
     return searchText ? getFilteredBarriers() : store.barriersStore.barriers;
   };
 
-  const handleAddBarrier = (countType: number, barrier: IBarrier) => {
-    console.log("handleAddBarrier", countType, toJS(barrier));
+  const handleAddBarrier = (barrier: IBarrier) => {
+    console.log("handleAddBarrier", toJS(barrier));
+    setSavingState(true);
 
     const foundBarriersById = store.barriersStore.getFoundBarriersById(
       barrier.id,
@@ -150,42 +151,34 @@ const BarriersPage = observer((props: IBarriersPage) => {
 
     const value: IFilledBarrier = {
       [BarrierFieldTypes.Mub]: "",
-      isActive: !foundBarriersById.length,
       barrierId: barrier.id,
       passportId: barrier.passportId,
       filledRequirements: null,
       title: barrier.title ?? "",
     };
+    store.barriersStore.addFilledBarriers(value);
 
-    if (countType === 1) {
-      store.barriersStore.addFilledBarriers(value);
-      // "+"
-    }
-    if (countType === 0) {
-      store.barriersStore.removeFilledBarriers(value.barrierId);
-      // "-"
-    }
   };
 
   const [isFormsValidForSending, setIsFormsValidForSending] = useState(false);
 
-  const handleChange = (value: IFormFieldTextValue, barrierId: number) => {
+  const handleChange = (value: IFormFieldTextValue, barrierId: number, index: number) => {
     console.log("handleChange", value, barrierId);
     setSavingState(true);
-    store.barriersStore.changeFormFieldsValues(value, barrierId);
+    store.barriersStore.changeFormFieldsValues(value, barrierId, index);
     // store.freeFormStore.updateFormFieldsValues(value, index);
     // const isValid = store.freeFormStore.checkIsFreeFormSuccess();
     // console.log("handleSendInspection isValid", isValid);
     // setIsFormsValidForSending(isValid);
   };
 
-  const getBarriersById = (barrierId: number) => {
+  const getFilledBarriersById = (barrierId: number) => {
     return store.barriersStore.filledBarriers.filter(
       (item) => item.barrierId === barrierId,
     );
   };
   const getActiveBarrierById = (barrierId: number) => {
-    const filteredBarriers = getBarriersById(barrierId);
+    const filteredBarriers = getFilledBarriersById(barrierId);
     if (filteredBarriers && filteredBarriers.length) {
       const activeBarrier = filteredBarriers.find(
         (barrier) => barrier.isActive,
@@ -197,8 +190,11 @@ const BarriersPage = observer((props: IBarriersPage) => {
     }
   };
   const handleBarrierInPanelClick = (barrierId: number, index: number) => {
-    store.barriersStore.setIsActiveParamToBarrier(barrierId, index);
+    console.log('handleBarrierInPanelClick')
+    // store.barriersStore.setIsActiveParamToBarrier(barrierId, index);
   };
+
+  const handleDeleteBarrier = () => {};
 
   return (
     <Layout
@@ -232,10 +228,7 @@ const BarriersPage = observer((props: IBarriersPage) => {
                 <CollapseElement
                   label={
                     <BarrierElement
-                      barriersLength={getBarriersById(barrier.id)?.length}
-                      handleCounterClick={(countType) =>
-                        handleAddBarrier(countType, barrier)
-                      }
+                      barriersLength={getFilledBarriersById(barrier.id)?.length}
                       title={barrier.title}
                     />
                   }
@@ -244,15 +237,21 @@ const BarriersPage = observer((props: IBarriersPage) => {
                     <>
                       <BarriersPanel
                         onItemClick={handleBarrierInPanelClick}
-                        barriers={getBarriersById(barrier.id)}
+                        barriers={getFilledBarriersById(barrier.id)}
+                        renderForm={(index: number) => (
+                          <BarrierForm
+                            handleDelete={() => handleDeleteBarrier()}
+                            formFields={getFilledBarriersById(barrier.id)[index]}
+                            handleChange={(value: IFormFieldTextValue) =>
+                              handleChange(value, barrier.id, index)
+                            }
+                            isValidate={store.inspectionStore.isValidate}
+                          />
+                        )}
                       />
 
-                      <BarrierForm
-                        formFields={getActiveBarrierById(barrier.id)}
-                        handleChange={(value: IFormFieldTextValue) =>
-                          handleChange(value, barrier.id)
-                        }
-                        isValidate={store.inspectionStore.isValidate}
+                      <AddBarrierButton
+                        onClick={() => handleAddBarrier(barrier)}
                       />
                     </>
                   }

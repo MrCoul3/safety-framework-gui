@@ -6,22 +6,22 @@ import { IconRemove } from "@consta/icons/IconRemove";
 import { IconAdd } from "@consta/icons/IconAdd";
 import { Badge } from "@consta/uikit/Badge";
 interface ICounter {
-  onClick(countType: number): void;
+  // onClick?(countType: number): void;
     length?: string
 }
 
 const Counter = observer((props: ICounter) => {
   const handleDecrease = () => {
-    props.onClick(0);
+    // props.onClick(0);
   };
 
   const handleIncrease = () => {
-    props.onClick(1);
+    // props.onClick(1);
   };
 
   return (
     <div className={style.Counter}>
-      <Button
+      {/*<Button
         className={"button"}
         form={"round"}
         onClick={handleDecrease}
@@ -29,9 +29,9 @@ const Counter = observer((props: ICounter) => {
         view={"clear"}
         onlyIcon
         iconLeft={IconRemove}
-      />
+      />*/}
       <Badge label={props.length} status={"system"} form={"round"} />
-      <Button
+      {/*<Button
         className={"button"}
         form={"round"}
         size={"s"}
@@ -39,7 +39,7 @@ const Counter = observer((props: ICounter) => {
         onClick={handleIncrease}
         onlyIcon
         iconLeft={IconAdd}
-      />
+      />*/}
     </div>
   );
 });

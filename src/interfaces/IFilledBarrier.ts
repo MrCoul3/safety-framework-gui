@@ -8,7 +8,6 @@ export interface IFilledBarrier {
   barrierId: number;
   title?: string;
   passportId: number;
-  isActive?: boolean;
   filledRequirements: IFilledRequirements[] | null;
 
 }
