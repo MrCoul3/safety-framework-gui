@@ -46,7 +46,7 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
       label: t("completionFreeForm"),
     },
   ];
-  const getFreeFormsFromFormFieldsData = () => {
+  const getFreeFormsFromFieldsData = () => {
     console.log('getFreeFormsFromFormFieldsData', toJS(store.inspectionStore.formFieldsValues))
     const freeForms = (store.inspectionStore.formFieldsValues as IInspection)[
       "filledFreeForms"
@@ -63,7 +63,7 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
   };
   const init = () => {
     loadInspection();
-    getFreeFormsFromFormFieldsData();
+    getFreeFormsFromFieldsData();
     setIsFormsValidForSending(store.freeFormStore.checkIsFreeFormSuccess());
   };
 

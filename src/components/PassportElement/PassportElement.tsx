@@ -4,12 +4,13 @@ import style from "./style.module.css";
 import { IPassport } from "../../interfaces/IPassport";
 import { useTranslation } from "react-i18next";
 import { Badge } from "@consta/uikit/Badge";
-import {icon3} from "../../assets/icons";
+import { icon3 } from "../../assets/icons";
 
 interface IPassportElement {
-  code: string
-  id: string
-  icon?: string
+  code: string;
+  id: string;
+  barriersCount: number;
+  icon?: string;
   data: IPassport;
   onClick(id: string): void;
 }
@@ -30,8 +31,8 @@ const PassportElement = observer((props: IPassportElement) => {
         {t("barriersSelect")}
         <Badge
           size={"s"}
-          label={'0'}
-          status={"system"}
+          label={props.barriersCount.toString()}
+          status={props.barriersCount > 0 ? "warning" : "system"}
           form={"round"}
         />
       </span>

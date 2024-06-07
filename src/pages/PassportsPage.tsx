@@ -11,6 +11,8 @@ import { IBreadCrumbs } from "../interfaces/IBreadCrumbs";
 import Layout from "../layouts/Layout/Layout";
 import { Button } from "@consta/uikit/Button";
 import { isDevelop } from "../constants/config";
+import { toJS } from "mobx";
+import { IInspection } from "../interfaces/IInspection";
 
 interface IPassportsPage {}
 
@@ -18,8 +20,6 @@ const PassportsPage = observer((props: IPassportsPage) => {
   const { t } = useTranslation("dict");
 
   let { editInspectionId } = useParams();
-
-  let { passportId } = useParams();
 
   const store = useStore();
 
@@ -34,8 +34,17 @@ const PassportsPage = observer((props: IPassportsPage) => {
     }
   };
 
+  const filledBarriers = (
+    store.inspectionStore.formFieldsValues as IInspection
+  )["filledBarriers"];
+
   useEffect(() => {
     init();
+    console.log(
+      "passport page formFieldsValues",
+      toJS(store.inspectionStore.formFieldsValues),
+    );
+    console.log("passport page filledBarriers", toJS(filledBarriers));
   }, []);
 
   const handlePassportClick = (id: string) => {
@@ -73,6 +82,15 @@ const PassportsPage = observer((props: IPassportsPage) => {
     });
   };
 
+  const getBarriersCount = (passportId: string) => {
+    if (filledBarriers && filledBarriers.length) {
+      return  filledBarriers?.filter((item) =>
+          item.passportId.toString()  === passportId,
+      )?.length
+    }
+    return 0
+  }
+
   return (
     <Layout
       navPanel={
@@ -96,6 +114,9 @@ const PassportsPage = observer((props: IPassportsPage) => {
             .filter((passport) => passport.code)
             .map((passport) => (
               <PassportElement
+                barriersCount={
+                  getBarriersCount(passport.id)
+                }
                 id={passport.id}
                 code={passport.code}
                 onClick={handlePassportClick}

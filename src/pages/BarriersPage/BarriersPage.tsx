@@ -24,6 +24,7 @@ import {
 } from "../../interfaces/IFieldInterfaces";
 import { IFilledBarrier } from "../../interfaces/IFilledBarrier";
 import { BarrierFieldTypes } from "../../enums/BarrierTypes";
+import { IInspection } from "../../interfaces/IInspection";
 
 interface IBarriersPage {}
 
@@ -48,7 +49,25 @@ const BarriersPage = observer((props: IBarriersPage) => {
     [passportId],
   );
 
+  const loadInspection = () => {
+    if (editInspectionId) {
+      store.inspectionStore.loadInspection(editInspectionId);
+    }
+  };
+
+  const getFilledBarriersFromFieldsData = () => {
+
+    const filledBarriers = (store.inspectionStore.formFieldsValues as IInspection)[
+      "filledBarriers"
+    ];
+    if (filledBarriers) {
+      store.barriersStore.setFilledBarriers(filledBarriers);
+    }
+  };
+
   const init = () => {
+    loadInspection();
+    getFilledBarriersFromFieldsData();
     console.log("passportId", passportId);
     if (passportId) {
       console.log("passport", toJS(passport));
@@ -133,6 +152,7 @@ const BarriersPage = observer((props: IBarriersPage) => {
       [BarrierFieldTypes.Mub]: "",
       isActive: !foundBarriersById.length,
       barrierId: barrier.id,
+      passportId: barrier.passportId,
       filledRequirements: null,
       title: barrier.title ?? "",
     };
