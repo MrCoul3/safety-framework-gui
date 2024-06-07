@@ -73,8 +73,14 @@ export class BarriersStore {
   }
   addFilledBarriers(value: IFilledBarrier) {
     this.filledBarriers = [...this.filledBarriers, value];
-
     console.debug("filledBarriers: ", toJS(this.filledBarriers));
+  }
+
+  deleteFilledBarrier(barrierId: number, index: number) {
+    const foundBarriersById = this.getFoundBarriersById(barrierId);
+    foundBarriersById.splice(index, 1);
+    this.filterBarriersFromBarrierId(barrierId);
+    this.filledBarriers = [...this.filledBarriers, ...foundBarriersById];
   }
 
   removeFilledBarriers(barrierId: number) {
@@ -87,19 +93,6 @@ export class BarriersStore {
     console.log("foundBarriersById", toJS(foundBarriersById));
 
     this.filterBarriersFromBarrierId(barrierId);
-
-    this.filledBarriers = [...this.filledBarriers, ...foundBarriersById];
-    console.debug("filledBarriers: ", toJS(this.filledBarriers));
-  }
-
-  setIsActiveParamToBarrier(barrierId: number, index: number) {
-    const foundBarriersById = this.getFoundBarriersById(barrierId);
-
-    foundBarriersById.forEach((item) => (item.isActive = false));
-
-    foundBarriersById[index].isActive = true;
-
-    this.filterBarriersFromBarrierId(barrierId)
 
     this.filledBarriers = [...this.filledBarriers, ...foundBarriersById];
     console.debug("filledBarriers: ", toJS(this.filledBarriers));

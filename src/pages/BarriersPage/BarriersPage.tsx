@@ -177,24 +177,11 @@ const BarriersPage = observer((props: IBarriersPage) => {
       (item) => item.barrierId === barrierId,
     );
   };
-  const getActiveBarrierById = (barrierId: number) => {
-    const filteredBarriers = getFilledBarriersById(barrierId);
-    if (filteredBarriers && filteredBarriers.length) {
-      const activeBarrier = filteredBarriers.find(
-        (barrier) => barrier.isActive,
-      );
-      if (activeBarrier) {
-        return activeBarrier;
-      }
-      return filteredBarriers[0];
-    }
-  };
-  const handleBarrierInPanelClick = (barrierId: number, index: number) => {
-    console.log('handleBarrierInPanelClick')
-    // store.barriersStore.setIsActiveParamToBarrier(barrierId, index);
-  };
 
-  const handleDeleteBarrier = () => {};
+  const handleDeleteBarrier = (barrierId: number, index: number) => {
+    store.barriersStore.deleteFilledBarrier(barrierId, index)
+    setSavingState(true);
+  };
 
   return (
     <Layout
@@ -236,11 +223,10 @@ const BarriersPage = observer((props: IBarriersPage) => {
                   content={
                     <>
                       <BarriersPanel
-                        onItemClick={handleBarrierInPanelClick}
                         barriers={getFilledBarriersById(barrier.id)}
                         renderForm={(index: number) => (
                           <BarrierForm
-                            handleDelete={() => handleDeleteBarrier()}
+                            handleDelete={() => handleDeleteBarrier(barrier.id, index)}
                             formFields={getFilledBarriersById(barrier.id)[index]}
                             handleChange={(value: IFormFieldTextValue) =>
                               handleChange(value, barrier.id, index)

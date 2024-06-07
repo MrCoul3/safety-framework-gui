@@ -7,7 +7,6 @@ import classNames from "classnames";
 
 interface IBarriersPanel {
   barriers: IFilledBarrier[];
-  onItemClick(id: number, index: number): void;
   renderForm(index: number): ReactNode
 }
 
@@ -18,7 +17,6 @@ const BarriersPanel = observer((props: IBarriersPanel) => {
   const [isActiveIndex, setIsActiveIndex] = useState(0);
   const onItemClick = (item: IFilledBarrier, index: number) => {
     setIsActiveIndex(index);
-    props.onItemClick(item.barrierId, index);
   };
 
   return (
