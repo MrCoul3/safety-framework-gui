@@ -48921,5 +48921,22 @@
   "MemberInfo": {
     "title": null,
     "login": "GAZPROM-NEFT\\Vinogradov.DVl"
-  }
+  },
+  "fulfillments": [
+        {
+            "title": "да",
+            "code": "yes",
+            "id": 1
+        },
+        {
+            "title": "нет",
+            "code": "no",
+            "id": 2
+        },
+        {
+            "title": "не применимо",
+            "code": "inapplicable",
+            "id": 3
+        }
+    ]
 }

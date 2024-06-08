@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
 import InspectionTextArea from "../InspectionTextArea/InspectionTextArea";
@@ -7,25 +7,40 @@ import {
   IFormFieldTextValue,
   IFormFieldValue,
 } from "../../interfaces/IFieldInterfaces";
-import { BarrierFieldTypes } from "../../enums/BarrierTypes";
+import {
+  BARRIER_EXTRA_FIELDS_VALUES,
+  BarrierFieldTypes,
+} from "../../enums/BarrierTypes";
 import { PropStatus } from "@consta/uikit/__internal__/src/components/SelectComponents/types";
 import { IFilledBarrier } from "../../interfaces/IFilledBarrier";
 import ConfirmDialog from "../ConfirmDialog/ConfirmDialog";
 import { useTranslation } from "react-i18next";
 import { InspectionFormTypes } from "../../enums/InspectionFormTypes";
 import { Button } from "@consta/uikit/Button";
-import {Card} from "@consta/uikit/Card";
+import { Card } from "@consta/uikit/Card";
 import MubCards from "../MubCards/MubCards";
-import {IBarrier} from "../../interfaces/IBarrier";
+import { IBarrier } from "../../interfaces/IBarrier";
+import { toJS } from "mobx";
+import QuestionCard from "../QuestionCard/QuestionCard";
+import { IFulfillment } from "../../interfaces/IFulfillment";
+import { IFilledRequirements } from "../../interfaces/IFilledRequirements";
+import { IQuestion } from "../../interfaces/IQuestion";
+import { FilledQuestionTypes } from "../../enums/FilledQuestionTypes";
 
 interface IBarrierForm {
   isValidate: boolean;
+  fulfillments: IFulfillment[];
+  // filledRequirements?: IFilledRequirements[] | null;
+
+  passportId?: string;
 
   formFields?: IFilledBarrier;
 
-  barrier: IBarrier
+  barrier: IBarrier;
 
   handleChange(value: IFormFieldTextValue): void;
+
+  handleFulfillmentChange(value: IFulfillment): void;
 
   handleClearForm?(): void;
 
@@ -64,6 +79,16 @@ const BarrierForm = observer((props: IBarrierForm) => {
     return "success";
   };
 
+  const questions = useMemo(
+    () =>
+      props.barrier.requirements
+        .map((req) => {
+          return req.questions;
+        })
+        .flat(),
+    [props.barrier.requirements],
+  );
+
   const handleSave = () => {
     setSavingState(false);
     props.handleSaveForm?.();
@@ -72,31 +97,84 @@ const BarrierForm = observer((props: IBarrierForm) => {
   const [isClearModalOpen, setIsClearModalOpen] = React.useState(false);
   const [isDelModalOpen, setIsDelModalOpen] = React.useState(false);
 
+  const isExtraFieldsCondition = () => {
+    // для ДТП и ГРУЗ
+    return props.passportId === "7" || props.passportId === "5";
+  };
+
+  /* const renderExtraMubFields = () => {
+    if (isExtraFieldsCondition()) {
+      return BARRIER_EXTRA_FIELDS_VALUES.map((extraField) => (
+        <InspectionTextArea
+          minRows={1}
+          display={true}
+          required={true}
+          labelPos={"top"}
+          className={"none"}
+          handleChange={handleChange}
+          caption={t("mubCaption")}
+          type={extraField}
+          value={getValue(extraField)}
+          status={
+            props.isValidate
+              ? (getStatus(BarrierFieldTypes.Mub) as PropStatus)
+              : undefined
+          }
+        />
+      ));
+    }
+  };*/
+
+  const handleFulfillmentChange = (value: IFulfillment) => {
+    console.log("QuestionCard handleChange", toJS(value));
+    props.handleFulfillmentChange(value);
+  };
+
+  const filledRequirements = props.formFields?.filledRequirements;
+
+  const getFilledQuestion = (question: IQuestion) => {
+    const filledRequirement = props.formFields?.filledRequirements?.find(
+      (fillReq) => fillReq.requirementId === question.requirementId,
+    );
+    const filledQuestion = filledRequirement?.filledQuestions.find(
+      (fillQuest) => fillQuest[FilledQuestionTypes.QuestionId] === question.id,
+    );
+    console.log('getFilledQuestion filledQuestion', toJS(filledQuestion))
+    return filledQuestion
+  };
+
   return (
     <div className={style.BarrierForm}>
       {props.formFields && (
         <>
-            <div className={style.barrierFormWrap}>
-              <InspectionTextArea
-                minRows={5}
-                display={true}
-                required={true}
-                labelPos={"top"}
-                className={"none"}
-                handleChange={handleChange}
-                caption={t("mubCaption")}
-                type={BarrierFieldTypes.Mub}
-                value={getValue(BarrierFieldTypes.Mub)}
-                status={
-                  props.isValidate
-                    ? (getStatus(BarrierFieldTypes.Mub) as PropStatus)
-                    : undefined
-                }
+          <div className={style.barrierFormWrap}>
+            <InspectionTextArea
+              minRows={5}
+              display={true}
+              required={true}
+              labelPos={"top"}
+              className={"none"}
+              handleChange={handleChange}
+              caption={t("mubCaption")}
+              type={BarrierFieldTypes.Mub}
+              value={getValue(BarrierFieldTypes.Mub)}
+              status={
+                props.isValidate
+                  ? (getStatus(BarrierFieldTypes.Mub) as PropStatus)
+                  : undefined
+              }
+            />
+            <MubCards mub={props.barrier.mub} mubHint={props.barrier.mubHint} />
+            {questions.map((question) => (
+              <QuestionCard
+                filledQuestion={getFilledQuestion(question)}
+                handleChange={handleFulfillmentChange}
+                fulfillments={props.fulfillments}
+                key={question.id}
+                title={question.title}
               />
-
-              <MubCards mub={props.barrier.mub} mubHint={props.barrier.mubHint}  />
-
-            </div>
+            ))}
+          </div>
           <div className={style.buttonsGroup}>
             <Button
               onClick={() => setIsDelModalOpen(true)}

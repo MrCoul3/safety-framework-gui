@@ -26,6 +26,9 @@ import { IFilledBarrier } from "../../interfaces/IFilledBarrier";
 import { BarrierFieldTypes } from "../../enums/BarrierTypes";
 import { IInspection } from "../../interfaces/IInspection";
 import AddBarrierButton from "../../components/AddBarrierButton/AddBarrierButton";
+import { IFulfillment } from "../../interfaces/IFulfillment";
+import { FilledQuestionTypes } from "../../enums/FilledQuestionTypes";
+import { IQuestion } from "../../interfaces/IQuestion";
 
 interface IBarriersPage {}
 
@@ -76,9 +79,12 @@ const BarriersPage = observer((props: IBarriersPage) => {
 
       if (isDevelop) {
         store.barriersStore.getBarriersDev();
+        store.barriersStore.getFulfillmentsDev();
         store.barriersStore.getBarriers(passportId);
+        store.barriersStore.getFulfillments();
       } else {
         store.barriersStore.getBarriers(passportId);
+        store.barriersStore.getFulfillments();
       }
     }
   };
@@ -142,6 +148,14 @@ const BarriersPage = observer((props: IBarriersPage) => {
     return searchText ? getFilteredBarriers() : store.barriersStore.barriers;
   };
 
+  const getFilledQuestions = (questions: IQuestion[]) => {
+    return questions.map((quest) => ({
+      [FilledQuestionTypes.FilledRequirementId]: quest.requirementId,
+      [FilledQuestionTypes.QuestionId]: quest.id,
+      [FilledQuestionTypes.FulfillmentId]: 1,
+    }));
+  };
+
   const handleAddBarrier = (barrier: IBarrier) => {
     console.log("handleAddBarrier", toJS(barrier));
     setSavingState(true);
@@ -149,22 +163,32 @@ const BarriersPage = observer((props: IBarriersPage) => {
     const foundBarriersById = store.barriersStore.getFoundBarriersById(
       barrier.id,
     );
+
     console.log("handleAddBarrier foundBarriersById", toJS(foundBarriersById));
+    const filledRequirements = barrier.requirements.map((req) => ({
+      requirementId: req.id,
+      filledQuestions: getFilledQuestions(req.questions),
+    }));
+    console.log(
+      "handleAddBarrier filledRequirements",
+      toJS(filledRequirements),
+    );
 
     const value: IFilledBarrier = {
       [BarrierFieldTypes.Mub]: "",
       barrierId: barrier.id,
-      // passportId: barrier.passportId,
-      filledRequirements: null,
-      title: barrier.title ?? "",
+      filledRequirements: filledRequirements,
     };
     store.barriersStore.addFilledBarriers(value);
-
   };
 
   const [isFormsValidForSending, setIsFormsValidForSending] = useState(false);
 
-  const handleChange = (value: IFormFieldTextValue, barrierId: number, index: number) => {
+  const handleChange = (
+    value: IFormFieldTextValue,
+    barrierId: number,
+    index: number,
+  ) => {
     console.log("handleChange", value, barrierId);
     setSavingState(true);
     store.barriersStore.changeFormFieldsValues(value, barrierId, index);
@@ -174,6 +198,10 @@ const BarriersPage = observer((props: IBarriersPage) => {
     // setIsFormsValidForSending(isValid);
   };
 
+  const handleFulfillmentChange = (value: IFulfillment) => {
+    console.log("QuestionCard handleChange", toJS(value));
+  };
+
   const getFilledBarriersById = (barrierId: number) => {
     return store.barriersStore.filledBarriers.filter(
       (item) => item.barrierId === barrierId,
@@ -181,12 +209,12 @@ const BarriersPage = observer((props: IBarriersPage) => {
   };
 
   const handleDeleteBarrier = (barrierId: number, index: number) => {
-    store.barriersStore.deleteFilledBarrier(barrierId, index)
+    store.barriersStore.deleteFilledBarrier(barrierId, index);
     setSavingState(true);
   };
 
   const handleClearForm = (barrierId: number, index: number) => {
-    store.barriersStore.clearFilledBarrier(barrierId, index)
+    store.barriersStore.clearFilledBarrier(barrierId, index);
     setSavingState(true);
   };
 
@@ -230,11 +258,27 @@ const BarriersPage = observer((props: IBarriersPage) => {
                   content={
                     <>
                       <BarriersPanel
+                        barrierTitle={barrier.title}
                         filledBarriers={getFilledBarriersById(barrier.id)}
                         renderForm={(index: number) => (
-                          <BarrierForm barrier={barrier} handleClearForm={() => handleClearForm(barrier.id, index)}
-                            handleDelete={() => handleDeleteBarrier(barrier.id, index)}
-                            formFields={getFilledBarriersById(barrier.id)[index]}
+                          <BarrierForm
+                         /*   filledRequirements={
+                              getFilledBarriersById(barrier.id)?.[index]
+                                ?.filledRequirements
+                            }*/
+                            handleFulfillmentChange={handleFulfillmentChange}
+                            fulfillments={store.barriersStore.fulfillments}
+                            passportId={passportId}
+                            barrier={barrier}
+                            handleClearForm={() =>
+                              handleClearForm(barrier.id, index)
+                            }
+                            handleDelete={() =>
+                              handleDeleteBarrier(barrier.id, index)
+                            }
+                            formFields={
+                              getFilledBarriersById(barrier.id)[index]
+                            }
                             handleChange={(value: IFormFieldTextValue) =>
                               handleChange(value, barrier.id, index)
                             }

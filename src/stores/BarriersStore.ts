@@ -7,6 +7,7 @@ import { IFormFieldTextValue } from "../interfaces/IFieldInterfaces";
 import {LOCAL_STORE_INSPECTIONS} from "../constants/config";
 import {BarrierFieldTypes} from "../enums/BarrierTypes";
 import {IFilledRequirements} from "../interfaces/IFilledRequirements";
+import {IFulfillment} from "../interfaces/IFulfillment";
 
 export class BarriersStore {
   private store: AppStore;
@@ -18,6 +19,7 @@ export class BarriersStore {
 
   filledBarriers: IFilledBarrier[] = [];
   barriers: IBarrier[] = [];
+  fulfillments: IFulfillment[] = [];
   async getBarriersDev() {
     try {
       const response = await localDevInstance.get(`barriers`);
@@ -36,6 +38,34 @@ export class BarriersStore {
       if (!response.data.error) {
         if (response.data.value) {
           this.setBarriers(response.data.value);
+        }
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+  async getFulfillments() {
+    try {
+      const response = await instance.get(
+        `fulfillments`,
+      );
+      if (!response.data.error) {
+        if (response.data.value) {
+          this.setFulfillments(response.data.value);
+        }
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+  async getFulfillmentsDev() {
+    try {
+      const response = await instance.get(
+        `fulfillments`,
+      );
+      if (!response.data.error) {
+        if (response.data) {
+          this.setFulfillments(response.data);
         }
       }
     } catch (e) {
@@ -68,6 +98,10 @@ export class BarriersStore {
   setBarriers(value: IBarrier[]) {
     this.barriers = value;
     console.debug("barriers: ", toJS(this.barriers));
+  }
+  setFulfillments(value: IFulfillment[]) {
+    this.fulfillments = value;
+    console.debug("fulfillments: ", toJS(this.fulfillments));
   }
   setFilledBarriers(value: IFilledBarrier[]) {
     this.filledBarriers = value;

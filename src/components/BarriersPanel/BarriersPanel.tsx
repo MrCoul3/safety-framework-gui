@@ -1,4 +1,4 @@
-import React, {ReactNode, useState} from "react";
+import React, { ReactNode, useState } from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
 import { IFilledBarrier } from "../../interfaces/IFilledBarrier";
@@ -7,7 +7,9 @@ import classNames from "classnames";
 
 interface IBarriersPanel {
   filledBarriers: IFilledBarrier[];
-  renderForm(index: number): ReactNode
+  renderForm(index: number): ReactNode;
+
+  barrierTitle: string | null;
 }
 
 const BarriersPanel = observer((props: IBarriersPanel) => {
@@ -32,8 +34,8 @@ const BarriersPanel = observer((props: IBarriersPanel) => {
                     [style.panelElementActive]: isActiveIndex === index,
                   })}
                 >
-                  {/* {t("barrier")}*/} {code(item.title ?? "")} - {index + 1}{" "}
-                  <span>&#8226;</span>
+                  {/* {t("barrier")}*/} {code(props.barrierTitle ?? "")} -{" "}
+                  {index + 1} <span>&#8226;</span>
                 </div>
               ))}
             </div>
