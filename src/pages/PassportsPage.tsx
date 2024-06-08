@@ -116,14 +116,20 @@ const PassportsPage = observer((props: IPassportsPage) => {
     console.log("getBarriersCount passportById", toJS(passportById));
     console.log("getBarriersCount passportBarriers", toJS(passportBarriers));
     if (filledBarriers && filledBarriers.length) {
-      const filledBarriersByPassId = filledBarriers.filter(
-          (fillBar) =>
-              fillBar.barrierId ===
-              passportBarriers?.find((passBar) => passBar.id === fillBar.barrierId)
-                  ?.id,
+      const filledBarriersByPassId = filledBarriers.filter((fillBar) => {
+        const fillBarId = fillBar.barrierId.toString();
+        const passBarId = passportBarriers?.find((passBar) => {
+          const passId = passBar.id.toString();
+          const fillBarId = fillBar.barrierId.toString();
+          return passId === fillBarId;
+        })?.id;
+        return fillBarId === passBarId?.toString();
+      });
+      console.log(
+        "getBarriersCount filledBarriersByPassId",
+        toJS(filledBarriersByPassId.length),
       );
-      console.log("getBarriersCount filledBarriersByPassId", toJS(filledBarriersByPassId.length));
-      return filledBarriersByPassId.length
+      return filledBarriersByPassId.length;
     }
     return 0;
   };
