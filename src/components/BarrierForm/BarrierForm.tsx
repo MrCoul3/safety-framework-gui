@@ -26,6 +26,7 @@ import { IFulfillment } from "../../interfaces/IFulfillment";
 import { IFilledRequirements } from "../../interfaces/IFilledRequirements";
 import { IQuestion } from "../../interfaces/IQuestion";
 import { FilledQuestionTypes } from "../../enums/FilledQuestionTypes";
+import {IFilledQuestions} from "../../interfaces/IFilledQuestions";
 
 interface IBarrierForm {
   isValidate: boolean;
@@ -40,7 +41,7 @@ interface IBarrierForm {
 
   handleChange(value: IFormFieldTextValue): void;
 
-  handleFulfillmentChange(value: IFulfillment): void;
+  handleFulfillmentChange(value: IFilledQuestions): void;
 
   handleClearForm?(): void;
 
@@ -125,7 +126,7 @@ const BarrierForm = observer((props: IBarrierForm) => {
     }
   };*/
 
-  const handleFulfillmentChange = (value: IFulfillment) => {
+  const handleFulfillmentChange = (value: IFilledQuestions) => {
     console.log("QuestionCard handleChange", toJS(value));
     props.handleFulfillmentChange(value);
   };
@@ -133,7 +134,7 @@ const BarrierForm = observer((props: IBarrierForm) => {
   const filledRequirements = props.formFields?.filledRequirements;
 
   const getFilledQuestion = (question: IQuestion) => {
-    const filledRequirement = props.formFields?.filledRequirements?.find(
+    const filledRequirement = filledRequirements?.find(
       (fillReq) => fillReq.requirementId === question.requirementId,
     );
     const filledQuestion = filledRequirement?.filledQuestions.find(

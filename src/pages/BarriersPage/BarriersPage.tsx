@@ -29,6 +29,7 @@ import AddBarrierButton from "../../components/AddBarrierButton/AddBarrierButton
 import { IFulfillment } from "../../interfaces/IFulfillment";
 import { FilledQuestionTypes } from "../../enums/FilledQuestionTypes";
 import { IQuestion } from "../../interfaces/IQuestion";
+import { IFilledQuestions } from "../../interfaces/IFilledQuestions";
 
 interface IBarriersPage {}
 
@@ -198,13 +199,19 @@ const BarriersPage = observer((props: IBarriersPage) => {
     // setIsFormsValidForSending(isValid);
   };
 
-  const handleFulfillmentChange = (value: IFulfillment) => {
+  const handleFulfillmentChange = (
+    value: IFilledQuestions,
+    barrierId: number,
+    index: number,
+  ) => {
     console.log("QuestionCard handleChange", toJS(value));
+    // {filledRequirementId,  fulfillmentId, questionId}
+    store.barriersStore.updateFilledQuestions(value, barrierId, index);
   };
 
   const getFilledBarriersById = (barrierId: number) => {
-    return store.barriersStore.filledBarriers.filter(
-      (item) => item.barrierId === barrierId,
+    return store.barriersStore.filledBarriers?.filter(
+      (item) => item?.barrierId === barrierId,
     );
   };
 
@@ -262,11 +269,9 @@ const BarriersPage = observer((props: IBarriersPage) => {
                         filledBarriers={getFilledBarriersById(barrier.id)}
                         renderForm={(index: number) => (
                           <BarrierForm
-                         /*   filledRequirements={
-                              getFilledBarriersById(barrier.id)?.[index]
-                                ?.filledRequirements
-                            }*/
-                            handleFulfillmentChange={handleFulfillmentChange}
+                            handleFulfillmentChange={(value) =>
+                              handleFulfillmentChange(value, barrier.id, index)
+                            }
                             fulfillments={store.barriersStore.fulfillments}
                             passportId={passportId}
                             barrier={barrier}

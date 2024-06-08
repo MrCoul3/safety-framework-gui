@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
 import { useTranslation } from "react-i18next";
@@ -14,7 +14,7 @@ interface IQuestionCard {
 
   filledQuestion?: IFilledQuestions;
 
-  handleChange(value: IFulfillment): void;
+  handleChange(value: IFilledQuestions): void;
 }
 
 const QuestionCard = observer((props: IQuestionCard) => {
@@ -24,9 +24,18 @@ const QuestionCard = observer((props: IQuestionCard) => {
 
   const name = title?.replace(code ?? "", "");
 
+  useEffect(() => {
+    console.log("QuestionCard filledQuestion", toJS(props.filledQuestion));
+  }, [props.filledQuestion]);
+
   const handleChange = (value: IFulfillment) => {
-    console.log("QuestionCard handleChange", toJS(value));
-    props.handleChange(value);
+    console.log("QuestionCard handleChange value", toJS(value));
+    const resultValue = {
+      ...props.filledQuestion,
+      [FilledQuestionTypes.FulfillmentId]: +value.id,
+    };
+    console.log("QuestionCard handleChange resultValue", toJS(resultValue));
+    props.handleChange(resultValue);
   };
 
   // const [value, setValue] = React.useState<string | null>(simpleItems[0]);
@@ -38,14 +47,11 @@ const QuestionCard = observer((props: IQuestionCard) => {
         props.filledQuestion?.[FilledQuestionTypes.FulfillmentId]?.toString();
       return fulfilmentId === filledFulfillmentId;
     });
-    const result = {
+    return {
       title: fulfillment?.title ?? "",
       code: fulfillment?.code ?? "",
       id: fulfillment?.id ?? 1,
     };
-
-    console.log("getValue fulfillments result", result);
-    return result;
   };
 
   const { t } = useTranslation("dict");
@@ -59,7 +65,6 @@ const QuestionCard = observer((props: IQuestionCard) => {
         value={getValue()}
         items={props.fulfillments}
         getItemLabel={(item) => item.title}
-        // getItemDisabled={(item) => item.disabled}
         onChange={handleChange}
       />
     </div>

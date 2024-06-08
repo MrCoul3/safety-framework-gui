@@ -4,10 +4,11 @@ import { instance, localDevInstance } from "../api/endpoints";
 import { IBarrier } from "../interfaces/IBarrier";
 import { IFilledBarrier } from "../interfaces/IFilledBarrier";
 import { IFormFieldTextValue } from "../interfaces/IFieldInterfaces";
-import {LOCAL_STORE_INSPECTIONS} from "../constants/config";
-import {BarrierFieldTypes} from "../enums/BarrierTypes";
-import {IFilledRequirements} from "../interfaces/IFilledRequirements";
-import {IFulfillment} from "../interfaces/IFulfillment";
+import { LOCAL_STORE_INSPECTIONS } from "../constants/config";
+import { IFulfillment } from "../interfaces/IFulfillment";
+import { IFilledQuestions } from "../interfaces/IFilledQuestions";
+import { FilledQuestionTypes } from "../enums/FilledQuestionTypes";
+import { IFilledRequirements } from "../interfaces/IFilledRequirements";
 
 export class BarriersStore {
   private store: AppStore;
@@ -46,9 +47,7 @@ export class BarriersStore {
   }
   async getFulfillments() {
     try {
-      const response = await instance.get(
-        `fulfillments`,
-      );
+      const response = await instance.get(`fulfillments`);
       if (!response.data.error) {
         if (response.data.value) {
           this.setFulfillments(response.data.value);
@@ -60,9 +59,7 @@ export class BarriersStore {
   }
   async getFulfillmentsDev() {
     try {
-      const response = await instance.get(
-        `fulfillments`,
-      );
+      const response = await instance.get(`fulfillments`);
       if (!response.data.error) {
         if (response.data) {
           this.setFulfillments(response.data);
@@ -80,18 +77,22 @@ export class BarriersStore {
   }
   filterBarriersFromBarrierId(barrierId: number) {
     this.filledBarriers = this.filledBarriers.filter(
-        (barrier) => barrier.barrierId !== barrierId,
+      (barrier) => barrier.barrierId !== barrierId,
     );
   }
-  changeFormFieldsValues(value: IFormFieldTextValue, barrierId: number, index: number) {
+  changeFormFieldsValues(
+    value: IFormFieldTextValue,
+    barrierId: number,
+    index: number,
+  ) {
     const foundBarriersById = this.getFoundBarriersById(barrierId);
-    const activeBarrier = foundBarriersById[index]
+    const activeBarrier = foundBarriersById[index];
     const key = Object.keys(value)[0];
     const val = Object.values(value)[0];
     if (activeBarrier) {
-      activeBarrier[key] = val
-      console.log('changeFormFieldsValues activeBarrier', toJS(activeBarrier))
-      console.log('changeFormFieldsValues key', key)
+      activeBarrier[key] = val;
+      console.log("changeFormFieldsValues activeBarrier", toJS(activeBarrier));
+      console.log("changeFormFieldsValues key", key);
     }
   }
 
@@ -119,13 +120,162 @@ export class BarriersStore {
     this.filledBarriers = [...this.filledBarriers, ...foundBarriersById];
   }
 
-
   clearFilledBarrier(barrierId: number, index: number) {
     const foundBarriersById = this.getFoundBarriersById(barrierId);
-    const activeBarrier = foundBarriersById[index]
+    const activeBarrier = foundBarriersById[index];
     // перебираем все необходимые поля и задаем им пустые значения или по умолчанию и сохраняем
   }
 
+  updateFilledQuestions(
+    value: IFilledQuestions,
+    barrierId: number,
+    index: number,
+  ) {
+   /* const foundBarriersById = this.getFoundBarriersById(barrierId);
+    const activeBarrier = foundBarriersById[index];
+    const filledRequirements = activeBarrier?.filledRequirements;
+    const filledQuestions = filledRequirements?.find(
+      (fillReq) =>
+        fillReq.requirementId ===
+        value[FilledQuestionTypes.FilledRequirementId],
+    )?.filledQuestions;
+
+    const newFilledQuestions = filledQuestions?.map((fillQ) => {
+      if (
+        fillQ[FilledQuestionTypes.QuestionId] ===
+        value[FilledQuestionTypes.QuestionId]
+      ) {
+        return value;
+      }
+      return fillQ;
+    });*/
+    /*this.filledBarriers = this.filledBarriers.map((fillBar) => {
+      console.log('updateFilledQuestions fillBar.barrierId', toJS(fillBar.barrierId))
+      console.log('updateFilledQuestions barrierId', toJS(barrierId))
+
+      if (fillBar.barrierId === barrierId) {
+        console.log('updateFilledQuestions fillBar', toJS(fillBar))
+        return  fillBar?.filledRequirements?.map(
+          (fillReq: IFilledRequirements) => {
+            if (
+              fillReq.requirementId ===
+              value[FilledQuestionTypes.FilledRequirementId]
+            ) {
+              fillReq.filledQuestions.map((fillQ) => {
+                if (
+                  fillQ[FilledQuestionTypes.QuestionId] ===
+                  value[FilledQuestionTypes.QuestionId]
+                ) {
+                  return value;
+                }
+                return fillQ;
+              });
+            }
+
+          },
+        )
+      }
+      return  fillBar
+    });*/
+    const a = this.filledBarriers[0].filledRequirements?.map(
+        (fillReq: IFilledRequirements) => {
+          if (
+              fillReq.requirementId ===
+              value[FilledQuestionTypes.FilledRequirementId]
+          ) {
+            fillReq.filledQuestions.map((fillQ) => {
+              if (
+                  fillQ[FilledQuestionTypes.QuestionId] ===
+                  value[FilledQuestionTypes.QuestionId]
+              ) {
+                return value;
+              }
+              return fillQ;
+            });
+          }
+
+        },
+    )
+
+    console.log(
+      "updateFilledQuestions a",
+      toJS(a),
+    );
+    console.log(
+      "updateFilledQuestions this.filledBarriers",
+      toJS(this.filledBarriers),
+    );
+
+
+    /*let barriers = [
+      {
+        barrierId: 1,
+        filledRequirements: [
+          {
+            requirementId: 11,
+            filledQuestion: [
+              {
+                filledRequirementId: 11,
+                fulfillmentId: 1,
+                questionId: 1,
+              },
+            ],
+          },
+          {
+            requirementId: 33,
+            filledQuestion: [
+              {
+                filledRequirementId: 33,
+                fulfillmentId: 1,
+                questionId: 3,
+              },
+            ],
+          },
+        ],
+      },
+      {
+        barrierId: 2,
+        filledRequirements: [
+          {
+            requirementId: 22,
+            filledQuestion: [
+              {
+                filledRequirementId: 22,
+                fulfillmentId: 1,
+                questionId: 2,
+              },
+            ],
+          },
+        ],
+      },
+    ];
+
+    const val = { value: { fulfillmentId: 2, filledRequirementId: 11,  questionId: 1}, barrierId: 1, index: 0 };
+
+    barriers =  barriers.map((bar) => {
+      if (bar.barrierId === val.barrierId) {
+        const filledRequirements = bar.filledRequirements
+        return  filledRequirements.map((filReq) => {
+          if (filReq.requirementId === val.value.filledRequirementId) {
+            const filledQuestion = filReq.filledQuestion;
+            return  filledQuestion.map((filQ) => {
+              console.log('filQ!! filQ.questionId', filQ.questionId)
+              console.log('filQ!! val.value.questionId', val.value.questionId)
+              if (filQ.questionId === val.value.questionId) {
+                console.log('filQ!! val.value', val.value)
+                return val.value
+              }
+              return filQ
+            })
+          }
+        }) as
+      }
+      return  bar
+    })
+
+    console.log('test barriers', barriers);*/
+
+  }
 
   updateInspectionToLocalStorage(editInspectionId: string) {
     const index = +editInspectionId - 1;
