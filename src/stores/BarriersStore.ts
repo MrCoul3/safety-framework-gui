@@ -5,6 +5,8 @@ import { IBarrier } from "../interfaces/IBarrier";
 import { IFilledBarrier } from "../interfaces/IFilledBarrier";
 import { IFormFieldTextValue } from "../interfaces/IFieldInterfaces";
 import {LOCAL_STORE_INSPECTIONS} from "../constants/config";
+import {BarrierFieldTypes} from "../enums/BarrierTypes";
+import {IFilledRequirements} from "../interfaces/IFilledRequirements";
 
 export class BarriersStore {
   private store: AppStore;
@@ -83,20 +85,13 @@ export class BarriersStore {
     this.filledBarriers = [...this.filledBarriers, ...foundBarriersById];
   }
 
-  removeFilledBarriers(barrierId: number) {
+
+  clearFilledBarrier(barrierId: number, index: number) {
     const foundBarriersById = this.getFoundBarriersById(barrierId);
-
-    console.log("foundBarriersById", toJS(foundBarriersById));
-
-    foundBarriersById.splice(foundBarriersById.length - 1, 1);
-
-    console.log("foundBarriersById", toJS(foundBarriersById));
-
-    this.filterBarriersFromBarrierId(barrierId);
-
-    this.filledBarriers = [...this.filledBarriers, ...foundBarriersById];
-    console.debug("filledBarriers: ", toJS(this.filledBarriers));
+    const activeBarrier = foundBarriersById[index]
+    // перебираем все необходимые поля и задаем им пустые значения или по умолчанию и сохраняем
   }
+
 
   updateInspectionToLocalStorage(editInspectionId: string) {
     const index = +editInspectionId - 1;

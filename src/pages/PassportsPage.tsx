@@ -25,7 +25,32 @@ const PassportsPage = observer((props: IPassportsPage) => {
 
   const navigate = useNavigate();
 
-  const init = () => {
+  const loadInspection = async () => {
+    console.log("PassportsPage loadInspection");
+    if (editInspectionId) {
+      await store.inspectionStore.loadInspection(editInspectionId);
+    }
+  };
+
+  const getFilledBarriersFromFieldsData = () => {
+    const filledBarriers = (
+      store.inspectionStore.formFieldsValues as IInspection
+    )["filledBarriers"];
+    console.log(
+      "getFilledBarriersFromFieldsData filledBarriers",
+      toJS(filledBarriers),
+    );
+    if (filledBarriers) {
+      store.barriersStore.setFilledBarriers(filledBarriers);
+    }
+  };
+
+  const init = async () => {
+    if (!Object.keys(store.inspectionStore.formFieldsValues).length) {
+      await loadInspection();
+    }
+    getFilledBarriersFromFieldsData();
+
     if (isDevelop) {
       store.passportsStore.getPassportsDev();
       store.passportsStore.getPassports();
@@ -83,13 +108,25 @@ const PassportsPage = observer((props: IPassportsPage) => {
   };
 
   const getBarriersCount = (passportId: string) => {
+    console.log("getBarriersCount filledBarriers", toJS(filledBarriers)); // [{barrierId: }]
+    const passportById = store.passportsStore.passports.find(
+      (pass) => pass.id === passportId,
+    );
+    const passportBarriers = passportById?.["barriers"];
+    console.log("getBarriersCount passportById", toJS(passportById));
+    console.log("getBarriersCount passportBarriers", toJS(passportBarriers));
     if (filledBarriers && filledBarriers.length) {
-      return  filledBarriers?.filter((item) =>
-          item.passportId.toString()  === passportId,
-      )?.length
+      const filledBarriersByPassId = filledBarriers.filter(
+          (fillBar) =>
+              fillBar.barrierId ===
+              passportBarriers?.find((passBar) => passBar.id === fillBar.barrierId)
+                  ?.id,
+      );
+      console.log("getBarriersCount filledBarriersByPassId", toJS(filledBarriersByPassId.length));
+      return filledBarriersByPassId.length
     }
-    return 0
-  }
+    return 0;
+  };
 
   return (
     <Layout
@@ -114,9 +151,7 @@ const PassportsPage = observer((props: IPassportsPage) => {
             .filter((passport) => passport.code)
             .map((passport) => (
               <PassportElement
-                barriersCount={
-                  getBarriersCount(passport.id)
-                }
+                barriersCount={getBarriersCount(passport.id)}
                 id={passport.id}
                 code={passport.code}
                 onClick={handlePassportClick}

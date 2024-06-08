@@ -30,7 +30,7 @@ export class PassportsStore {
   async getPassports() {
     try {
       const response = await instance.get(
-        "Passports?$filter=IsActual eq true&$count=true",
+        "passports?$filter=IsActual eq true&$expand=barriers&$count=true",
       );
       if (!response.data.error) {
         if (response.data.value) {

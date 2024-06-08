@@ -65,8 +65,10 @@ const BarriersPage = observer((props: IBarriersPage) => {
     }
   };
 
-  const init = () => {
-    loadInspection();
+  const init = async () => {
+    if (!Object.keys(store.inspectionStore.formFieldsValues).length) {
+      await loadInspection();
+    }
     getFilledBarriersFromFieldsData();
     console.log("passportId", passportId);
     if (passportId) {
@@ -152,7 +154,7 @@ const BarriersPage = observer((props: IBarriersPage) => {
     const value: IFilledBarrier = {
       [BarrierFieldTypes.Mub]: "",
       barrierId: barrier.id,
-      passportId: barrier.passportId,
+      // passportId: barrier.passportId,
       filledRequirements: null,
       title: barrier.title ?? "",
     };
@@ -180,6 +182,11 @@ const BarriersPage = observer((props: IBarriersPage) => {
 
   const handleDeleteBarrier = (barrierId: number, index: number) => {
     store.barriersStore.deleteFilledBarrier(barrierId, index)
+    setSavingState(true);
+  };
+
+  const handleClearForm = (barrierId: number, index: number) => {
+    store.barriersStore.clearFilledBarrier(barrierId, index)
     setSavingState(true);
   };
 
@@ -225,7 +232,7 @@ const BarriersPage = observer((props: IBarriersPage) => {
                       <BarriersPanel
                         barriers={getFilledBarriersById(barrier.id)}
                         renderForm={(index: number) => (
-                          <BarrierForm
+                          <BarrierForm handleClearForm={() => handleClearForm(barrier.id, index)}
                             handleDelete={() => handleDeleteBarrier(barrier.id, index)}
                             formFields={getFilledBarriersById(barrier.id)[index]}
                             handleChange={(value: IFormFieldTextValue) =>

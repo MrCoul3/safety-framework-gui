@@ -388,17 +388,17 @@ export class InspectionStore {
     }
   }
 
-  loadInspection(editInspectionId: string) {
+  async loadInspection(editInspectionId: string) {
     console.log('loadInspection')
     if (location.pathname.includes(RoutesTypes.EditLocalInspection)) {
       this.loadInspectionFromLocalStorage(editInspectionId);
     }
     if (location.pathname.includes(RoutesTypes.EditInspection)) {
       if (isDevelop) {
-        this.getInspectionDev(editInspectionId);
-        this.getInspectionById(editInspectionId);
+        await this.getInspectionDev(editInspectionId);
+        await this.getInspectionById(editInspectionId);
       } else {
-        this.getInspectionById(editInspectionId);
+        await this.getInspectionById(editInspectionId);
       }
     }
   }
