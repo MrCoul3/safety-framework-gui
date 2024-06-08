@@ -70,48 +70,47 @@ const BarrierForm = observer((props: IBarrierForm) => {
   return (
     <div className={style.BarrierForm}>
       {props.formFields && (
+        <>
+          <div className={style.barrierFormWrap}>
+            <InspectionTextArea
+              minRows={5}
+              display={true}
+              required={true}
+              labelPos={"top"}
+              className={"none"}
+              handleChange={handleChange}
+              caption={t("mubCaption")}
+              type={BarrierFieldTypes.Mub}
+              value={getValue(BarrierFieldTypes.Mub)}
+              status={
+                props.isValidate
+                  ? (getStatus(BarrierFieldTypes.Mub) as PropStatus)
+                  : undefined
+              }
+            />
 
-          <>
-            <div className={style.barrierFormWrap}>
-              <InspectionTextArea
-                  className={"none"}
-                  labelPos={"top"}
-                  minRows={5}
-                  required={true}
-                  display={true}
-                  value={getValue(BarrierFieldTypes.Mub)}
-                  handleChange={handleChange}
-                  type={BarrierFieldTypes.Mub}
-                  status={
-                    props.isValidate
-                        ? (getStatus(BarrierFieldTypes.Mub) as PropStatus)
-                        : undefined
-                  }
-              />
-            </div>
-            <div className={style.buttonsGroup}>
+          </div>
+          <div className={style.buttonsGroup}>
+            <Button
+              onClick={() => setIsDelModalOpen(true)}
+              view="ghost"
+              label={t("delete")}
+            />
+            <div className={style.flexContainer}>
               <Button
-                  onClick={() => setIsDelModalOpen(true)}
-                  view="ghost"
-                  label={t("delete")}
+                onClick={() => setIsClearModalOpen(true)}
+                view="clear"
+                label={t("clear")}
               />
-              <div className={style.flexContainer}>
-                <Button
-                    onClick={() => setIsClearModalOpen(true)}
-                    view="clear"
-                    label={t("clear")}
-                />
-                <Button
-                    disabled={!savingState}
-                    onClick={handleSave}
-                    type="submit"
-                    label={t("save")}
-                />
-              </div>
+              <Button
+                disabled={!savingState}
+                onClick={handleSave}
+                type="submit"
+                label={t("save")}
+              />
             </div>
-          </>
-
-
+          </div>
+        </>
       )}
 
       <ConfirmDialog

@@ -19,7 +19,7 @@ interface IInspectionTextArea {
   value?: string;
   className?: string;
   minRows?: number;
-
+  caption?: string
   display?: boolean;
   labelPos?: "left" | "top";
   required?: boolean;
@@ -42,7 +42,7 @@ const InspectionTextArea = observer((props: IInspectionTextArea) => {
     });
   };
   return (
-    <TextField
+    <TextField caption={props.caption}
       status={props.status}
       required={props.required}
       minRows={props.minRows ?? 2}
