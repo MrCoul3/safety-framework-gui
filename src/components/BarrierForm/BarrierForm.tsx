@@ -14,11 +14,16 @@ import ConfirmDialog from "../ConfirmDialog/ConfirmDialog";
 import { useTranslation } from "react-i18next";
 import { InspectionFormTypes } from "../../enums/InspectionFormTypes";
 import { Button } from "@consta/uikit/Button";
+import {Card} from "@consta/uikit/Card";
+import MubCards from "../MubCards/MubCards";
+import {IBarrier} from "../../interfaces/IBarrier";
 
 interface IBarrierForm {
   isValidate: boolean;
 
   formFields?: IFilledBarrier;
+
+  barrier: IBarrier
 
   handleChange(value: IFormFieldTextValue): void;
 
@@ -71,25 +76,27 @@ const BarrierForm = observer((props: IBarrierForm) => {
     <div className={style.BarrierForm}>
       {props.formFields && (
         <>
-          <div className={style.barrierFormWrap}>
-            <InspectionTextArea
-              minRows={5}
-              display={true}
-              required={true}
-              labelPos={"top"}
-              className={"none"}
-              handleChange={handleChange}
-              caption={t("mubCaption")}
-              type={BarrierFieldTypes.Mub}
-              value={getValue(BarrierFieldTypes.Mub)}
-              status={
-                props.isValidate
-                  ? (getStatus(BarrierFieldTypes.Mub) as PropStatus)
-                  : undefined
-              }
-            />
+            <div className={style.barrierFormWrap}>
+              <InspectionTextArea
+                minRows={5}
+                display={true}
+                required={true}
+                labelPos={"top"}
+                className={"none"}
+                handleChange={handleChange}
+                caption={t("mubCaption")}
+                type={BarrierFieldTypes.Mub}
+                value={getValue(BarrierFieldTypes.Mub)}
+                status={
+                  props.isValidate
+                    ? (getStatus(BarrierFieldTypes.Mub) as PropStatus)
+                    : undefined
+                }
+              />
 
-          </div>
+              <MubCards mub={props.barrier.mub} mubHint={props.barrier.mubHint}  />
+
+            </div>
           <div className={style.buttonsGroup}>
             <Button
               onClick={() => setIsDelModalOpen(true)}

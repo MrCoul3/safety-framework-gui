@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import classNames from "classnames";
 
 interface IBarriersPanel {
-  barriers: IFilledBarrier[];
+  filledBarriers: IFilledBarrier[];
   renderForm(index: number): ReactNode
 }
 
@@ -23,9 +23,9 @@ const BarriersPanel = observer((props: IBarriersPanel) => {
     <div>
       <div className={style.BarriersPanelWrap}>
         {
-          props.barriers.length ? (
+          props.filledBarriers.length ? (
             <div className={style.barriersPanel}>
-              {props.barriers.map((item, index) => (
+              {props.filledBarriers.map((item, index) => (
                 <div
                   onClick={() => onItemClick(item, index)}
                   className={classNames(style.panelElement, {

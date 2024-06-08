@@ -137,6 +137,8 @@ export const ru = {
 
     [BarrierFieldTypes.Mub]: "Место установки барьера (МУБ)",
     mubCaption: "Начните вводить текст, а формат подстроится автоматически",
+    mubTitle: "МУБ",
+    mubHintTitle: "Как заполнять МУБ:",
 
     addInspectionTitle: "Заполнение данных инспекции",
     editInspectionTitle: "Редактирование данных инспекции",

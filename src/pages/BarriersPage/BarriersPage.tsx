@@ -230,9 +230,9 @@ const BarriersPage = observer((props: IBarriersPage) => {
                   content={
                     <>
                       <BarriersPanel
-                        barriers={getFilledBarriersById(barrier.id)}
+                        filledBarriers={getFilledBarriersById(barrier.id)}
                         renderForm={(index: number) => (
-                          <BarrierForm handleClearForm={() => handleClearForm(barrier.id, index)}
+                          <BarrierForm barrier={barrier} handleClearForm={() => handleClearForm(barrier.id, index)}
                             handleDelete={() => handleDeleteBarrier(barrier.id, index)}
                             formFields={getFilledBarriersById(barrier.id)[index]}
                             handleChange={(value: IFormFieldTextValue) =>
