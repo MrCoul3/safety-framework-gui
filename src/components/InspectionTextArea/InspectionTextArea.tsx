@@ -13,18 +13,21 @@ import { PropStatus } from "@consta/uikit/__internal__/src/components/SelectComp
 import { useTranslation } from "react-i18next";
 import classNames from "classnames";
 import { BarrierFieldTypes } from "../../enums/BarrierTypes";
+import {FilledQuestionTypes} from "../../enums/FilledQuestionTypes";
 
 interface IInspectionTextArea {
   handleChange(value: IFormFieldTextValue): void;
   value?: string;
   className?: string;
   minRows?: number;
-  caption?: string
+
+  disabledLabel?: boolean
+  caption?: string;
   display?: boolean;
   labelPos?: "left" | "top";
   required?: boolean;
   status: PropStatus | undefined;
-  type: InspectionFormTypes | FreeFormFieldTypes | BarrierFieldTypes;
+  type: InspectionFormTypes | FreeFormFieldTypes | BarrierFieldTypes | FilledQuestionTypes;
 }
 
 const InspectionTextArea = observer((props: IInspectionTextArea) => {
@@ -32,9 +35,11 @@ const InspectionTextArea = observer((props: IInspectionTextArea) => {
   const { t } = useTranslation("dict");
 
   useEffect(() => {
-    (textField.current?.childNodes[1] as HTMLDivElement).classList.add(
-      props.className ? props.className : "customField",
-    );
+    if (!props.disabledLabel) {
+      (textField.current?.childNodes[1] as HTMLDivElement).classList.add(
+          props.className ? props.className : "customField",
+      );
+    }
   }, [textField]);
   const handleChange = (value: string | null) => {
     props.handleChange({
@@ -42,7 +47,8 @@ const InspectionTextArea = observer((props: IInspectionTextArea) => {
     });
   };
   return (
-    <TextField caption={props.caption}
+    <TextField
+      caption={props.caption}
       status={props.status}
       required={props.required}
       minRows={props.minRows ?? 2}
@@ -52,7 +58,7 @@ const InspectionTextArea = observer((props: IInspectionTextArea) => {
       ref={textField}
       // labelPosition={props.labelPos ?? "top"}
       labelPosition={"top"}
-      label={t(props.type)}
+      label={props.disabledLabel ? "" : t(props.type)}
       onChange={handleChange}
       value={props.value}
       type="textarea"

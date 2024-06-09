@@ -56,6 +56,7 @@ export class InspectionStore {
       const response = await instance.post(`Inspections`, {
         ...this.formFieldsValues,
         filledFreeForms: this.store.freeFormStore.filledFreeForms,
+        filledBarriers: this.store.barriersStore.filledBarriers,
       });
       if (!response.data.error) {
         return "success";

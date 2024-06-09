@@ -150,15 +150,18 @@ export class BarriersStore {
       return fillQ;
     });
 
-    filledRequirements = filledRequirements ? filledRequirements?.map((fillReq) => {
-      if (newFilledQuestions && newFilledQuestions.length) {
-        const fillQReqId = newFilledQuestions[0].filledRequirementId
-        if (fillReq.requirementId === fillQReqId) {
-          fillReq.filledQuestions = newFilledQuestions
-        }
-      }
-      return fillReq
-    }) : []
+    filledRequirements
+      ? filledRequirements?.map((fillReq) => {
+          if (newFilledQuestions && newFilledQuestions.length) {
+            const fillQReqId = newFilledQuestions[0].filledRequirementId;
+            if (fillReq.requirementId === fillQReqId) {
+              fillReq.filledQuestions = newFilledQuestions;
+            }
+          }
+          return fillReq;
+        })
+      : [];
+
     console.log(
       "updateFilledQuestions this.filledBarriers",
       toJS(this.filledBarriers),

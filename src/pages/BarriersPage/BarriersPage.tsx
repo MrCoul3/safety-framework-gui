@@ -154,6 +154,8 @@ const BarriersPage = observer((props: IBarriersPage) => {
       [FilledQuestionTypes.FilledRequirementId]: quest.requirementId,
       [FilledQuestionTypes.QuestionId]: quest.id,
       [FilledQuestionTypes.FulfillmentId]: 1,
+      [FilledQuestionTypes.WorkStopped]: true,
+      [FilledQuestionTypes.ResolvedInPlace]: true,
     }));
   };
 
@@ -190,7 +192,7 @@ const BarriersPage = observer((props: IBarriersPage) => {
     barrierId: number,
     index: number,
   ) => {
-    console.log("handleChange", value, barrierId);
+    console.log("barrier page handleChange", value, barrierId);
     setSavingState(true);
     store.barriersStore.changeFormFieldsValues(value, barrierId, index);
     // store.freeFormStore.updateFormFieldsValues(value, index);
@@ -207,6 +209,7 @@ const BarriersPage = observer((props: IBarriersPage) => {
     console.log("QuestionCard handleChange", toJS(value));
     // {filledRequirementId,  fulfillmentId, questionId}
     store.barriersStore.updateFilledQuestions(value, barrierId, index);
+    setSavingState(true);
   };
 
   const getFilledBarriersById = (barrierId: number) => {

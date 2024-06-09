@@ -65,7 +65,7 @@ const BarrierForm = observer((props: IBarrierForm) => {
     return "";
   };
   const handleChange = (value: IFormFieldTextValue) => {
-    // console.log("handleChange", value);
+    console.log("barrier form handleChange", value);
     props.handleChange(value);
     setSavingState(true);
   };

@@ -1,5 +1,8 @@
 .QuestionCard {
     margin: 24px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 .title {
     display: flex;
@@ -21,4 +24,8 @@
     letter-spacing: 0.001em;
     text-align: left;
     color: var(--gray);
+}
+.flexRow {
+    display: flex;
+    gap: 20px;
 }

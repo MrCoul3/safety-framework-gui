@@ -7,6 +7,7 @@ import {
 } from "../enums/InspectionFormTypes";
 import {FreeFormFieldTypes, FreeFormTypes} from "../enums/FreeFormTypes";
 import {BarrierFieldTypes} from "../enums/BarrierTypes";
+import {FilledQuestionTypes} from "../enums/FilledQuestionTypes";
 
 export const ru = {
   dict: {
@@ -135,6 +136,13 @@ export const ru = {
 
     barrier: "Барьер",
 
+    [FilledQuestionTypes.WorkStopped]: "Работа остановлена",
+    [FilledQuestionTypes.ResolvedInPlace]: "Устранено на месте",
+    withoutWorkStopped: "Без остановки работы",
+    notResolved: "Не устранено",
+
+
+
     [BarrierFieldTypes.Mub]: "Место установки барьера (МУБ)",
     mubCaption: "Начните вводить текст, а формат подстроится автоматически",
     mubTitle: "МУБ",
@@ -181,7 +189,8 @@ export const ru = {
     [FreeFormFieldTypes.RiskLevel + "Placeholder"]: "Введите степень риска",
 
     [BarrierFieldTypes.Mub + "Placeholder"]: "Укажите место установки барьера",
-
+    [FilledQuestionTypes.Comment + "Placeholder"]: "Комментарий",
+    [FilledQuestionTypes.PlannedResolveDate + "Placeholder"]: "Дата планируемого устранения",
 
     dialogClearFields: "Очистить все заполненные поля?",
     dialogDeleteFreeForm: "Удалить свободную форму?",
