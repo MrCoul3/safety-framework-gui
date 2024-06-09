@@ -3,7 +3,8 @@ import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
 import {
   InspectionFormGroups,
-  InspectionFormTypes, INSPECTION_FORM_NOT_REQUIRED_FIELDS,
+  InspectionFormTypes,
+  INSPECTION_FORM_NOT_REQUIRED_FIELDS,
 } from "../../enums/InspectionFormTypes";
 import { useTranslation } from "react-i18next";
 import { Button } from "@consta/uikit/Button";
@@ -15,7 +16,11 @@ import ItemGroupTitle from "../ItemGroupTitle/ItemGroupTitle";
 import ConfirmDialog from "../ConfirmDialog/ConfirmDialog";
 import { IInspection } from "../../interfaces/IInspection";
 import { toJS } from "mobx";
-import {IFieldsData, IFormDateFieldValue, IFormFieldValue} from "../../interfaces/IFieldInterfaces";
+import {
+  IFieldsData,
+  IFormDateFieldValue,
+  IFormFieldValue,
+} from "../../interfaces/IFieldInterfaces";
 
 interface IInspectionForm {
   handleOpenField(type: InspectionFormTypes): void;
@@ -86,11 +91,10 @@ const InspectionForm = observer((props: IInspectionForm) => {
     return "";
   };
   const getDate = (inspectionFormType: InspectionFormTypes) => {
-    console.log('props.formFieldsValues[inspectionFormType]', toJS(props.formFieldsValues))
     if (props.formFieldsValues && props.formFieldsValues[inspectionFormType]) {
       return props.formFieldsValues[inspectionFormType];
     }
-    return null
+    return null;
   };
   const getStatus = (inspectionFormType: InspectionFormTypes) => {
     if (props.formFieldsValues) {
@@ -110,9 +114,9 @@ const InspectionForm = observer((props: IInspectionForm) => {
     const formType =
       props.formFieldsValues?.[InspectionFormTypes.InspectionForm]?.id;
 
-    console.log('handleNextStep formType', formType)
+    console.log("handleNextStep formType", formType);
     // id = 1 barriers, id = 2 freeForm
-    if (formType?.toString() === '1') {
+    if (formType?.toString() === "1") {
       props.handleNextStepToBarriers();
     } else {
       props.handleNextStepToFreeForm();
@@ -135,11 +139,11 @@ const InspectionForm = observer((props: IInspectionForm) => {
         return true;
       }
     }*/
-    return false
+    return false;
   };
 
   const requiredConditions = (inspectionType: InspectionFormTypes) => {
-        return !INSPECTION_FORM_NOT_REQUIRED_FIELDS.includes(inspectionType);
+    return !INSPECTION_FORM_NOT_REQUIRED_FIELDS.includes(inspectionType);
   };
 
   return (

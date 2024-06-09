@@ -76,12 +76,13 @@ export class FreeFormStore {
           toJS(targetInspection),
         );
         if (
-          targetInspection.filledFreeForms &&
+          targetInspection.filledFreeForms && targetInspection.filledFreeForms.length &&
           targetInspection.filledFreeForms[freeFormIndex]
         ) {
           targetInspection.filledFreeForms[freeFormIndex] =
             this.filledFreeForms[freeFormIndex];
         } else {
+          targetInspection.filledFreeForms = []
           targetInspection.filledFreeForms.push(
             this.filledFreeForms[freeFormIndex],
           );
@@ -99,6 +100,7 @@ export class FreeFormStore {
     if (localInspections) {
       const localInspectionsParsed = JSON.parse(localInspections);
       if (localInspectionsParsed.length) {
+        localInspectionsParsed[index] = this.store.inspectionStore.formFieldsValues
         const targetInspection = localInspectionsParsed[index];
         targetInspection.filledFreeForms = this.filledFreeForms;
         localInspectionsParsed.splice(index, 1);

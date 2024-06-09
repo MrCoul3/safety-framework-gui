@@ -280,7 +280,7 @@ export class MainPageStore {
           (bar) =>
             bar[BarrierFieldTypes.Mub] &&
             bar[BarrierFieldTypes.Mub]?.trim() !== "",
-        ) && this.store.inspectionStore.checkIsFormSuccess()
+        ) && this.store.inspectionStore.checkIsFormSuccess(inspection)
       }
 
       if (formTypeId?.toString() === "2" && freeForms.length) {
@@ -319,7 +319,7 @@ export class MainPageStore {
           (val) => val,
         );
         console.log("checkIsInspectionReadyToSend result", index, toJS(result));
-        return result && this.store.inspectionStore.checkIsFormSuccess();
+        return result && this.store.inspectionStore.checkIsFormSuccess(inspection);
       }
     }
   }

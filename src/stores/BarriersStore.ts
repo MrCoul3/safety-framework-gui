@@ -215,8 +215,10 @@ export class BarriersStore {
     if (localInspections) {
       const localInspectionsParsed = JSON.parse(localInspections);
       if (localInspectionsParsed.length) {
+        localInspectionsParsed[index] = this.store.inspectionStore.formFieldsValues
         const targetInspection = localInspectionsParsed[index];
         targetInspection.filledBarriers = this.filledBarriers;
+
         localInspectionsParsed.splice(index, 1);
         localInspectionsParsed.unshift(targetInspection);
         const newInspectionsJson = JSON.stringify(localInspectionsParsed);

@@ -3,7 +3,8 @@ import { makeAutoObservable, toJS } from "mobx";
 import {
   EMPLOYEES,
   INSPECTION_FORM_COMMON_FIELDS,
-  INSPECTION_FORM_REQUIRED_FIELDS, inspectionFieldsDictNames,
+  INSPECTION_FORM_REQUIRED_FIELDS,
+  inspectionFieldsDictNames,
   InspectionFormTypes,
 } from "../enums/InspectionFormTypes";
 import { employeesEndpoint, instance } from "../api/endpoints";
@@ -101,7 +102,7 @@ export class InspectionStore {
 
     const item: Item = { title: "title", personFio: "personFio" };
 
-    let itemValue = item.title
+    let itemValue = item.title;
 
     if (INSPECTION_FORM_COMMON_FIELDS.includes(type as InspectionFormTypes)) {
       requestType = inspectionFieldsDictNames[type as InspectionFormTypes];
@@ -115,12 +116,12 @@ export class InspectionStore {
     }
 
     let filter = searchFieldValue
-        ? `$filter=contains(${itemValue},'${searchFieldValue}')`
-        : "";
+      ? `$filter=contains(${itemValue},'${searchFieldValue}')`
+      : "";
 
     let offset = searchFieldValue
-        ? ""
-        : `&$skip=${this.offset}&$top=${ELEMENTS_ON_FIELD}`;
+      ? ""
+      : `&$skip=${this.offset}&$top=${ELEMENTS_ON_FIELD}`;
 
     const countFilter = this.searchFieldValue ? "" : `&$count=true`;
 
@@ -290,8 +291,10 @@ export class InspectionStore {
     );
   }
 
-  checkIsFormSuccess() {
-    const formFieldsValues: { [key: string]: any } = this.formFieldsValues;
+  checkIsFormSuccess(inspection?: IInspection) {
+    const formFieldsValues: { [key: string]: any } = inspection
+      ? inspection
+      : this.formFieldsValues;
     const filtered = filterByRequiredFields(
       formFieldsValues,
       INSPECTION_FORM_REQUIRED_FIELDS,
@@ -303,14 +306,18 @@ export class InspectionStore {
     );
   }
 
-
-
   setInspectionToLocalStorage() {
     delete (this.formFieldsValues as IInspection)?.id;
     const filledFreeForms = this.store.freeFormStore.filledFreeForms;
     const filledBarriers = this.store.barriersStore.filledBarriers;
-    console.log("setInspectionToLocalStorage filledFreeForms", toJS(filledFreeForms));
-    console.log("setInspectionToLocalStorage filledBarriers", toJS(filledBarriers));
+    console.log(
+      "setInspectionToLocalStorage filledFreeForms",
+      toJS(filledFreeForms),
+    );
+    console.log(
+      "setInspectionToLocalStorage filledBarriers",
+      toJS(filledBarriers),
+    );
     const localInspections = localStorage.getItem(LOCAL_STORE_INSPECTIONS);
 
     let values = this.formFieldsValues;
@@ -368,13 +375,15 @@ export class InspectionStore {
   }
 
   loadInspectionFromLocalStorage(id: string) {
-    console.log('loadInspectionFromLocalStorage')
+    console.log("loadInspectionFromLocalStorage");
     const localInspections = localStorage.getItem(LOCAL_STORE_INSPECTIONS);
     if (localInspections) {
       const localInspectionsParsed = JSON.parse(localInspections);
       const inspection = {
         ...localInspectionsParsed[+id - 1],
-        auditDate: localInspectionsParsed[+id - 1].auditDate ? moment(localInspectionsParsed[+id - 1].auditDate).toDate() : null,
+        auditDate: localInspectionsParsed[+id - 1].auditDate
+          ? moment(localInspectionsParsed[+id - 1].auditDate).toDate()
+          : null,
       };
       this.setFormFieldsValues(inspection);
     }
@@ -390,7 +399,7 @@ export class InspectionStore {
   }
 
   async loadInspection(editInspectionId: string) {
-    console.log('loadInspection')
+    console.log("loadInspection");
     if (location.pathname.includes(RoutesTypes.EditLocalInspection)) {
       this.loadInspectionFromLocalStorage(editInspectionId);
     }

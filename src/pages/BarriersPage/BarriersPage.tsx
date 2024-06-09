@@ -295,6 +295,7 @@ const BarriersPage = observer((props: IBarriersPage) => {
         });
       }
     }
+
   };
 
   return (
