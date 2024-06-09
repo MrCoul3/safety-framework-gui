@@ -26,12 +26,15 @@ import { IFulfillment } from "../../interfaces/IFulfillment";
 import { IFilledRequirements } from "../../interfaces/IFilledRequirements";
 import { IQuestion } from "../../interfaces/IQuestion";
 import { FilledQuestionTypes } from "../../enums/FilledQuestionTypes";
-import {IFilledQuestions} from "../../interfaces/IFilledQuestions";
+import { IFilledQuestions } from "../../interfaces/IFilledQuestions";
+import { IInapplicableReasons } from "../../interfaces/IInapplicableReasons";
 
 interface IBarrierForm {
   isValidate: boolean;
+
   fulfillments: IFulfillment[];
-  // filledRequirements?: IFilledRequirements[] | null;
+
+  inapplicableReasons: IInapplicableReasons[];
 
   passportId?: string;
 
@@ -140,8 +143,8 @@ const BarrierForm = observer((props: IBarrierForm) => {
     const filledQuestion = filledRequirement?.filledQuestions.find(
       (fillQuest) => fillQuest[FilledQuestionTypes.QuestionId] === question.id,
     );
-    console.log('getFilledQuestion filledQuestion', toJS(filledQuestion))
-    return filledQuestion
+    console.log("getFilledQuestion filledQuestion", toJS(filledQuestion));
+    return filledQuestion;
   };
 
   return (
@@ -171,6 +174,7 @@ const BarrierForm = observer((props: IBarrierForm) => {
                 filledQuestion={getFilledQuestion(question)}
                 handleChange={handleFulfillmentChange}
                 fulfillments={props.fulfillments}
+                inapplicableReasons={props.inapplicableReasons}
                 key={question.id}
                 title={question.title}
               />

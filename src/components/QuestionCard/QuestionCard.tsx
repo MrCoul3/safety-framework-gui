@@ -12,10 +12,12 @@ import { IFormFieldTextValue } from "../../interfaces/IFieldInterfaces";
 import { DatePicker } from "@consta/uikit/DatePicker";
 import { IconCalendar } from "@consta/icons/IconCalendar";
 import moment from "moment";
+import { IInapplicableReasons } from "../../interfaces/IInapplicableReasons";
 
 interface IQuestionCard {
   title: string;
   fulfillments: IFulfillment[];
+  inapplicableReasons: IInapplicableReasons[];
 
   filledQuestion?: IFilledQuestions;
 
@@ -44,6 +46,16 @@ const QuestionCard = observer((props: IQuestionCard) => {
     console.log("QuestionCard handleChange resultValue", toJS(resultValue));
     props.handleChange(resultValue);
   };
+
+  const handleInapplicableReasonsChange = (value: IInapplicableReasons) => {
+    console.log("QuestionCard handleChange value", toJS(value));
+    const resultValue = {
+      ...props.filledQuestion,
+      [FilledQuestionTypes.InapplicableReasonId]: +value.id,
+    };
+    console.log("QuestionCard handleChange resultValue", toJS(resultValue));
+    props.handleChange(resultValue);
+  };
   const handleCommentChange = (value: IFormFieldTextValue) => {
     console.log("QuestionCard handleChange value", {
       ...props.filledQuestion,
@@ -65,7 +77,6 @@ const QuestionCard = observer((props: IQuestionCard) => {
     console.log("handleNoFulfillmentChange result", result);
     props.handleChange(result);
   };
-
   const handleDateChange = (value: Date | null) => {
     console.log("handleDateChange value", value);
     const val = { [FilledQuestionTypes.PlannedResolveDate]: value };
@@ -88,6 +99,23 @@ const QuestionCard = observer((props: IQuestionCard) => {
       title: fulfillment?.title ?? "",
       code: fulfillment?.code ?? "",
       id: fulfillment?.id ?? 1,
+    };
+  };
+  const getInapplicableReasonsValue = () => {
+    const inapplicableReason = props.inapplicableReasons.find(
+      (inapplicableReason) => {
+        const inapplicableReasonId = inapplicableReason.id?.toString();
+        const filledInapplicableReasonId =
+          props.filledQuestion?.[
+            FilledQuestionTypes.InapplicableReasonId
+          ]?.toString();
+        return inapplicableReasonId === filledInapplicableReasonId;
+      },
+    );
+    return {
+      title: inapplicableReason?.title ?? "",
+      code: inapplicableReason?.code ?? "",
+      id: inapplicableReason?.id ?? 1,
     };
   };
   const getWorkStoppedValue = (type: FilledQuestionTypes) => {
@@ -131,7 +159,6 @@ const QuestionCard = observer((props: IQuestionCard) => {
     return moment(date).toDate();
   };
 
-
   const workStoppedFields: {
     title: string;
     code: FilledQuestionTypes;
@@ -167,6 +194,10 @@ const QuestionCard = observer((props: IQuestionCard) => {
 
   const noFulfillmentCondition = () => {
     return props.filledQuestion?.[FilledQuestionTypes.FulfillmentId] === 2;
+  };
+
+  const inapplicableReasonCondition = () => {
+    return props.filledQuestion?.[FilledQuestionTypes.FulfillmentId] === 3;
   };
 
   const plannedResolveDateCondition = () => {
@@ -212,18 +243,38 @@ const QuestionCard = observer((props: IQuestionCard) => {
               onChange={handleNoFulfillmentChange}
             />
           </div>
-          {
-            plannedResolveDateCondition() &&  <DatePicker
-                  placeholder={t([
-                    FilledQuestionTypes.PlannedResolveDate + "Placeholder",
-                  ])}
-                  type="date"
-                  value={getDateValue()}
-                  rightSide={IconCalendar}
-                  onChange={handleDateChange}
-              />
-          }
-
+          {plannedResolveDateCondition() && (
+            <DatePicker
+              placeholder={t([
+                FilledQuestionTypes.PlannedResolveDate + "Placeholder",
+              ])}
+              type="date"
+              value={getDateValue()}
+              rightSide={IconCalendar}
+              onChange={handleDateChange}
+            />
+          )}
+        </>
+      )}
+      {inapplicableReasonCondition() && (
+        <>
+          <div className={style.inapplicableReasons}>
+            <RadioGroup
+              value={getInapplicableReasonsValue()}
+              items={props.inapplicableReasons}
+              getItemLabel={(item) => item.title}
+              onChange={handleInapplicableReasonsChange}
+            />
+            <InspectionTextArea
+              disabledLabel
+              minRows={1}
+              display={true}
+              handleChange={handleCommentChange}
+              type={FilledQuestionTypes.Comment}
+              value={props.filledQuestion?.[FilledQuestionTypes.Comment]}
+              status={undefined}
+            />
+          </div>
         </>
       )}
     </div>

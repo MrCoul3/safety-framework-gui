@@ -83,9 +83,12 @@ const BarriersPage = observer((props: IBarriersPage) => {
         store.barriersStore.getFulfillmentsDev();
         store.barriersStore.getBarriers(passportId);
         store.barriersStore.getFulfillments();
+        store.barriersStore.getInapplicableReasonsDev();
+        store.barriersStore.getInapplicableReasons();
       } else {
         store.barriersStore.getBarriers(passportId);
         store.barriersStore.getFulfillments();
+        store.barriersStore.getInapplicableReasons();
       }
     }
   };
@@ -153,6 +156,7 @@ const BarriersPage = observer((props: IBarriersPage) => {
     return questions.map((quest) => ({
       [FilledQuestionTypes.FilledRequirementId]: quest.requirementId,
       [FilledQuestionTypes.QuestionId]: quest.id,
+      [FilledQuestionTypes.InapplicableReasonId]: 1,
       [FilledQuestionTypes.FulfillmentId]: 1,
       [FilledQuestionTypes.WorkStopped]: true,
       [FilledQuestionTypes.ResolvedInPlace]: true,
@@ -276,6 +280,7 @@ const BarriersPage = observer((props: IBarriersPage) => {
                               handleFulfillmentChange(value, barrier.id, index)
                             }
                             fulfillments={store.barriersStore.fulfillments}
+                            inapplicableReasons={store.barriersStore.inapplicableReasons}
                             passportId={passportId}
                             barrier={barrier}
                             handleClearForm={() =>

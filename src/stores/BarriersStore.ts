@@ -9,6 +9,7 @@ import { IFulfillment } from "../interfaces/IFulfillment";
 import { IFilledQuestions } from "../interfaces/IFilledQuestions";
 import { FilledQuestionTypes } from "../enums/FilledQuestionTypes";
 import { IFilledRequirements } from "../interfaces/IFilledRequirements";
+import {IInapplicableReasons} from "../interfaces/IInapplicableReasons";
 
 export class BarriersStore {
   private store: AppStore;
@@ -21,6 +22,7 @@ export class BarriersStore {
   filledBarriers: IFilledBarrier[] = [];
   barriers: IBarrier[] = [];
   fulfillments: IFulfillment[] = [];
+  inapplicableReasons: IInapplicableReasons[] = [];
   async getBarriersDev() {
     try {
       const response = await localDevInstance.get(`barriers`);
@@ -70,6 +72,31 @@ export class BarriersStore {
     }
   }
 
+  async getInapplicableReasons() {
+    try {
+      const response = await instance.get(`inapplicableReasons`);
+      if (!response.data.error) {
+        if (response.data.value) {
+          this.setInapplicableReasons(response.data.value);
+        }
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+  async getInapplicableReasonsDev() {
+    try {
+      const response = await instance.get(`inapplicableReasons`);
+      if (!response.data.error) {
+        if (response.data) {
+          this.setInapplicableReasons(response.data);
+        }
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
   getFoundBarriersById(barrierId: number) {
     return this.filledBarriers.filter(
       (barrier) => barrier.barrierId === barrierId,
@@ -103,6 +130,10 @@ export class BarriersStore {
   setFulfillments(value: IFulfillment[]) {
     this.fulfillments = value;
     console.debug("fulfillments: ", toJS(this.fulfillments));
+  }
+  setInapplicableReasons(value: IInapplicableReasons[]) {
+    this.inapplicableReasons = value;
+    console.debug("inapplicableReasons: ", toJS(this.inapplicableReasons));
   }
   setFilledBarriers(value: IFilledBarrier[]) {
     this.filledBarriers = value;
