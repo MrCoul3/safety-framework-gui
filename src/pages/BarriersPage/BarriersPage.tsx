@@ -30,6 +30,7 @@ import { IFulfillment } from "../../interfaces/IFulfillment";
 import { FilledQuestionTypes } from "../../enums/FilledQuestionTypes";
 import { IQuestion } from "../../interfaces/IQuestion";
 import { IFilledQuestions } from "../../interfaces/IFilledQuestions";
+import { IconWarning } from "@consta/icons/IconWarning";
 
 interface IBarriersPage {}
 
@@ -70,11 +71,14 @@ const BarriersPage = observer((props: IBarriersPage) => {
   };
 
   const init = async () => {
+
     if (!Object.keys(store.inspectionStore.formFieldsValues).length) {
       await loadInspection();
     }
     getFilledBarriersFromFieldsData();
     console.log("passportId", passportId);
+    setIsFormsValidForSending(store.barriersStore.checkIsBarrierFormSuccess());
+
     if (passportId) {
       console.log("passport", toJS(passport));
 
@@ -199,10 +203,8 @@ const BarriersPage = observer((props: IBarriersPage) => {
     console.log("barrier page handleChange", value, barrierId);
     setSavingState(true);
     store.barriersStore.changeFormFieldsValues(value, barrierId, index);
-    // store.freeFormStore.updateFormFieldsValues(value, index);
-    // const isValid = store.freeFormStore.checkIsFreeFormSuccess();
-    // console.log("handleSendInspection isValid", isValid);
-    // setIsFormsValidForSending(isValid);
+    const isValid = store.barriersStore.checkIsBarrierFormSuccess();
+    setIsFormsValidForSending(isValid);
   };
 
   const handleFulfillmentChange = (
@@ -232,10 +234,45 @@ const BarriersPage = observer((props: IBarriersPage) => {
     setSavingState(true);
   };
 
+  const handleSendInspection = async () => {
+    const isValid = store.barriersStore.checkIsBarrierFormSuccess();
+    store.inspectionStore.setIsValidate(true);
+    console.log("handleSendInspection isValid", isValid);
+    if (isValid) {
+      const result = await store.inspectionStore.sendInspection();
+      if (result) {
+        if (editInspectionId)
+          store.inspectionStore.deleteInspectionFromLocalStorage(
+              +editInspectionId - 1,
+          );
+        navigate(-2);
+        store.snackBarStore.setSnackBarItem({
+          message: t("snackBarSuccessSend"),
+          key: "1",
+          status: "success",
+        });
+      } else {
+        store.snackBarStore.setSnackBarItem({
+          message: t("snackBarErrorSend"),
+          key: "1",
+          status: "alert",
+          icon: IconWarning,
+        });
+      }
+    }
+  };
+
   return (
     <Layout
       navPanel={
         <NavPanel
+            sendButton={
+              <Button
+                  disabled={!isFormsValidForSending}
+                  onClick={handleSendInspection}
+                  label={t("sendInspection")}
+              />
+            }
           disableSaveButton={!savingState}
           actions={
             <Button
@@ -280,7 +317,9 @@ const BarriersPage = observer((props: IBarriersPage) => {
                               handleFulfillmentChange(value, barrier.id, index)
                             }
                             fulfillments={store.barriersStore.fulfillments}
-                            inapplicableReasons={store.barriersStore.inapplicableReasons}
+                            inapplicableReasons={
+                              store.barriersStore.inapplicableReasons
+                            }
                             passportId={passportId}
                             barrier={barrier}
                             handleClearForm={() =>
@@ -299,7 +338,6 @@ const BarriersPage = observer((props: IBarriersPage) => {
                           />
                         )}
                       />
-
                       <AddBarrierButton
                         onClick={() => handleAddBarrier(barrier)}
                       />

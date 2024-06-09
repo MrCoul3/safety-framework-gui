@@ -74,12 +74,12 @@ const BarrierForm = observer((props: IBarrierForm) => {
   };
 
   const getStatus = (type: BarrierFieldTypes) => {
-    /* if (props.formFieldsValues) {
-      const condition = props.formFieldsValues[type];
+     if (props.formFields) {
+      const condition = props.formFields[type];
       if (!condition) {
         return "alert";
       }
-    }*/
+    }
     return "success";
   };
 

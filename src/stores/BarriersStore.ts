@@ -9,7 +9,10 @@ import { IFulfillment } from "../interfaces/IFulfillment";
 import { IFilledQuestions } from "../interfaces/IFilledQuestions";
 import { FilledQuestionTypes } from "../enums/FilledQuestionTypes";
 import { IFilledRequirements } from "../interfaces/IFilledRequirements";
-import {IInapplicableReasons} from "../interfaces/IInapplicableReasons";
+import { IInapplicableReasons } from "../interfaces/IInapplicableReasons";
+import { IFreeForm } from "../interfaces/IFreeForm";
+import { filterByRequiredFields } from "../utils/filterByRequiredFields";
+import { BarrierFieldTypes } from "../enums/BarrierTypes";
 
 export class BarriersStore {
   private store: AppStore;
@@ -213,5 +216,17 @@ export class BarriersStore {
         localStorage.setItem(LOCAL_STORE_INSPECTIONS, newInspectionsJson);
       }
     }
+  }
+
+  checkIsBarrierFormSuccess() {
+    if (this.filledBarriers.length) {
+      return this.filledBarriers.every(
+          (bar) =>
+              bar[BarrierFieldTypes.Mub] && bar[BarrierFieldTypes.Mub]?.trim() !== "",
+      );
+    }
+
+    return false
+
   }
 }
