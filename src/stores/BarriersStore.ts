@@ -131,9 +131,9 @@ export class BarriersStore {
     barrierId: number,
     index: number,
   ) {
-   /* const foundBarriersById = this.getFoundBarriersById(barrierId);
+    const foundBarriersById = this.getFoundBarriersById(barrierId);
     const activeBarrier = foundBarriersById[index];
-    const filledRequirements = activeBarrier?.filledRequirements;
+    let filledRequirements = activeBarrier?.filledRequirements;
     const filledQuestions = filledRequirements?.find(
       (fillReq) =>
         fillReq.requirementId ===
@@ -148,133 +148,21 @@ export class BarriersStore {
         return value;
       }
       return fillQ;
-    });*/
-    /*this.filledBarriers = this.filledBarriers.map((fillBar) => {
-      console.log('updateFilledQuestions fillBar.barrierId', toJS(fillBar.barrierId))
-      console.log('updateFilledQuestions barrierId', toJS(barrierId))
+    });
 
-      if (fillBar.barrierId === barrierId) {
-        console.log('updateFilledQuestions fillBar', toJS(fillBar))
-        return  fillBar?.filledRequirements?.map(
-          (fillReq: IFilledRequirements) => {
-            if (
-              fillReq.requirementId ===
-              value[FilledQuestionTypes.FilledRequirementId]
-            ) {
-              fillReq.filledQuestions.map((fillQ) => {
-                if (
-                  fillQ[FilledQuestionTypes.QuestionId] ===
-                  value[FilledQuestionTypes.QuestionId]
-                ) {
-                  return value;
-                }
-                return fillQ;
-              });
-            }
-
-          },
-        )
+    filledRequirements = filledRequirements ? filledRequirements?.map((fillReq) => {
+      if (newFilledQuestions && newFilledQuestions.length) {
+        const fillQReqId = newFilledQuestions[0].filledRequirementId
+        if (fillReq.requirementId === fillQReqId) {
+          fillReq.filledQuestions = newFilledQuestions
+        }
       }
-      return  fillBar
-    });*/
-    const a = this.filledBarriers[0].filledRequirements?.map(
-        (fillReq: IFilledRequirements) => {
-          if (
-              fillReq.requirementId ===
-              value[FilledQuestionTypes.FilledRequirementId]
-          ) {
-            fillReq.filledQuestions.map((fillQ) => {
-              if (
-                  fillQ[FilledQuestionTypes.QuestionId] ===
-                  value[FilledQuestionTypes.QuestionId]
-              ) {
-                return value;
-              }
-              return fillQ;
-            });
-          }
-
-        },
-    )
-
-    console.log(
-      "updateFilledQuestions a",
-      toJS(a),
-    );
+      return fillReq
+    }) : []
     console.log(
       "updateFilledQuestions this.filledBarriers",
       toJS(this.filledBarriers),
     );
-
-
-    /*let barriers = [
-      {
-        barrierId: 1,
-        filledRequirements: [
-          {
-            requirementId: 11,
-            filledQuestion: [
-              {
-                filledRequirementId: 11,
-                fulfillmentId: 1,
-                questionId: 1,
-              },
-            ],
-          },
-          {
-            requirementId: 33,
-            filledQuestion: [
-              {
-                filledRequirementId: 33,
-                fulfillmentId: 1,
-                questionId: 3,
-              },
-            ],
-          },
-        ],
-      },
-      {
-        barrierId: 2,
-        filledRequirements: [
-          {
-            requirementId: 22,
-            filledQuestion: [
-              {
-                filledRequirementId: 22,
-                fulfillmentId: 1,
-                questionId: 2,
-              },
-            ],
-          },
-        ],
-      },
-    ];
-
-    const val = { value: { fulfillmentId: 2, filledRequirementId: 11,  questionId: 1}, barrierId: 1, index: 0 };
-
-    barriers =  barriers.map((bar) => {
-      if (bar.barrierId === val.barrierId) {
-        const filledRequirements = bar.filledRequirements
-        return  filledRequirements.map((filReq) => {
-          if (filReq.requirementId === val.value.filledRequirementId) {
-            const filledQuestion = filReq.filledQuestion;
-            return  filledQuestion.map((filQ) => {
-              console.log('filQ!! filQ.questionId', filQ.questionId)
-              console.log('filQ!! val.value.questionId', val.value.questionId)
-              if (filQ.questionId === val.value.questionId) {
-                console.log('filQ!! val.value', val.value)
-                return val.value
-              }
-              return filQ
-            })
-          }
-        }) as
-      }
-      return  bar
-    })
-
-    console.log('test barriers', barriers);*/
-
   }
 
   updateInspectionToLocalStorage(editInspectionId: string) {
