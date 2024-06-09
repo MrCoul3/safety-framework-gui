@@ -11,6 +11,7 @@ import InspectionTextArea from "../InspectionTextArea/InspectionTextArea";
 import { IFormFieldTextValue } from "../../interfaces/IFieldInterfaces";
 import { DatePicker } from "@consta/uikit/DatePicker";
 import { IconCalendar } from "@consta/icons/IconCalendar";
+import moment from "moment";
 
 interface IQuestionCard {
   title: string;
@@ -125,6 +126,12 @@ const QuestionCard = observer((props: IQuestionCard) => {
     }
   };
 
+  const getDateValue = () => {
+    const date = props.filledQuestion?.[FilledQuestionTypes.PlannedResolveDate];
+    return moment(date).toDate();
+  };
+
+
   const workStoppedFields: {
     title: string;
     code: FilledQuestionTypes;
@@ -158,6 +165,14 @@ const QuestionCard = observer((props: IQuestionCard) => {
     },
   ];
 
+  const noFulfillmentCondition = () => {
+    return props.filledQuestion?.[FilledQuestionTypes.FulfillmentId] === 2;
+  };
+
+  const plannedResolveDateCondition = () => {
+    return !props.filledQuestion?.[FilledQuestionTypes.ResolvedInPlace];
+  };
+
   return (
     <div className={style.QuestionCard}>
       <div className={style.title}>
@@ -170,40 +185,47 @@ const QuestionCard = observer((props: IQuestionCard) => {
         getItemLabel={(item) => item.title}
         onChange={handleFulfilmentChange}
       />
-      <InspectionTextArea
-        disabledLabel
-        minRows={1}
-        display={true}
-        handleChange={handleCommentChange}
-        type={FilledQuestionTypes.Comment}
-        value={props.filledQuestion?.[FilledQuestionTypes.Comment]}
-        status={undefined}
-      />
-      <div className={style.flexRow}>
-        <RadioGroup
-          value={getWorkStoppedValue(FilledQuestionTypes.WorkStopped)}
-          items={workStoppedFields}
-          getItemLabel={(item) => item.title}
-          onChange={handleNoFulfillmentChange}
-        />
-        <RadioGroup
-          value={getResolvedInPlaceValue(FilledQuestionTypes.ResolvedInPlace)}
-          items={resolvedInPlaceFields}
-          getItemLabel={(item) => item.title}
-          onChange={handleNoFulfillmentChange}
-        />
-      </div>
-      <DatePicker
-        placeholder={t([
-          FilledQuestionTypes.PlannedResolveDate + "Placeholder",
-        ])}
-        type="date"
-        value={
-          props.filledQuestion?.[FilledQuestionTypes.PlannedResolveDate] as Date
-        }
-        rightSide={IconCalendar}
-        onChange={handleDateChange}
-      />
+      {noFulfillmentCondition() && (
+        <>
+          <InspectionTextArea
+            disabledLabel
+            minRows={1}
+            display={true}
+            handleChange={handleCommentChange}
+            type={FilledQuestionTypes.Comment}
+            value={props.filledQuestion?.[FilledQuestionTypes.Comment]}
+            status={undefined}
+          />
+          <div className={style.flexRow}>
+            <RadioGroup
+              value={getWorkStoppedValue(FilledQuestionTypes.WorkStopped)}
+              items={workStoppedFields}
+              getItemLabel={(item) => item.title}
+              onChange={handleNoFulfillmentChange}
+            />
+            <RadioGroup
+              value={getResolvedInPlaceValue(
+                FilledQuestionTypes.ResolvedInPlace,
+              )}
+              items={resolvedInPlaceFields}
+              getItemLabel={(item) => item.title}
+              onChange={handleNoFulfillmentChange}
+            />
+          </div>
+          {
+            plannedResolveDateCondition() &&  <DatePicker
+                  placeholder={t([
+                    FilledQuestionTypes.PlannedResolveDate + "Placeholder",
+                  ])}
+                  type="date"
+                  value={getDateValue()}
+                  rightSide={IconCalendar}
+                  onChange={handleDateChange}
+              />
+          }
+
+        </>
+      )}
     </div>
   );
 });
