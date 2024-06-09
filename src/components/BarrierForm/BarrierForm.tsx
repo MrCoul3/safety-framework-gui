@@ -42,6 +42,8 @@ interface IBarrierForm {
 
   barrier: IBarrier;
 
+  onInit(): void;
+
   handleChange(value: IFormFieldTextValue): void;
 
   handleFulfillmentChange(value: IFilledQuestions): void;
@@ -70,6 +72,7 @@ const BarrierForm = observer((props: IBarrierForm) => {
 
   useEffect(() => {
     setSavingState(true);
+    props.onInit()
   }, [props.formFields]);
   const handleChange = (value: IFormFieldTextValue) => {
     console.log("barrier form handleChange", value);

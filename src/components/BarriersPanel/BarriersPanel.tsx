@@ -4,11 +4,11 @@ import style from "./style.module.css";
 import { IFilledBarrier } from "../../interfaces/IFilledBarrier";
 import { useTranslation } from "react-i18next";
 import classNames from "classnames";
+import { BarrierFieldTypes } from "../../enums/BarrierTypes";
 
 interface IBarriersPanel {
   filledBarriers: IFilledBarrier[];
   renderForm(index: number): ReactNode;
-
   barrierTitle: string | null;
 }
 
@@ -27,15 +27,23 @@ const BarriersPanel = observer((props: IBarriersPanel) => {
         {
           props.filledBarriers.length ? (
             <div className={style.barriersPanel}>
-              {props.filledBarriers.map((item, index) => (
+              {props.filledBarriers.map((barrier, index) => (
                 <div
-                  onClick={() => onItemClick(item, index)}
+                  onClick={() => onItemClick(barrier, index)}
                   className={classNames(style.panelElement, {
                     [style.panelElementActive]: isActiveIndex === index,
                   })}
                 >
                   {/* {t("barrier")}*/} {code(props.barrierTitle ?? "")} -{" "}
-                  {index + 1} <span>&#8226;</span>
+                  {index + 1}{" "}
+                  <span
+                    className={classNames({
+                      [style.success]: barrier[BarrierFieldTypes.Mub],
+                      [style.warning]: !barrier[BarrierFieldTypes.Mub],
+                    })}
+                  >
+                    &#8226;
+                  </span>
                 </div>
               ))}
             </div>

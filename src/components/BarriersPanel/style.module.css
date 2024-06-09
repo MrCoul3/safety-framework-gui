@@ -32,3 +32,9 @@
     color: var(--gray60);
     font-size: 14px;
 }
+.success {
+    color: var(--successGreen);
+}
+.warning {
+    color: var(--awaitOrange);
+}

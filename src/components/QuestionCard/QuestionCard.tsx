@@ -156,7 +156,10 @@ const QuestionCard = observer((props: IQuestionCard) => {
 
   const getDateValue = () => {
     const date = props.filledQuestion?.[FilledQuestionTypes.PlannedResolveDate];
-    return moment(date).toDate();
+    if (date) {
+      return moment(date).toDate();
+    }
+    return null
   };
 
   const workStoppedFields: {

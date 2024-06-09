@@ -374,7 +374,7 @@ export class InspectionStore {
       const localInspectionsParsed = JSON.parse(localInspections);
       const inspection = {
         ...localInspectionsParsed[+id - 1],
-        auditDate: moment(localInspectionsParsed[+id - 1].auditDate).toDate(),
+        auditDate: localInspectionsParsed[+id - 1].auditDate ? moment(localInspectionsParsed[+id - 1].auditDate).toDate() : null,
       };
       this.setFormFieldsValues(inspection);
     }

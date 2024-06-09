@@ -86,9 +86,11 @@ const InspectionForm = observer((props: IInspectionForm) => {
     return "";
   };
   const getDate = (inspectionFormType: InspectionFormTypes) => {
-    if (props.formFieldsValues) {
+    console.log('props.formFieldsValues[inspectionFormType]', toJS(props.formFieldsValues))
+    if (props.formFieldsValues && props.formFieldsValues[inspectionFormType]) {
       return props.formFieldsValues[inspectionFormType];
     }
+    return null
   };
   const getStatus = (inspectionFormType: InspectionFormTypes) => {
     if (props.formFieldsValues) {

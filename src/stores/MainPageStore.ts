@@ -29,6 +29,8 @@ import {
 import { SortByProps } from "@consta/uikit/Table";
 import { filterByRequiredFields } from "../utils/filterByRequiredFields";
 import { IFreeForm } from "../interfaces/IFreeForm";
+import { IFilledBarrier } from "../interfaces/IFilledBarrier";
+import { BarrierFieldTypes } from "../enums/BarrierTypes";
 
 export interface IDeletingInspectionType {
   type: SubGroupsActionsTypes;
@@ -262,13 +264,26 @@ export class MainPageStore {
     }
   }
 
-  checkIsInspectionReadyToSend(index: number) {
+  checkIsInspectionReadyToSend(index: number, formTypeId?: number) {
     const inspection: IInspection = this.getLocalInspection(index);
     if (inspection) {
       console.log("checkIsInspectionReadyToSend inspection", toJS(inspection));
       const freeForms: IFreeForm[] = inspection["filledFreeForms"] ?? [];
+      const filledBarriers: IFilledBarrier[] =
+        inspection["filledBarriers"] ?? [];
       console.log("checkIsInspectionReadyToSend freeForms", toJS(freeForms));
-      if (freeForms.length) {
+      console.log("checkIsInspectionReadyToSend filledBarriers", toJS(filledBarriers));
+      console.log("checkIsInspectionReadyToSend formType", toJS(formTypeId));
+
+      if (formTypeId?.toString() === '1' && filledBarriers.length) {
+       return  filledBarriers.every(
+          (bar) =>
+            bar[BarrierFieldTypes.Mub] &&
+            bar[BarrierFieldTypes.Mub]?.trim() !== "",
+        ) && this.store.inspectionStore.checkIsFormSuccess()
+      }
+
+      if (formTypeId?.toString() === "2" && freeForms.length) {
         const filteredCommonFields = filterByRequiredFields(
           inspection,
           INSPECTION_FORM_REQUIRED_FIELDS,
@@ -281,15 +296,16 @@ export class MainPageStore {
         const freeFormsResult = filteredFreeFormsFields.map((freeForm) => {
           if (freeForm) {
             const requireFields =
-                this.store.freeFormStore.getFreeFormRequireFields(freeForm as unknown as IFreeForm);
+              this.store.freeFormStore.getFreeFormRequireFields(
+                freeForm as unknown as IFreeForm,
+              );
 
             return Object.values(freeForm).every(
-                (value) =>
-                    Object.values(value ?? {})[0] &&
-                    Object.values(freeForm).length === requireFields.length,
+              (value) =>
+                Object.values(value ?? {})[0] &&
+                Object.values(freeForm).length === requireFields.length,
             );
           }
-
         }); // [bool, bool]
 
         const commonFieldsResult =
@@ -303,7 +319,7 @@ export class MainPageStore {
           (val) => val,
         );
         console.log("checkIsInspectionReadyToSend result", index, toJS(result));
-        return result;
+        return result && this.store.inspectionStore.checkIsFormSuccess();
       }
     }
   }

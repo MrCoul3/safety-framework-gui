@@ -266,4 +266,15 @@ export class BarriersStore {
     }
     return false;
   }
+  checkIsFilledBarriersForBarrierIdSuccess(barrierId: number) {
+    const filteredFilledBarriers = this.getFoundBarriersById(barrierId)
+    if (filteredFilledBarriers.length) {
+      return filteredFilledBarriers.every(
+        (bar) =>
+          bar[BarrierFieldTypes.Mub] &&
+          bar[BarrierFieldTypes.Mub]?.trim() !== "",
+      );
+    }
+    return false;
+  }
 }

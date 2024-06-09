@@ -7,7 +7,9 @@ import { Collapse } from "@consta/uikit/Collapse";
 
 interface IBarrierElement {
   title?: string | null;
-    barriersLength?: number
+  barriersLength?: number;
+
+  isValid?: boolean;
   // handleCounterClick(countType: number): void;
 }
 
@@ -18,13 +20,23 @@ const BarrierElement = observer((props: IBarrierElement) => {
 
   const name = title?.replace(code ?? "", "");
 
+
   return (
     <div className={style.BarrierElement}>
       <div className={style.title}>
         <span className={style.code}>{code}</span>
         <span className={style.name}>{name}</span>
       </div>
-      <Counter length={props.barriersLength?.toString()} />
+      <Counter
+        status={
+          !props.barriersLength
+            ? "system"
+            : props.isValid
+              ? "success"
+              : "warning"
+        }
+        length={props.barriersLength?.toString()}
+      />
     </div>
   );
 });

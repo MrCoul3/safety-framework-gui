@@ -76,8 +76,6 @@ const BarriersPage = observer((props: IBarriersPage) => {
     }
     getFilledBarriersFromFieldsData();
     console.log("passportId", passportId);
-    setIsFormsValidForSending(store.barriersStore.checkIsBarrierFormSuccess());
-
     if (passportId) {
       console.log("passport", toJS(passport));
 
@@ -94,6 +92,7 @@ const BarriersPage = observer((props: IBarriersPage) => {
         store.barriersStore.getInapplicableReasons();
       }
     }
+    setIsFormsValidForSending(store.barriersStore.checkIsBarrierFormSuccess());
   };
 
   useEffect(() => {
@@ -122,25 +121,43 @@ const BarriersPage = observer((props: IBarriersPage) => {
   ];
 
   const saveInspection = () => {
-    editInspectionId
-      ? store.barriersStore.updateInspectionToLocalStorage(editInspectionId)
-      : store.inspectionStore.setInspectionToLocalStorage();
+    if (editInspectionId) {
+      store.barriersStore.updateInspectionToLocalStorage(editInspectionId);
+      store.snackBarStore.setSnackBarItem({
+        message: t("snackBarSuccessSave"),
+        key: "1",
+        status: "success",
+      });
+    } else {
+      store.inspectionStore.setInspectionToLocalStorage();
+      store.snackBarStore.setSnackBarItem({
+        message: t("snackBarSuccessSaveBarrier"),
+        key: "1",
+        status: "success",
+      });
+    }
   };
 
   const handleSaveInspection = () => {
     saveInspection();
     navigate(-3);
-    store.snackBarStore.setSnackBarItem({
-      message: t("snackBarSuccessSave"),
-      key: "1",
-      status: "success",
-    });
   };
 
   const handleSaveForm = (barrierId: number, barrierIndex: number) => {
-    editInspectionId
-      ? store.barriersStore.saveFilledBarrierToLocalStorage(editInspectionId, barrierId, barrierIndex)
-      : "";
+    if (editInspectionId) {
+      store.barriersStore.saveFilledBarrierToLocalStorage(
+        editInspectionId,
+        barrierId,
+        barrierIndex,
+      );
+      store.snackBarStore.setSnackBarItem({
+        message: t("snackBarSuccessSave"),
+        key: "1",
+        status: "success",
+      });
+    } else {
+      handleSaveInspection();
+    }
   };
 
   const [searchText, setSearchText] = useState<string | null>(null);
@@ -197,7 +214,7 @@ const BarriersPage = observer((props: IBarriersPage) => {
     };
     store.barriersStore.addFilledBarriers(value);
 
-    setIsFormsValidForSending(store.barriersStore.checkIsBarrierFormSuccess());
+    // setIsFormsValidForSending(store.barriersStore.checkIsBarrierFormSuccess());
   };
 
   const [isFormsValidForSending, setIsFormsValidForSending] = useState(false);
@@ -319,6 +336,9 @@ const BarriersPage = observer((props: IBarriersPage) => {
                 <CollapseElement
                   label={
                     <BarrierElement
+                      isValid={store.barriersStore.checkIsFilledBarriersForBarrierIdSuccess(
+                        barrier.id,
+                      )}
                       barriersLength={getFilledBarriersById(barrier.id)?.length}
                       title={barrier.title}
                     />
@@ -331,6 +351,9 @@ const BarriersPage = observer((props: IBarriersPage) => {
                         filledBarriers={getFilledBarriersById(barrier.id)}
                         renderForm={(index: number) => (
                           <BarrierForm
+                            onInit={() =>
+                              store.inspectionStore.setIsValidate(false)
+                            }
                             handleSaveForm={() =>
                               handleSaveForm(barrier.id, barrierIndex)
                             }
