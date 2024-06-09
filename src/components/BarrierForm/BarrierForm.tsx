@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
 import InspectionTextArea from "../InspectionTextArea/InspectionTextArea";
@@ -67,6 +67,10 @@ const BarrierForm = observer((props: IBarrierForm) => {
     }
     return "";
   };
+
+  useEffect(() => {
+    setSavingState(true);
+  }, [props.formFields]);
   const handleChange = (value: IFormFieldTextValue) => {
     console.log("barrier form handleChange", value);
     props.handleChange(value);
@@ -74,7 +78,7 @@ const BarrierForm = observer((props: IBarrierForm) => {
   };
 
   const getStatus = (type: BarrierFieldTypes) => {
-     if (props.formFields) {
+    if (props.formFields) {
       const condition = props.formFields[type];
       if (!condition) {
         return "alert";
@@ -132,6 +136,7 @@ const BarrierForm = observer((props: IBarrierForm) => {
   const handleFulfillmentChange = (value: IFilledQuestions) => {
     console.log("QuestionCard handleChange", toJS(value));
     props.handleFulfillmentChange(value);
+    setSavingState(true);
   };
 
   const filledRequirements = props.formFields?.filledRequirements;

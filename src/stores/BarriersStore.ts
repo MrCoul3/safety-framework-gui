@@ -157,9 +157,14 @@ export class BarriersStore {
   clearFilledBarrier(barrierId: number, index: number, value: IFilledBarrier) {
     let foundBarriersById = this.getFoundBarriersById(barrierId);
     this.filterBarriersFromBarrierId(barrierId);
-    foundBarriersById = foundBarriersById.map((bar, ind) => ind === index ? value : bar)
-    this.filledBarriers = [...this.filledBarriers, ...foundBarriersById]
-    console.log('clearFilledBarrier this.filledBarriers', toJS(this.filledBarriers))
+    foundBarriersById = foundBarriersById.map((bar, ind) =>
+      ind === index ? value : bar,
+    );
+    this.filledBarriers = [...this.filledBarriers, ...foundBarriersById];
+    console.log(
+      "clearFilledBarrier this.filledBarriers",
+      toJS(this.filledBarriers),
+    );
   }
 
   updateFilledQuestions(
@@ -220,14 +225,45 @@ export class BarriersStore {
     }
   }
 
+  saveFilledBarrierToLocalStorage(
+    editInspectionId: string,
+    barrierId: number,
+    barrierIndex: number,
+  ) {
+    const foundBarriersById = this.getFoundBarriersById(barrierId);
+    const activeBarrier = foundBarriersById[barrierIndex];
+
+    const index = +editInspectionId - 1;
+    const localInspections = localStorage.getItem(LOCAL_STORE_INSPECTIONS);
+    if (localInspections) {
+      const localInspectionsParsed = JSON.parse(localInspections);
+      if (localInspectionsParsed.length) {
+        const targetInspection = localInspectionsParsed[index];
+        console.log(
+          "saveFilledBarrierToLocalStorage targetInspection",
+          toJS(targetInspection),
+        );
+        const filledBarriersWithoutBarrierIndex =
+          targetInspection.filledBarriers.filter(
+            (filBar: IFilledBarrier, ind: number) => ind !== barrierIndex,
+          );
+        targetInspection.filledBarriers = [...filledBarriersWithoutBarrierIndex, activeBarrier];
+        localInspectionsParsed.splice(index, 1);
+        localInspectionsParsed.unshift(targetInspection);
+        const newInspectionsJson = JSON.stringify(localInspectionsParsed);
+        localStorage.setItem(LOCAL_STORE_INSPECTIONS, newInspectionsJson);
+      }
+    }
+  }
+
   checkIsBarrierFormSuccess() {
     if (this.filledBarriers.length) {
       return this.filledBarriers.every(
-          (bar) =>
-              bar[BarrierFieldTypes.Mub] && bar[BarrierFieldTypes.Mub]?.trim() !== "",
+        (bar) =>
+          bar[BarrierFieldTypes.Mub] &&
+          bar[BarrierFieldTypes.Mub]?.trim() !== "",
       );
     }
-    return false
-
+    return false;
   }
 }

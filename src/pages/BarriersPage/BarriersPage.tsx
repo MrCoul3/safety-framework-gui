@@ -71,7 +71,6 @@ const BarriersPage = observer((props: IBarriersPage) => {
   };
 
   const init = async () => {
-
     if (!Object.keys(store.inspectionStore.formFieldsValues).length) {
       await loadInspection();
     }
@@ -138,6 +137,12 @@ const BarriersPage = observer((props: IBarriersPage) => {
     });
   };
 
+  const handleSaveForm = (barrierId: number, barrierIndex: number) => {
+    editInspectionId
+      ? store.barriersStore.saveFilledBarrierToLocalStorage(editInspectionId, barrierId, barrierIndex)
+      : "";
+  };
+
   const [searchText, setSearchText] = useState<string | null>(null);
   const handleSearch = (value: string | null) => {
     setSearchText(value);
@@ -192,7 +197,7 @@ const BarriersPage = observer((props: IBarriersPage) => {
     };
     store.barriersStore.addFilledBarriers(value);
 
-    setIsFormsValidForSending(store.barriersStore.checkIsBarrierFormSuccess())
+    setIsFormsValidForSending(store.barriersStore.checkIsBarrierFormSuccess());
   };
 
   const [isFormsValidForSending, setIsFormsValidForSending] = useState(false);
@@ -229,7 +234,7 @@ const BarriersPage = observer((props: IBarriersPage) => {
   const handleDeleteBarrier = (barrierId: number, index: number) => {
     store.barriersStore.deleteFilledBarrier(barrierId, index);
     setSavingState(true);
-    setIsFormsValidForSending(store.barriersStore.checkIsBarrierFormSuccess())
+    setIsFormsValidForSending(store.barriersStore.checkIsBarrierFormSuccess());
   };
 
   const handleClearForm = (barrier: IBarrier, index: number) => {
@@ -244,7 +249,7 @@ const BarriersPage = observer((props: IBarriersPage) => {
     };
     store.barriersStore.clearFilledBarrier(barrier.id, index, value);
     setSavingState(true);
-    setIsFormsValidForSending(store.barriersStore.checkIsBarrierFormSuccess())
+    setIsFormsValidForSending(store.barriersStore.checkIsBarrierFormSuccess());
   };
 
   const handleSendInspection = async () => {
@@ -256,7 +261,7 @@ const BarriersPage = observer((props: IBarriersPage) => {
       if (result) {
         if (editInspectionId)
           store.inspectionStore.deleteInspectionFromLocalStorage(
-              +editInspectionId - 1,
+            +editInspectionId - 1,
           );
         navigate(-2);
         store.snackBarStore.setSnackBarItem({
@@ -279,13 +284,13 @@ const BarriersPage = observer((props: IBarriersPage) => {
     <Layout
       navPanel={
         <NavPanel
-            sendButton={
-              <Button
-                  disabled={!isFormsValidForSending}
-                  onClick={handleSendInspection}
-                  label={t("sendInspection")}
-              />
-            }
+          sendButton={
+            <Button
+              disabled={!isFormsValidForSending}
+              onClick={handleSendInspection}
+              label={t("sendInspection")}
+            />
+          }
           disableSaveButton={!savingState}
           actions={
             <Button
@@ -310,7 +315,7 @@ const BarriersPage = observer((props: IBarriersPage) => {
           }
           content={
             barriers().length ? (
-              barriers().map((barrier) => (
+              barriers().map((barrier, barrierIndex) => (
                 <CollapseElement
                   label={
                     <BarrierElement
@@ -326,6 +331,9 @@ const BarriersPage = observer((props: IBarriersPage) => {
                         filledBarriers={getFilledBarriersById(barrier.id)}
                         renderForm={(index: number) => (
                           <BarrierForm
+                            handleSaveForm={() =>
+                              handleSaveForm(barrier.id, barrierIndex)
+                            }
                             handleFulfillmentChange={(value) =>
                               handleFulfillmentChange(value, barrier.id, index)
                             }
