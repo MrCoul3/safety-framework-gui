@@ -154,10 +154,12 @@ export class BarriersStore {
     this.filledBarriers = [...this.filledBarriers, ...foundBarriersById];
   }
 
-  clearFilledBarrier(barrierId: number, index: number) {
-    const foundBarriersById = this.getFoundBarriersById(barrierId);
-    const activeBarrier = foundBarriersById[index];
-    // перебираем все необходимые поля и задаем им пустые значения или по умолчанию и сохраняем
+  clearFilledBarrier(barrierId: number, index: number, value: IFilledBarrier) {
+    let foundBarriersById = this.getFoundBarriersById(barrierId);
+    this.filterBarriersFromBarrierId(barrierId);
+    foundBarriersById = foundBarriersById.map((bar, ind) => ind === index ? value : bar)
+    this.filledBarriers = [...this.filledBarriers, ...foundBarriersById]
+    console.log('clearFilledBarrier this.filledBarriers', toJS(this.filledBarriers))
   }
 
   updateFilledQuestions(
@@ -225,7 +227,6 @@ export class BarriersStore {
               bar[BarrierFieldTypes.Mub] && bar[BarrierFieldTypes.Mub]?.trim() !== "",
       );
     }
-
     return false
 
   }

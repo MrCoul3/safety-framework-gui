@@ -191,6 +191,8 @@ const BarriersPage = observer((props: IBarriersPage) => {
       filledRequirements: filledRequirements,
     };
     store.barriersStore.addFilledBarriers(value);
+
+    setIsFormsValidForSending(store.barriersStore.checkIsBarrierFormSuccess())
   };
 
   const [isFormsValidForSending, setIsFormsValidForSending] = useState(false);
@@ -227,11 +229,22 @@ const BarriersPage = observer((props: IBarriersPage) => {
   const handleDeleteBarrier = (barrierId: number, index: number) => {
     store.barriersStore.deleteFilledBarrier(barrierId, index);
     setSavingState(true);
+    setIsFormsValidForSending(store.barriersStore.checkIsBarrierFormSuccess())
   };
 
-  const handleClearForm = (barrierId: number, index: number) => {
-    store.barriersStore.clearFilledBarrier(barrierId, index);
+  const handleClearForm = (barrier: IBarrier, index: number) => {
+    const filledRequirements = barrier.requirements.map((req) => ({
+      requirementId: req.id,
+      filledQuestions: getFilledQuestions(req.questions),
+    }));
+    const value: IFilledBarrier = {
+      [BarrierFieldTypes.Mub]: "",
+      barrierId: barrier.id,
+      filledRequirements: filledRequirements,
+    };
+    store.barriersStore.clearFilledBarrier(barrier.id, index, value);
     setSavingState(true);
+    setIsFormsValidForSending(store.barriersStore.checkIsBarrierFormSuccess())
   };
 
   const handleSendInspection = async () => {
@@ -323,7 +336,7 @@ const BarriersPage = observer((props: IBarriersPage) => {
                             passportId={passportId}
                             barrier={barrier}
                             handleClearForm={() =>
-                              handleClearForm(barrier.id, index)
+                              handleClearForm(barrier, index)
                             }
                             handleDelete={() =>
                               handleDeleteBarrier(barrier.id, index)
