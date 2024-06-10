@@ -127,7 +127,18 @@ export class BarriersStore {
       console.log("changeFormFieldsValues key", key);
     }
   }
-
+  vehicleFieldValue: string | null = null
+  setVehicleFieldValue(value: string | null) {
+    this.vehicleFieldValue = value;
+  }
+  licencePlateFieldValue: string | null = null
+  setLicencePlateFieldValue(value: string | null) {
+    this.licencePlateFieldValue = value;
+  }
+  driverFioFieldValue: string | null = null
+  setDriverFioFieldValue(value: string | null) {
+    this.driverFioFieldValue = value;
+  }
   setBarriers(value: IBarrier[]) {
     this.barriers = value;
     console.debug("barriers: ", toJS(this.barriers));
@@ -264,47 +275,18 @@ export class BarriersStore {
     }
   }
 
-  checkIsBarrierFormSuccess() {
-    console.log("checkIsBarrierFormSuccess");
+  checkIsBarrierFormSuccess(passportId?: string) {
     if (this.filledBarriers.length) {
       return this.filledBarriers.every((bar) => {
-        console.log(
-          "checkIsBarrierFormSuccess checkComment",
-          this.checkComment(bar),
-        );
         return (
           bar[BarrierFieldTypes.Mub] &&
           bar[BarrierFieldTypes.Mub]?.trim() !== "" &&
-          this.checkComment(bar)
+          this.checkComment(bar) &&
+          this.checkExtraFields(bar, passportId)
         );
       });
     }
     return false;
-  }
-
-  checkComment(barrier: IFilledBarrier) {
-    console.log(
-      "checkComment this.getFlatQuestionsFromBarrier(barrier)",
-      toJS(this.getFlatQuestionsFromBarrier(barrier)),
-    );
-    return this.getFlatQuestionsFromBarrier(barrier)?.every(
-      (q: IFilledQuestions) => {
-        console.log(
-          "checkComment q?.[FilledQuestionTypes.Comment]",
-          toJS(q?.[FilledQuestionTypes.Comment]),
-        );
-
-        if (q[FilledQuestionTypes.FulfillmentId]  === 2 && q?.[FilledQuestionTypes.Comment] === "") {
-          return  false
-        }
-
-        if (q[FilledQuestionTypes.InapplicableReasonId]  === 3 && q?.[FilledQuestionTypes.Comment] === "") {
-          return  false
-        }
-
-        return true;
-      },
-    );
   }
 
   getFlatQuestionsFromBarrier(barrier?: IFilledBarrier) {
@@ -316,14 +298,57 @@ export class BarriersStore {
           .flat()
       : null;
   }
-  checkIsFilledBarriersForBarrierIdSuccess(barrierId: number) {
+
+  isExtraFieldsCondition(passportId?: string) {
+    return passportId === "7" || passportId === "5";
+  }
+
+  checkExtraFields(barrier: IFilledBarrier, passportId?: string) {
+    if (this.isExtraFieldsCondition(passportId)) {
+      const mubValuesArray = barrier?.[BarrierFieldTypes.Mub]?.split(",");
+      return (
+        mubValuesArray.length &&
+        mubValuesArray.length === 3 &&
+        mubValuesArray.every((extraVal) => extraVal && extraVal !== "")
+      );
+    }
+    return true;
+  }
+
+  checkComment(barrier: IFilledBarrier) {
+    return this.getFlatQuestionsFromBarrier(barrier)?.every(
+      (q: IFilledQuestions) => {
+        if (
+          q[FilledQuestionTypes.FulfillmentId] === 2 &&
+          q?.[FilledQuestionTypes.Comment] === ""
+        ) {
+          return false;
+        }
+
+        if (
+          q[FilledQuestionTypes.InapplicableReasonId] === 3 &&
+          q?.[FilledQuestionTypes.Comment] === ""
+        ) {
+          return false;
+        }
+
+        return true;
+      },
+    );
+  }
+
+  checkIsFilledBarriersForBarrierIdSuccess(
+    barrierId: number,
+    passportId?: string,
+  ) {
     const filteredFilledBarriers = this.getFoundBarriersById(barrierId);
     if (filteredFilledBarriers.length) {
       return filteredFilledBarriers.every(
         (bar) =>
           bar[BarrierFieldTypes.Mub] &&
           bar[BarrierFieldTypes.Mub]?.trim() !== "" &&
-          this.checkComment(bar),
+          this.checkComment(bar) &&
+          this.checkExtraFields(bar, passportId),
       );
     }
     return false;

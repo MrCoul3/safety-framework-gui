@@ -25,6 +25,7 @@ import { IInapplicableReasons } from "../../interfaces/IInapplicableReasons";
 
 interface IBarrierForm {
   isValidate: boolean;
+  isExtraFieldsCondition: boolean;
 
   fulfillments: IFulfillment[];
 
@@ -91,32 +92,40 @@ const BarrierForm = observer((props: IBarrierForm) => {
   };
 
   const [vehicleFieldValue, setVehicleFieldValue] = useState<string | null>(
-      mub?.[0] ?? 'Не заполнено'
+    mub?.[0] ?? "",
   );
   const [licencePlateFieldValue, setLicencePlateFieldValue] = useState<
     string | null
-  >(mub?.[1] ?? 'Не заполнено');
+  >(mub?.[1] ?? "");
   const [driverFioFieldValue, setDriverFioFieldValue] = useState<string | null>(
-      mub?.[2] ?? 'Не заполнено'
+    mub?.[2] ?? "",
   );
+
+
 
   useEffect(() => {
     console.log("handleExtraFieldsChange vehicleFieldValue", vehicleFieldValue);
-    if (vehicleFieldValue !== null && licencePlateFieldValue !== null && driverFioFieldValue !== null) {
-      const vehicleVal = vehicleFieldValue ? `${vehicleFieldValue}` : 'Не заполнено'
-      const licencePlateVal = licencePlateFieldValue ? `${licencePlateFieldValue}` : 'Не заполнено'
-      const driverFioVal = driverFioFieldValue ? `${driverFioFieldValue}` : 'Не заполнено'
+    if (
+      vehicleFieldValue !== null &&
+      licencePlateFieldValue !== null &&
+      driverFioFieldValue !== null
+    ) {
+      const vehicleVal = vehicleFieldValue ? `${vehicleFieldValue}` : "";
+      const licencePlateVal = licencePlateFieldValue
+        ? `${licencePlateFieldValue}`
+        : "";
+      const driverFioVal = driverFioFieldValue
+        ? `${driverFioFieldValue}`
+        : "";
       const result = {
         [BarrierFieldTypes.Mub]: `${vehicleVal},${licencePlateVal},${driverFioVal}`,
       };
       props.handleChange(result);
       setSavingState(true);
     }
-
   }, [vehicleFieldValue, licencePlateFieldValue, driverFioFieldValue]);
 
   const getStatus = (type: BarrierFieldTypes | BarrierExtraFieldTypes) => {
-    console.log("getStatus type", type);
     if (props.formFields) {
       const condition = props.formFields[type];
       if (!condition) {
@@ -155,13 +164,9 @@ const BarrierForm = observer((props: IBarrierForm) => {
   const [isClearModalOpen, setIsClearModalOpen] = React.useState(false);
   const [isDelModalOpen, setIsDelModalOpen] = React.useState(false);
 
-  const isExtraFieldsCondition = () => {
-    // для ДТП и ГРУЗ
-    return props.passportId === "7" || props.passportId === "5";
-  };
 
   const renderMubFields = () => {
-    if (isExtraFieldsCondition()) {
+    if (props.isExtraFieldsCondition) {
       return BARRIER_EXTRA_FIELDS_VALUES.map((extraField) => (
         <InspectionTextArea
           minRows={1}
