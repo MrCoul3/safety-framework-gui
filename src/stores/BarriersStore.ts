@@ -13,6 +13,8 @@ import { IInapplicableReasons } from "../interfaces/IInapplicableReasons";
 import { IFreeForm } from "../interfaces/IFreeForm";
 import { filterByRequiredFields } from "../utils/filterByRequiredFields";
 import { BarrierFieldTypes } from "../enums/BarrierTypes";
+import { IRequirement } from "../interfaces/IRequirement";
+import { IQuestion } from "../interfaces/IQuestion";
 
 export class BarriersStore {
   private store: AppStore;
@@ -215,7 +217,8 @@ export class BarriersStore {
     if (localInspections) {
       const localInspectionsParsed = JSON.parse(localInspections);
       if (localInspectionsParsed.length) {
-        localInspectionsParsed[index] = this.store.inspectionStore.formFieldsValues
+        localInspectionsParsed[index] =
+          this.store.inspectionStore.formFieldsValues;
         const targetInspection = localInspectionsParsed[index];
         targetInspection.filledBarriers = this.filledBarriers;
 
@@ -249,7 +252,10 @@ export class BarriersStore {
           targetInspection.filledBarriers.filter(
             (filBar: IFilledBarrier, ind: number) => ind !== barrierIndex,
           );
-        targetInspection.filledBarriers = [...filledBarriersWithoutBarrierIndex, activeBarrier];
+        targetInspection.filledBarriers = [
+          ...filledBarriersWithoutBarrierIndex,
+          activeBarrier,
+        ];
         localInspectionsParsed.splice(index, 1);
         localInspectionsParsed.unshift(targetInspection);
         const newInspectionsJson = JSON.stringify(localInspectionsParsed);
@@ -259,22 +265,69 @@ export class BarriersStore {
   }
 
   checkIsBarrierFormSuccess() {
+    console.log("checkIsBarrierFormSuccess");
     if (this.filledBarriers.length) {
-      return this.filledBarriers.every(
-        (bar) =>
+      return this.filledBarriers.every((bar) => {
+        console.log(
+          "checkIsBarrierFormSuccess checkComment",
+          this.checkComment(bar),
+        );
+        return (
           bar[BarrierFieldTypes.Mub] &&
-          bar[BarrierFieldTypes.Mub]?.trim() !== "",
-      );
+          bar[BarrierFieldTypes.Mub]?.trim() !== "" &&
+          this.checkComment(bar)
+        );
+      });
     }
     return false;
   }
+
+  checkComment(barrier: IFilledBarrier) {
+    console.log(
+      "checkComment this.getFlatQuestionsFromBarrier(barrier)",
+      toJS(this.getFlatQuestionsFromBarrier(barrier)),
+    );
+    return this.getFlatQuestionsFromBarrier(barrier)?.every(
+      (q: IFilledQuestions) => {
+        console.log(
+          "checkComment q?.[FilledQuestionTypes.Comment]",
+          toJS(q?.[FilledQuestionTypes.Comment]),
+        );
+
+        if (
+          q?.[FilledQuestionTypes.Comment] ||
+          q?.[FilledQuestionTypes.Comment] === ""
+        ) {
+          return false;
+        }
+        if (
+          q?.[FilledQuestionTypes.Comment] &&
+          q?.[FilledQuestionTypes.Comment] !== ""
+        ) {
+          return true;
+        }
+        return true;
+      },
+    );
+  }
+
+  getFlatQuestionsFromBarrier(barrier?: IFilledBarrier) {
+    return barrier?.filledRequirements
+      ? barrier?.filledRequirements
+          .map((req: IFilledRequirements) => {
+            return req.filledQuestions;
+          })
+          .flat()
+      : null;
+  }
   checkIsFilledBarriersForBarrierIdSuccess(barrierId: number) {
-    const filteredFilledBarriers = this.getFoundBarriersById(barrierId)
+    const filteredFilledBarriers = this.getFoundBarriersById(barrierId);
     if (filteredFilledBarriers.length) {
       return filteredFilledBarriers.every(
         (bar) =>
           bar[BarrierFieldTypes.Mub] &&
-          bar[BarrierFieldTypes.Mub]?.trim() !== "",
+          bar[BarrierFieldTypes.Mub]?.trim() !== "" &&
+          this.checkComment(bar),
       );
     }
     return false;

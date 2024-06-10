@@ -12,8 +12,11 @@ import { FreeFormFieldTypes } from "../../enums/FreeFormTypes";
 import { PropStatus } from "@consta/uikit/__internal__/src/components/SelectComponents/types";
 import { useTranslation } from "react-i18next";
 import classNames from "classnames";
-import { BarrierFieldTypes } from "../../enums/BarrierTypes";
-import {FilledQuestionTypes} from "../../enums/FilledQuestionTypes";
+import {
+  BarrierExtraFieldTypes,
+  BarrierFieldTypes,
+} from "../../enums/BarrierTypes";
+import { FilledQuestionTypes } from "../../enums/FilledQuestionTypes";
 
 interface IInspectionTextArea {
   handleChange(value: IFormFieldTextValue): void;
@@ -21,13 +24,18 @@ interface IInspectionTextArea {
   className?: string;
   minRows?: number;
 
-  disabledLabel?: boolean
+  disabledLabel?: boolean;
   caption?: string;
   display?: boolean;
   labelPos?: "left" | "top";
   required?: boolean;
   status: PropStatus | undefined;
-  type: InspectionFormTypes | FreeFormFieldTypes | BarrierFieldTypes | FilledQuestionTypes;
+  type:
+    | InspectionFormTypes
+    | FreeFormFieldTypes
+    | BarrierFieldTypes
+    | FilledQuestionTypes
+    | BarrierExtraFieldTypes;
 }
 
 const InspectionTextArea = observer((props: IInspectionTextArea) => {
@@ -37,7 +45,7 @@ const InspectionTextArea = observer((props: IInspectionTextArea) => {
   useEffect(() => {
     if (!props.disabledLabel) {
       (textField.current?.childNodes[1] as HTMLDivElement).classList.add(
-          props.className ? props.className : "customField",
+        props.className ? props.className : "customField",
       );
     }
   }, [textField]);

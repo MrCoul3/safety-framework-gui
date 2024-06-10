@@ -239,6 +239,7 @@ const BarriersPage = observer((props: IBarriersPage) => {
     console.log("QuestionCard handleChange", toJS(value));
     // {filledRequirementId,  fulfillmentId, questionId}
     store.barriersStore.updateFilledQuestions(value, barrierId, index);
+    const isValid = store.barriersStore.checkIsBarrierFormSuccess();
     setSavingState(true);
   };
 

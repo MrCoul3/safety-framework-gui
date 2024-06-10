@@ -2,28 +2,22 @@ import React, { useEffect, useMemo, useState } from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
 import InspectionTextArea from "../InspectionTextArea/InspectionTextArea";
-import { FreeFormFieldTypes } from "../../enums/FreeFormTypes";
-import {
-  IFormFieldTextValue,
-  IFormFieldValue,
-} from "../../interfaces/IFieldInterfaces";
+import { IFormFieldTextValue } from "../../interfaces/IFieldInterfaces";
 import {
   BARRIER_EXTRA_FIELDS_VALUES,
+  BarrierExtraFieldTypes,
   BarrierFieldTypes,
 } from "../../enums/BarrierTypes";
 import { PropStatus } from "@consta/uikit/__internal__/src/components/SelectComponents/types";
 import { IFilledBarrier } from "../../interfaces/IFilledBarrier";
 import ConfirmDialog from "../ConfirmDialog/ConfirmDialog";
 import { useTranslation } from "react-i18next";
-import { InspectionFormTypes } from "../../enums/InspectionFormTypes";
 import { Button } from "@consta/uikit/Button";
-import { Card } from "@consta/uikit/Card";
 import MubCards from "../MubCards/MubCards";
 import { IBarrier } from "../../interfaces/IBarrier";
 import { toJS } from "mobx";
 import QuestionCard from "../QuestionCard/QuestionCard";
 import { IFulfillment } from "../../interfaces/IFulfillment";
-import { IFilledRequirements } from "../../interfaces/IFilledRequirements";
 import { IQuestion } from "../../interfaces/IQuestion";
 import { FilledQuestionTypes } from "../../enums/FilledQuestionTypes";
 import { IFilledQuestions } from "../../interfaces/IFilledQuestions";
@@ -70,6 +64,22 @@ const BarrierForm = observer((props: IBarrierForm) => {
     return "";
   };
 
+  const mub = props.formFields?.[BarrierFieldTypes.Mub]?.split(",");
+  const getExtraFieldValue = (type: BarrierExtraFieldTypes): string => {
+    if (props.formFields) {
+      if (type === BarrierExtraFieldTypes.VehicleType) {
+        return mub?.[0] ?? "";
+      }
+      if (type === BarrierExtraFieldTypes.LicencePlate) {
+        return mub?.[1] ?? "";
+      }
+      if (type === BarrierExtraFieldTypes.DriverFio) {
+        return mub?.[2] ?? "";
+      }
+    }
+    return "";
+  };
+
   useEffect(() => {
     setSavingState(true);
     props.onInit();
@@ -80,7 +90,33 @@ const BarrierForm = observer((props: IBarrierForm) => {
     setSavingState(true);
   };
 
-  const getStatus = (type: BarrierFieldTypes) => {
+  const [vehicleFieldValue, setVehicleFieldValue] = useState<string | null>(
+      mub?.[0] ?? 'Не заполнено'
+  );
+  const [licencePlateFieldValue, setLicencePlateFieldValue] = useState<
+    string | null
+  >(mub?.[1] ?? 'Не заполнено');
+  const [driverFioFieldValue, setDriverFioFieldValue] = useState<string | null>(
+      mub?.[2] ?? 'Не заполнено'
+  );
+
+  useEffect(() => {
+    console.log("handleExtraFieldsChange vehicleFieldValue", vehicleFieldValue);
+    if (vehicleFieldValue !== null && licencePlateFieldValue !== null && driverFioFieldValue !== null) {
+      const vehicleVal = vehicleFieldValue ? `${vehicleFieldValue}` : 'Не заполнено'
+      const licencePlateVal = licencePlateFieldValue ? `${licencePlateFieldValue}` : 'Не заполнено'
+      const driverFioVal = driverFioFieldValue ? `${driverFioFieldValue}` : 'Не заполнено'
+      const result = {
+        [BarrierFieldTypes.Mub]: `${vehicleVal},${licencePlateVal},${driverFioVal}`,
+      };
+      props.handleChange(result);
+      setSavingState(true);
+    }
+
+  }, [vehicleFieldValue, licencePlateFieldValue, driverFioFieldValue]);
+
+  const getStatus = (type: BarrierFieldTypes | BarrierExtraFieldTypes) => {
+    console.log("getStatus type", type);
     if (props.formFields) {
       const condition = props.formFields[type];
       if (!condition) {
@@ -89,6 +125,15 @@ const BarrierForm = observer((props: IBarrierForm) => {
     }
     return "success";
   };
+  /*  const getStatusForExtraFields = (type: BarrierFieldTypes | BarrierExtraFieldTypes) => {
+    if (props.formFields) {
+      const condition = props.formFields[type];
+      if (!condition) {
+        return "alert";
+      }
+    }
+    return "success";
+  };*/
 
   const questions = useMemo(
     () =>
@@ -115,7 +160,7 @@ const BarrierForm = observer((props: IBarrierForm) => {
     return props.passportId === "7" || props.passportId === "5";
   };
 
-  /* const renderExtraMubFields = () => {
+  const renderMubFields = () => {
     if (isExtraFieldsCondition()) {
       return BARRIER_EXTRA_FIELDS_VALUES.map((extraField) => (
         <InspectionTextArea
@@ -124,19 +169,41 @@ const BarrierForm = observer((props: IBarrierForm) => {
           required={true}
           labelPos={"top"}
           className={"none"}
-          handleChange={handleChange}
-          caption={t("mubCaption")}
+          handleChange={(val) => {
+            extraField === BarrierExtraFieldTypes.VehicleType &&
+              setVehicleFieldValue(val[extraField] ?? "");
+            extraField === BarrierExtraFieldTypes.LicencePlate &&
+              setLicencePlateFieldValue(val[extraField] ?? "");
+            extraField === BarrierExtraFieldTypes.DriverFio &&
+              setDriverFioFieldValue(val[extraField] ?? "");
+          }}
           type={extraField}
-          value={getValue(extraField)}
+          value={getExtraFieldValue(extraField)}
+          status={
+            props.isValidate ? (getStatus(extraField) as PropStatus) : undefined
+          }
+        />
+      ));
+    } else {
+      return (
+        <InspectionTextArea
+          minRows={5}
+          display={true}
+          required={true}
+          labelPos={"top"}
+          className={"none"}
+          handleChange={handleChange}
+          type={BarrierFieldTypes.Mub}
+          value={getValue(BarrierFieldTypes.Mub)}
           status={
             props.isValidate
               ? (getStatus(BarrierFieldTypes.Mub) as PropStatus)
               : undefined
           }
         />
-      ));
+      );
     }
-  };*/
+  };
 
   const handleFulfillmentChange = (value: IFilledQuestions) => {
     console.log("QuestionCard handleChange", toJS(value));
@@ -162,22 +229,7 @@ const BarrierForm = observer((props: IBarrierForm) => {
       {props.formFields && (
         <>
           <div className={style.barrierFormWrap}>
-            <InspectionTextArea
-              minRows={5}
-              display={true}
-              required={true}
-              labelPos={"top"}
-              className={"none"}
-              handleChange={handleChange}
-              caption={t("mubCaption")}
-              type={BarrierFieldTypes.Mub}
-              value={getValue(BarrierFieldTypes.Mub)}
-              status={
-                props.isValidate
-                  ? (getStatus(BarrierFieldTypes.Mub) as PropStatus)
-                  : undefined
-              }
-            />
+            {renderMubFields()}
             <MubCards mub={props.barrier.mub} mubHint={props.barrier.mubHint} />
             {questions?.map((question) => (
               <QuestionCard
