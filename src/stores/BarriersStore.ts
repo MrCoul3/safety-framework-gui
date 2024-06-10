@@ -294,18 +294,14 @@ export class BarriersStore {
           toJS(q?.[FilledQuestionTypes.Comment]),
         );
 
-        if (
-          q?.[FilledQuestionTypes.Comment] ||
-          q?.[FilledQuestionTypes.Comment] === ""
-        ) {
-          return false;
+        if (q[FilledQuestionTypes.FulfillmentId]  === 2 && q?.[FilledQuestionTypes.Comment] === "") {
+          return  false
         }
-        if (
-          q?.[FilledQuestionTypes.Comment] &&
-          q?.[FilledQuestionTypes.Comment] !== ""
-        ) {
-          return true;
+
+        if (q[FilledQuestionTypes.InapplicableReasonId]  === 3 && q?.[FilledQuestionTypes.Comment] === "") {
+          return  false
         }
+
         return true;
       },
     );

@@ -92,6 +92,7 @@ const BarriersPage = observer((props: IBarriersPage) => {
         store.barriersStore.getInapplicableReasons();
       }
     }
+    console.log('init checkIsBarrierFormSuccess', store.barriersStore.checkIsBarrierFormSuccess())
     setIsFormsValidForSending(store.barriersStore.checkIsBarrierFormSuccess());
   };
 
@@ -240,6 +241,7 @@ const BarriersPage = observer((props: IBarriersPage) => {
     // {filledRequirementId,  fulfillmentId, questionId}
     store.barriersStore.updateFilledQuestions(value, barrierId, index);
     const isValid = store.barriersStore.checkIsBarrierFormSuccess();
+    setIsFormsValidForSending(isValid);
     setSavingState(true);
   };
 
