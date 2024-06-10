@@ -277,25 +277,9 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
           onCellClick={handleCellClick}
           filters={filters}
       />
- {/*     {props.inspections.length ? (
-        <Table
-          isResizable
-          rows={rows}
-          stickyHeader
-          ref={tableRef}
-          stickyColumns={1}
-          columns={columns}
-          className={style.table}
-          onSortBy={props.handleSort}
-          onCellClick={handleCellClick}
-          filters={filters}
-        />
-      ) : (
-        renderLoader(props.subGroupsActionsTypes)
-      )}*/}
 
       {props.inspectionsCount &&
-        props.inspectionsCount > INSPECTIONS_ON_PAGE &&
+        props.inspectionsCount > INSPECTIONS_ON_PAGE ?
         isSentInspectionsCondition() &&
         props.inspections.length && (
           <Pagination
@@ -318,7 +302,7 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
               },
             ]}
           />
-        )}
+        ) : null}
     </div>
   );
 });

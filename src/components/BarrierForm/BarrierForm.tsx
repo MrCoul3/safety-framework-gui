@@ -72,7 +72,7 @@ const BarrierForm = observer((props: IBarrierForm) => {
 
   useEffect(() => {
     setSavingState(true);
-    props.onInit()
+    props.onInit();
   }, [props.formFields]);
   const handleChange = (value: IFormFieldTextValue) => {
     console.log("barrier form handleChange", value);
@@ -92,11 +92,13 @@ const BarrierForm = observer((props: IBarrierForm) => {
 
   const questions = useMemo(
     () =>
-      props.barrier.requirements
-        .map((req) => {
-          return req.questions;
-        })
-        .flat(),
+      props.barrier?.requirements && props.barrier?.requirements.length
+        ? props.barrier?.requirements
+            .map((req) => {
+              return req.questions;
+            })
+            .flat()
+        : null,
     [props.barrier.requirements],
   );
 
@@ -177,7 +179,7 @@ const BarrierForm = observer((props: IBarrierForm) => {
               }
             />
             <MubCards mub={props.barrier.mub} mubHint={props.barrier.mubHint} />
-            {questions.map((question) => (
+            {questions?.map((question) => (
               <QuestionCard
                 filledQuestion={getFilledQuestion(question)}
                 handleChange={handleFulfillmentChange}

@@ -39,7 +39,7 @@ export class BarriersStore {
   async getBarriers(passportId: string) {
     try {
       const response = await instance.get(
-        `Barriers?$filter=(passportId eq ${passportId})and(IsActual eq true)and(IsPk ne null)&$count=true`,
+        `barriers?$filter=(passportId eq ${passportId})and(IsActual eq true)and(IsPk ne null)&$expand=requirements($expand=questions)&$count=true`,
       );
       if (!response.data.error) {
         if (response.data.value) {
