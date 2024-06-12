@@ -3,6 +3,9 @@
   height: var(--navPanelHeight);
   box-sizing: border-box;
 }
+.minSize {
+  height: var(--minSizeNavPanelHeight);
+}
 .flexCol {
   display: flex;
   flex-direction: column;

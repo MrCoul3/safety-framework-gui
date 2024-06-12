@@ -105,6 +105,7 @@ export class MainPageStore {
     this.updateSubGroupsState(SubGroupsActionsTypes.MainList);
   }
   updateSubGroupsState(value: SubGroupsActionsTypes) {
+    console.log('updateSubGroupsState', value)
     this.subGroupsState = this.subGroupsState.map((item) => {
       const foundAction = item.actions.find((action) => action.label === value);
       const foundActive = item.actions.find((action) => action.active);

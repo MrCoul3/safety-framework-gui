@@ -46,6 +46,7 @@ code {
   --sideBarWidth: 244px;
   --fieldWidth: 610px;
   --navPanelHeight: 214px;
+  --minSizeNavPanelHeight: 150px;
   --normalGap: 16px;
   --mainHeaderHeight: 76px;
   --paginatorHeight: 75px;

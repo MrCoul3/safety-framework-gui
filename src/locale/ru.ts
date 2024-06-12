@@ -6,6 +6,7 @@ import {
   InspectionFormTypes,
 } from "../enums/InspectionFormTypes";
 import {FreeFormFieldTypes, FreeFormTypes} from "../enums/FreeFormTypes";
+import EliminationOfViolationsPage from "../pages/EliminationOfViolationsPage";
 
 export const ru = {
   dict: {
@@ -130,6 +131,7 @@ export const ru = {
 
 
     addInspectionTitle: "Заполнение данных инспекции",
+    eliminationOfViolationsTitle: "Устранение нарушений",
     editInspectionTitle: "Редактирование данных инспекции",
     addInspectionDescription:
       "Заполните все ключевые поля, чтобы перейти дальше.",

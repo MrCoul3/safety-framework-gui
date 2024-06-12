@@ -8,12 +8,16 @@ import { Button } from "@consta/uikit/Button";
 import { useTranslation } from "react-i18next";
 import ConfirmDialog from "../ConfirmDialog/ConfirmDialog";
 import { IconBackward } from "@consta/icons/IconBackward";
+import classNames from "classnames";
 
 interface INavPanel {
   title: string;
-  description: string;
+  description?: string;
   crumbs: IBreadCrumbs[];
   disableSaveButton?: boolean;
+
+  disableButtons?: boolean;
+  isDisableSaveInspectionButton?: boolean;
   actions?: ReactNode;
   sendButton?: ReactNode;
   actionText?: string;
@@ -31,7 +35,7 @@ const NavPanel = observer((props: INavPanel) => {
   const onItemClick = (item: IBreadCrumbs) => {
     if (item.path === "main") {
       // setIsModalOpen(true);
-      handleConfirm()
+      handleConfirm();
       return;
     }
     if (item.index) {
@@ -42,10 +46,13 @@ const NavPanel = observer((props: INavPanel) => {
     navigate("/");
   };
   return (
-    <div className={style.NavPanel}>
+    <div className={classNames(style.NavPanel, {
+      [style.minSize]: props.disableButtons
+    }) }>
       <div className={style.flexCol}>
         <div className={style.flexContainer}>
-          <Button onClick={() => navigate(-1)}
+          <Button
+            onClick={() => navigate(-1)}
             className={style.backwardBtn}
             size={"s"}
             view={"clear"}
@@ -64,25 +71,23 @@ const NavPanel = observer((props: INavPanel) => {
         <div className={style.description}>{props.description}</div>
       </div>
 
-      <div className={style.buttonsGroup}>
-        {/* {editInspectionId && (
-          <Button
-            view="secondary"
-            onClick={props.handleEditPassports}
-            label={t("editPassports")}
-            iconLeft={IconEdit}
-          />
-        )}*/}
-        <div className={style.flexContainer}>
-          <Button
-            disabled={props.disableSaveButton}
-            onClick={props.handleSaveInspection}
-            label={t("saveInspection")}
-          />
-          {props.actions}
+      {!props.disableButtons && (
+        <div className={style.buttonsGroup}>
+          <div className={style.flexContainer}>
+            {!props.isDisableSaveInspectionButton && (
+              <Button
+                disabled={props.disableSaveButton}
+                onClick={props.handleSaveInspection}
+                label={t("saveInspection")}
+              />
+            )}
+
+            {props.actions}
+          </div>
+          {props.sendButton}
         </div>
-        {props.sendButton}
-      </div>
+      )}
+
       {/*<ConfirmDialog
         cancelActionLabel={t("cancel")}
         confirmActionLabel={t("go")}

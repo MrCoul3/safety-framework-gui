@@ -12,9 +12,9 @@ import InspectionPage from "../../../pages/InspectionPage";
 import { SubGroupsActionsTypes } from "../../../enums/SubGroupsTypes";
 import PassportsPage from "../../../pages/PassportsPage";
 import BarriersPage from "../../../pages/BarriersPage/BarriersPage";
-import EmptyBoxPage from "../../EmptyBoxPage/EmptyBoxPage";
 import FreeFormPage from "../../../pages/FreeFormPage";
 import SnackBarCustom from "../../SnackBarCustom/SnackBarCustom";
+import EliminationOfViolationsPage from "../../../pages/EliminationOfViolationsPage";
 export const AppContainer = observer(() => {
   const { t } = useTranslation("dict");
 
@@ -26,8 +26,10 @@ export const AppContainer = observer(() => {
     const path = decodeURIComponent(window.location.pathname).replace("/", "");
     if (path) {
       store.mainPageStore.updateSubGroupsState(path as SubGroupsActionsTypes);
+    } else {
+      store.mainPageStore.resetSideBarToHome();
     }
-  }, []);
+  }, [window.location.pathname]);
 
   const toHome = () => {
     store.mainPageStore.resetSideBarToHome();
@@ -43,15 +45,15 @@ export const AppContainer = observer(() => {
     <>
       <MainHeader handleLogoClick={toHome} />
       <SnackBarCustom
-          onItemClose={() => store.snackBarStore.clearSnackBar()}
-          item={store.snackBarStore.snackBarItem}
+        onItemClose={() => store.snackBarStore.clearSnackBar()}
+        item={store.snackBarStore.snackBarItem}
       />
       <Routes>
         <Route index element={<MainPage />} />
         <Route path={"/*"} element={<MainPage />} />
 
         <Route
-          element={<EmptyBoxPage />}
+          element={<EliminationOfViolationsPage />}
           path={SubGroupsActionsTypes.EliminationOfViolations}
         />
 
