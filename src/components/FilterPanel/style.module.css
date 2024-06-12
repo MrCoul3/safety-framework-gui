@@ -1,7 +1,8 @@
 .FilterPanel {
-  width: 318px;
+  width: 400px;
   background-color: white;
-    display: flex;
-    flex-direction: column;
-    margin: 24px;
+  display: flex;
+  flex-direction: column;
+  margin: 24px;
+  padding: 24px;
 }

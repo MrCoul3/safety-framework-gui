@@ -4,5 +4,6 @@ export interface IEntity {
     "isActual": boolean,
     "dateCreated": Date,
     "dateModified": Date,
-    "id": number
+    "id": number,
+    "code": string
 }

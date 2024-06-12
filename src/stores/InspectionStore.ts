@@ -18,7 +18,7 @@ import { IInspection } from "../interfaces/IInspection";
 import { joinObjectValues } from "../utils/joinObjectValues";
 import { expandFilter } from "../constants/filters";
 import {
-  IFieldsData,
+  IFieldsData, IFilterDateRangeFieldValue,
   IFormDateFieldValue,
   IFormFieldValue,
   Item,
@@ -32,6 +32,7 @@ import {
 } from "../enums/FreeFormTypes";
 import { RoutesTypes } from "../enums/RoutesTypes";
 import { filterByRequiredFields } from "../utils/filterByRequiredFields";
+import { ViolationFilterTypes } from "../enums/ViolationFilterTypes";
 
 export class InspectionStore {
   private store: AppStore;
@@ -70,6 +71,8 @@ export class InspectionStore {
   async getFieldDataDev(type: InspectionFormTypes | FreeFormFieldTypes) {
     let requestType: any = type;
 
+    console.log("getFieldDataDev requestType", requestType);
+
     if (INSPECTION_FORM_COMMON_FIELDS.includes(type as InspectionFormTypes)) {
       requestType = inspectionFieldsDictNames[type as InspectionFormTypes];
     }
@@ -95,7 +98,9 @@ export class InspectionStore {
     }
   }
 
-  async getFieldData(type: InspectionFormTypes | FreeFormFieldTypes) {
+  async getFieldData(
+    type: InspectionFormTypes | FreeFormFieldTypes | ViolationFilterTypes | string,
+  ) {
     let requestType: any = type;
 
     const searchFieldValue = this.searchFieldValue ?? "";
@@ -187,11 +192,17 @@ export class InspectionStore {
     this.formFieldsValues = value;
     console.debug("formFieldsValues: ", toJS(this.formFieldsValues));
   }
-  updateFormFieldsValues(value: IFormFieldValue | IFormDateFieldValue) {
+  updateFormFieldsValues(value: IFormFieldValue | IFormDateFieldValue | IFilterDateRangeFieldValue) {
     console.log("updateFormFieldsValues", value);
     if (this.formFieldsValues) {
       const key = Object.keys(value)[0];
-      if (key !== InspectionFormTypes.AuditDate) {
+      const excluded = [
+        ViolationFilterTypes.Date,
+        InspectionFormTypes.AuditDate,
+      ];
+      if (
+        !excluded.includes(key as ViolationFilterTypes | InspectionFormTypes)
+      ) {
         const values = Object.values(value)[0] as Item;
         const valueId = {
           [key + "Id"]: values ? (values.id ? +values.id : values.id) : null,

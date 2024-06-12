@@ -21,6 +21,7 @@ import { Responses500 } from "@consta/uikit/Responses500";
 import { Responses503 } from "@consta/uikit/Responses503";
 import { isDevelop } from "../../../constants/config";
 import LoaderPage from "../../LoaderPage/LoaderPage";
+import EliminationOfViolationsPage from "../../../pages/EliminationOfViolationsPage";
 export const AppContainer = observer(() => {
   const { t } = useTranslation("dict");
 
@@ -105,7 +106,7 @@ export const AppContainer = observer(() => {
         <Route path={"/*"} element={<MainPage />} />
 
         <Route
-          element={<EmptyBoxPage />}
+          element={<EliminationOfViolationsPage />}
           path={SubGroupsActionsTypes.EliminationOfViolations}
         />
 

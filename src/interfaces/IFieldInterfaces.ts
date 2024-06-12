@@ -2,6 +2,7 @@ export type Item = {
     title: string;
     id?: string;
     personFio?: string;
+    code?:string
 };
 export interface IFieldsData {
     [key: string]: Item[] | number;

@@ -10,7 +10,7 @@ export enum ViolationFilterTypes {
 }
 
 export const violationsDictionaryOfConformity = {
-  [ViolationFilterTypes.TypeList]: InspectionFormTypes.InspectionType,
+  [ViolationFilterTypes.TypeList]: "passport",
   [ViolationFilterTypes.Orgs]: InspectionFormTypes.Contractor,
   [ViolationFilterTypes.Oilfields]: InspectionFormTypes.OilField,
   [ViolationFilterTypes.Struct]: InspectionFormTypes.DoStruct,

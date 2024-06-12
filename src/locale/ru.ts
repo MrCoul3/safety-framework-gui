@@ -57,6 +57,7 @@ export const ru = {
     editPassports: "Редактировать паспорта инспекции",
     completionBarrier: "Заполнение барьера по паспорту",
     completionFreeForm: "Заполнение свободной формы",
+    eliminationOfViolationsTitle: "Устранение нарушений",
 
     toHome: "На главную",
 
@@ -157,6 +158,9 @@ export const ru = {
     mubCaption: "Начните вводить текст, а формат подстроится автоматически",
     mubTitle: "МУБ",
     mubHintTitle: "Как заполнять МУБ:",
+
+    "passport": "Паспорт барьера",
+    "passportPlaceholder": "Выберите паспорт барьера",
 
     addInspectionTitle: "Заполнение данных инспекции",
     editInspectionTitle: "Редактирование данных инспекции",
