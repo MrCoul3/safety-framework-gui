@@ -6,7 +6,5 @@ export interface IFilledBarrier {
 
   [BarrierFieldTypes.Mub]: string;
   barrierId: number;
-  // title?: string;
-  // passportId: number;
   filledRequirements: IFilledRequirements[] | null;
 }

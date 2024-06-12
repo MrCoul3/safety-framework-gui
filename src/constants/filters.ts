@@ -23,12 +23,12 @@ const expandFreeFormValues = FREE_FORM_COMMON_FIELDS.filter(
 
 const expandFilledFreeForms = `filledFreeForms($expand=${expandFreeFormValues})`;
 
-const expandBarriers = `filledBarriers($expand=${expandFreeFormValues})`;
+const expandFilledBarriers = `filledBarriers($expand=filledRequirements($expand=filledQuestions))`;
 
 const expandFilterValues =
   INSPECTION_FORM_COMMON_FIELDS.filter(
     (val) => !excludedFields.includes(val),
-  ).join(",") + `,${expandFilledFreeForms},filledBarriers`;
+  ).join(",") + `,${expandFilledFreeForms},${expandFilledBarriers}`;
 
 export const expandFilter = `${expandFilterValues}`;
 

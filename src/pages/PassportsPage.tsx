@@ -92,9 +92,19 @@ const PassportsPage = observer((props: IPassportsPage) => {
     },
   ];
   const saveInspection = () => {
-    editInspectionId
-      ? store.inspectionStore.updateInspectionToLocalStorage(editInspectionId)
-      : store.inspectionStore.setInspectionToLocalStorage();
+    if (
+        location.pathname.includes(RoutesTypes.EditLocalInspection) &&
+        editInspectionId
+    ) {
+      store.inspectionStore.updateInspectionToLocalStorage(editInspectionId);
+    }
+    if (location.pathname.includes(RoutesTypes.NewInspection)) {
+      store.inspectionStore.setInspectionToLocalStorage();
+    }
+    if (location.pathname.includes(RoutesTypes.EditInspection)) {
+      store.inspectionStore.setInspectionToLocalStorage();
+    }
+    store.inspectionStore.setIsValidate(false);
   };
 
   const handleSaveInspection = () => {

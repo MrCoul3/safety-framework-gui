@@ -56,13 +56,13 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
     }
   };
 
-  const loadInspection = () => {
+  const loadInspection = async () => {
     if (editInspectionId) {
       store.inspectionStore.loadInspection(editInspectionId);
     }
   };
-  const init = () => {
-    loadInspection();
+  const init = async () => {
+    await loadInspection();
     getFreeFormsFromFieldsData();
     setIsFormsValidForSending(store.freeFormStore.checkIsFreeFormSuccess());
   };

@@ -36,13 +36,15 @@ export const AppContainer = observer(() => {
     const path = decodeURIComponent(window.location.pathname).replace("/", "");
     if (path) {
       store.mainPageStore.updateSubGroupsState(path as SubGroupsActionsTypes);
+    } else {
+      store.mainPageStore.resetSideBarToHome();
     }
   };
 
   useEffect(() => {
     init();
     getSideBarState();
-  }, []);
+  }, [window.location.pathname]);
 
    const toHome = () => {
     store.mainPageStore.resetSideBarToHome();
