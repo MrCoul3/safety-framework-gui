@@ -9,3 +9,7 @@
   width: 100%;
   padding: var(--contentPaddingTopBottom) var(--contentPaddingLeftRight);
 }
+
+.NewInspectionPageLayout {
+  background-color: var(--lightGray);
+}

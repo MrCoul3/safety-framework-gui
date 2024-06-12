@@ -14,19 +14,20 @@ import { ELEMENTS_ON_FIELD } from "../../constants/config";
 import { useDebounce } from "@consta/uikit/useDebounce";
 import {IFieldsData, IFormFieldValue, Item} from "../../interfaces/IFieldInterfaces";
 import {FreeFormFieldTypes, FreeFormTypes} from "../../enums/FreeFormTypes";
+import {ViolationFilterTypes} from "../../enums/ViolationFilterTypes";
 
 interface IFieldInspectionType {
   onClose?(): void;
-  handleOpenField(type: InspectionFormTypes | FreeFormFieldTypes): void;
+  handleOpenField(type: InspectionFormTypes | FreeFormFieldTypes | ViolationFilterTypes): void;
   handleChange(value: IFormFieldValue): void;
-  onScrollToBottom?(inspectionType: InspectionFormTypes | FreeFormFieldTypes): void;
+  onScrollToBottom?(inspectionType: InspectionFormTypes | FreeFormFieldTypes | ViolationFilterTypes): void;
   onSearchValueChange?(value: string | null): void;
-  status: PropStatus | undefined;
+  status?: PropStatus | undefined;
   fieldsData: IFieldsData[];
   value?: string;
   disabled?: boolean;
   required?: boolean;
-  inspectionType: InspectionFormTypes | FreeFormFieldTypes;
+  inspectionType: InspectionFormTypes | FreeFormFieldTypes | ViolationFilterTypes;
 }
 
 const InspectionTextField = observer((props: IFieldInspectionType) => {
@@ -63,7 +64,7 @@ const InspectionTextField = observer((props: IFieldInspectionType) => {
     });
   };
 
-  const getItems = (type: InspectionFormTypes | FreeFormFieldTypes) => {
+  const getItems = (type: InspectionFormTypes | FreeFormFieldTypes | ViolationFilterTypes) => {
     const found = props.fieldsData.find((data) =>
       Object.keys(data).includes(props.inspectionType),
     );

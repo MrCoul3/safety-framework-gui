@@ -7,6 +7,7 @@ import {
 } from "../enums/InspectionFormTypes";
 import {FreeFormFieldTypes, FreeFormTypes} from "../enums/FreeFormTypes";
 import EliminationOfViolationsPage from "../pages/EliminationOfViolationsPage";
+import {ViolationFilterTypes} from "../enums/ViolationFilterTypes";
 
 export const ru = {
   dict: {
@@ -129,6 +130,13 @@ export const ru = {
 
     freeForm: "Свободная форма",
 
+    [ViolationFilterTypes.Date]: "Дата",
+    [ViolationFilterTypes.TypeList]: "Тип чек-листа",
+    [ViolationFilterTypes.Orgs]: "ДО/ПО",
+    [ViolationFilterTypes.Oilfields]: "Месторождение",
+    [ViolationFilterTypes.Struct]: "Цех",
+    [ViolationFilterTypes.Obj]: "Объект",
+
 
     addInspectionTitle: "Заполнение данных инспекции",
     eliminationOfViolationsTitle: "Устранение нарушений",
@@ -169,6 +177,14 @@ export const ru = {
     [FreeFormFieldTypes.NmdRule + "Placeholder"]: "Введите пункт правил НМД",
     [FreeFormFieldTypes.OdOuCategory + "Placeholder"]: "Введите категорию ОД/ОУ",
     [FreeFormFieldTypes.RiskLevel + "Placeholder"]: "Введите степень риска",
+
+
+    [ViolationFilterTypes.Date + "Placeholder"]: "Выберите дату",
+    [ViolationFilterTypes.TypeList + "Placeholder"]: "Выберите тип чек-листа",
+    [ViolationFilterTypes.Orgs + "Placeholder"]: "Выберите ДО/ПО",
+    [ViolationFilterTypes.Oilfields + "Placeholder"]: "Выберите месторождение",
+    [ViolationFilterTypes.Struct + "Placeholder"]: "Выберите цех",
+    [ViolationFilterTypes.Obj + "Placeholder"]: "Выберите объект",
 
     dialogClearFields: "Очистить все заполненные поля?",
     dialogDeleteFreeForm: "Удалить свободную форму?",
