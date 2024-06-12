@@ -6,6 +6,8 @@ import AuthControl from "../AuthControl/AuthControl";
 
 interface IMainHeader {
     handleLogoClick?(): void
+    login: string;
+    info?:string
 }
 const MainHeader = observer((props: IMainHeader) => {
   const { t } = useTranslation("dict");
@@ -16,7 +18,7 @@ const MainHeader = observer((props: IMainHeader) => {
         <span className={style.mainTitleContent}>{t("mainTitle")}</span>{" "}
       </div>
       <div className={style.flexRow}>
-        <AuthControl name={"Иван Иванов"} description={"информация"} />
+        <AuthControl name={props.login} info={props.info ?? "нет информации"} />
       </div>
     </div>
   );

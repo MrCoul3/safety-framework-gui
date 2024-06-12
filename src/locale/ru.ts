@@ -6,6 +6,8 @@ import {
   InspectionFormTypes,
 } from "../enums/InspectionFormTypes";
 import {FreeFormFieldTypes, FreeFormTypes} from "../enums/FreeFormTypes";
+import {BarrierExtraFieldTypes, BarrierFieldTypes} from "../enums/BarrierTypes";
+import {FilledQuestionTypes} from "../enums/FilledQuestionTypes";
 
 export const ru = {
   dict: {
@@ -47,6 +49,7 @@ export const ru = {
     saveInspection: "Сохранить инспекцию",
     sendInspection: "Отправить инспекцию",
     addFreeForm: "Добавить свободную форму",
+    addBarrier: "Добавить барьер",
     toPassports: "К паспортам",
     toInspectionForm: "К данным инспекции",
     saveChanges: "Сохранить изменения",
@@ -87,11 +90,13 @@ export const ru = {
     checkDetails: "Детали проверки",
     inspectionNumber: "Номер инспекции",
     inspectionName: "Инспекция № ",
-    emptyNewInspections: "Нет новых инспекций",
+    emptyNewInspections: "Нет неотправленных инспекций",
     emptySentInspections: "Нет отправленных инспекций",
     emptyInspections: "Нет инспекций",
     noData: "Нет данных",
     noFilled: "Не заполнено",
+    noBarriers: "Не найдено барьеров",
+    noBarrierPanelElements: "Что бы добавить барьер нажмите '+'",
 
     // Данные формы
     [InspectionFormGroups.Common]: "Общее",
@@ -119,7 +124,8 @@ export const ru = {
     // свободная форма
     [FreeFormFieldTypes.ViolationCategory]: "Категория нарушения",
     [FreeFormFieldTypes.ViolationType]: "Типовое нарушение",
-    [FreeFormFieldTypes.Violation]: "Нарушение",
+    [FreeFormFieldTypes.Violation]: "Описание по справочнику",
+    [FreeFormFieldTypes.ViolationManual]: "Описание пользовательское",
     [FreeFormFieldTypes.WorkType]: "Вид работ нарушения",
     [FreeFormFieldTypes.Nmd]: "НМД",
     [FreeFormFieldTypes.NmdRule]: "Пункт правил НМД",
@@ -128,6 +134,21 @@ export const ru = {
 
     freeForm: "Свободная форма",
 
+    barrier: "Барьер",
+
+    [FilledQuestionTypes.WorkStopped]: "Работа остановлена",
+    [FilledQuestionTypes.ResolvedInPlace]: "Устранено на месте",
+    withoutWorkStopped: "Без остановки работы",
+    notResolved: "Не устранено",
+
+    [BarrierExtraFieldTypes.VehicleType]: "Тип транспортного средства ",
+    [BarrierExtraFieldTypes.LicencePlate]: "Гос. номер ТС",
+    [BarrierExtraFieldTypes.DriverFio]: "ФИО водителя",
+
+    [BarrierFieldTypes.Mub]: "Место установки барьера (МУБ)",
+    mubCaption: "Начните вводить текст, а формат подстроится автоматически",
+    mubTitle: "МУБ",
+    mubHintTitle: "Как заполнять МУБ:",
 
     addInspectionTitle: "Заполнение данных инспекции",
     editInspectionTitle: "Редактирование данных инспекции",
@@ -135,7 +156,7 @@ export const ru = {
       "Заполните все ключевые поля, чтобы перейти дальше.",
     selectPassport: "Выбор паспорта барьера",
     selectPassportDescription: "Выберите необходимый паспорт для заполнения. В этом окне будут отображаться все выбранные паспорта.",
-    completionBarrierDescription: "Выберите необходимые паспорта, нажав на кнопку “+” и заполните требуемые поля, чтобы отправить инспекцию.",
+    completionBarrierDescription: "Выберите необходимые паспорта, нажав на кнопку “Добавить барьер +” и заполните требуемые поля, чтобы отправить инспекцию.",
     completionFreeFormDescription: "Заполните свободную форму, чтобы отправить инспекцию. Добавить новые свободные форму можно нажав на кнопку “Добавить свободную форму”.",
 
 
@@ -161,12 +182,21 @@ export const ru = {
 
     [FreeFormFieldTypes.ViolationCategory + "Placeholder"]: "Введите категорию нарушения",
     [FreeFormFieldTypes.ViolationType + "Placeholder"]: "Введите типовое нарушение",
-    [FreeFormFieldTypes.Violation + "Placeholder"]: "Введите название нарушения",
+    [FreeFormFieldTypes.Violation + "Placeholder"]: "Введите описание по справочнику",
+    [FreeFormFieldTypes.ViolationManual + "Placeholder"]: "Введите описание",
     [FreeFormFieldTypes.WorkType + "Placeholder"]: "Введите вид работ нарушения",
     [FreeFormFieldTypes.Nmd + "Placeholder"]: "Введите НМД",
     [FreeFormFieldTypes.NmdRule + "Placeholder"]: "Введите пункт правил НМД",
     [FreeFormFieldTypes.OdOuCategory + "Placeholder"]: "Введите категорию ОД/ОУ",
     [FreeFormFieldTypes.RiskLevel + "Placeholder"]: "Введите степень риска",
+
+    [BarrierFieldTypes.Mub + "Placeholder"]: "Укажите место установки барьера",
+    [FilledQuestionTypes.Comment + "Placeholder"]: "Комментарий",
+    [FilledQuestionTypes.PlannedResolveDate + "Placeholder"]: "Дата планируемого устранения",
+
+    [BarrierExtraFieldTypes.VehicleType + "Placeholder"]: "Введите тип транспортного средства ",
+    [BarrierExtraFieldTypes.LicencePlate + "Placeholder"]: "Введите гос. номер ТС",
+    [BarrierExtraFieldTypes.DriverFio + "Placeholder"]: "Введите ФИО водителя",
 
     dialogClearFields: "Очистить все заполненные поля?",
     dialogDeleteFreeForm: "Удалить свободную форму?",
@@ -175,6 +205,7 @@ export const ru = {
     dialogGoToMain: "Перейти на главную ? Все несохраненные данные будут потеряны.",
 
     snackBarSuccessSave: "Инспекция успешно сохранена",
+    snackBarSuccessSaveBarrier: "“Инспекция успешно сохранена и добавлена в неотправленные инспекции",
     snackBarSuccessSend: "Инспекция успешно отправлена",
     snackBarErrorSend: "Ошибка отправки инспекции",
 

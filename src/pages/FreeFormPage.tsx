@@ -18,6 +18,7 @@ import CollapseElement from "../components/CollapseElement/CollapseElement";
 import FreeFormElementLabel from "../components/FreeFormElementLabel/FreeFormElementLabel";
 import { IInspection } from "../interfaces/IInspection";
 import SnackBarCustom from "../components/SnackBarCustom/SnackBarCustom";
+import {toJS} from "mobx";
 
 interface IFreeFormPage {}
 
@@ -27,8 +28,6 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
   const store = useStore();
 
   const navigate = useNavigate();
-
-  const location = useLocation();
 
   let { editInspectionId } = useParams();
 
@@ -47,7 +46,8 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
       label: t("completionFreeForm"),
     },
   ];
-  const getFreeFormsFromFormFieldsData = () => {
+  const getFreeFormsFromFieldsData = () => {
+    console.log('getFreeFormsFromFormFieldsData', toJS(store.inspectionStore.formFieldsValues))
     const freeForms = (store.inspectionStore.formFieldsValues as IInspection)[
       "filledFreeForms"
     ];
@@ -63,7 +63,7 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
   };
   const init = () => {
     loadInspection();
-    getFreeFormsFromFormFieldsData();
+    getFreeFormsFromFieldsData();
     setIsFormsValidForSending(store.freeFormStore.checkIsFreeFormSuccess());
   };
 
@@ -115,8 +115,6 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
     console.log("handleSendInspection isValid", isValid);
     setIsFormsValidForSending(isValid);
   };
-
-
 
   const handleOpenField = (type: InspectionFormTypes) => {
     store.inspectionStore.handleOpenField(type);
@@ -203,6 +201,9 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
                 key={index}
                 content={
                   <FreeForm
+                    isOtherCondition={store.freeFormStore.isOtherCondition(
+                      formFieldsValues as IFreeForm,
+                    )}
                     handleDelete={() => handleDelete(index)}
                     setIsValidate={() =>
                       store.inspectionStore.setIsValidate(true)

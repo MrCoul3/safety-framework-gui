@@ -1,6 +1,6 @@
 .BarrierElement {
   background-color: white;
-  padding: 18px 22px;
+  padding: 18px 22px 0;
   border-radius: 4px;
   max-height: 150px;
   display: flex;

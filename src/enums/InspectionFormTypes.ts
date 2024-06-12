@@ -1,3 +1,5 @@
+import {FreeFormFieldTypes, FreeFormTypes} from "./FreeFormTypes";
+
 export enum InspectionFormTypes {
   //Общее
   AuditDate = "auditDate", //Дата проверки
@@ -20,6 +22,30 @@ export enum InspectionFormTypes {
   Auditor = "auditor", // ФИО составителя акта ?
   Auditee = "auditee", // ФИО проверяемого ?
   Supervisor = "supervisor", // ФИО супервайзера ?
+}
+
+export enum InspectionFormDictTypes {
+  //Общее
+  AuditDates = "auditDates", //Дата проверки
+  InspectionForms = "inspectionFormTypes", //Форма проверки
+  InspectionTypes = "inspectionTypes", //Тип проверки
+  Functions = "functions", //Функция
+
+  //Место проведения проверки
+  OilFields = "oilfields", // Месторождение
+  DoStructs = "doStructs", //Структурное подразделение ДО
+  DoObjects = "doObjects", // Объект ДО, где проводилась проверка
+
+  //Проверяемая подрядная организация
+  Contractors = "contractors", // Наименование ПО
+  ContractorStructs = "contractorStructs", // Номер бригады ПО
+  SubContractors = "subContractors", // Наименование субподрядной организации
+
+  // Участники инспекции
+
+  Auditors = "auditors", // ФИО составителя акта ?
+  Auditees = "auditees", // ФИО проверяемого ?
+  Supervisors = "supervisors", // ФИО супервайзера ?
 }
 
 export enum InspectionFormGroups {
@@ -45,3 +71,19 @@ export const INSPECTION_FORM_REQUIRED_FIELDS =
   INSPECTION_FORM_COMMON_FIELDS.filter(
     (field) => !INSPECTION_FORM_NOT_REQUIRED_FIELDS.includes(field),
   );
+
+export const inspectionFieldsDictNames = {
+  [InspectionFormTypes.AuditDate]: InspectionFormDictTypes.AuditDates,
+  [InspectionFormTypes.InspectionForm]: InspectionFormDictTypes.InspectionForms,
+  [InspectionFormTypes.InspectionType]: InspectionFormDictTypes.InspectionTypes,
+  [InspectionFormTypes.Function]: InspectionFormDictTypes.Functions,
+  [InspectionFormTypes.OilField]: InspectionFormDictTypes.OilFields,
+  [InspectionFormTypes.DoStruct]: InspectionFormDictTypes.DoStructs,
+  [InspectionFormTypes.DoObject]: InspectionFormDictTypes.DoObjects,
+  [InspectionFormTypes.Contractor]: InspectionFormDictTypes.Contractors,
+  [InspectionFormTypes.ContractorStruct]: InspectionFormDictTypes.ContractorStructs,
+  [InspectionFormTypes.SubContractor]: InspectionFormDictTypes.SubContractors,
+  [InspectionFormTypes.Auditor]: InspectionFormDictTypes.Auditors,
+  [InspectionFormTypes.Auditee]: InspectionFormDictTypes.Auditees,
+  [InspectionFormTypes.Supervisor]: InspectionFormDictTypes.Supervisors,
+}

@@ -8,19 +8,18 @@ import { User } from "@consta/uikit/User";
 
 interface IAuthControl {
   name: string;
-  description: string;
+  info?: string;
   avatar?: string;
 }
 
 const AuthControl = observer((props: IAuthControl) => {
   return (
     <div className={style.AuthControl}>
-      {/*<Button view="clear" form="round" iconRight={IconRing} onlyIcon />*/}
-      <User
+      <User width={'full'} className={style.user}
         size="l"
-        avatarUrl={props.avatar ? props.avatar : avatar}
+        avatarUrl={props.avatar ? props.avatar : ""}
         name={props.name}
-        info={props.description}
+        info={props.info}
       />
     </div>
   );

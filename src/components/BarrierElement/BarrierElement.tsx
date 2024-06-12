@@ -6,25 +6,38 @@ import Counter from "../Counter/Counter";
 import { Collapse } from "@consta/uikit/Collapse";
 
 interface IBarrierElement {
-  data?: IBarrier;
-  content?: ReactNode;
+  title?: string | null;
+  barriersLength?: number;
+
+  isValid?: boolean;
+  // handleCounterClick(countType: number): void;
 }
 
 const BarrierElement = observer((props: IBarrierElement) => {
-  const title = props.data?.Title;
+  const title = props.title;
 
   const code = title?.split(" ")[0];
 
   const name = title?.replace(code ?? "", "");
 
+
   return (
-      <div className={style.BarrierElement}>
-        <div className={style.title}>
-          <span className={style.code}>{code}</span>
-          <span className={style.name}>{name}</span>
-        </div>
-        <Counter />
+    <div className={style.BarrierElement}>
+      <div className={style.title}>
+        <span className={style.code}>{code}</span>
+        <span className={style.name}>{name}</span>
       </div>
+      <Counter
+        status={
+          !props.barriersLength
+            ? "system"
+            : props.isValid
+              ? "success"
+              : "warning"
+        }
+        length={props.barriersLength?.toString()}
+      />
+    </div>
   );
 });
 

@@ -5,6 +5,7 @@ export interface IFreeForm {
   [FreeFormFieldTypes.ViolationCategory]: IEntity | null;
   [FreeFormFieldTypes.ViolationType]: IEntity | null;
   [FreeFormFieldTypes.Violation]: IEntity | null;
+  [FreeFormFieldTypes.ViolationManual]: string | null;
   [FreeFormFieldTypes.WorkType]: IEntity | null;
   [FreeFormFieldTypes.Nmd]: IEntity | null;
   [FreeFormFieldTypes.NmdRule]: IEntity | null;

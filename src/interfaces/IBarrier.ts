@@ -1,17 +1,20 @@
+import { IRequirement } from "./IRequirement";
+
 export interface IBarrier {
-    "Mub": string | null,
-    "MubHint": string | null,
-    "PassportId": number,
-    "RequiredFrequencyOfChecksInDays": number,
-    "SortOrder": number,
-    "IsPk": null | boolean,
-    "CountOfCsir": null | number,
-    "TargetPercent": null | number,
-    "IntenseTargetPercent": null | number,
-    "Title": string | null,
-    "UniqueId": string,
-    "IsActual": boolean | null,
-    "DateCreated": Date,
-    "DateModified": Date,
-    "Id": number
+  mub: string | null;
+  mubHint: string | null;
+  passportId: number;
+  requiredFrequencyOfChecksInDays: number;
+  sortOrder: number;
+  isPk: null | boolean;
+  countOfCsir: null | number;
+  targetPercent: null | number;
+  intenseTargetPercent: null | number;
+  title: string | null;
+  uniqueId: string;
+  isActual: boolean | null;
+  dateCreated: Date;
+  dateModified: Date;
+  id: number;
+  requirements: IRequirement[];
 }

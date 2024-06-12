@@ -1,6 +1,7 @@
 import { InspectionFormTypes } from "../enums/InspectionFormTypes";
 import { IEntity } from "./IEntity";
 import { IFreeForm } from "./IFreeForm";
+import {IFilledBarrier} from "./IFilledBarrier";
 
 export interface IInspection {
   id?: string;
@@ -22,6 +23,7 @@ export interface IInspection {
   [InspectionFormTypes.Auditee]?: IEmployees;
   [InspectionFormTypes.Supervisor]?: IEmployees;
   filledFreeForms: IFreeForm[];
+  filledBarriers: IFilledBarrier[];
 }
 
 export interface IEmployees {
