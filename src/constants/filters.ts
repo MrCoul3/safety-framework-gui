@@ -1,15 +1,34 @@
-import {EMPLOYEES, INSPECTION_FORM_COMMON_FIELDS, InspectionFormTypes} from "../enums/InspectionFormTypes";
+import {
+  EMPLOYEES,
+  INSPECTION_FORM_COMMON_FIELDS,
+  InspectionFormTypes,
+} from "../enums/InspectionFormTypes";
 import { toJS } from "mobx";
 import { transformDateToServerFormat } from "../utils/transformDateToServerFormat";
 import { Item } from "../interfaces/IFieldInterfaces";
 import moment from "moment";
 import { SortByProps } from "@consta/uikit/Table";
+import {
+  FREE_FORM_COMMON_FIELDS,
+  FreeFormFieldTypes,
+} from "../enums/FreeFormTypes";
 
 const excludedFields = [InspectionFormTypes.AuditDate];
 
-const expandFilterValues = INSPECTION_FORM_COMMON_FIELDS
-  .filter((val) => !excludedFields.includes(val))
-  .join(",");
+const excludedFreeFormFields = [FreeFormFieldTypes.ViolationManual];
+
+const expandFreeFormValues = FREE_FORM_COMMON_FIELDS.filter(
+  (val) => !excludedFreeFormFields.includes(val),
+).join(",");
+
+const expandFilledFreeForms = `filledFreeForms($expand=${expandFreeFormValues})`;
+
+const expandBarriers = `filledBarriers($expand=${expandFreeFormValues})`;
+
+const expandFilterValues =
+  INSPECTION_FORM_COMMON_FIELDS.filter(
+    (val) => !excludedFields.includes(val),
+  ).join(",") + `,${expandFilledFreeForms},filledBarriers`;
 
 export const expandFilter = `${expandFilterValues}`;
 
@@ -60,9 +79,9 @@ export const getSortFilter = (sortSettings: SortByProps<any> | null) => {
     return `${sortSettings?.sortingBy} ${sortSettings?.sortOrder}`;
   }
   if (EMPLOYEES.includes(sortSettings?.sortingBy as InspectionFormTypes)) {
-      return `${sortSettings?.sortingBy as string}/personFio ${sortSettings?.sortOrder}`;
+    return `${sortSettings?.sortingBy as string}/personFio ${sortSettings?.sortOrder}`;
   }
   if (sortSettings?.sortingBy && sortSettings?.sortOrder) {
-      return `${sortSettings?.sortingBy as string}/title ${sortSettings?.sortOrder}`;
+    return `${sortSettings?.sortingBy as string}/title ${sortSettings?.sortOrder}`;
   }
 };

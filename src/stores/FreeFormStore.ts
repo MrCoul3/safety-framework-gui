@@ -6,6 +6,8 @@ import {
   FREE_FORM_REQUIRED_FIELDS,
   FreeFormFieldTypes,
   FreeFormTypes,
+  NOT_OTHER_COND_FREE_FORM_REQUIRED_FIELDS,
+  OTHER_COND_FREE_FORM_REQUIRED_FIELDS,
 } from "../enums/FreeFormTypes";
 import { IEntity } from "../interfaces/IEntity";
 import { IInspection } from "../interfaces/IInspection";
@@ -74,18 +76,18 @@ export class FreeFormStore {
           toJS(targetInspection),
         );
         if (
-          targetInspection.filledFreeForms &&
+          targetInspection.filledFreeForms && targetInspection.filledFreeForms.length &&
           targetInspection.filledFreeForms[freeFormIndex]
         ) {
           targetInspection.filledFreeForms[freeFormIndex] =
             this.filledFreeForms[freeFormIndex];
         } else {
+          targetInspection.filledFreeForms = []
           targetInspection.filledFreeForms.push(
             this.filledFreeForms[freeFormIndex],
           );
         }
-        localInspectionsParsed.splice(index, 1);
-        localInspectionsParsed.push(targetInspection);
+        localInspectionsParsed[index] = targetInspection;
         const newInspectionsJson = JSON.stringify(localInspectionsParsed);
         localStorage.setItem(LOCAL_STORE_INSPECTIONS, newInspectionsJson);
       }
@@ -98,6 +100,7 @@ export class FreeFormStore {
     if (localInspections) {
       const localInspectionsParsed = JSON.parse(localInspections);
       if (localInspectionsParsed.length) {
+        localInspectionsParsed[index] = this.store.inspectionStore.formFieldsValues
         const targetInspection = localInspectionsParsed[index];
         targetInspection.filledFreeForms = this.filledFreeForms;
         localInspectionsParsed.splice(index, 1);
@@ -129,29 +132,56 @@ export class FreeFormStore {
     );
   }
 
+  isOtherCondition(formFieldsValues: IFreeForm) {
+    const isViolationTypeOther =
+      formFieldsValues?.[FreeFormFieldTypes.ViolationType]?.id.toString() ===
+      "1";
+    const isViolationCategoryOther =
+      formFieldsValues[FreeFormFieldTypes.ViolationCategory]?.id.toString() ===
+      "1";
+    return isViolationTypeOther && isViolationCategoryOther;
+  }
+
+  getFreeFormRequireFields(formFieldsValues?: IFreeForm) {
+    if (formFieldsValues && this.isOtherCondition(formFieldsValues)) {
+      return OTHER_COND_FREE_FORM_REQUIRED_FIELDS;
+    } else {
+      return NOT_OTHER_COND_FREE_FORM_REQUIRED_FIELDS;
+    }
+  }
+
   checkIsFreeFormSuccess() {
     const formFieldsValues: { [key: string]: any }[] = this
       .filledFreeForms as IFreeForm[];
-
 
     console.log(
       "checkIsFreeFormSuccess formFieldsValues ",
       toJS(formFieldsValues),
     );
+
     if (formFieldsValues && formFieldsValues.length) {
-      const filtered = formFieldsValues.map((freeForm) =>
-        filterByRequiredFields(freeForm, FREE_FORM_REQUIRED_FIELDS),
-      );
+      const filtered = formFieldsValues.map((freeForm) => {
+        const requireFields = this.getFreeFormRequireFields(
+          freeForm as IFreeForm,
+        );
+
+        return filterByRequiredFields(freeForm, requireFields);
+      });
 
       console.log("filtered", toJS(filtered));
 
-      const result = filtered.map((freeForm) =>
-        Object.values(freeForm).every(
-          (value) =>
-            Object.values(value ?? {})[0] &&
-            Object.values(freeForm).length === FREE_FORM_REQUIRED_FIELDS.length,
-        ),
-      ); // [bool, bool]
+      const result = filtered.map((freeForm) => {
+        if (freeForm) {
+          const requireFields = this.getFreeFormRequireFields(
+            freeForm as unknown as IFreeForm,
+          );
+          return Object.values(freeForm).every(
+            (value) =>
+              Object.values(value ?? {})[0] &&
+              Object.values(freeForm).length === requireFields.length,
+          );
+        }
+      }); // [bool, bool]
       return result.every((res) => res);
     }
     return false;

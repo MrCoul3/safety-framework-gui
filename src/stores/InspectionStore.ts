@@ -4,6 +4,7 @@ import {
   EMPLOYEES,
   INSPECTION_FORM_COMMON_FIELDS,
   INSPECTION_FORM_REQUIRED_FIELDS,
+  inspectionFieldsDictNames,
   InspectionFormTypes,
 } from "../enums/InspectionFormTypes";
 import { employeesEndpoint, instance } from "../api/endpoints";
@@ -25,7 +26,6 @@ import {
 import { IFreeForm } from "../interfaces/IFreeForm";
 import {
   FREE_FORM_COMMON_FIELDS,
-  FREE_FORM_REQUIRED_FIELDS,
   freeFormDictNames,
   FreeFormFieldTypes,
   FreeFormTypes,
@@ -57,6 +57,7 @@ export class InspectionStore {
       const response = await instance.post(`Inspections`, {
         ...this.formFieldsValues,
         filledFreeForms: this.store.freeFormStore.filledFreeForms,
+        filledBarriers: this.store.barriersStore.filledBarriers,
       });
       if (!response.data.error) {
         return "success";
@@ -70,10 +71,12 @@ export class InspectionStore {
     let requestType: any = type;
 
     if (INSPECTION_FORM_COMMON_FIELDS.includes(type as InspectionFormTypes)) {
-      requestType = type + "s";
+      requestType = inspectionFieldsDictNames[type as InspectionFormTypes];
     }
     if (FREE_FORM_COMMON_FIELDS.includes(type as FreeFormFieldTypes)) {
-      requestType = freeFormDictNames[type as FreeFormFieldTypes];
+      if (type !== FreeFormFieldTypes.ViolationManual) {
+        requestType = freeFormDictNames[type as FreeFormFieldTypes];
+      }
     }
     if (EMPLOYEES.includes(type as InspectionFormTypes)) {
       requestType = employeesEndpoint;
@@ -97,25 +100,28 @@ export class InspectionStore {
 
     const searchFieldValue = this.searchFieldValue ?? "";
 
-    const itemValue: Item = { title: "title", personFio: "personFio" };
+    const item: Item = { title: "title", personFio: "personFio" };
 
-    let filter = searchFieldValue
-      ? `$filter=contains(${itemValue.title},'${searchFieldValue}')`
-      : "";
-
-    let offset = searchFieldValue
-      ? ""
-      : `&$skip=${this.offset}&$top=${ELEMENTS_ON_FIELD}`;
+    let itemValue = item.title;
 
     if (INSPECTION_FORM_COMMON_FIELDS.includes(type as InspectionFormTypes)) {
-      requestType = type + "s";
+      requestType = inspectionFieldsDictNames[type as InspectionFormTypes];
     }
     if (FREE_FORM_COMMON_FIELDS.includes(type as FreeFormFieldTypes)) {
       requestType = freeFormDictNames[type as FreeFormFieldTypes];
     }
     if (EMPLOYEES.includes(type as InspectionFormTypes)) {
       requestType = employeesEndpoint;
+      itemValue = item.personFio as string;
     }
+
+    let filter = searchFieldValue
+      ? `$filter=contains(${itemValue},'${searchFieldValue}')`
+      : "";
+
+    let offset = searchFieldValue
+      ? ""
+      : `&$skip=${this.offset}&$top=${ELEMENTS_ON_FIELD}`;
 
     const countFilter = this.searchFieldValue ? "" : `&$count=true`;
 
@@ -264,7 +270,7 @@ export class InspectionStore {
       );
       if (!response.data.error) {
         if (response.data.value) {
-          const result = response.data.value;
+          const result = response.data.value[0];
           const inspection = {
             ...result,
             auditDate: moment(result.auditDate).toDate(),
@@ -285,8 +291,10 @@ export class InspectionStore {
     );
   }
 
-  checkIsFormSuccess() {
-    const formFieldsValues: { [key: string]: any } = this.formFieldsValues;
+  checkIsFormSuccess(inspection?: IInspection) {
+    const formFieldsValues: { [key: string]: any } = inspection
+      ? inspection
+      : this.formFieldsValues;
     const filtered = filterByRequiredFields(
       formFieldsValues,
       INSPECTION_FORM_REQUIRED_FIELDS,
@@ -298,43 +306,28 @@ export class InspectionStore {
     );
   }
 
-  checkIsFreeFormSuccess() {
-    const formFieldsValues: { [key: string]: any }[] = (
-      this.formFieldsValues as IInspection
-    )["filledFreeForms"];
-    console.log(
-      "checkIsFreeFormSuccess formFieldsValues ",
-      toJS(formFieldsValues),
-    );
-    if (formFieldsValues && formFieldsValues.length) {
-      const filtered = formFieldsValues.map((freeForm) =>
-        filterByRequiredFields(freeForm, FREE_FORM_REQUIRED_FIELDS),
-      );
-
-      console.log("filtered", toJS(filtered));
-
-      const result = filtered.map((freeForm) =>
-        Object.values(freeForm).every(
-          (value) =>
-            Object.values(value ?? {})[0] &&
-            Object.values(freeForm).length === FREE_FORM_REQUIRED_FIELDS.length,
-        ),
-      ); // [bool, bool]
-      return result.every((res) => res);
-    }
-    return false;
-  }
-
   setInspectionToLocalStorage() {
     delete (this.formFieldsValues as IInspection)?.id;
     const filledFreeForms = this.store.freeFormStore.filledFreeForms;
-    console.log("freeForms", toJS(filledFreeForms));
+    const filledBarriers = this.store.barriersStore.filledBarriers;
+    console.log(
+      "setInspectionToLocalStorage filledFreeForms",
+      toJS(filledFreeForms),
+    );
+    console.log(
+      "setInspectionToLocalStorage filledBarriers",
+      toJS(filledBarriers),
+    );
     const localInspections = localStorage.getItem(LOCAL_STORE_INSPECTIONS);
 
     let values = this.formFieldsValues;
     if (filledFreeForms.length) {
       // если есть свободные формы добавляем к занчениям формы еще и freeForms
       values = { ...this.formFieldsValues, filledFreeForms };
+    }
+    if (filledBarriers.length) {
+      // если есть барьеры добавляем к занчениям формы еще и filledBarriers
+      values = { ...this.formFieldsValues, filledBarriers };
     }
 
     if (localInspections) {
@@ -382,12 +375,15 @@ export class InspectionStore {
   }
 
   loadInspectionFromLocalStorage(id: string) {
+    console.log("loadInspectionFromLocalStorage");
     const localInspections = localStorage.getItem(LOCAL_STORE_INSPECTIONS);
     if (localInspections) {
       const localInspectionsParsed = JSON.parse(localInspections);
       const inspection = {
         ...localInspectionsParsed[+id - 1],
-        auditDate: moment(localInspectionsParsed[+id - 1].auditDate).toDate(),
+        auditDate: localInspectionsParsed[+id - 1].auditDate
+          ? moment(localInspectionsParsed[+id - 1].auditDate).toDate()
+          : null,
       };
       this.setFormFieldsValues(inspection);
     }
@@ -402,15 +398,17 @@ export class InspectionStore {
     }
   }
 
-  loadInspection(editInspectionId: string) {
+  async loadInspection(editInspectionId: string) {
+    console.log("loadInspection");
     if (location.pathname.includes(RoutesTypes.EditLocalInspection)) {
       this.loadInspectionFromLocalStorage(editInspectionId);
     }
     if (location.pathname.includes(RoutesTypes.EditInspection)) {
       if (isDevelop) {
-        this.getInspectionDev(editInspectionId);
+        await this.getInspectionDev(editInspectionId);
+        await this.getInspectionById(editInspectionId);
       } else {
-        this.getInspectionById(editInspectionId);
+        await this.getInspectionById(editInspectionId);
       }
     }
   }

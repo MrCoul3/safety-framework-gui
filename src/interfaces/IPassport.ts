@@ -1,12 +1,15 @@
+import {IBarrier} from "./IBarrier";
+
 export interface IPassport {
   code: string;
-  sortOrder: null;
-  title: string;
-  uniqueId: string;
-  isActual: boolean;
   dateCreated: string;
   dateModified: string;
-  id: number;
-  barriers: string[],
+  id: string;
+  isActual: boolean;
+  sortOrder: null;
+  title: string;
+
+  barriers: IBarrier[],
+  uniqueId: string;
   icon: null | string
 }

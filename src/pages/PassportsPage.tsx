@@ -11,6 +11,8 @@ import { IBreadCrumbs } from "../interfaces/IBreadCrumbs";
 import Layout from "../layouts/Layout/Layout";
 import { Button } from "@consta/uikit/Button";
 import { isDevelop } from "../constants/config";
+import { toJS } from "mobx";
+import { IInspection } from "../interfaces/IInspection";
 
 interface IPassportsPage {}
 
@@ -19,28 +21,58 @@ const PassportsPage = observer((props: IPassportsPage) => {
 
   let { editInspectionId } = useParams();
 
-  let { passportId } = useParams();
-
   const store = useStore();
 
   const navigate = useNavigate();
 
-  const init = () => {
+  const loadInspection = async () => {
+    console.log("PassportsPage loadInspection");
+    if (editInspectionId) {
+      await store.inspectionStore.loadInspection(editInspectionId);
+    }
+  };
+
+  const getFilledBarriersFromFieldsData = () => {
+    const filledBarriers = (
+      store.inspectionStore.formFieldsValues as IInspection
+    )["filledBarriers"];
+    console.log(
+      "getFilledBarriersFromFieldsData filledBarriers",
+      toJS(filledBarriers),
+    );
+    if (filledBarriers) {
+      store.barriersStore.setFilledBarriers(filledBarriers);
+    }
+  };
+
+  const init = async () => {
+    if (!Object.keys(store.inspectionStore.formFieldsValues).length) {
+      await loadInspection();
+    }
+    getFilledBarriersFromFieldsData();
+
     if (isDevelop) {
       store.passportsStore.getPassportsDev();
       store.passportsStore.getPassports();
-
     } else {
       store.passportsStore.getPassports();
     }
-    // store.passportsStore.getPassports()
   };
+
+  const filledBarriers = (
+    store.inspectionStore.formFieldsValues as IInspection
+  )["filledBarriers"];
 
   useEffect(() => {
     init();
+    console.log(
+      "passport page formFieldsValues",
+      toJS(store.inspectionStore.formFieldsValues),
+    );
+    console.log("passport page filledBarriers", toJS(filledBarriers));
   }, []);
 
-  const handlePassportClick = (id: number) => {
+  const handlePassportClick = (id: string) => {
     navigate(RoutesTypes.Barriers + `/${id}`);
   };
 
@@ -75,6 +107,33 @@ const PassportsPage = observer((props: IPassportsPage) => {
     });
   };
 
+  const getBarriersCount = (passportId: string) => {
+    console.log("getBarriersCount filledBarriers", toJS(filledBarriers)); // [{barrierId: }]
+    const passportById = store.passportsStore.passports.find(
+      (pass) => pass.id === passportId,
+    );
+    const passportBarriers = passportById?.["barriers"];
+    console.log("getBarriersCount passportById", toJS(passportById));
+    console.log("getBarriersCount passportBarriers", toJS(passportBarriers));
+    if (filledBarriers && filledBarriers.length) {
+      const filledBarriersByPassId = filledBarriers.filter((fillBar) => {
+        const fillBarId = fillBar.barrierId.toString();
+        const passBarId = passportBarriers?.find((passBar) => {
+          const passId = passBar.id.toString();
+          const fillBarId = fillBar.barrierId.toString();
+          return passId === fillBarId;
+        })?.id;
+        return fillBarId === passBarId?.toString();
+      });
+      console.log(
+        "getBarriersCount filledBarriersByPassId",
+        toJS(filledBarriersByPassId.length),
+      );
+      return filledBarriersByPassId.length;
+    }
+    return 0;
+  };
+
   return (
     <Layout
       navPanel={
@@ -98,6 +157,9 @@ const PassportsPage = observer((props: IPassportsPage) => {
             .filter((passport) => passport.code)
             .map((passport) => (
               <PassportElement
+                barriersCount={getBarriersCount(passport.id)}
+                id={passport.id}
+                code={passport.code}
                 onClick={handlePassportClick}
                 key={passport.id}
                 data={passport}

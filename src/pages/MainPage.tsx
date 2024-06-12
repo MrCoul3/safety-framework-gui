@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
 import SideBar from "components/SideBar/SideBar";
 import MainPageLayout from "layouts/MainPageLayout/MainPageLayout";
@@ -6,16 +6,9 @@ import SubHeader from "components/SubHeader/SubHeader";
 import { useStore } from "hooks/useStore";
 import { IAction } from "interfaces/IAction";
 import { SubGroupsActionsTypes } from "enums/SubGroupsTypes";
-import {
-  Route,
-  Routes,
-  useLocation,
-  useNavigate,
-  useParams,
-} from "react-router";
+import { Route, Routes, useLocation, useNavigate } from "react-router";
 import DashBoard from "../components/DashBoard/DashBoard";
 import InspectionsTable from "../components/InspectionsTable/InspectionsTable";
-import { Button } from "@consta/uikit/Button";
 import { useTranslation } from "react-i18next";
 import { RoutesTypes } from "../enums/RoutesTypes";
 import {
@@ -27,13 +20,10 @@ import { ResponsesNothingFound } from "@consta/uikit/ResponsesNothingFound";
 import ConfirmDialog from "../components/ConfirmDialog/ConfirmDialog";
 import { InspectionFormTypes } from "../enums/InspectionFormTypes";
 import EmptyBoxPage from "../components/EmptyBoxPage/EmptyBoxPage";
-import SnackBarCustom from "../components/SnackBarCustom/SnackBarCustom";
-import LoaderPage from "../components/LoaderPage/LoaderPage";
 import { toJS } from "mobx";
 import {
   IFilterDateRangeFieldValue,
   IFilterFieldValue,
-  IFormDateFieldValue,
 } from "../interfaces/IFieldInterfaces";
 import { SortByProps } from "@consta/uikit/Table";
 import InspectionCard from "../components/InspectionCard/InspectionCard";
@@ -231,7 +221,10 @@ export const MainPage = observer((props: IMainPage) => {
         <InspectionCard
           isReadyToSend={
             newInspectionCondition(subGroup) &&
-            store.mainPageStore.checkIsInspectionReadyToSend(index)
+            store.mainPageStore.checkIsInspectionReadyToSend(
+              index,
+              item[InspectionFormTypes.InspectionForm]?.id,
+            )
           }
           sendInspection={handleSendInspection}
           handleDeleteButtonClick={handleDeleteInspection}

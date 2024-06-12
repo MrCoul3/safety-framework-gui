@@ -58,7 +58,6 @@ const InspectionTextField = observer((props: IFieldInspectionType) => {
   }, [props.value]);
 
   const handleChange = (value: Item | null) => {
-    console.log('handleChange!!!! Item', value)
     props.handleChange({
       [props.inspectionType]: value,
     });

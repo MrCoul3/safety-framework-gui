@@ -3,16 +3,12 @@ import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
 import classNames from "classnames";
 import { useTranslation } from "react-i18next";
-import { IconAllDone } from "@consta/icons/IconAllDone";
 import { IconTrash } from "@consta/icons/IconTrash";
 import { IconMail } from "@consta/icons/IconMail";
-import { IconRevert } from "@consta/icons/IconRevert";
 import { IconEdit } from "@consta/icons/IconEdit";
 import { Card } from "@consta/uikit/Card";
 import { Badge } from "@consta/uikit/Badge";
 import { Button } from "@consta/uikit/Button";
-import { CheckEntityTypes } from "enums/CheckEntityTypes";
-import { InspectionStatusesTypes } from "enums/InspectionStatusesTypes";
 import moment from "moment";
 import { SubGroupsActionsTypes } from "../../enums/SubGroupsTypes";
 import { InspectionFormTypes } from "../../enums/InspectionFormTypes";
@@ -74,19 +70,22 @@ const InspectionCard = observer((props: IInspectionCard) => {
         {props.id
           ? props.id && t("inspectionName") + props.id
           : props.index && t("inspectionName") + props.index}
-        <Button
-          onClick={() =>
-            props.handleDeleteButtonClick(
-              props.id ? props.id.toString() : props.index.toString(),
-              props.subGroup,
-            )
-          }
-          iconSize="s"
-          form="round"
-          view="clear"
-          iconLeft={IconTrash}
-          onlyIcon
-        />
+
+        {props.subGroup === SubGroupsActionsTypes.NewInspections && (
+          <Button
+            onClick={() =>
+              props.handleDeleteButtonClick(
+                props.id ? props.id.toString() : props.index.toString(),
+                props.subGroup,
+              )
+            }
+            iconSize="s"
+            form="round"
+            view="clear"
+            iconLeft={IconTrash}
+            onlyIcon
+          />
+        )}
       </div>
       <div className={style.checkDates}>
         <div className={style.checkDate}>
