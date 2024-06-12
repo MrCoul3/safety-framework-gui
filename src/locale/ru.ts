@@ -6,7 +6,7 @@ import {
   InspectionFormTypes,
 } from "../enums/InspectionFormTypes";
 import {FreeFormFieldTypes, FreeFormTypes} from "../enums/FreeFormTypes";
-import {BarrierFieldTypes} from "../enums/BarrierTypes";
+import {BarrierExtraFieldTypes, BarrierFieldTypes} from "../enums/BarrierTypes";
 import {FilledQuestionTypes} from "../enums/FilledQuestionTypes";
 
 export const ru = {
@@ -141,7 +141,9 @@ export const ru = {
     withoutWorkStopped: "Без остановки работы",
     notResolved: "Не устранено",
 
-
+    [BarrierExtraFieldTypes.VehicleType]: "Тип транспортного средства ",
+    [BarrierExtraFieldTypes.LicencePlate]: "Гос. номер ТС",
+    [BarrierExtraFieldTypes.DriverFio]: "ФИО водителя",
 
     [BarrierFieldTypes.Mub]: "Место установки барьера (МУБ)",
     mubCaption: "Начните вводить текст, а формат подстроится автоматически",
@@ -191,6 +193,10 @@ export const ru = {
     [BarrierFieldTypes.Mub + "Placeholder"]: "Укажите место установки барьера",
     [FilledQuestionTypes.Comment + "Placeholder"]: "Комментарий",
     [FilledQuestionTypes.PlannedResolveDate + "Placeholder"]: "Дата планируемого устранения",
+
+    [BarrierExtraFieldTypes.VehicleType + "Placeholder"]: "Введите тип транспортного средства ",
+    [BarrierExtraFieldTypes.LicencePlate + "Placeholder"]: "Введите гос. номер ТС",
+    [BarrierExtraFieldTypes.DriverFio + "Placeholder"]: "Введите ФИО водителя",
 
     dialogClearFields: "Очистить все заполненные поля?",
     dialogDeleteFreeForm: "Удалить свободную форму?",
