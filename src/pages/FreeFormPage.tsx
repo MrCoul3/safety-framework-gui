@@ -18,7 +18,7 @@ import CollapseElement from "../components/CollapseElement/CollapseElement";
 import FreeFormElementLabel from "../components/FreeFormElementLabel/FreeFormElementLabel";
 import { IInspection } from "../interfaces/IInspection";
 import SnackBarCustom from "../components/SnackBarCustom/SnackBarCustom";
-import {toJS} from "mobx";
+import { toJS } from "mobx";
 
 interface IFreeFormPage {}
 
@@ -32,8 +32,11 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
   let { editInspectionId } = useParams();
 
   useEffect(() => {
-    console.log('FreeFormPage formFieldsValues', toJS(store.inspectionStore.formFieldsValues))
-  }, [])
+    console.log(
+      "FreeFormPage formFieldsValues",
+      toJS(store.inspectionStore.formFieldsValues),
+    );
+  }, []);
 
   const crumbs: IBreadCrumbs[] = [
     {
@@ -51,7 +54,10 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
     },
   ];
   const getFreeFormsFromFieldsData = () => {
-    console.log('getFreeFormsFromFormFieldsData', toJS(store.inspectionStore.formFieldsValues))
+    console.log(
+      "getFreeFormsFromFormFieldsData",
+      toJS(store.inspectionStore.formFieldsValues),
+    );
     const freeForms = (store.inspectionStore.formFieldsValues as IInspection)[
       "filledFreeForms"
     ];
@@ -84,7 +90,7 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
   };
 
   const handleSaveForm = (index: number) => {
-   /* console.log("handleSaveForm", index);
+    /* console.log("handleSaveForm", index);
     editInspectionId
       ? store.freeFormStore.saveEditInspectionFreeFormToLocalStorage(
           editInspectionId,
@@ -171,7 +177,7 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
   };
 
   const [openFilterType, setOpenFilterType] =
-      useState<InspectionFormTypes | null>(null);
+    useState<InspectionFormTypes | null>(null);
 
   const handleSearchValueChange = (value: string | null) => {
     console.log("handleSearchValueChange value!!!", value);
@@ -182,6 +188,11 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
     if ((value || value === "") && openFilterType) {
       store.inspectionStore.getFieldData(openFilterType);
     }
+  };
+
+  const handleScrollFieldToBottom = (inspectionType: InspectionFormTypes) => {
+    store.inspectionStore.increaseOffset();
+    store.inspectionStore.getFieldData(inspectionType);
   };
 
   const handleInspectionTextFieldClose = () => {
@@ -234,7 +245,10 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
                 }
                 key={index}
                 content={
-                  <FreeForm onInspectionTextFieldClose={handleInspectionTextFieldClose} onSearchValueChange={handleSearchValueChange}
+                  <FreeForm
+                    onScrollToBottom={handleScrollFieldToBottom}
+                    onInspectionTextFieldClose={handleInspectionTextFieldClose}
+                    onSearchValueChange={handleSearchValueChange}
                     isOtherCondition={store.freeFormStore.isOtherCondition(
                       formFieldsValues as IFreeForm,
                     )}

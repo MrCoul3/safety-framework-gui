@@ -195,8 +195,8 @@ const BarriersPage = observer((props: IBarriersPage) => {
       [FilledQuestionTypes.QuestionId]: quest.id,
       [FilledQuestionTypes.InapplicableReasonId]: 1,
       [FilledQuestionTypes.FulfillmentId]: 1,
-      [FilledQuestionTypes.WorkStopped]: true,
-      [FilledQuestionTypes.ResolvedInPlace]: true,
+      [FilledQuestionTypes.WorkStopped]: false,
+      [FilledQuestionTypes.ResolvedInPlace]: false,
     }));
   };
 
