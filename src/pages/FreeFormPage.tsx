@@ -31,6 +31,10 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
 
   let { editInspectionId } = useParams();
 
+  useEffect(() => {
+    console.log('FreeFormPage formFieldsValues', toJS(store.inspectionStore.formFieldsValues))
+  }, [])
+
   const crumbs: IBreadCrumbs[] = [
     {
       label: t("mainPage"),
@@ -62,7 +66,9 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
     }
   };
   const init = async () => {
-    await loadInspection();
+    if (!Object.keys(store.inspectionStore.formFieldsValues).length) {
+      await loadInspection();
+    }
     getFreeFormsFromFieldsData();
     setIsFormsValidForSending(store.freeFormStore.checkIsFreeFormSuccess());
   };
@@ -78,13 +84,20 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
   };
 
   const handleSaveForm = (index: number) => {
-    console.log("handleSaveForm", index);
+   /* console.log("handleSaveForm", index);
     editInspectionId
       ? store.freeFormStore.saveEditInspectionFreeFormToLocalStorage(
           editInspectionId,
           index,
         )
-      : handleSaveInspection();
+      : handleSaveInspection();*/
+    setSavingState(false);
+    saveInspection();
+    store.snackBarStore.setSnackBarItem({
+      message: t("snackBarSuccessSave"),
+      key: "1",
+      status: "success",
+    });
   };
 
   const handleSaveInspection = () => {

@@ -232,7 +232,7 @@ export class BarriersStore {
           this.store.inspectionStore.formFieldsValues;
         const targetInspection = localInspectionsParsed[index];
         targetInspection.filledBarriers = this.filledBarriers;
-
+        targetInspection.filledFreeForms = [];
         localInspectionsParsed.splice(index, 1);
         localInspectionsParsed.unshift(targetInspection);
         const newInspectionsJson = JSON.stringify(localInspectionsParsed);
@@ -267,6 +267,7 @@ export class BarriersStore {
           ...filledBarriersWithoutBarrierIndex,
           activeBarrier,
         ];
+        targetInspection.filledFreeForms = [];
         localInspectionsParsed.splice(index, 1);
         localInspectionsParsed.unshift(targetInspection);
         const newInspectionsJson = JSON.stringify(localInspectionsParsed);

@@ -276,7 +276,7 @@ export class MainPageStore {
       console.log("checkIsInspectionReadyToSend filledBarriers", toJS(filledBarriers));
       console.log("checkIsInspectionReadyToSend formType", toJS(formTypeId));
 
-      if (formTypeId?.toString() === '1' && filledBarriers.length) {
+      if (filledBarriers.length) {
        return  filledBarriers.every(
           (bar) =>
             bar[BarrierFieldTypes.Mub] &&
@@ -284,7 +284,7 @@ export class MainPageStore {
         ) && this.store.inspectionStore.checkIsFormSuccess(inspection)
       }
 
-      if (formTypeId?.toString() === "2" && freeForms.length) {
+      if (freeForms.length) {
         const filteredCommonFields = filterByRequiredFields(
           inspection,
           INSPECTION_FORM_REQUIRED_FIELDS,

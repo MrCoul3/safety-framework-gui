@@ -147,7 +147,14 @@ const BarriersPage = observer((props: IBarriersPage) => {
   };
 
   const handleSaveForm = (barrierId: number, barrierIndex: number) => {
-    if (editInspectionId) {
+    setSavingState(false);
+    saveInspection();
+    store.snackBarStore.setSnackBarItem({
+      message: t("snackBarSuccessSave"),
+      key: "1",
+      status: "success",
+    });
+    /*if (editInspectionId) {
       store.barriersStore.saveFilledBarrierToLocalStorage(
         editInspectionId,
         barrierId,
@@ -160,7 +167,7 @@ const BarriersPage = observer((props: IBarriersPage) => {
       });
     } else {
       handleSaveInspection();
-    }
+    }*/
   };
 
   const [searchText, setSearchText] = useState<string | null>(null);

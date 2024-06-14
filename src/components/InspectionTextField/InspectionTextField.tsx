@@ -70,8 +70,6 @@ const InspectionTextField = observer((props: IFieldInspectionType) => {
   }, [open]);
 
   useEffect(() => {
-    console.log("InspectionTextField props.fieldsData", toJS(props.fieldsData));
-    console.log("props.value", toJS(props.value));
   }, [props.fieldsData]);
 
   const handleChange = (value: Item | null) => {
@@ -83,7 +81,6 @@ const InspectionTextField = observer((props: IFieldInspectionType) => {
   const getItems = (
     type: InspectionFormTypes | FreeFormFieldTypes | ViolationFilterTypes | string,
   ) => {
-    console.log('getItems type', type)
     const found = props.fieldsData.find((data) =>
       Object.keys(data).includes(props.inspectionType),
     );
