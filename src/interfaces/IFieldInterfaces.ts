@@ -3,6 +3,7 @@ export type Item = {
     id?: string;
     personFio?: string;
     code?:string
+    ruleNumber?:string
 };
 export interface IFieldsData {
     [key: string]: Item[] | number;

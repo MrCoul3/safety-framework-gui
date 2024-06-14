@@ -31,6 +31,7 @@ import { FilledQuestionTypes } from "../../enums/FilledQuestionTypes";
 import { IQuestion } from "../../interfaces/IQuestion";
 import { IFilledQuestions } from "../../interfaces/IFilledQuestions";
 import { IconWarning } from "@consta/icons/IconWarning";
+import {InspectionFormTypes} from "../../enums/InspectionFormTypes";
 
 interface IBarriersPage {}
 
@@ -313,6 +314,26 @@ const BarriersPage = observer((props: IBarriersPage) => {
         });
       }
     }
+  };
+
+  const [openFilterType, setOpenFilterType] =
+      useState<InspectionFormTypes | null>(null);
+
+  const handleSearchValueChange = (value: string | null) => {
+    console.log("handleSearchValueChange value!!!", value);
+    store.inspectionStore.setSearchFieldValue(value);
+    if (!value || value === "") {
+      store.inspectionStore.clearOffset();
+    }
+    if ((value || value === "") && openFilterType) {
+      store.inspectionStore.getFieldData(openFilterType);
+    }
+  };
+
+  const handleInspectionTextFieldClose = () => {
+    setOpenFilterType(null);
+    store.inspectionStore.clearOffset();
+    store.inspectionStore.clearFieldsData();
   };
 
   return (

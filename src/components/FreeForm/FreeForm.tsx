@@ -17,6 +17,7 @@ import { Button } from "@consta/uikit/Button";
 import { useTranslation } from "react-i18next";
 import ConfirmDialog from "../ConfirmDialog/ConfirmDialog";
 import InspectionTextArea from "../InspectionTextArea/InspectionTextArea";
+import { toJS } from "mobx";
 
 interface IFreeFormProps {
   onInspectionTextFieldClose?(): void;
@@ -87,6 +88,24 @@ const FreeForm = observer((props: IFreeFormProps) => {
     if (props.formFieldsValues) {
       if (field === FreeFormFieldTypes.ViolationManual) {
         return props.formFieldsValues[field] as string;
+      }
+      if (
+        (field === FreeFormFieldTypes.NmdRule ||
+          field === FreeFormFieldTypes.Nmd) &&
+        props.formFieldsValues[field]?.ruleNumber &&
+        props.formFieldsValues[field]?.title
+      ) {
+        console.log(
+          "props.formFieldsValues[field]",
+          toJS(
+            (props.formFieldsValues[field]?.ruleNumber +
+              ". " +
+              props.formFieldsValues[field]?.title) as string,
+          ),
+        );
+        return (props.formFieldsValues[field]?.ruleNumber +
+          ". " +
+          props.formFieldsValues[field]?.title) as string;
       }
       return props.formFieldsValues[field]?.title as string;
     }

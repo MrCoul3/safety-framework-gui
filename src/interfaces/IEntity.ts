@@ -5,5 +5,6 @@ export interface IEntity {
     "dateCreated": Date,
     "dateModified": Date,
     "id": number,
-    "code": string
+    "code": string,
+    ruleNumber: string
 }

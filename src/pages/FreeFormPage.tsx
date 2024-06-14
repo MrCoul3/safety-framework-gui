@@ -131,6 +131,7 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
 
   const handleOpenField = (type: InspectionFormTypes) => {
     store.inspectionStore.handleOpenField(type);
+    setOpenFilterType(type);
   };
   const handleClearForm = (index: number) => {
     store.freeFormStore.clearFreeForm(index);
@@ -167,6 +168,26 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
         });
       }
     }
+  };
+
+  const [openFilterType, setOpenFilterType] =
+      useState<InspectionFormTypes | null>(null);
+
+  const handleSearchValueChange = (value: string | null) => {
+    console.log("handleSearchValueChange value!!!", value);
+    store.inspectionStore.setSearchFieldValue(value);
+    if (!value || value === "") {
+      store.inspectionStore.clearOffset();
+    }
+    if ((value || value === "") && openFilterType) {
+      store.inspectionStore.getFieldData(openFilterType);
+    }
+  };
+
+  const handleInspectionTextFieldClose = () => {
+    setOpenFilterType(null);
+    store.inspectionStore.clearOffset();
+    store.inspectionStore.clearFieldsData();
   };
 
   return (
@@ -213,7 +234,7 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
                 }
                 key={index}
                 content={
-                  <FreeForm
+                  <FreeForm onInspectionTextFieldClose={handleInspectionTextFieldClose} onSearchValueChange={handleSearchValueChange}
                     isOtherCondition={store.freeFormStore.isOtherCondition(
                       formFieldsValues as IFreeForm,
                     )}

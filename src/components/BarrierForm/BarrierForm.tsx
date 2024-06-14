@@ -48,6 +48,7 @@ interface IBarrierForm {
   handleSaveForm?(): void;
 
   handleDelete?(): void;
+
 }
 
 const BarrierForm = observer((props: IBarrierForm) => {

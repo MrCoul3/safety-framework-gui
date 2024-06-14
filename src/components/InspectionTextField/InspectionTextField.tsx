@@ -103,6 +103,9 @@ const InspectionTextField = observer((props: IFieldInspectionType) => {
     if (EMPLOYEES.includes(props.inspectionType as InspectionFormTypes)) {
       return item.personFio ?? "";
     }
+    if (item.ruleNumber) {
+      return item.ruleNumber + '. ' + item.title;
+    }
     return item.title;
   };
   const getItemKey = (item: Item) => {
@@ -145,6 +148,10 @@ const InspectionTextField = observer((props: IFieldInspectionType) => {
     console.log("onSearchValueChange", value);
     setSearchValue(value);
   };
+
+  useEffect(() => {
+    console.log('props.value', toJS(props.value))
+  }, [props.value])
 
   return (
     <Combobox
