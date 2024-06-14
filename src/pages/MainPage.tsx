@@ -43,6 +43,7 @@ export const MainPage = observer((props: IMainPage) => {
   const init = () => {
     store.mainPageStore.clearInspectionOffset();
     store.freeFormStore.clearFreeForms();
+    store.barriersStore.clearBarriers();
     getLocalInspections();
     if (isDevelop) {
       store.mainPageStore.getInspectionsDev();
@@ -52,6 +53,7 @@ export const MainPage = observer((props: IMainPage) => {
   };
 
   useEffect(() => {
+    console.log('mainPage store.barriersStore.filledBarriers', toJS(store.barriersStore.filledBarriers))
     init();
   }, []);
 

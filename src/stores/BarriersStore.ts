@@ -28,6 +28,10 @@ export class BarriersStore {
   barriers: IBarrier[] = [];
   fulfillments: IFulfillment[] = [];
   inapplicableReasons: IInapplicableReasons[] = [];
+
+  clearBarriers() {
+    this.filledBarriers = []
+  }
   async getBarriersDev() {
     try {
       const response = await localDevInstance.get(`barriers`);
