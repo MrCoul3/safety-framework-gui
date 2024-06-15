@@ -29,6 +29,7 @@ export class FreeFormStore {
   filledFreeForms: (IFreeForm | {})[] = [];
   setFreeForm(value: IFreeForm[]) {
     this.filledFreeForms = value;
+    console.log('setFreeForm this.filledFreeForms', toJS(this.filledFreeForms))
   }
   addFreeForm() {
     this.filledFreeForms = [

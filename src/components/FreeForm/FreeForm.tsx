@@ -36,6 +36,7 @@ interface IFreeFormProps {
   handleSaveForm(): void;
 
   handleDelete?(): void;
+  setSavingState?(val: boolean): void;
 
   setIsValidate(value: boolean): void;
 
@@ -44,6 +45,8 @@ interface IFreeFormProps {
   formFieldsValues: IFreeForm | null;
   formFieldsValuesLength?: boolean;
   isOtherCondition?: boolean;
+
+  savingState?: boolean
 }
 
 const FreeForm = observer((props: IFreeFormProps) => {
@@ -55,7 +58,6 @@ const FreeForm = observer((props: IFreeFormProps) => {
     props.onInit?.();
   }, []);
 
-  const [savingState, setSavingState] = useState(false);
 
   const requiredConditions = (field: FreeFormFieldTypes) => {
     const notReqFields = [""];
@@ -80,7 +82,7 @@ const FreeForm = observer((props: IFreeFormProps) => {
   const [isClearModalOpen, setIsClearModalOpen] = React.useState(false);
   const [isDelModalOpen, setIsDelModalOpen] = React.useState(false);
   const handleSave = () => {
-    setSavingState(false);
+    props.setSavingState?.(false);
     props.handleSaveForm();
   };
 
@@ -115,7 +117,7 @@ const FreeForm = observer((props: IFreeFormProps) => {
   const handleChange = (value: IFormFieldValue | IFormFieldTextValue) => {
     console.log("handleChange", value);
     props.handleChange(value);
-    setSavingState(true);
+    props.setSavingState?.(true);
   };
 
   useEffect(() => {
@@ -170,7 +172,7 @@ const FreeForm = observer((props: IFreeFormProps) => {
             label={t("clear")}
           />
           <Button
-            disabled={!savingState}
+            disabled={!props.savingState}
             onClick={handleSave}
             type="submit"
             label={t("save")}

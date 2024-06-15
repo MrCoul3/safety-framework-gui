@@ -47,7 +47,6 @@ const BarriersPage = observer((props: IBarriersPage) => {
 
   const store = useStore();
 
-  const [savingState, setSavingState] = useState(false);
 
   const passport = useMemo(
     () =>
@@ -130,7 +129,7 @@ const BarriersPage = observer((props: IBarriersPage) => {
       location.pathname.includes(RoutesTypes.EditLocalInspection) &&
       editInspectionId
     ) {
-      store.inspectionStore.updateInspectionToLocalStorage(editInspectionId);
+      store.barriersStore.updateInspectionToLocalStorage(editInspectionId);
       store.snackBarStore.setSnackBarItem({
         message: t("snackBarSuccessSave"),
         key: "1",
@@ -158,7 +157,7 @@ const BarriersPage = observer((props: IBarriersPage) => {
   };
 
   const handleSaveForm = (barrierId: number, barrierIndex: number) => {
-    setSavingState(false);
+    store.inspectionStore.setSavingState(false)
     saveInspection();
     store.snackBarStore.setSnackBarItem({
       message: t("snackBarSuccessSave"),
@@ -189,7 +188,7 @@ const BarriersPage = observer((props: IBarriersPage) => {
   const getFilteredBarriers = () => {
     if (searchText) {
       return store.barriersStore.barriers.filter((item) =>
-        item.title?.includes(searchText),
+        item.title?.trim()?.toLowerCase()?.includes(searchText.toLowerCase()),
       );
     }
     return [];
@@ -212,7 +211,7 @@ const BarriersPage = observer((props: IBarriersPage) => {
 
   const handleAddBarrier = (barrier: IBarrier) => {
     console.log("handleAddBarrier", toJS(barrier));
-    setSavingState(true);
+    store.inspectionStore.setSavingState(true)
 
     const foundBarriersById = store.barriersStore.getFoundBarriersById(
       barrier.id,
@@ -243,15 +242,17 @@ const BarriersPage = observer((props: IBarriersPage) => {
   };
 
   const [isFormsValidForSending, setIsFormsValidForSending] = useState(false);
-
   const handleChange = (
     value: IFormFieldTextValue,
     barrierId: number,
     index: number,
   ) => {
     console.log("barrier page handleChange", value, barrierId);
-    setSavingState(true);
+
+    store.inspectionStore.setSavingState(true)
+
     store.barriersStore.changeFormFieldsValues(value, barrierId, index);
+    store.inspectionStore.setFilledBarriers(store.barriersStore.filledBarriers);
     const isValid = store.barriersStore.checkIsBarrierFormSuccess(passportId);
     setIsFormsValidForSending(isValid);
   };
@@ -264,9 +265,11 @@ const BarriersPage = observer((props: IBarriersPage) => {
     console.log("QuestionCard handleChange", toJS(value));
     // {filledRequirementId,  fulfillmentId, questionId}
     store.barriersStore.updateFilledQuestions(value, barrierId, index);
+    store.inspectionStore.setFilledBarriers(store.barriersStore.filledBarriers);
     const isValid = store.barriersStore.checkIsBarrierFormSuccess(passportId);
     setIsFormsValidForSending(isValid);
-    setSavingState(true);
+    store.inspectionStore.setSavingState(true)
+
   };
 
   const getFilledBarriersById = (barrierId: number) => {
@@ -277,7 +280,8 @@ const BarriersPage = observer((props: IBarriersPage) => {
 
   const handleDeleteBarrier = (barrierId: number, index: number) => {
     store.barriersStore.deleteFilledBarrier(barrierId, index);
-    setSavingState(true);
+    store.inspectionStore.setSavingState(true)
+    store.inspectionStore.setFilledBarriers(store.barriersStore.filledBarriers);
     setIsFormsValidForSending(
       store.barriersStore.checkIsBarrierFormSuccess(passportId),
     );
@@ -294,7 +298,8 @@ const BarriersPage = observer((props: IBarriersPage) => {
       filledRequirements: filledRequirements,
     };
     store.barriersStore.clearFilledBarrier(barrier.id, index, value);
-    setSavingState(true);
+    store.inspectionStore.setFilledBarriers(store.barriersStore.filledBarriers);
+    store.inspectionStore.setSavingState(true)
     setIsFormsValidForSending(
       store.barriersStore.checkIsBarrierFormSuccess(passportId),
     );
@@ -339,7 +344,7 @@ const BarriersPage = observer((props: IBarriersPage) => {
               label={t("sendInspection")}
             />
           }
-          disableSaveButton={!savingState}
+          disableSaveButton={!store.inspectionStore.savingState}
           actions={
             <Button
               onClick={() => navigate(-1)}

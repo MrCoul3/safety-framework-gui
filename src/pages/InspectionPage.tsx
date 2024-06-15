@@ -32,18 +32,18 @@ const InspectionPage = observer((props: IInspectionPage) => {
 
   const location = useLocation();
 
-  const [savingState, setSavingState] = useState(false);
-
-  const [openFilterType, setOpenFilterType] =
+   const [openFilterType, setOpenFilterType] =
     useState<InspectionFormTypes | null>(null);
 
-  const loadInspection = () => {
+  const loadInspection =async () => {
     if (editInspectionId) {
       store.inspectionStore.loadInspection(editInspectionId);
     }
   };
-  const init = () => {
-    loadInspection();
+  const init = async () => {
+    if (!Object.keys(store.inspectionStore.formFieldsValues).length) {
+      await loadInspection();
+    }
   };
 
   useEffect(() => {
@@ -66,14 +66,14 @@ const InspectionPage = observer((props: IInspectionPage) => {
   const handleChange = (value: IFormFieldValue) => {
     console.log("handleChange", value);
     store.inspectionStore.updateFormFieldsValues(value);
-    setSavingState(true);
+    store.inspectionStore.setSavingState(true)
     store.inspectionStore.checkIsFormSuccess();
   };
 
   const handleDateChange = (value: IFormDateFieldValue) => {
     console.log("handleDateChange", value);
     store.inspectionStore.updateFormFieldsValues(value);
-    setSavingState(true);
+    store.inspectionStore.setSavingState(true)
     store.inspectionStore.checkIsFormSuccess();
   };
 
@@ -102,7 +102,7 @@ const InspectionPage = observer((props: IInspectionPage) => {
   };
 
   const handleSaveInspection = () => {
-    setSavingState(false);
+    store.inspectionStore.setSavingState(false)
     saveInspection();
     navigate(-1);
     renderSaveSnackBar();
@@ -170,7 +170,7 @@ const InspectionPage = observer((props: IInspectionPage) => {
         navPanel={
           <NavPanel
             crumbs={crumbs}
-            disableSaveButton={!savingState}
+            disableSaveButton={!store.inspectionStore.savingState}
             handleEditPassports={handleEditPassports}
             handleSaveInspection={handleSaveInspection}
             description={t("addInspectionDescription")}
@@ -193,7 +193,7 @@ const InspectionPage = observer((props: IInspectionPage) => {
               !!Object.values(store.inspectionStore.formFieldsValues).length
             }
             handleClearInspectionForm={() => {
-              setSavingState(true);
+              store.inspectionStore.setSavingState(true)
               store.inspectionStore.clearInspectionForm();
               store.inspectionStore.setIsValidate(false);
             }}

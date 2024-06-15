@@ -18,7 +18,8 @@ import { IInspection } from "../interfaces/IInspection";
 import { joinObjectValues } from "../utils/joinObjectValues";
 import { expandFilter } from "../constants/filters";
 import {
-  IFieldsData, IFilterDateRangeFieldValue,
+  IFieldsData,
+  IFilterDateRangeFieldValue,
   IFormDateFieldValue,
   IFormFieldValue,
   Item,
@@ -33,7 +34,8 @@ import {
 import { RoutesTypes } from "../enums/RoutesTypes";
 import { filterByRequiredFields } from "../utils/filterByRequiredFields";
 import { ViolationFilterTypes } from "../enums/ViolationFilterTypes";
-import {IFilledBarrier} from "../interfaces/IFilledBarrier";
+import { IFilledBarrier } from "../interfaces/IFilledBarrier";
+import i18next from "i18next";
 
 export class InspectionStore {
   private store: AppStore;
@@ -41,6 +43,13 @@ export class InspectionStore {
   constructor(store: AppStore) {
     this.store = store;
     makeAutoObservable(this);
+  }
+  savingState: boolean = false;
+  setSavingState(val: boolean) {
+    this.savingState = val
+  }
+  clearSavingState() {
+    this.savingState = false
   }
   fieldsData: IFieldsData[] = [];
   isValidate: boolean = false;
@@ -100,7 +109,11 @@ export class InspectionStore {
   }
 
   async getFieldData(
-    type: InspectionFormTypes | FreeFormFieldTypes | ViolationFilterTypes | string,
+    type:
+      | InspectionFormTypes
+      | FreeFormFieldTypes
+      | ViolationFilterTypes
+      | string,
   ) {
     let requestType: any = type;
 
@@ -195,10 +208,23 @@ export class InspectionStore {
   }
 
   setFilledBarriers(filledBarriers: IFilledBarrier[]) {
-     this.formFieldsValues = {...this.formFieldsValues, filledBarriers: filledBarriers}
+    this.formFieldsValues = {
+      ...this.formFieldsValues,
+      filledBarriers: filledBarriers,
+    };
   }
 
-  updateFormFieldsValues(value: IFormFieldValue | IFormDateFieldValue | IFilterDateRangeFieldValue) {
+  setFilledFreeForms(filledFreeForms: (IFreeForm | {})[] ) {
+    this.formFieldsValues = {
+      ...this.formFieldsValues,
+      filledFreeForms: filledFreeForms,
+    };
+    console.log('setFilledFreeForms this.formFieldsValues', toJS(this.formFieldsValues))
+  }
+
+  updateFormFieldsValues(
+    value: IFormFieldValue | IFormDateFieldValue | IFilterDateRangeFieldValue,
+  ) {
     console.log("updateFormFieldsValues", value);
     if (this.formFieldsValues) {
       const key = Object.keys(value)[0];
@@ -429,4 +455,6 @@ export class InspectionStore {
       }
     }
   }
+
+
 }

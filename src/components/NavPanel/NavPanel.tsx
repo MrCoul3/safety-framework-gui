@@ -30,8 +30,6 @@ const NavPanel = observer((props: INavPanel) => {
 
   const navigate = useNavigate();
 
-  const [isModalOpen, setIsModalOpen] = React.useState(false);
-
   const onItemClick = (item: IBreadCrumbs) => {
     if (item.path === "main") {
       // setIsModalOpen(true);
