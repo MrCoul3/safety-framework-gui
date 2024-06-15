@@ -225,7 +225,7 @@ export const MainPage = observer((props: IMainPage) => {
             newInspectionCondition(subGroup) &&
             store.mainPageStore.checkIsInspectionReadyToSend(
               index,
-              item[InspectionFormTypes.InspectionForm]?.id,
+              item?.[InspectionFormTypes.InspectionForm]?.id,
             )
           }
           sendInspection={handleSendInspection}
