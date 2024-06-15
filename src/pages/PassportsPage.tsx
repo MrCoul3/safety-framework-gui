@@ -93,8 +93,8 @@ const PassportsPage = observer((props: IPassportsPage) => {
   ];
   const saveInspection = () => {
     if (
-        location.pathname.includes(RoutesTypes.EditLocalInspection) &&
-        editInspectionId
+      location.pathname.includes(RoutesTypes.EditLocalInspection) &&
+      editInspectionId
     ) {
       store.inspectionStore.updateInspectionToLocalStorage(editInspectionId);
     }
@@ -155,6 +155,7 @@ const PassportsPage = observer((props: IPassportsPage) => {
               view={"secondary"}
             />
           }
+          disableSaveButton={!store.inspectionStore.savingState}
           crumbs={crumbs}
           handleSaveInspection={handleSaveInspection}
           title={t("selectPassport")}
@@ -167,6 +168,7 @@ const PassportsPage = observer((props: IPassportsPage) => {
             .filter((passport) => passport.code)
             .map((passport) => (
               <PassportElement
+                  isValid={store.barriersStore.checkIsBarrierFormSuccess(passport.id)}
                 barriersCount={getBarriersCount(passport.id)}
                 id={passport.id}
                 title={passport.title}
