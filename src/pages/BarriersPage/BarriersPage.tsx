@@ -32,6 +32,7 @@ import { IQuestion } from "../../interfaces/IQuestion";
 import { IFilledQuestions } from "../../interfaces/IFilledQuestions";
 import { IconWarning } from "@consta/icons/IconWarning";
 import { InspectionFormTypes } from "../../enums/InspectionFormTypes";
+import { RoutesTypes } from "../../enums/RoutesTypes";
 
 interface IBarriersPage {}
 
@@ -125,14 +126,21 @@ const BarriersPage = observer((props: IBarriersPage) => {
   ];
 
   const saveInspection = () => {
-    if (editInspectionId) {
-      store.barriersStore.updateInspectionToLocalStorage(editInspectionId);
+    if (
+      location.pathname.includes(RoutesTypes.EditLocalInspection) &&
+      editInspectionId
+    ) {
+      store.inspectionStore.updateInspectionToLocalStorage(editInspectionId);
       store.snackBarStore.setSnackBarItem({
         message: t("snackBarSuccessSave"),
         key: "1",
         status: "success",
       });
-    } else {
+    }
+    if (
+      location.pathname.includes(RoutesTypes.NewInspection) ||
+      location.pathname.includes(RoutesTypes.EditInspection)
+    ) {
       store.inspectionStore.setInspectionToLocalStorage();
       store.snackBarStore.setSnackBarItem({
         message: t("snackBarSuccessSaveBarrier"),
@@ -140,7 +148,9 @@ const BarriersPage = observer((props: IBarriersPage) => {
         status: "success",
       });
     }
+    store.inspectionStore.setIsValidate(false);
   };
+
 
   const handleSaveInspection = () => {
     saveInspection();
@@ -316,26 +326,6 @@ const BarriersPage = observer((props: IBarriersPage) => {
         });
       }
     }
-  };
-
-  const [openFilterType, setOpenFilterType] =
-    useState<InspectionFormTypes | null>(null);
-
-  const handleSearchValueChange = (value: string | null) => {
-    console.log("handleSearchValueChange value!!!", value);
-    store.inspectionStore.setSearchFieldValue(value);
-    if (!value || value === "") {
-      store.inspectionStore.clearOffset();
-    }
-    if ((value || value === "") && openFilterType) {
-      store.inspectionStore.getFieldData(openFilterType);
-    }
-  };
-
-  const handleInspectionTextFieldClose = () => {
-    setOpenFilterType(null);
-    store.inspectionStore.clearOffset();
-    store.inspectionStore.clearFieldsData();
   };
 
   return (
