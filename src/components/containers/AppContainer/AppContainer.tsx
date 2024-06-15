@@ -44,6 +44,9 @@ export const AppContainer = observer(() => {
 
   useEffect(() => {
     init();
+  }, [])
+
+  useEffect(() => {
     getSideBarState();
   }, [window.location.pathname]);
 
