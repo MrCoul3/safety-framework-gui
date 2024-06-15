@@ -41,7 +41,7 @@ export class BarriersStore {
           this.setBarriers(response.data);
         }
         this.store.loaderStore.setBarriersLoader("ready");
-      }, 1000)
+      }, 1000);
     } catch (e) {
       this.store.loaderStore.setBarriersLoader("ready");
       console.error(e);
@@ -291,6 +291,23 @@ export class BarriersStore {
   checkIsBarrierFormSuccess(passportId?: string) {
     if (this.filledBarriers.length) {
       return this.filledBarriers.every((bar) => {
+        return (
+          bar[BarrierFieldTypes.Mub] &&
+          bar[BarrierFieldTypes.Mub]?.trim() !== "" &&
+          this.checkComment(bar) &&
+          this.checkExtraFields(bar, passportId)
+        );
+      });
+    }
+    return false;
+  }
+
+  checkIsBarrierFormSuccessForPassport(
+    filledBarriers?: IFilledBarrier[],
+    passportId?: string,
+  ) {
+    if (filledBarriers && filledBarriers.length) {
+      return filledBarriers.every((bar) => {
         return (
           bar[BarrierFieldTypes.Mub] &&
           bar[BarrierFieldTypes.Mub]?.trim() !== "" &&

@@ -50,12 +50,13 @@ const PassportsPage = observer((props: IPassportsPage) => {
       await loadInspection();
     }
     getFilledBarriersFromFieldsData();
-
-    if (isDevelop) {
-      store.passportsStore.getPassportsDev();
-      store.passportsStore.getPassports();
-    } else {
-      store.passportsStore.getPassports();
+    if (!store.passportsStore.passports.length) {
+      if (isDevelop) {
+        store.passportsStore.getPassportsDev();
+        store.passportsStore.getPassports();
+      } else {
+        store.passportsStore.getPassports();
+      }
     }
   };
 
@@ -117,14 +118,11 @@ const PassportsPage = observer((props: IPassportsPage) => {
     });
   };
 
-  const getBarriersCount = (passportId: string) => {
-    console.log("getBarriersCount filledBarriers", toJS(filledBarriers)); // [{barrierId: }]
+  const getFilledBarriersForPassport = (passportId: string) => {
     const passportById = store.passportsStore.passports.find(
       (pass) => pass.id === passportId,
     );
     const passportBarriers = passportById?.["barriers"];
-    console.log("getBarriersCount passportById", toJS(passportById));
-    console.log("getBarriersCount passportBarriers", toJS(passportBarriers));
     if (filledBarriers && filledBarriers.length) {
       const filledBarriersByPassId = filledBarriers.filter((fillBar) => {
         const fillBarId = fillBar.barrierId.toString();
@@ -135,13 +133,13 @@ const PassportsPage = observer((props: IPassportsPage) => {
         })?.id;
         return fillBarId === passBarId?.toString();
       });
-      console.log(
-        "getBarriersCount filledBarriersByPassId",
-        toJS(filledBarriersByPassId.length),
-      );
-      return filledBarriersByPassId.length;
+      return filledBarriersByPassId;
     }
-    return 0;
+  };
+
+  const getBarriersCount = (passportId: string) => {
+    const filledBarriersByPassId = getFilledBarriersForPassport(passportId);
+    return filledBarriersByPassId?.length ? filledBarriersByPassId.length : 0;
   };
 
   return (
@@ -170,7 +168,8 @@ const PassportsPage = observer((props: IPassportsPage) => {
             .filter((passport) => passport.code)
             .map((passport) => (
               <PassportElement
-                isValid={store.barriersStore.checkIsBarrierFormSuccess(
+                isValid={store.barriersStore.checkIsBarrierFormSuccessForPassport(
+                  getFilledBarriersForPassport(passport.id),
                   passport.id,
                 )}
                 barriersCount={getBarriersCount(passport.id)}
