@@ -33,6 +33,7 @@ import {
 import { RoutesTypes } from "../enums/RoutesTypes";
 import { filterByRequiredFields } from "../utils/filterByRequiredFields";
 import { ViolationFilterTypes } from "../enums/ViolationFilterTypes";
+import {IFilledBarrier} from "../interfaces/IFilledBarrier";
 
 export class InspectionStore {
   private store: AppStore;
@@ -192,6 +193,11 @@ export class InspectionStore {
     this.formFieldsValues = value;
     console.debug("formFieldsValues: ", toJS(this.formFieldsValues));
   }
+
+  setFilledBarriers(filledBarriers: IFilledBarrier[]) {
+     this.formFieldsValues = {...this.formFieldsValues, filledBarriers: filledBarriers}
+  }
+
   updateFormFieldsValues(value: IFormFieldValue | IFormDateFieldValue | IFilterDateRangeFieldValue) {
     console.log("updateFormFieldsValues", value);
     if (this.formFieldsValues) {

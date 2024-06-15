@@ -7,7 +7,7 @@ import { icon13 } from "../../assets/icons";
 import classNames from "classnames";
 
 interface IPassportElement {
-  code: string;
+  title: string;
   id: string;
   barriersCount: number;
   icon?: string | null;
@@ -28,7 +28,7 @@ const PassportElement = observer((props: IPassportElement) => {
         })}  src={props.icon ?? icon13} alt="" />
       </div>
       <div className={style.flexCol}>
-        <span className={style.name}>{props.code}</span>
+        <span className={style.name}>{props.title}</span>
         <span className={style.barriersCount}>
         {t("barriersSelect")}
           <Badge

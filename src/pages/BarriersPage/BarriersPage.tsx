@@ -31,7 +31,7 @@ import { FilledQuestionTypes } from "../../enums/FilledQuestionTypes";
 import { IQuestion } from "../../interfaces/IQuestion";
 import { IFilledQuestions } from "../../interfaces/IFilledQuestions";
 import { IconWarning } from "@consta/icons/IconWarning";
-import {InspectionFormTypes} from "../../enums/InspectionFormTypes";
+import { InspectionFormTypes } from "../../enums/InspectionFormTypes";
 
 interface IBarriersPage {}
 
@@ -225,6 +225,8 @@ const BarriersPage = observer((props: IBarriersPage) => {
     };
     store.barriersStore.addFilledBarriers(value);
 
+    store.inspectionStore.setFilledBarriers(store.barriersStore.filledBarriers);
+
     setIsFormsValidForSending(
       store.barriersStore.checkIsBarrierFormSuccess(passportId),
     );
@@ -317,7 +319,7 @@ const BarriersPage = observer((props: IBarriersPage) => {
   };
 
   const [openFilterType, setOpenFilterType] =
-      useState<InspectionFormTypes | null>(null);
+    useState<InspectionFormTypes | null>(null);
 
   const handleSearchValueChange = (value: string | null) => {
     console.log("handleSearchValueChange value!!!", value);

@@ -169,7 +169,7 @@ const PassportsPage = observer((props: IPassportsPage) => {
               <PassportElement
                 barriersCount={getBarriersCount(passport.id)}
                 id={passport.id}
-                code={passport.code}
+                title={passport.title}
                 onClick={handlePassportClick}
                 key={passport.id}
                 icon={passport.iconString}
