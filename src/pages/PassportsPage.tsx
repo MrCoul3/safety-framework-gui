@@ -172,7 +172,7 @@ const PassportsPage = observer((props: IPassportsPage) => {
                 code={passport.code}
                 onClick={handlePassportClick}
                 key={passport.id}
-                data={passport}
+                icon={passport.iconString}
               />
             ))}
         />

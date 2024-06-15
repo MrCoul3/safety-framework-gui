@@ -11,5 +11,5 @@ export interface IPassport {
 
   barriers: IBarrier[],
   uniqueId: string;
-  icon: null | string
+  iconString: string | null
 }

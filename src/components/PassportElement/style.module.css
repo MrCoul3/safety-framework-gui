@@ -1,13 +1,16 @@
 .PassportElement {
   min-width: 220px;
   width: 220px;
-  max-height: 220px;
+  max-height: 210px;
   border-radius: 4px;
   background-color: white;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   align-items: center;
   cursor: pointer;
+  padding: 18px;
+  box-sizing: border-box;
 }
 .PassportElement:hover {
   box-shadow: 0 0 0 1px var(--blue);
@@ -17,6 +20,12 @@
   height: 118px;
 }
 .logoIcon {
+  width: 188px;
+  position: relative;
+  top: -33px;
+}
+.plug {
+  position: static;
 }
 .name {
   font-size: 18px;
@@ -34,4 +43,9 @@
   color: var(--gray60);
   display: flex;
   gap: 4px;
+}
+
+.flexCol {
+  display: flex;
+  flex-direction: column;
 }
