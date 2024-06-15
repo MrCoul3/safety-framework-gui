@@ -30,19 +30,25 @@ export class BarriersStore {
   inapplicableReasons: IInapplicableReasons[] = [];
 
   clearBarriers() {
-    this.filledBarriers = []
+    this.filledBarriers = [];
   }
   async getBarriersDev() {
+    this.store.loaderStore.setBarriersLoader("wait");
     try {
-      const response = await localDevInstance.get(`barriers`);
-      if (!response.data.error) {
-        this.setBarriers(response.data);
-      }
+      setTimeout(async () => {
+        const response = await localDevInstance.get(`barriers`);
+        if (!response.data.error) {
+          this.setBarriers(response.data);
+        }
+        this.store.loaderStore.setBarriersLoader("ready");
+      }, 1000)
     } catch (e) {
+      this.store.loaderStore.setBarriersLoader("ready");
       console.error(e);
     }
   }
   async getBarriers(passportId: string) {
+    this.store.loaderStore.setBarriersLoader("wait");
     try {
       const response = await instance.get(
         `barriers?$filter=(passportId eq ${passportId})and(IsActual eq true)&$expand=requirements($expand=questions)&$count=true`,
@@ -52,7 +58,9 @@ export class BarriersStore {
           this.setBarriers(response.data.value);
         }
       }
+      this.store.loaderStore.setBarriersLoader("ready");
     } catch (e) {
+      this.store.loaderStore.setBarriersLoader("ready");
       console.error(e);
     }
   }
@@ -131,15 +139,15 @@ export class BarriersStore {
       console.log("changeFormFieldsValues key", key);
     }
   }
-  vehicleFieldValue: string | null = null
+  vehicleFieldValue: string | null = null;
   setVehicleFieldValue(value: string | null) {
     this.vehicleFieldValue = value;
   }
-  licencePlateFieldValue: string | null = null
+  licencePlateFieldValue: string | null = null;
   setLicencePlateFieldValue(value: string | null) {
     this.licencePlateFieldValue = value;
   }
-  driverFioFieldValue: string | null = null
+  driverFioFieldValue: string | null = null;
   setDriverFioFieldValue(value: string | null) {
     this.driverFioFieldValue = value;
   }

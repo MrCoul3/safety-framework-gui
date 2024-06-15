@@ -21,6 +21,8 @@ import {
   IFormDateFieldValue,
   IFormFieldValue,
 } from "../../interfaces/IFieldInterfaces";
+import { LoaderType } from "../../interfaces/LoaderType";
+import LoaderPage from "../LoaderPage/LoaderPage";
 
 interface IInspectionForm {
   handleOpenField(type: InspectionFormTypes): void;
@@ -38,6 +40,8 @@ interface IInspectionForm {
   handleChange(value: IFormFieldValue): void;
   handleDateChange(value: IFormDateFieldValue): void;
   formFieldsValues: IInspection | null;
+
+  loader: LoaderType;
 }
 
 const InspectionForm = observer((props: IInspectionForm) => {
@@ -148,60 +152,69 @@ const InspectionForm = observer((props: IInspectionForm) => {
 
   return (
     <div className={style.InspectionForm}>
-      <div className={style.form}>
-        <form className={style.fields}>
-          {Object.keys(fields).map((key: string) => (
-            <>
-              <ItemGroupTitle key={key} groupTitle={key} />
-              {fields[key].map((inspectionType) => {
-                if (inspectionType === InspectionFormTypes.AuditDate) {
+      {props.formFieldsValuesLength && props.loader !== "wait" ? (
+        <div className={style.form}>
+          <form className={style.fields}>
+            {Object.keys(fields).map((key: string) => (
+              <>
+                <ItemGroupTitle key={key} groupTitle={key} />
+                {fields[key].map((inspectionType) => {
+                  if (inspectionType === InspectionFormTypes.AuditDate) {
+                    return (
+                      <InspectionDataField
+                        key={inspectionType}
+                        inspectionType={inspectionType}
+                        handleChange={props.handleDateChange}
+                        value={getDate(inspectionType) as Date | null}
+                        status={
+                          props.isValidate
+                            ? getStatus(inspectionType)
+                            : undefined
+                        }
+                      />
+                    );
+                  }
                   return (
-                    <InspectionDataField
-                      key={inspectionType}
+                    <InspectionTextField
+                      onClose={props.onInspectionTextFieldClose}
+                      onScrollToBottom={props.onScrollToBottom}
+                      onSearchValueChange={props.onSearchValueChange}
+                      required={requiredConditions(inspectionType)}
+                      disabled={disabledConditions(inspectionType)}
                       inspectionType={inspectionType}
-                      handleChange={props.handleDateChange}
-                      value={getDate(inspectionType) as Date | null}
+                      value={getValue(inspectionType)}
+                      fieldsData={props.fieldsData}
+                      handleChange={props.handleChange}
+                      handleOpenField={props.handleOpenField}
                       status={
                         props.isValidate ? getStatus(inspectionType) : undefined
                       }
                     />
                   );
-                }
-                return (
-                  <InspectionTextField
-                    onClose={props.onInspectionTextFieldClose}
-                    onScrollToBottom={props.onScrollToBottom}
-                    onSearchValueChange={props.onSearchValueChange}
-                    required={requiredConditions(inspectionType)}
-                    disabled={disabledConditions(inspectionType)}
-                    inspectionType={inspectionType}
-                    value={getValue(inspectionType)}
-                    fieldsData={props.fieldsData}
-                    handleChange={props.handleChange}
-                    handleOpenField={props.handleOpenField}
-                    status={
-                      props.isValidate ? getStatus(inspectionType) : undefined
-                    }
-                  />
-                );
-              })}
-            </>
-          ))}
-        </form>
-        <div className={style.buttonsGroup}>
-          <Button
-            onClick={() => props.formFieldsValuesLength && setIsModalOpen(true)}
-            view="clear"
-            label={t("clear")}
-          />
-          <Button
-            onClick={handleNextStep}
-            type="submit"
-            label={t("farther")}
-            iconRight={IconForward}
-          />
+                })}
+              </>
+            ))}
+          </form>
+          <div className={style.buttonsGroup}>
+            <Button
+              onClick={() =>
+                props.formFieldsValuesLength && setIsModalOpen(true)
+              }
+              view="clear"
+              label={t("clear")}
+            />
+            <Button
+              onClick={handleNextStep}
+              type="submit"
+              label={t("farther")}
+              iconRight={IconForward}
+            />
+          </div>
         </div>
-      </div>
+      ) : (
+        <LoaderPage />
+      )}
+
       <ConfirmDialog
         cancelActionLabel={t("cancel")}
         confirmActionLabel={t("clear")}

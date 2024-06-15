@@ -1,5 +1,5 @@
 import { AppStore } from "./AppStore";
-import {makeAutoObservable, toJS} from "mobx";
+import { makeAutoObservable, toJS } from "mobx";
 import { instance, localDevInstance } from "../api/endpoints";
 import { IPassport } from "../interfaces/IPassport";
 
@@ -13,21 +13,29 @@ export class PassportsStore {
   passports: IPassport[] = [];
   setPassports(value: IPassport[]) {
     this.passports = value;
-    console.debug('passports: ', toJS(this.passports))
+    console.debug("passports: ", toJS(this.passports));
   }
 
   async getPassportsDev() {
+    this.store.loaderStore.setLoader("wait");
     try {
-      const response = await localDevInstance.get("passports");
-      if (!response.data.error) {
-        this.setPassports(response.data);
-      }
+
+      setTimeout(async () => {
+        const response = await localDevInstance.get("passports");
+        if (!response.data.error) {
+          this.setPassports(response.data);
+        }
+        this.store.loaderStore.setLoader("ready");
+      }, 500)
     } catch (e) {
+      this.store.loaderStore.setLoader("ready");
+
       console.error(e);
     }
   }
 
   async getPassports() {
+    this.store.loaderStore.setLoader("wait");
     try {
       const response = await instance.get(
         "passports?$filter=IsActual eq true&$expand=barriers&$count=true",
@@ -37,7 +45,9 @@ export class PassportsStore {
           this.setPassports(response.data.value);
         }
       }
+      this.store.loaderStore.setLoader("ready");
     } catch (e) {
+      this.store.loaderStore.setLoader("ready");
       console.error(e);
     }
   }

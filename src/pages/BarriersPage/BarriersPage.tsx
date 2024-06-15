@@ -33,6 +33,9 @@ import { IFilledQuestions } from "../../interfaces/IFilledQuestions";
 import { IconWarning } from "@consta/icons/IconWarning";
 import { InspectionFormTypes } from "../../enums/InspectionFormTypes";
 import { RoutesTypes } from "../../enums/RoutesTypes";
+import { SubGroupsActionsTypes } from "../../enums/SubGroupsTypes";
+import LoaderPage from "../../components/LoaderPage/LoaderPage";
+import NothingFound from "../../components/NothingFound/NothingFound";
 
 interface IBarriersPage {}
 
@@ -46,7 +49,6 @@ const BarriersPage = observer((props: IBarriersPage) => {
   const navigate = useNavigate();
 
   const store = useStore();
-
 
   const passport = useMemo(
     () =>
@@ -79,16 +81,15 @@ const BarriersPage = observer((props: IBarriersPage) => {
     console.log("passportId", passportId);
     if (passportId) {
       console.log("passport", toJS(passport));
-
       if (isDevelop) {
         store.barriersStore.getBarriersDev();
         store.barriersStore.getFulfillmentsDev();
-        store.barriersStore.getBarriers(passportId);
+        // store.barriersStore.getBarriers(passportId);
         store.barriersStore.getFulfillments();
         store.barriersStore.getInapplicableReasonsDev();
         store.barriersStore.getInapplicableReasons();
       } else {
-        store.barriersStore.getBarriers(passportId);
+        await store.barriersStore.getBarriers(passportId);
         store.barriersStore.getFulfillments();
         store.barriersStore.getInapplicableReasons();
       }
@@ -150,14 +151,13 @@ const BarriersPage = observer((props: IBarriersPage) => {
     store.inspectionStore.setIsValidate(false);
   };
 
-
   const handleSaveInspection = () => {
     saveInspection();
     navigate(-3);
   };
 
   const handleSaveForm = (barrierId: number, barrierIndex: number) => {
-    store.inspectionStore.setSavingState(false)
+    store.inspectionStore.setSavingState(false);
     saveInspection();
     store.snackBarStore.setSnackBarItem({
       message: t("snackBarSuccessSave"),
@@ -211,7 +211,7 @@ const BarriersPage = observer((props: IBarriersPage) => {
 
   const handleAddBarrier = (barrier: IBarrier) => {
     console.log("handleAddBarrier", toJS(barrier));
-    store.inspectionStore.setSavingState(true)
+    store.inspectionStore.setSavingState(true);
 
     const foundBarriersById = store.barriersStore.getFoundBarriersById(
       barrier.id,
@@ -249,7 +249,7 @@ const BarriersPage = observer((props: IBarriersPage) => {
   ) => {
     console.log("barrier page handleChange", value, barrierId);
 
-    store.inspectionStore.setSavingState(true)
+    store.inspectionStore.setSavingState(true);
 
     store.barriersStore.changeFormFieldsValues(value, barrierId, index);
     store.inspectionStore.setFilledBarriers(store.barriersStore.filledBarriers);
@@ -268,8 +268,7 @@ const BarriersPage = observer((props: IBarriersPage) => {
     store.inspectionStore.setFilledBarriers(store.barriersStore.filledBarriers);
     const isValid = store.barriersStore.checkIsBarrierFormSuccess(passportId);
     setIsFormsValidForSending(isValid);
-    store.inspectionStore.setSavingState(true)
-
+    store.inspectionStore.setSavingState(true);
   };
 
   const getFilledBarriersById = (barrierId: number) => {
@@ -280,7 +279,7 @@ const BarriersPage = observer((props: IBarriersPage) => {
 
   const handleDeleteBarrier = (barrierId: number, index: number) => {
     store.barriersStore.deleteFilledBarrier(barrierId, index);
-    store.inspectionStore.setSavingState(true)
+    store.inspectionStore.setSavingState(true);
     store.inspectionStore.setFilledBarriers(store.barriersStore.filledBarriers);
     setIsFormsValidForSending(
       store.barriersStore.checkIsBarrierFormSuccess(passportId),
@@ -299,7 +298,7 @@ const BarriersPage = observer((props: IBarriersPage) => {
     };
     store.barriersStore.clearFilledBarrier(barrier.id, index, value);
     store.inspectionStore.setFilledBarriers(store.barriersStore.filledBarriers);
-    store.inspectionStore.setSavingState(true)
+    store.inspectionStore.setSavingState(true);
     setIsFormsValidForSending(
       store.barriersStore.checkIsBarrierFormSuccess(passportId),
     );
@@ -330,6 +329,19 @@ const BarriersPage = observer((props: IBarriersPage) => {
           icon: IconWarning,
         });
       }
+    }
+  };
+
+  const renderLoader = () => {
+    console.log('renderLoader store.loaderStore.barriersLoader', store.loaderStore.barriersLoader)
+    if (store.loaderStore.barriersLoader === "wait") {
+      return <LoaderPage />;
+    } else {
+      return (
+        <div>
+          <EmptyBoxPage disableActions text={t("noBarriers")} />
+        </div>
+      );
     }
   };
 
@@ -367,89 +379,91 @@ const BarriersPage = observer((props: IBarriersPage) => {
             />
           }
           content={
-            barriers().length ? (
-              barriers().map((barrier, barrierIndex) => (
-                <CollapseElement
-                  label={
-                    <BarrierElement
-                      isValid={store.barriersStore.checkIsFilledBarriersForBarrierIdSuccess(
-                        barrier.id,
-                        passportId,
-                      )}
-                      barriersLength={getFilledBarriersById(barrier.id)?.length}
-                      title={barrier.title}
-                    />
-                  }
-                  key={barrier.id}
-                  content={
-                    <>
-                      <BarriersPanel
-                        barrierTitle={barrier.title}
-                        filledBarriers={getFilledBarriersById(barrier.id)}
-                        renderForm={(index: number) =>
-                          store.barriersStore.filledBarriers.map(
-                            (fillBar, barIndex) => {
-                              if (index === barIndex) {
-                                return (
-                                  <BarrierForm
-                                    isExtraFieldsCondition={store.barriersStore.isExtraFieldsCondition(
-                                      passportId,
-                                    )}
-                                    onInit={() =>
-                                      store.inspectionStore.setIsValidate(false)
-                                    }
-                                    handleSaveForm={() =>
-                                      handleSaveForm(barrier.id, barrierIndex)
-                                    }
-                                    handleFulfillmentChange={(value) =>
-                                      handleFulfillmentChange(
-                                        value,
-                                        barrier.id,
-                                        index,
-                                      )
-                                    }
-                                    fulfillments={
-                                      store.barriersStore.fulfillments
-                                    }
-                                    inapplicableReasons={
-                                      store.barriersStore.inapplicableReasons
-                                    }
-                                    passportId={passportId}
-                                    barrier={barrier}
-                                    handleClearForm={() =>
-                                      handleClearForm(barrier, index)
-                                    }
-                                    handleDelete={() =>
-                                      handleDeleteBarrier(barrier.id, index)
-                                    }
-                                    formFields={
-                                      getFilledBarriersById(barrier.id)[index]
-                                    }
-                                    handleChange={(
-                                      value: IFormFieldTextValue,
-                                    ) => handleChange(value, barrier.id, index)}
-                                    isValidate={
-                                      store.inspectionStore.isValidate
-                                    }
-                                  />
-                                );
-                              }
-                            },
-                          )
+            barriers().length
+              ? barriers().map((barrier, barrierIndex) => (
+                  <CollapseElement
+                    label={
+                      <BarrierElement
+                        isValid={store.barriersStore.checkIsFilledBarriersForBarrierIdSuccess(
+                          barrier.id,
+                          passportId,
+                        )}
+                        barriersLength={
+                          getFilledBarriersById(barrier.id)?.length
                         }
+                        title={barrier.title}
                       />
-                      <AddBarrierButton
-                        onClick={() => handleAddBarrier(barrier)}
-                      />
-                    </>
-                  }
-                />
-              ))
-            ) : (
-              <div>
-                <EmptyBoxPage disableActions text={t("noBarriers")} />
-              </div>
-            )
+                    }
+                    key={barrier.id}
+                    content={
+                      <>
+                        <BarriersPanel
+                          barrierTitle={barrier.title}
+                          filledBarriers={getFilledBarriersById(barrier.id)}
+                          renderForm={(index: number) =>
+                            store.barriersStore.filledBarriers.map(
+                              (fillBar, barIndex) => {
+                                if (index === barIndex) {
+                                  return (
+                                    <BarrierForm
+                                      isExtraFieldsCondition={store.barriersStore.isExtraFieldsCondition(
+                                        passportId,
+                                      )}
+                                      onInit={() =>
+                                        store.inspectionStore.setIsValidate(
+                                          false,
+                                        )
+                                      }
+                                      handleSaveForm={() =>
+                                        handleSaveForm(barrier.id, barrierIndex)
+                                      }
+                                      handleFulfillmentChange={(value) =>
+                                        handleFulfillmentChange(
+                                          value,
+                                          barrier.id,
+                                          index,
+                                        )
+                                      }
+                                      fulfillments={
+                                        store.barriersStore.fulfillments
+                                      }
+                                      inapplicableReasons={
+                                        store.barriersStore.inapplicableReasons
+                                      }
+                                      passportId={passportId}
+                                      barrier={barrier}
+                                      handleClearForm={() =>
+                                        handleClearForm(barrier, index)
+                                      }
+                                      handleDelete={() =>
+                                        handleDeleteBarrier(barrier.id, index)
+                                      }
+                                      formFields={
+                                        getFilledBarriersById(barrier.id)[index]
+                                      }
+                                      handleChange={(
+                                        value: IFormFieldTextValue,
+                                      ) =>
+                                        handleChange(value, barrier.id, index)
+                                      }
+                                      isValidate={
+                                        store.inspectionStore.isValidate
+                                      }
+                                    />
+                                  );
+                                }
+                              },
+                            )
+                          }
+                        />
+                        <AddBarrierButton
+                          onClick={() => handleAddBarrier(barrier)}
+                        />
+                      </>
+                    }
+                  />
+                ))
+              : renderLoader()
           }
         />
       }

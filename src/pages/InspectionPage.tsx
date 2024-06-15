@@ -32,10 +32,10 @@ const InspectionPage = observer((props: IInspectionPage) => {
 
   const location = useLocation();
 
-   const [openFilterType, setOpenFilterType] =
+  const [openFilterType, setOpenFilterType] =
     useState<InspectionFormTypes | null>(null);
 
-  const loadInspection =async () => {
+  const loadInspection = async () => {
     if (editInspectionId) {
       store.inspectionStore.loadInspection(editInspectionId);
     }
@@ -66,14 +66,14 @@ const InspectionPage = observer((props: IInspectionPage) => {
   const handleChange = (value: IFormFieldValue) => {
     console.log("handleChange", value);
     store.inspectionStore.updateFormFieldsValues(value);
-    store.inspectionStore.setSavingState(true)
+    store.inspectionStore.setSavingState(true);
     store.inspectionStore.checkIsFormSuccess();
   };
 
   const handleDateChange = (value: IFormDateFieldValue) => {
     console.log("handleDateChange", value);
     store.inspectionStore.updateFormFieldsValues(value);
-    store.inspectionStore.setSavingState(true)
+    store.inspectionStore.setSavingState(true);
     store.inspectionStore.checkIsFormSuccess();
   };
 
@@ -102,7 +102,7 @@ const InspectionPage = observer((props: IInspectionPage) => {
   };
 
   const handleSaveInspection = () => {
-    store.inspectionStore.setSavingState(false)
+    store.inspectionStore.setSavingState(false);
     saveInspection();
     navigate(-1);
     renderSaveSnackBar();
@@ -183,6 +183,7 @@ const InspectionPage = observer((props: IInspectionPage) => {
         }
         content={
           <InspectionForm
+            loader={store.loaderStore.loader}
             onInspectionTextFieldClose={handleInspectionTextFieldClose}
             onScrollToBottom={handleScrollFieldToBottom}
             onSearchValueChange={handleSearchValueChange}
@@ -193,7 +194,7 @@ const InspectionPage = observer((props: IInspectionPage) => {
               !!Object.values(store.inspectionStore.formFieldsValues).length
             }
             handleClearInspectionForm={() => {
-              store.inspectionStore.setSavingState(true)
+              store.inspectionStore.setSavingState(true);
               store.inspectionStore.clearInspectionForm();
               store.inspectionStore.setIsValidate(false);
             }}

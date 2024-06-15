@@ -164,11 +164,15 @@ const PassportsPage = observer((props: IPassportsPage) => {
       }
       content={
         <PassportsList
+          isPassportLength={!!store.passportsStore.passports.length}
+          loader={store.loaderStore.loader}
           content={store.passportsStore.passports
             .filter((passport) => passport.code)
             .map((passport) => (
               <PassportElement
-                  isValid={store.barriersStore.checkIsBarrierFormSuccess(passport.id)}
+                isValid={store.barriersStore.checkIsBarrierFormSuccess(
+                  passport.id,
+                )}
                 barriersCount={getBarriersCount(passport.id)}
                 id={passport.id}
                 title={passport.title}

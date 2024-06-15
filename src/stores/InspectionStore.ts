@@ -46,10 +46,10 @@ export class InspectionStore {
   }
   savingState: boolean = false;
   setSavingState(val: boolean) {
-    this.savingState = val
+    this.savingState = val;
   }
   clearSavingState() {
-    this.savingState = false
+    this.savingState = false;
   }
   fieldsData: IFieldsData[] = [];
   isValidate: boolean = false;
@@ -214,12 +214,15 @@ export class InspectionStore {
     };
   }
 
-  setFilledFreeForms(filledFreeForms: (IFreeForm | {})[] ) {
+  setFilledFreeForms(filledFreeForms: (IFreeForm | {})[]) {
     this.formFieldsValues = {
       ...this.formFieldsValues,
       filledFreeForms: filledFreeForms,
     };
-    console.log('setFilledFreeForms this.formFieldsValues', toJS(this.formFieldsValues))
+    console.log(
+      "setFilledFreeForms this.formFieldsValues",
+      toJS(this.formFieldsValues),
+    );
   }
 
   updateFormFieldsValues(
@@ -262,18 +265,25 @@ export class InspectionStore {
   }
 
   async getInspectionDev(editInspectionId: string) {
+    this.store.loaderStore.setLoader("wait");
+
     try {
-      const response = await instance.get(`inspections/${editInspectionId}`);
-      if (!response.data.error) {
-        const result = response.data;
-        const inspection = {
-          ...result,
-          auditDate: moment(result.auditDate).toDate(),
-        };
-        this.setFormFieldsValues(inspection);
-        console.log("getInspectionDev");
-      }
+
+      setTimeout( async () => {
+        const response = await instance.get(`inspections/${editInspectionId}`);
+        if (!response.data.error) {
+          const result = response.data;
+          const inspection = {
+            ...result,
+            auditDate: moment(result.auditDate).toDate(),
+          };
+          this.setFormFieldsValues(inspection);
+          console.log("getInspectionDev");
+        }
+        this.store.loaderStore.setLoader("ready");
+      }, 200);
     } catch (e) {
+      this.store.loaderStore.setLoader("ready");
       console.error(e);
     }
   }
@@ -307,6 +317,8 @@ export class InspectionStore {
   }
 
   async getInspectionById(editInspectionId: string) {
+    this.store.loaderStore.setLoader("wait");
+
     try {
       const response = await instance.get(
         `Inspections?$filter=(id eq ${editInspectionId})&$expand=${expandFilter}`,
@@ -321,7 +333,9 @@ export class InspectionStore {
           this.setFormFieldsValues(inspection);
         }
       }
+      this.store.loaderStore.setLoader("ready");
     } catch (e) {
+      this.store.loaderStore.setLoader("ready");
       console.error(e);
     }
   }
@@ -455,6 +469,4 @@ export class InspectionStore {
       }
     }
   }
-
-
 }
