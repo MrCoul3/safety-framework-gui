@@ -53,7 +53,10 @@ export const MainPage = observer((props: IMainPage) => {
   };
 
   useEffect(() => {
-    console.log('mainPage store.barriersStore.filledBarriers', toJS(store.barriersStore.filledBarriers))
+    console.log(
+      "mainPage store.barriersStore.filledBarriers",
+      toJS(store.barriersStore.filledBarriers),
+    );
     init();
   }, []);
 
@@ -218,6 +221,12 @@ export const MainPage = observer((props: IMainPage) => {
     const inspections = sentInspectionsCondition(subGroup)
       ? store.mainPageStore.inspections
       : store.mainPageStore.localInspections;
+    console.log(
+      "renderInspections sentInspectionsCondition(subGroup)",
+      toJS(sentInspectionsCondition(subGroup)),
+    );
+    console.log("renderInspections subGroup", toJS(subGroup));
+    console.log("renderInspections inspections", toJS(inspections));
     return inspections.length ? (
       inspections.map((item, index) => (
         <InspectionCard
@@ -235,16 +244,16 @@ export const MainPage = observer((props: IMainPage) => {
               ? handleEditInspection
               : handleEditLocalInspection
           }
-          id={item.id ?? ""}
+          id={item?.id ?? ""}
           key={index}
           subGroup={subGroup}
-          checkVerifyDate={item[InspectionFormTypes.AuditDate]}
-          oilfield={item[InspectionFormTypes.OilField]?.title}
-          doObject={item[InspectionFormTypes.DoObject]?.title}
-          contractor={item[InspectionFormTypes.Contractor]?.title}
-          contractorStruct={item[InspectionFormTypes.ContractorStruct]?.title}
-          inspectionType={item[InspectionFormTypes.InspectionType]?.title}
-          inspectionForm={item[InspectionFormTypes.InspectionForm]?.title}
+          checkVerifyDate={item?.[InspectionFormTypes.AuditDate]}
+          oilfield={item?.[InspectionFormTypes.OilField]?.title}
+          doObject={item?.[InspectionFormTypes.DoObject]?.title}
+          contractor={item?.[InspectionFormTypes.Contractor]?.title}
+          contractorStruct={item?.[InspectionFormTypes.ContractorStruct]?.title}
+          inspectionType={item?.[InspectionFormTypes.InspectionType]?.title}
+          inspectionForm={item?.[InspectionFormTypes.InspectionForm]?.title}
           index={index + 1}
         />
       ))
