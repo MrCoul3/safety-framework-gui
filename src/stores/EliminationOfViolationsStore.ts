@@ -94,7 +94,7 @@ export class EliminationOfViolationsStore {
       );
       if (!response.data.error) {
         if (response.data.value) {
-          const value = { passport: response.data };
+          const value = { passport: response.data.value };
           this.store.inspectionStore.setFieldsData(value);
         }
       }
