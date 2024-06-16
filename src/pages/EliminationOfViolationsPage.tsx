@@ -6,9 +6,9 @@ import { IBreadCrumbs } from "../interfaces/IBreadCrumbs";
 import { useTranslation } from "react-i18next";
 import FilterPanel from "../components/FilterPanel/FilterPanel";
 import {
-    IFilterDateRangeFieldValue,
-    IFormDateFieldValue,
-    IFormFieldValue,
+  IFilterDateRangeFieldValue,
+  IFormDateFieldValue,
+  IFormFieldValue,
 } from "../interfaces/IFieldInterfaces";
 import { useStore } from "../hooks/useStore";
 import { InspectionFormTypes } from "../enums/InspectionFormTypes";
@@ -17,6 +17,10 @@ import {
   violationsDictionaryOfConformity,
 } from "../enums/ViolationFilterTypes";
 import { IInspection } from "../interfaces/IInspection";
+import { isDevelop } from "../constants/config";
+import EmptyBoxPage from "../components/EmptyBoxPage/EmptyBoxPage";
+import ViolationsLayout from "../layouts/ViolationsLayout/ViolationsLayout";
+import { IViolation } from "../interfaces/IViolation";
 
 interface IEliminationOfViolationsPage {}
 
@@ -50,28 +54,28 @@ const EliminationOfViolationsPage = observer(
     const handleChange = (value: IFormFieldValue) => {
       console.log("handleChange", value);
       store.inspectionStore.updateFormFieldsValues(value);
-      // setSavingState(true);
       store.inspectionStore.checkIsFormSuccess();
     };
     const handleOpenField = (
       type: InspectionFormTypes | ViolationFilterTypes | string,
     ) => {
       console.log("handleOpenField type", type);
-      if (
-        type !== ViolationFilterTypes.Date &&
-        type !== "passport"
-      ) {
+      if (type !== ViolationFilterTypes.Date && type !== "passport") {
         store.inspectionStore.handleOpenField(type as InspectionFormTypes);
       }
       if (type === "passport") {
-          store.eliminationOfViolationsStore.getPassportsDev()
+        if (isDevelop) {
+          store.eliminationOfViolationsStore.getPassportsDev();
+          store.eliminationOfViolationsStore.getPassports();
+        } else {
+          store.eliminationOfViolationsStore.getPassports();
+        }
       }
       setOpenFilterType(type);
     };
     const handleScrollFieldToBottom = (
       inspectionType: InspectionFormTypes | ViolationFilterTypes,
     ) => {
-      console.log("handleScrollFieldToBottom!!!");
       store.inspectionStore.increaseOffset();
       store.inspectionStore.getFieldData(inspectionType);
     };
@@ -82,17 +86,32 @@ const EliminationOfViolationsPage = observer(
     };
 
     const handleSearchValueChange = (value: string | null) => {
-      console.log("handleSearchValueChange value!!!", value);
-      store.inspectionStore.setSearchFieldValue(value);
-      if (!value || value === "") {
-        store.inspectionStore.clearOffset();
+      store.inspectionStore.handleSearchValueChange(value, openFilterType);
+    };
+
+    const handleChecked = (val: boolean) => {
+      const value = { isResolved: !val };
+      if (val === false) {
+        delete (store.inspectionStore.formFieldsValues as IViolation)
+          ?.isResolved;
+        return;
       }
-      if ((value || value === "") && openFilterType) {
-        store.inspectionStore.getFieldData(openFilterType);
+      store.inspectionStore.updateFormFieldsValues(value);
+    };
+    const handleResetFilters = () => {
+      store.inspectionStore.clearInspectionForm();
+    };
+    const submitFilter = () => {
+      if (isDevelop) {
+        store.eliminationOfViolationsStore.getViolations();
+        store.eliminationOfViolationsStore.getViolationsDev();
+      } else {
+        store.eliminationOfViolationsStore.getViolations();
       }
     };
+
     return (
-      <Layout
+      <ViolationsLayout
         navPanel={
           <NavPanel
             disableButtons
@@ -101,19 +120,28 @@ const EliminationOfViolationsPage = observer(
             title={t("eliminationOfViolationsTitle")}
           />
         }
+        filterPanel={
+          <FilterPanel
+            submitFilter={submitFilter}
+            resetFilters={handleResetFilters}
+            handleChecked={handleChecked}
+            onInspectionTextFieldClose={handleInspectionTextFieldClose}
+            onScrollToBottom={handleScrollFieldToBottom}
+            onSearchValueChange={handleSearchValueChange}
+            handleChange={handleChange}
+            handleOpenField={handleOpenField}
+            fieldsData={store.inspectionStore.fieldsData}
+            handleDateChange={handleDateChange}
+            formFieldsValues={
+              store.inspectionStore.formFieldsValues as IInspection
+            }
+          />
+        }
         content={
           <div>
-            <FilterPanel
-              onInspectionTextFieldClose={handleInspectionTextFieldClose}
-              onScrollToBottom={handleScrollFieldToBottom}
-              onSearchValueChange={handleSearchValueChange}
-              handleChange={handleChange}
-              handleOpenField={handleOpenField}
-              fieldsData={store.inspectionStore.fieldsData}
-              handleDateChange={handleDateChange}
-              formFieldsValues={
-                store.inspectionStore.formFieldsValues as IInspection
-              }
+            <EmptyBoxPage
+              disableActions
+              description={t("violationsEmptyDescription")}
             />
           </div>
         }

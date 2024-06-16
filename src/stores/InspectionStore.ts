@@ -20,7 +20,7 @@ import { expandFilter } from "../constants/filters";
 import {
   IFieldsData,
   IFilterDateRangeFieldValue,
-  IFormDateFieldValue,
+  IFormDateFieldValue, IFormFieldBoolValue,
   IFormFieldValue,
   Item,
 } from "../interfaces/IFieldInterfaces";
@@ -36,6 +36,7 @@ import { filterByRequiredFields } from "../utils/filterByRequiredFields";
 import { ViolationFilterTypes } from "../enums/ViolationFilterTypes";
 import { IFilledBarrier } from "../interfaces/IFilledBarrier";
 import i18next from "i18next";
+import {IViolation} from "../interfaces/IViolation";
 
 export class InspectionStore {
   private store: AppStore;
@@ -61,7 +62,7 @@ export class InspectionStore {
     this.searchFieldValue = value;
     console.log("this.searchFieldValue", this.searchFieldValue);
   }
-  formFieldsValues: IInspection | {} = {};
+  formFieldsValues: IInspection | IViolation | {} = {};
 
   async sendInspection() {
     try {
@@ -226,7 +227,7 @@ export class InspectionStore {
   }
 
   updateFormFieldsValues(
-    value: IFormFieldValue | IFormDateFieldValue | IFilterDateRangeFieldValue,
+    value: IFormFieldValue | IFormDateFieldValue | IFilterDateRangeFieldValue | IFormFieldBoolValue,
   ) {
     console.log("updateFormFieldsValues", value);
     if (this.formFieldsValues) {
@@ -268,8 +269,7 @@ export class InspectionStore {
     this.store.loaderStore.setLoader("wait");
 
     try {
-
-      setTimeout( async () => {
+      setTimeout(async () => {
         const response = await instance.get(`inspections/${editInspectionId}`);
         if (!response.data.error) {
           const result = response.data;
@@ -467,6 +467,19 @@ export class InspectionStore {
       } else {
         await this.getInspectionById(editInspectionId);
       }
+    }
+  }
+
+  handleSearchValueChange(
+    value: string | null,
+    openFilterType: InspectionFormTypes | ViolationFilterTypes | null | string,
+  ) {
+    this.setSearchFieldValue(value);
+    if (!value || value === "") {
+      this.clearOffset();
+    }
+    if ((value || value === "") && openFilterType) {
+      this.getFieldData(openFilterType);
     }
   }
 }

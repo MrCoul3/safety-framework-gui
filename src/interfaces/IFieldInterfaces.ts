@@ -11,6 +11,9 @@ export interface IFieldsData {
 export interface IFormFieldValue {
     [key: string]: Item | null;
 }
+export interface IFormFieldBoolValue {
+    [key: string]: boolean;
+}
 export interface IFormFieldTextValue {
     [key: string]: string | null;
 }

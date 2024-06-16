@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
 import { Card } from "@consta/uikit/Card";
@@ -23,6 +23,10 @@ import { DatePicker } from "@consta/uikit/DatePicker";
 import { IconCalendar } from "@consta/icons/IconCalendar";
 import { useTranslation } from "react-i18next";
 import { IEntity } from "../../interfaces/IEntity";
+import { Checkbox } from "@consta/uikit/Checkbox";
+import { SubGroupsActionsTypes } from "../../enums/SubGroupsTypes";
+import { Button } from "@consta/uikit/Button";
+import { IViolation } from "../../interfaces/IViolation";
 
 interface IFilterPanel {
   handleDateChange(value: IFilterDateRangeFieldValue): void;
@@ -31,8 +35,11 @@ interface IFilterPanel {
   onInspectionTextFieldClose?(): void;
 
   handleChange(value: IFormFieldValue): void;
+  handleChecked?(value: boolean): void;
+  resetFilters?(): void;
+  submitFilter(): void;
   handleOpenField(type: ViolationFilterTypes): void;
-  formFieldsValues: IInspection | null
+  formFieldsValues: IInspection | null;
   fieldsData: IFieldsData[];
 }
 
@@ -52,9 +59,7 @@ const FilterPanel = observer((props: IFilterPanel) => {
   }, [props.fieldsData]);
 
   const getViolationsDictionaryOfConformity = (type: ViolationFilterTypes) => {
-    if (
-      type !== ViolationFilterTypes.Date
-    ) {
+    if (type !== ViolationFilterTypes.Date) {
       return violationsDictionaryOfConformity[type];
     }
   };
@@ -67,7 +72,6 @@ const FilterPanel = observer((props: IFilterPanel) => {
       } else {
         return props.formFieldsValues[typeValue]?.title as string;
       }
-
     }
     return "";
   };
@@ -79,36 +83,66 @@ const FilterPanel = observer((props: IFilterPanel) => {
     return type;
   };
 
+  const [checked, setChecked] = useState(false);
+  const onChangeCheckbox = () => {
+    setChecked(!checked);
+    props.handleChecked?.(!getCheckedValue());
+  };
+  const getCheckedValue = () => {
+    const value = (props.formFieldsValues as unknown as IViolation)?.isResolved;
+    return value !== undefined ? !value : false;
+  };
   return (
     <Card className={style.FilterPanel}>
-      <DatePicker
-        labelPosition="top"
-        label={t(ViolationFilterTypes.Date)}
-        withClearButton
-        type="date-range"
-        className={style.DatePicker}
-        onChange={(dateRangeValue) =>
-          props.handleDateChange({
-            [ViolationFilterTypes.Date]: dateRangeValue,
-          } as IFilterDateRangeFieldValue)
-        }
-        rightSide={IconCalendar}
-        value={props.formFieldsValues?.[ViolationFilterTypes.Date]}
-      />
-      {fields.map((field) => (
-        <InspectionTextField
-          className={"none"}
-          labelPosition={"top"}
-          onClose={props.onInspectionTextFieldClose}
-          onScrollToBottom={props.onScrollToBottom}
-          onSearchValueChange={props.onSearchValueChange}
-          inspectionType={getType(field)}
-          value={getValue(field)}
-          fieldsData={props.fieldsData}
-          handleChange={props.handleChange}
-          handleOpenField={props.handleOpenField}
+      <div>
+        <DatePicker
+          labelPosition="top"
+          label={t(ViolationFilterTypes.Date)}
+          withClearButton
+          type="date-range"
+          className={style.DatePicker}
+          onChange={(dateRangeValue) =>
+            props.handleDateChange({
+              [ViolationFilterTypes.Date]: dateRangeValue,
+            } as IFilterDateRangeFieldValue)
+          }
+          rightSide={IconCalendar}
+          value={props.formFieldsValues?.[ViolationFilterTypes.Date]}
         />
-      ))}
+        {fields.map((field) => (
+          <InspectionTextField
+            className={"none"}
+            labelPosition={"top"}
+            onClose={props.onInspectionTextFieldClose}
+            onScrollToBottom={props.onScrollToBottom}
+            onSearchValueChange={props.onSearchValueChange}
+            inspectionType={getType(field)}
+            value={getValue(field)}
+            fieldsData={props.fieldsData}
+            handleChange={props.handleChange}
+            handleOpenField={props.handleOpenField}
+          />
+        ))}
+        <Checkbox
+          onChange={onChangeCheckbox}
+          label={t("hideFixedViolations")}
+          checked={getCheckedValue()}
+        />
+      </div>
+
+      <div className={style.controlButtonGroup}>
+        <Button
+          onClick={props.resetFilters}
+          iconSize="s"
+          view="secondary"
+          label={t("reset")}
+        />
+        <Button
+          onClick={props.submitFilter}
+          className={style.editButton}
+          label={t("apply")}
+        />
+      </div>
     </Card>
   );
 });

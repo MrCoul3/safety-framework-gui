@@ -171,7 +171,7 @@ export const ru = {
     selectPassportDescription: "Выберите необходимый паспорт для заполнения. В этом окне будут отображаться все выбранные паспорта.",
     completionBarrierDescription: "Выберите необходимые паспорта, нажав на кнопку “Добавить барьер +” и заполните требуемые поля, чтобы отправить инспекцию.",
     completionFreeFormDescription: "Заполните свободную форму, чтобы отправить инспекцию. Добавить новые свободные форму можно нажав на кнопку “Добавить свободную форму”.",
-
+    violationsEmptyDescription: "Задайте данные для поиска, чтобы посмотреть необходимые нарушения",
 
     [InspectionFormTypes.InspectionForm + "Placeholder"]:
       "Введите форму проверки",
@@ -228,8 +228,11 @@ export const ru = {
     snackBarSuccessSave: "Инспекция успешно сохранена",
     snackBarSuccessSaveBarrier: "“Инспекция успешно сохранена и добавлена в неотправленные инспекции",
     snackBarSuccessSend: "Инспекция успешно отправлена",
+    snackBarSuccessDelete: "Инспекция успешно удалена",
     snackBarErrorSend: "Ошибка отправки инспекции",
 
     barriersSelect: "Выбрано барьеров",
+
+    hideFixedViolations: "Скрыть устраненные нарушения",
   },
 };

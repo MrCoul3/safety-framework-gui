@@ -152,7 +152,7 @@ const InspectionForm = observer((props: IInspectionForm) => {
 
   return (
     <div className={style.InspectionForm}>
-      {props.formFieldsValuesLength && props.loader !== "wait" ? (
+      {props.loader !== "wait" ? (
         <div className={style.form}>
           <form className={style.fields}>
             {Object.keys(fields).map((key: string) => (

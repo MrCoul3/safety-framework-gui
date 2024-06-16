@@ -143,14 +143,7 @@ const InspectionPage = observer((props: IInspectionPage) => {
   ];
 
   const handleSearchValueChange = (value: string | null) => {
-    console.log("handleSearchValueChange value!!!", value);
-    store.inspectionStore.setSearchFieldValue(value);
-    if (!value || value === "") {
-      store.inspectionStore.clearOffset();
-    }
-    if ((value || value === "") && openFilterType) {
-      store.inspectionStore.getFieldData(openFilterType);
-    }
+    store.inspectionStore.handleSearchValueChange(value, openFilterType);
   };
 
   const handleScrollFieldToBottom = (inspectionType: InspectionFormTypes) => {

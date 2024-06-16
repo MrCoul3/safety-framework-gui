@@ -95,6 +95,11 @@ export const MainPage = observer((props: IMainPage) => {
         +store.mainPageStore.deletingInspectionType?.id - 1,
       );
       getLocalInspections();
+      store.snackBarStore.setSnackBarItem({
+        message: t("snackBarSuccessDelete"),
+        key: "1",
+        status: "success",
+      });
     }
   };
   const handleDeleteSentInspection = async () => {
@@ -156,14 +161,8 @@ export const MainPage = observer((props: IMainPage) => {
   };
 
   const handleSearchValueChange = (value: string | null) => {
-    console.log("handleSearchValueChange value!!!", value);
-    store.inspectionStore.setSearchFieldValue(value);
-    if (!value || value === "") {
-      store.inspectionStore.clearOffset();
-    }
-    if ((value || value === "") && openFilterType) {
-      store.inspectionStore.getFieldData(openFilterType);
-    }
+    store.inspectionStore.handleSearchValueChange(value, openFilterType);
+
   };
   const handleInspectionTextFieldClose = () => {
     setOpenFilterType(null);

@@ -12,6 +12,7 @@ import {
   FREE_FORM_COMMON_FIELDS,
   FreeFormFieldTypes,
 } from "../enums/FreeFormTypes";
+import { IViolation } from "../interfaces/IViolation";
 
 const excludedFields = [InspectionFormTypes.AuditDate];
 
@@ -84,4 +85,23 @@ export const getSortFilter = (sortSettings: SortByProps<any> | null) => {
   if (sortSettings?.sortingBy && sortSettings?.sortOrder) {
     return `${sortSettings?.sortingBy as string}/title ${sortSettings?.sortOrder}`;
   }
+};
+
+export const getViolationFilters = (formFieldsValues: IViolation) => {
+  const dateFrom = formFieldsValues?.date?.[0]
+    ? moment(formFieldsValues?.date?.[0]).format("YYYY-MM-DD")
+    : undefined;
+  const dateTo = formFieldsValues?.date?.[1]
+    ? moment(formFieldsValues?.date?.[1]).format("YYYY-MM-DD")
+    : undefined;
+  return {
+    dateFrom: dateFrom,
+    dateTo: dateTo,
+    passport: formFieldsValues?.passport?.code,
+    contractor: formFieldsValues?.contractor?.title,
+    oilfield: formFieldsValues?.oilfield?.title,
+    doStruct: formFieldsValues?.doStruct?.title,
+    doObject: formFieldsValues?.doObject?.title,
+    isResolved: formFieldsValues.isResolved,
+  };
 };
