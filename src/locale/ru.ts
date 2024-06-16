@@ -41,7 +41,7 @@ export const ru = {
     back: "Назад",
     forward: "Вперёд",
 
-
+    auth: "Авторизация",
     // breadcrumbs
     mainPage: "Главная",
     inspectionData: "Данные инспекции",
@@ -252,5 +252,7 @@ export const ru = {
     oilfieldPlaceholder: "Выберите месторождение",
     doStructPlaceholder: "Выберите цех",
     doObjectPlaceholder: "Выберите объект",
+
+    violationsEmptyDescription: "Задайте данные для поиска, чтобы посмотреть необходимые нарушения",
   }
 };

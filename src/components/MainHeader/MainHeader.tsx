@@ -6,7 +6,7 @@ import AuthControl from "../AuthControl/AuthControl";
 
 interface IMainHeader {
     handleLogoClick?(): void
-    login: string;
+    login?: string;
     info?:string
 }
 const MainHeader = observer((props: IMainHeader) => {
@@ -18,7 +18,7 @@ const MainHeader = observer((props: IMainHeader) => {
         <span className={style.mainTitleContent}>{t("mainTitle")}</span>{" "}
       </div>
       <div className={style.flexRow}>
-        <AuthControl name={props.login} info={props.info ?? "нет информации"} />
+        <AuthControl name={props.login ?? ""} info={props.info ?? "нет информации"} />
       </div>
     </div>
   );
