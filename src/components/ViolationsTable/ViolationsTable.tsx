@@ -11,6 +11,10 @@ import { LoaderType } from "../../interfaces/LoaderType";
 import LoaderPage from "../LoaderPage/LoaderPage";
 import { toJS } from "mobx";
 import moment from "moment";
+import {
+  CellClickType,
+  onCellClick,
+} from "@consta/uikit/__internal__/src/components/Table/Table";
 
 interface IViolationsTable {
   violations: IViolation[];
@@ -45,6 +49,13 @@ const ViolationsTable = observer((props: IViolationsTable) => {
     maxWidth: 250,
   }));
 
+  const handleCellClick: onCellClick = ({ e, type, rowId, columnIdx, ref }) => {
+    e.preventDefault();
+
+    const row = (e.target as HTMLDivElement).closest('.Table-CellsRow');
+
+    console.log("handleCellClick", (e.target as HTMLDivElement).closest('.Table-CellsRow'), type, columnIdx, rowId, ref);
+  };
   const renderLoader = () => {
     if (props.loader === "wait") {
       return <LoaderPage />;
@@ -65,7 +76,7 @@ const ViolationsTable = observer((props: IViolationsTable) => {
           isResizable
           stickyHeader
           columns={columns}
-          // onCellClick={handleCellClick}
+          onCellClick={handleCellClick}
         />
       ) : (
         renderLoader()
