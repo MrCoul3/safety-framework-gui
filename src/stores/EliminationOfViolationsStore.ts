@@ -35,8 +35,10 @@ export class EliminationOfViolationsStore {
     try {
       const response = await instance.get("passports");
       if (!response.data.error) {
-        const value = { passport: response.data };
-        this.store.inspectionStore.setFieldsData(value);
+        setTimeout(() => {
+          const value = { passport: response.data };
+          this.store.inspectionStore.setFieldsData(value);
+        }, 1000)
       }
     } catch (e) {
       console.error(e);

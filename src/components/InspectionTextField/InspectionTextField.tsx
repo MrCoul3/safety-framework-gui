@@ -56,6 +56,8 @@ const InspectionTextField = observer((props: IFieldInspectionType) => {
 
   const [searchValue, setSearchValue] = useState<string | null>(null);
 
+  const [isLoading, setIsLoading] = useFlag();
+
   const onDropdownOpen = useCallback((open: boolean) => {
     setOpen.set(open);
     onScrollToBottom();
@@ -63,6 +65,7 @@ const InspectionTextField = observer((props: IFieldInspectionType) => {
 
   useEffect(() => {
     if (open) {
+      setIsLoading.on()
       props.handleOpenField(props.inspectionType);
     } else {
       props.onSearchValueChange?.(null);
@@ -72,6 +75,11 @@ const InspectionTextField = observer((props: IFieldInspectionType) => {
   }, [open]);
 
   useEffect(() => {
+    console.log('props.fieldsData', toJS(props.fieldsData))
+    if (props.fieldsData.length) {
+      setIsLoading.off();
+    }
+    setTimeout(() => setIsLoading.off(), 10000)
   }, [props.fieldsData]);
 
   const handleChange = (value: Item | null) => {
@@ -156,7 +164,7 @@ const InspectionTextField = observer((props: IFieldInspectionType) => {
   }, [props.value])
 
   return (
-    <Combobox
+    <Combobox isLoading={isLoading}
       ref={combobox}
       dropdownOpen={open}
       labelPosition={props.labelPosition ?? "left"}

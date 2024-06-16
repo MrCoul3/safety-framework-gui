@@ -97,13 +97,17 @@ export class InspectionStore {
     }
 
     try {
-      const response = await instance.get(requestType);
-      this.setFieldsData({
-        [type + "Count"]: 321,
-      });
-      if (!response.data.error) {
-        this.setFieldsData({ [type]: response.data });
-      }
+
+      setTimeout(async () => {
+        const response = await instance.get(requestType);
+        this.setFieldsData({
+          [type + "Count"]: 321,
+        });
+        if (!response.data.error) {
+          this.setFieldsData({ [type]: response.data });
+        }
+      },200)
+
     } catch (e) {
       console.error(e);
     }
