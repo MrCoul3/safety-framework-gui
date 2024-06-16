@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
 import Layout from "../layouts/Layout/Layout";
 import NavPanel from "../components/NavPanel/NavPanel";
@@ -14,6 +14,7 @@ import { useStore } from "../hooks/useStore";
 import { InspectionFormTypes } from "../enums/InspectionFormTypes";
 import {
   ViolationFilterTypes,
+  VIOLATIONS_COMMON_FIELDS,
   violationsDictionaryOfConformity,
 } from "../enums/ViolationFilterTypes";
 import { IInspection } from "../interfaces/IInspection";
@@ -21,6 +22,10 @@ import { isDevelop } from "../constants/config";
 import EmptyBoxPage from "../components/EmptyBoxPage/EmptyBoxPage";
 import ViolationsLayout from "../layouts/ViolationsLayout/ViolationsLayout";
 import { IViolation } from "../interfaces/IViolation";
+import { toJS } from "mobx";
+import { Table, TableColumn } from "@consta/uikit/Table";
+import style from "../components/InspectionsTable/style.module.css";
+import ViolationsTable from "../components/ViolationsTable/ViolationsTable";
 
 interface IEliminationOfViolationsPage {}
 
@@ -46,16 +51,6 @@ const EliminationOfViolationsPage = observer(
       },
     ];
 
-    const handleDateChange = (value: IFilterDateRangeFieldValue) => {
-      console.log("handleDateChange", value);
-      store.inspectionStore.updateFormFieldsValues(value);
-    };
-
-    const handleChange = (value: IFormFieldValue) => {
-      console.log("handleChange", value);
-      store.inspectionStore.updateFormFieldsValues(value);
-      store.inspectionStore.checkIsFormSuccess();
-    };
     const handleOpenField = (
       type: InspectionFormTypes | ViolationFilterTypes | string,
     ) => {
@@ -89,10 +84,19 @@ const EliminationOfViolationsPage = observer(
       store.inspectionStore.handleSearchValueChange(value, openFilterType);
     };
 
+    const handleDateChange = (value: IFilterDateRangeFieldValue) => {
+      console.log("handleDateChange", value);
+      store.inspectionStore.updateFormFieldsValues(value);
+    };
+
+    const handleChange = (value: IFormFieldValue) => {
+      store.inspectionStore.updateFormFieldsValues(value);
+      store.inspectionStore.checkIsFormSuccess();
+    };
     const handleChecked = (val: boolean) => {
       const value = { isResolved: !val };
       if (val === false) {
-        delete (store.inspectionStore.formFieldsValues as IViolation)
+        delete (store.inspectionStore.formFieldsValues as IInspection)
           ?.isResolved;
         return;
       }
@@ -103,7 +107,7 @@ const EliminationOfViolationsPage = observer(
     };
     const submitFilter = () => {
       if (isDevelop) {
-        store.eliminationOfViolationsStore.getViolations();
+        // store.eliminationOfViolationsStore.getViolations();
         store.eliminationOfViolationsStore.getViolationsDev();
       } else {
         store.eliminationOfViolationsStore.getViolations();
@@ -138,12 +142,10 @@ const EliminationOfViolationsPage = observer(
           />
         }
         content={
-          <div>
-            <EmptyBoxPage
-              disableActions
-              description={t("violationsEmptyDescription")}
-            />
-          </div>
+          <ViolationsTable
+            loader={store.loaderStore.loader}
+            violations={store.eliminationOfViolationsStore.violations}
+          />
         }
       />
     );

@@ -2,12 +2,20 @@ import { InspectionFormTypes } from "./InspectionFormTypes";
 
 export enum ViolationFilterTypes {
   Date = "date",
-  TypeList = "typeList", // inspectionType Тип проверки
+  TypeList = "typeList", // inspectionType паспорта
   Orgs = "orgs", // ?
   Oilfields = "oilfields", // месторождения
   Struct = "struct", // doStruct Структурное подразделение ДО
   Obj = "obj", // doObject Объект ДО, где проводилась проверка
 }
+export const VIOLATIONS_COMMON_FIELDS = [
+  InspectionFormTypes.AuditDate,
+  "passport",
+  InspectionFormTypes.Contractor,
+  InspectionFormTypes.OilField,
+  InspectionFormTypes.DoStruct,
+  InspectionFormTypes.DoObject,
+];
 
 export const violationsDictionaryOfConformity = {
   [ViolationFilterTypes.TypeList]: "passport",

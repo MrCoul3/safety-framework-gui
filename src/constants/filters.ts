@@ -13,6 +13,7 @@ import {
   FreeFormFieldTypes,
 } from "../enums/FreeFormTypes";
 import { IViolation } from "../interfaces/IViolation";
+import {IInspection} from "../interfaces/IInspection";
 
 const excludedFields = [InspectionFormTypes.AuditDate];
 
@@ -87,7 +88,7 @@ export const getSortFilter = (sortSettings: SortByProps<any> | null) => {
   }
 };
 
-export const getViolationFilters = (formFieldsValues: IViolation) => {
+export const getViolationFilters = (formFieldsValues: IInspection) => {
   const dateFrom = formFieldsValues?.date?.[0]
     ? moment(formFieldsValues?.date?.[0]).format("YYYY-MM-DD")
     : undefined;

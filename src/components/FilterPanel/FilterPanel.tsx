@@ -41,6 +41,8 @@ interface IFilterPanel {
   handleOpenField(type: ViolationFilterTypes): void;
   formFieldsValues: IInspection | null;
   fieldsData: IFieldsData[];
+
+  isSubmitAvailable?:boolean
 }
 
 const FilterPanel = observer((props: IFilterPanel) => {
@@ -123,7 +125,7 @@ const FilterPanel = observer((props: IFilterPanel) => {
             handleOpenField={props.handleOpenField}
           />
         ))}
-        <Checkbox
+        <Checkbox className={style.Checkbox}
           onChange={onChangeCheckbox}
           label={t("hideFixedViolations")}
           checked={getCheckedValue()}

@@ -7,7 +7,8 @@ import {
   violationsInstance,
 } from "../api/endpoints";
 import { IViolation } from "../interfaces/IViolation";
-import {getViolationFilters} from "../constants/filters";
+import { getViolationFilters } from "../constants/filters";
+import {IInspection} from "../interfaces/IInspection";
 
 export class EliminationOfViolationsStore {
   private store: AppStore;
@@ -40,20 +41,35 @@ export class EliminationOfViolationsStore {
     }
   }
   async getViolationsDev() {
+    this.store.loaderStore.setLoader('wait')
+
+    console.log(
+        "getViolations",
+        toJS(this.store.inspectionStore.formFieldsValues),
+    );
     try {
-      const response = await violationsInstance.get("violations");
-      if (!response.data.error) {
-        const value = response.data;
-        this.setViolations(value);
-      }
+      setTimeout(async () => {
+        const response = await violationsInstance.get("violations");
+        if (!response.data.error) {
+          const value = response.data;
+          this.setViolations(value);
+        }
+        this.store.loaderStore.setLoader('ready')
+      }, 100)
+
     } catch (e) {
+      this.store.loaderStore.setLoader('ready')
       console.error(e);
     }
   }
   async getViolations() {
     const formFieldsValues = this.store.inspectionStore
-      .formFieldsValues as IViolation;
-
+      .formFieldsValues as IInspection;
+    console.log(
+      "getViolations",
+      toJS(this.store.inspectionStore.formFieldsValues),
+    );
+    this.store.loaderStore.setLoader('wait')
     try {
       const response = await violationsInstance.get("violations", {
         params: getViolationFilters(formFieldsValues),
@@ -62,7 +78,9 @@ export class EliminationOfViolationsStore {
         const value = response.data;
         this.setViolations(value);
       }
+      this.store.loaderStore.setLoader('ready')
     } catch (e) {
+      this.store.loaderStore.setLoader('ready')
       console.error(e);
     }
   }
@@ -74,7 +92,7 @@ export class EliminationOfViolationsStore {
       );
       if (!response.data.error) {
         if (response.data.value) {
-          this.setPassports(response.data.value);
+          this.store.inspectionStore.setFieldsData(response.data.value);
         }
       }
       this.store.loaderStore.setLoader("ready");
