@@ -42,7 +42,7 @@ interface IFilterPanel {
   formFieldsValues: IInspection | null;
   fieldsData: IFieldsData[];
 
-  isSubmitAvailable?:boolean
+  isSubmitAvailable?: boolean;
 }
 
 const FilterPanel = observer((props: IFilterPanel) => {
@@ -112,7 +112,8 @@ const FilterPanel = observer((props: IFilterPanel) => {
           value={props.formFieldsValues?.[ViolationFilterTypes.Date]}
         />
         {fields.map((field) => (
-          <InspectionTextField translationDict={"violationsDict"}
+          <InspectionTextField
+            translationDict={"violationsDict"}
             className={"none"}
             labelPosition={"top"}
             onClose={props.onInspectionTextFieldClose}
@@ -125,7 +126,8 @@ const FilterPanel = observer((props: IFilterPanel) => {
             handleOpenField={props.handleOpenField}
           />
         ))}
-        <Checkbox className={style.Checkbox}
+        <Checkbox
+          className={style.Checkbox}
           onChange={onChangeCheckbox}
           label={t("hideFixedViolations")}
           checked={getCheckedValue()}

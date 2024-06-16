@@ -75,7 +75,6 @@ const InspectionTextField = observer((props: IFieldInspectionType) => {
   }, [open]);
 
   useEffect(() => {
-    console.log('props.fieldsData', toJS(props.fieldsData))
     if (props.fieldsData.length) {
       setIsLoading.off();
     }
