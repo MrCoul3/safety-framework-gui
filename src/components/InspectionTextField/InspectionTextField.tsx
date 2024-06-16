@@ -45,10 +45,12 @@ interface IFieldInspectionType {
     | ViolationFilterTypes | string;
   labelPosition?: "left" | "top";
   className?: string;
+
+  translationDict?: string
 }
 
 const InspectionTextField = observer((props: IFieldInspectionType) => {
-  const { t } = useTranslation("dict");
+  const { t } = useTranslation( props.translationDict ?? "dict");
 
   const [open, setOpen] = useFlag();
 

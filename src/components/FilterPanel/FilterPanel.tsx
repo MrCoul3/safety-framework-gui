@@ -112,7 +112,7 @@ const FilterPanel = observer((props: IFilterPanel) => {
           value={props.formFieldsValues?.[ViolationFilterTypes.Date]}
         />
         {fields.map((field) => (
-          <InspectionTextField
+          <InspectionTextField translationDict={"violationsDict"}
             className={"none"}
             labelPosition={"top"}
             onClose={props.onInspectionTextFieldClose}

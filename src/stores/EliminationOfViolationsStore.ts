@@ -23,7 +23,9 @@ export class EliminationOfViolationsStore {
     this.passports = value;
     console.debug("passports: ", toJS(this.passports));
   }
-
+  clearViolations() {
+    this.violations = []
+  }
   setViolations(value: IViolation[]) {
     this.violations = value;
     console.debug("violations: ", toJS(this.violations));
@@ -92,7 +94,8 @@ export class EliminationOfViolationsStore {
       );
       if (!response.data.error) {
         if (response.data.value) {
-          this.store.inspectionStore.setFieldsData(response.data.value);
+          const value = { passport: response.data };
+          this.store.inspectionStore.setFieldsData(value);
         }
       }
       this.store.loaderStore.setLoader("ready");

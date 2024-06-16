@@ -106,6 +106,7 @@ const EliminationOfViolationsPage = observer(
       store.inspectionStore.clearInspectionForm();
     };
     const submitFilter = () => {
+      store.eliminationOfViolationsStore.clearViolations();
       if (isDevelop) {
         // store.eliminationOfViolationsStore.getViolations();
         store.eliminationOfViolationsStore.getViolationsDev();

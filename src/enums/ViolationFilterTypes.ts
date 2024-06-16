@@ -11,10 +11,10 @@ export enum ViolationFilterTypes {
 export const VIOLATIONS_COMMON_FIELDS = [
   InspectionFormTypes.AuditDate,
   "passport",
-  InspectionFormTypes.Contractor,
-  InspectionFormTypes.OilField,
+  "question",
+  "auditor",
+  "auditee",
   InspectionFormTypes.DoStruct,
-  InspectionFormTypes.DoObject,
 ];
 
 export const violationsDictionaryOfConformity = {

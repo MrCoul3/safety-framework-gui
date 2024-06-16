@@ -19,17 +19,17 @@ interface IViolationsTable {
 }
 
 const ViolationsTable = observer((props: IViolationsTable) => {
-  const { t } = useTranslation("dict");
+  const { t } = useTranslation("violationsDict");
 
   const rows: any = props.violations.map((item) => ({
     [InspectionFormTypes.AuditDate]: moment(item?.auditDate).format(
       "DD.MM.YYYY",
     ),
     passport: item?.passport,
-    [InspectionFormTypes.Contractor]: item?.contractor,
-    [InspectionFormTypes.OilField]: item?.oilfield,
+    question: item?.question,
+    auditor: item?.auditor,
+    auditee: item?.auditee,
     [InspectionFormTypes.DoStruct]: item?.doStruct,
-    [InspectionFormTypes.DoObject]: item?.doObject,
   }));
 
   useEffect(() => {
@@ -41,7 +41,8 @@ const ViolationsTable = observer((props: IViolationsTable) => {
     accessor: key,
     sortable: true,
     align: "left",
-    width: 200,
+    width: key === "question" ? 350 : 200,
+    maxWidth: 250,
   }));
 
   const renderLoader = () => {
