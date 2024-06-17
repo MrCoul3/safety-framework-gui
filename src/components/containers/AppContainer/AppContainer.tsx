@@ -30,7 +30,7 @@ export const AppContainer = observer(() => {
   const store = useStore();
 
   const init = async () => {
-    await store.mainPageStore.getMemberInfo()
+    await store.mainPageStore.getMemberInfo();
   };
 
   const getSideBarState = () => {
@@ -64,7 +64,9 @@ export const AppContainer = observer(() => {
   );
   const render403 = () => (
     <div className={style.container}>
-      <Responses403 actions={" "} />
+      <Responses403
+        actions={<Button onClick={toHome} view="ghost" label={t("toHome")} />}
+      />
     </div>
   );
   const render500 = () => (
@@ -102,6 +104,7 @@ export const AppContainer = observer(() => {
       />
       {store.mainPageStore.login ? (
         <>
+
           <SnackBarCustom
             onItemClose={() => store.snackBarStore.clearSnackBar()}
             item={store.snackBarStore.snackBarItem}
@@ -111,7 +114,13 @@ export const AppContainer = observer(() => {
             <Route path={"/*"} element={<MainPage />} />
 
             <Route
-              element={<EliminationOfViolationsPage />}
+              element={
+                store.mainPageStore.isAllowedToUseViolationsResolve ? (
+                  <EliminationOfViolationsPage />
+                ) : (
+                  render403()
+                )
+              }
               path={SubGroupsActionsTypes.EliminationOfViolations}
             />
 
