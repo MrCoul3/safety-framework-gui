@@ -160,7 +160,7 @@ const InspectionCard = observer((props: IInspectionCard) => {
           size={"s"}
           className={style.editButton}
           iconSize="s"
-          label={t("edit")}
+          label={t( props.subGroup === SubGroupsActionsTypes.Sent ? "view" : "edit")}
           iconLeft={IconEdit}
         />
       </div>

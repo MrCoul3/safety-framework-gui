@@ -157,16 +157,30 @@ const InspectionPage = observer((props: IInspectionPage) => {
     store.inspectionStore.clearFieldsData();
   };
 
+  const isEditSentInspectionPage = () => {
+    return (
+      location.pathname.includes(RoutesTypes.EditInspection) && editInspectionId
+    );
+  };
+
   return (
     <>
       <Layout
         navPanel={
           <NavPanel
             crumbs={crumbs}
-            disableSaveButton={!store.inspectionStore.savingState}
+            disableSaveButton={
+              isEditSentInspectionPage()
+                ? false
+                : !store.inspectionStore.savingState
+            }
             handleEditPassports={handleEditPassports}
             handleSaveInspection={handleSaveInspection}
-            description={t("addInspectionDescription")}
+            description={t(
+              isEditSentInspectionPage()
+                ? "editInspectionDescription"
+                : "addInspectionDescription",
+            )}
             title={
               !editInspectionId
                 ? t("addInspectionTitle")

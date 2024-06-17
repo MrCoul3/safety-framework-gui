@@ -284,7 +284,6 @@ export const MainPage = observer((props: IMainPage) => {
     return (
       <Routes>
         {/*Main page dashboard*/}
-        <Route path="/*" element={render404()} />
         <Route
           element={
             <DashBoard
@@ -305,7 +304,7 @@ export const MainPage = observer((props: IMainPage) => {
           }
           path="/"
         />
-        {/*Sent and new inspections table on main page*/}
+        {/*Sent and don't send table on main page*/}
         {[
           store.mainPageStore.localInspections,
           store.mainPageStore.inspections,
@@ -362,6 +361,9 @@ export const MainPage = observer((props: IMainPage) => {
           element={<EmptyBoxPage />}
           path={SubGroupsActionsTypes.BarriersApps}
         />
+
+
+        <Route path="/*" element={render404()} />
       </Routes>
     );
   };

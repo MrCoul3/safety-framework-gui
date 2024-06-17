@@ -2,13 +2,14 @@ import React, { ReactNode, useEffect } from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
 import { Breadcrumbs } from "@consta/uikit/Breadcrumbs";
-import { useNavigate, useParams } from "react-router";
+import { useLocation, useNavigate, useParams } from "react-router";
 import { IBreadCrumbs } from "interfaces/IBreadCrumbs";
 import { Button } from "@consta/uikit/Button";
 import { useTranslation } from "react-i18next";
 import ConfirmDialog from "../ConfirmDialog/ConfirmDialog";
 import { IconBackward } from "@consta/icons/IconBackward";
 import classNames from "classnames";
+import { RoutesTypes } from "../../enums/RoutesTypes";
 
 interface INavPanel {
   title: string;
@@ -30,6 +31,10 @@ const NavPanel = observer((props: INavPanel) => {
 
   const navigate = useNavigate();
 
+  let { editInspectionId } = useParams();
+
+  const location = useLocation();
+
   const onItemClick = (item: IBreadCrumbs) => {
     if (item.path === "main") {
       // setIsModalOpen(true);
@@ -43,10 +48,36 @@ const NavPanel = observer((props: INavPanel) => {
   const handleConfirm = () => {
     navigate("/");
   };
+
+  const isNewInspectionPage = () => {
+    return (
+      location.pathname.includes(RoutesTypes.NewInspection) && editInspectionId
+    );
+  };
+  const isEditLocalInspectionPage = () => {
+    return (
+      location.pathname.includes(RoutesTypes.EditLocalInspection) &&
+      editInspectionId
+    );
+  };
+  const isEditSentInspectionPage = () => {
+    return (
+      location.pathname.includes(RoutesTypes.EditInspection) && editInspectionId
+    );
+  };
+
+  const getSaveButtonLabel = () => {
+    if (isEditSentInspectionPage()) return "saveAsTemplate";
+    if (isEditLocalInspectionPage()) return "saveChanges";
+    return "saveInspection";
+  };
+
   return (
-    <div className={classNames(style.NavPanel, {
-      [style.minSize]: props.disableButtons
-    }) }>
+    <div
+      className={classNames(style.NavPanel, {
+        [style.minSize]: props.disableButtons,
+      })}
+    >
       <div className={style.flexCol}>
         <div className={style.flexContainer}>
           <Button
@@ -76,7 +107,7 @@ const NavPanel = observer((props: INavPanel) => {
               <Button
                 disabled={props.disableSaveButton}
                 onClick={props.handleSaveInspection}
-                label={t("saveInspection")}
+                label={t(getSaveButtonLabel())}
               />
             )}
 
