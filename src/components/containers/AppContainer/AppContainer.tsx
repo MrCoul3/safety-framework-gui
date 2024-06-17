@@ -104,13 +104,14 @@ export const AppContainer = observer(() => {
       />
       {store.mainPageStore.login ? (
         <>
-
           <SnackBarCustom
             onItemClose={() => store.snackBarStore.clearSnackBar()}
             item={store.snackBarStore.snackBarItem}
           />
           <Routes>
+
             <Route index element={<MainPage />} />
+
             <Route path={"/*"} element={<MainPage />} />
 
             <Route
@@ -217,7 +218,6 @@ export const AppContainer = observer(() => {
               element={<FreeFormPage />}
             />
 
-            <Route path="*" element={render404()} />
           </Routes>
         </>
       ) : (

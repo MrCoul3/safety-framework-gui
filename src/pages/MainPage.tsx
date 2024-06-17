@@ -28,6 +28,9 @@ import {
 import { SortByProps } from "@consta/uikit/Table";
 import InspectionCard from "../components/InspectionCard/InspectionCard";
 import { IconWarning } from "@consta/icons/IconWarning";
+import style from "../components/containers/AppContainer/style.module.css";
+import { Responses404 } from "@consta/uikit/Responses404";
+import { Button } from "@consta/uikit/Button";
 
 interface IMainPage {}
 
@@ -44,9 +47,9 @@ export const MainPage = observer((props: IMainPage) => {
     store.mainPageStore.clearInspectionOffset();
     store.freeFormStore.clearFreeForms();
     store.barriersStore.clearBarriers();
-    store.inspectionStore.clearInspectionForm()
-    store.inspectionStore.clearSavingState()
-    store.eliminationOfViolationsStore.clearViolations()
+    store.inspectionStore.clearInspectionForm();
+    store.inspectionStore.clearSavingState();
+    store.eliminationOfViolationsStore.clearViolations();
     getLocalInspections();
     if (isDevelop) {
       store.mainPageStore.getInspectionsDev();
@@ -163,7 +166,6 @@ export const MainPage = observer((props: IMainPage) => {
 
   const handleSearchValueChange = (value: string | null) => {
     store.inspectionStore.handleSearchValueChange(value, openFilterType);
-
   };
   const handleInspectionTextFieldClose = () => {
     setOpenFilterType(null);
@@ -272,10 +274,17 @@ export const MainPage = observer((props: IMainPage) => {
     );
   };
 
+  const render404 = () => (
+    <div className={style.container}>
+      <Responses404 actions={" "} />
+    </div>
+  );
+
   const contentRoutes = () => {
     return (
       <Routes>
         {/*Main page dashboard*/}
+        <Route path="/*" element={render404()} />
         <Route
           element={
             <DashBoard
