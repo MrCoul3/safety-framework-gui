@@ -41,17 +41,13 @@ const ViolationsTable = observer((props: IViolationsTable) => {
     [InspectionFormTypes.DoStruct]: item?.doStruct,
   }));
 
-  useEffect(() => {
-    console.log("ViolationsTable props.violations", toJS(props.violations));
-  }, [props.violations]);
-
   const columns: any = VIOLATIONS_COMMON_FIELDS.map((key: any) => ({
     title: <span className={style.colTitle}>{t(key)}</span>,
     accessor: key,
     sortable: true,
     align: "left",
     width: key === "question" ? 350 : 200,
-    maxWidth: 250,
+    // maxWidth: 250,
   }));
   const [violationId, setViolationId] = React.useState<string>();
 
@@ -83,6 +79,7 @@ const ViolationsTable = observer((props: IViolationsTable) => {
     <div className={style.ViolationsTable}>
       {props.violations.length ? (
         <Table
+          className={style.table}
           onRowClick={onRowClick}
           rows={rows}
           isResizable
@@ -92,20 +89,13 @@ const ViolationsTable = observer((props: IViolationsTable) => {
       ) : (
         renderLoader()
       )}
-      <Modal
-        className={style.modal}
-        // onClose={props.onClose}
-        isOpen={!!violationId}
-        hasOverlay
-        // onClickOutside={() => setIsModalOpen("")}
-        onEsc={() => setViolationId("")}
-      >
+      {violationId ? (
         <ViolationDetails
           violation={props.violations.find(
             (item) => item?.id.toString() === violationId,
           )}
         />
-      </Modal>
+      ) : null}
     </div>
   );
 });

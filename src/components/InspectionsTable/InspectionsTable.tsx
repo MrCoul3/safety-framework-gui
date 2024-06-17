@@ -93,10 +93,6 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
   };
 
   useEffect(() => {
-    console.log("inspections!!!", toJS(props.inspections));
-  }, [props.inspections]);
-
-  useEffect(() => {
     getTableSize();
   }, [tableRef, tableContainerRef]);
 

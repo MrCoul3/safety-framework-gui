@@ -1,8 +1,13 @@
 .ViolationsTable {
     padding: 24px;
     width: 100%;
+    display: flex;
+    flex-direction: column;
 }
 .details {
     width: 100px;
     height: 100px;
+}
+.table {
+    overflow: auto;
 }
