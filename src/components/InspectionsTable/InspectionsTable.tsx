@@ -103,11 +103,13 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
   const excludeFields = ["id"];
 
   const handleEditInspection = (index: string, inspection: IInspection) => {
+    const ind = +index + 1
+    console.log('handleEditInspection inspection', inspection.id)
     if (location.pathname.includes(SubGroupsActionsTypes.Sent)) {
       props.handleEditInspection(inspection.id ?? "");
     }
     if (location.pathname.includes(SubGroupsActionsTypes.NewInspections)) {
-      props.handleEditLocalInspection(index);
+      props.handleEditLocalInspection(ind.toString());
     }
   };
 

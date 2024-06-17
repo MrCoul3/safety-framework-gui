@@ -98,7 +98,6 @@ export class InspectionStore {
 
     try {
 
-      setTimeout(async () => {
         const response = await instance.get(requestType);
         this.setFieldsData({
           [type + "Count"]: 321,
@@ -106,7 +105,6 @@ export class InspectionStore {
         if (!response.data.error) {
           this.setFieldsData({ [type]: response.data });
         }
-      },200)
 
     } catch (e) {
       console.error(e);
@@ -121,6 +119,8 @@ export class InspectionStore {
       | string,
   ) {
     let requestType: any = type;
+
+    console.log('getFieldData requestType', requestType)
 
     const searchFieldValue = this.searchFieldValue ?? "";
 
@@ -172,6 +172,7 @@ export class InspectionStore {
   }
 
   setFieldsData(value: IFieldsData) {
+    this.fieldsData = [];
     console.log("setFieldsData value", value);
     const keyValue = Object.keys(value)[0];
     console.log("setFieldsData keyValue", keyValue);
@@ -436,7 +437,7 @@ export class InspectionStore {
   }
 
   loadInspectionFromLocalStorage(id: string) {
-    console.log("loadInspectionFromLocalStorage");
+    console.log("loadInspectionFromLocalStorage", id);
     const localInspections = localStorage.getItem(LOCAL_STORE_INSPECTIONS);
     if (localInspections) {
       const localInspectionsParsed = JSON.parse(localInspections);
@@ -460,7 +461,7 @@ export class InspectionStore {
   }
 
   async loadInspection(editInspectionId: string) {
-    console.log("loadInspection");
+    console.log("loadInspection", editInspectionId);
     if (location.pathname.includes(RoutesTypes.EditLocalInspection)) {
       this.loadInspectionFromLocalStorage(editInspectionId);
     }
