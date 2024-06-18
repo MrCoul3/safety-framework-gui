@@ -115,6 +115,7 @@ const EliminationOfViolationsPage = observer(
       }
     };
 
+
     return (
       <ViolationsLayout
         navPanel={

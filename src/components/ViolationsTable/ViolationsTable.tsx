@@ -20,15 +20,22 @@ import { Modal } from "@consta/uikit/Modal";
 import { Card } from "@consta/uikit/Card";
 import ViolationDetails from "../VioaltionDetails/ViolationDetails";
 import ViolationCheckForm from "../ViolationCheckForm/ViolationCheckForm";
+import { useStore } from "../../hooks/useStore";
+import { ISendKarkasConfirmed } from "../../interfaces/ISendKarkasConfirmed";
 
 interface IViolationsTable {
   violations: IViolation[];
 
   loader?: LoaderType;
+
+  /*  handleChangeComment(value: string | null): void;
+  comment: string | null;*/
 }
 
 const ViolationsTable = observer((props: IViolationsTable) => {
   const { t } = useTranslation("violationsDict");
+
+  const store = useStore();
 
   const rows: any = props.violations.map((item, i) => ({
     id: item?.id,
@@ -75,6 +82,20 @@ const ViolationsTable = observer((props: IViolationsTable) => {
       );
     }
   };
+
+  const handleSaveForm = (value: ISendKarkasConfirmed) => {
+    console.log("handleChangeComment", value);
+    store.eliminationOfViolationsStore.sendViolationForm(value);
+  };
+
+  const getSelectedViolation = () => {
+    const violation = props.violations.find(
+      (item) => item?.id.toString() === violationId,
+    );
+    console.log("violation", toJS(violation));
+    return violation;
+  };
+
   return (
     <div className={style.ViolationsTable}>
       {props.violations.length ? (
@@ -89,16 +110,20 @@ const ViolationsTable = observer((props: IViolationsTable) => {
       ) : (
         renderLoader()
       )}
-      {violationId ? (
-        <div className={style.details}>
-          <ViolationDetails
-            violation={props.violations.find(
-              (item) => item?.id.toString() === violationId,
-            )}
-          />
-          <ViolationCheckForm />
-        </div>
-      ) : null}
+      {violationId
+        ? props.violations.map((violation) =>
+            violation.id.toString() === violationId ? (
+              <div className={style.details}>
+                <ViolationDetails violation={getSelectedViolation()} />
+                <ViolationCheckForm
+                  violationId={violationId}
+                  saveForm={handleSaveForm}
+                  comment={getSelectedViolation()?.comment ?? ""}
+                />
+              </div>
+            ) : null,
+          )
+        : null}
     </div>
   );
 });

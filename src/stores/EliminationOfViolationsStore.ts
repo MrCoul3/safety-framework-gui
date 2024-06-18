@@ -8,7 +8,8 @@ import {
 } from "../api/endpoints";
 import { IViolation } from "../interfaces/IViolation";
 import { getViolationFilters } from "../constants/filters";
-import {IInspection} from "../interfaces/IInspection";
+import { IInspection } from "../interfaces/IInspection";
+import { ISendKarkasConfirmed } from "../interfaces/ISendKarkasConfirmed";
 
 export class EliminationOfViolationsStore {
   private store: AppStore;
@@ -24,7 +25,7 @@ export class EliminationOfViolationsStore {
     console.debug("passports: ", toJS(this.passports));
   }
   clearViolations() {
-    this.violations = []
+    this.violations = [];
   }
   setViolations(value: IViolation[]) {
     this.violations = value;
@@ -38,18 +39,18 @@ export class EliminationOfViolationsStore {
         setTimeout(() => {
           const value = { passport: response.data };
           this.store.inspectionStore.setFieldsData(value);
-        }, 1000)
+        }, 1000);
       }
     } catch (e) {
       console.error(e);
     }
   }
   async getViolationsDev() {
-    this.store.loaderStore.setLoader('wait')
+    this.store.loaderStore.setLoader("wait");
 
     console.log(
-        "getViolations",
-        toJS(this.store.inspectionStore.formFieldsValues),
+      "getViolations",
+      toJS(this.store.inspectionStore.formFieldsValues),
     );
     try {
       setTimeout(async () => {
@@ -58,11 +59,10 @@ export class EliminationOfViolationsStore {
           const value = response.data;
           this.setViolations(value);
         }
-        this.store.loaderStore.setLoader('ready')
-      }, 100)
-
+        this.store.loaderStore.setLoader("ready");
+      }, 100);
     } catch (e) {
-      this.store.loaderStore.setLoader('ready')
+      this.store.loaderStore.setLoader("ready");
       console.error(e);
     }
   }
@@ -73,7 +73,7 @@ export class EliminationOfViolationsStore {
       "getViolations",
       toJS(this.store.inspectionStore.formFieldsValues),
     );
-    this.store.loaderStore.setLoader('wait')
+    this.store.loaderStore.setLoader("wait");
     try {
       const response = await violationsInstance.get("violations", {
         params: getViolationFilters(formFieldsValues),
@@ -82,9 +82,9 @@ export class EliminationOfViolationsStore {
         const value = response.data;
         this.setViolations(value);
       }
-      this.store.loaderStore.setLoader('ready')
+      this.store.loaderStore.setLoader("ready");
     } catch (e) {
-      this.store.loaderStore.setLoader('ready')
+      this.store.loaderStore.setLoader("ready");
       console.error(e);
     }
   }
@@ -103,6 +103,17 @@ export class EliminationOfViolationsStore {
       this.store.loaderStore.setLoader("ready");
     } catch (e) {
       this.store.loaderStore.setLoader("ready");
+      console.error(e);
+    }
+  }
+  async sendViolationForm(value: ISendKarkasConfirmed) {
+    const form = new FormData();
+    value.uploadFile.forEach((file) => form.append("uploadFile", file));
+    try {
+      await instance.post("karkasConfirm/sendKarkasConfirmed", {
+        ...value,
+      });
+    } catch (e) {
       console.error(e);
     }
   }

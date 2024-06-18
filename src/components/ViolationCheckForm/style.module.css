@@ -7,6 +7,11 @@
   flex-direction: column;
   gap: 10px;
 }
+.DragNDropField {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
 .title {
   font-size: 14px;
   font-weight: 600;
@@ -33,4 +38,11 @@
   color: var(--gray60);
 
   margin-bottom: 10px;
+}
+
+.controlButtonGroup {
+  display: flex;
+  width: 100%;
+  gap: 12px;
+  justify-content: end;
 }
