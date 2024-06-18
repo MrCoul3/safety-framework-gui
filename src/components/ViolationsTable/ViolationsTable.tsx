@@ -19,6 +19,7 @@ import { Button } from "@consta/uikit/Button";
 import { Modal } from "@consta/uikit/Modal";
 import { Card } from "@consta/uikit/Card";
 import ViolationDetails from "../VioaltionDetails/ViolationDetails";
+import ViolationCheckForm from "../ViolationCheckForm/ViolationCheckForm";
 
 interface IViolationsTable {
   violations: IViolation[];
@@ -53,16 +54,15 @@ const ViolationsTable = observer((props: IViolationsTable) => {
 
   const onRowClick = ({ id, e }: { id: string; e: React.MouseEvent }) => {
     const row = (e.target as HTMLDivElement).closest(".Table-CellsRow");
-    console.log("onRowClick", id, row);
     setViolationId(id);
-    /* const oldDetails = document.querySelector('.details')
-    if (oldDetails) {
-      oldDetails.remove()
-    }
-    const details = document.createElement('div')
-    details.classList.add(style.details, "details");
-    row?.append(details);*/
+    document
+      .querySelectorAll(".activeRow")
+      .forEach((item) => item.classList.remove("activeRow"));
+    row?.childNodes.forEach((child) =>
+      (child as HTMLElement).classList.add("activeRow"),
+    );
   };
+
   const renderLoader = () => {
     if (props.loader === "wait") {
       return <LoaderPage />;
@@ -90,11 +90,14 @@ const ViolationsTable = observer((props: IViolationsTable) => {
         renderLoader()
       )}
       {violationId ? (
-        <ViolationDetails
-          violation={props.violations.find(
-            (item) => item?.id.toString() === violationId,
-          )}
-        />
+        <div className={style.details}>
+          <ViolationDetails
+            violation={props.violations.find(
+              (item) => item?.id.toString() === violationId,
+            )}
+          />
+          <ViolationCheckForm />
+        </div>
       ) : null}
     </div>
   );

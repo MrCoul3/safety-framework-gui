@@ -148,9 +148,16 @@ export const ru = {
     [ViolationFilterTypes.Oilfields]: "Месторождение",
     [ViolationFilterTypes.Struct]: "Цех",
     [ViolationFilterTypes.Obj]: "Объект",
+    "comment": "Комментарий",
+
+    checkForm: "Форма проверки",
 
     barrier: "Барьер",
 
+    fileFormTitle: "Перетащите файлы сюда или нажмите, чтобы загрузить",
+    maxFileSizeDescription: "Максимальный размер файлов: 20 MB",
+    uploadFile: "Загрузить файл",
+    app: "Приложение",
     [FilledQuestionTypes.WorkStopped]: "Работа остановлена",
     [FilledQuestionTypes.ResolvedInPlace]: "Устранено на месте",
     withoutWorkStopped: "Без остановки работы",

@@ -37,6 +37,7 @@ code {
   --lightGray: #ecf1f4;
   --lightText: #fafafa;
   --blue: #32b4ff;
+  --tableRowBlue: #0078D24D;
   --blueDeep: #0071B2;
   --awaitOrange: #f38b00;
   --successGreen: #22c38e;
@@ -68,4 +69,7 @@ code {
 }
 .searchBarriersField {
   /*width: 100% !important;*/
+}
+.activeRow {
+  background-color: var(--tableRowBlue) !important;
 }

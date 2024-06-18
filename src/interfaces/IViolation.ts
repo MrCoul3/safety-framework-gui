@@ -1,11 +1,12 @@
 import {IEntity} from "./IEntity";
 
 export interface IViolation {
-  auditDate: string;
+  auditDate: Date;
 
   date: [Date?, Date?]
   auditee: string;
   auditor: string;
+  inspectionType: string;
   comment: string;
   contractor: string;
   doObject: string;

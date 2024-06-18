@@ -1,5 +1,6 @@
 .FilterPanel {
-  width: 400px;
+  min-width: 300px;
+  width: 20%;
   background-color: white;
   display: flex;
   flex-direction: column;
@@ -7,6 +8,8 @@
   padding: 24px;
   height: auto;
   justify-content: space-between;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 .controlButtonGroup {
   display: flex;
