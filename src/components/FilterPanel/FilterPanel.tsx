@@ -87,13 +87,14 @@ const FilterPanel = observer((props: IFilterPanel) => {
 
   const [checked, setChecked] = useState(false);
   const onChangeCheckbox = () => {
-    setChecked(!checked);
-    props.handleChecked?.(!getCheckedValue());
+    setChecked(checked);
+    props.handleChecked?.(getCheckedValue());
   };
   const getCheckedValue = () => {
     const value = (props.formFieldsValues as unknown as IViolation)?.isResolved;
-    return value !== undefined ? !value : false;
+    return value !== undefined ? value : true;
   };
+
   return (
     <Card className={style.FilterPanel}>
       <div>

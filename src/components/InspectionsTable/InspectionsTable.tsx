@@ -100,8 +100,8 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
   const excludeFields = ["id"];
 
   const handleEditInspection = (index: string, inspection: IInspection) => {
-    const ind = +index + 1
-    console.log('handleEditInspection inspection', inspection.id)
+    const ind = +index + 1;
+    console.log("handleEditInspection inspection", inspection.id);
     if (location.pathname.includes(SubGroupsActionsTypes.Sent)) {
       props.handleEditInspection(inspection.id ?? "");
     }
@@ -116,32 +116,38 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
         size="s"
         onClick={() => handleEditInspection(index, inspection)}
         view="ghost"
-        iconRight={props.subGroupsActionsTypes === SubGroupsActionsTypes.Sent ? IconEye : IconEdit}
+        iconRight={
+          props.subGroupsActionsTypes === SubGroupsActionsTypes.Sent
+            ? IconEye
+            : IconEdit
+        }
         onlyIcon
       />
 
       {props.subGroupsActionsTypes === SubGroupsActionsTypes.NewInspections && (
-        <Button
-          disabled={!store.mainPageStore.checkIsInspectionReadyToSend(+index)}
-          onClick={() => props.sendInspection(+index)}
-          size="s"
-          view="ghost"
-          iconRight={IconMail}
-          onlyIcon
-        />
+        <>
+          <Button
+            disabled={!store.mainPageStore.checkIsInspectionReadyToSend(+index)}
+            onClick={() => props.sendInspection(+index)}
+            size="s"
+            view="ghost"
+            iconRight={IconMail}
+            onlyIcon
+          />
+          <Button
+            size="s"
+            onClick={() =>
+              props.subGroupsActionsTypes ===
+              SubGroupsActionsTypes.NewInspections
+                ? props.handleDeleteNewInspectionButtonClick(index)
+                : props.handleDeleteSentButtonClick(inspection.id ?? "")
+            }
+            view="ghost"
+            iconRight={IconTrash}
+            onlyIcon
+          />
+        </>
       )}
-
-      <Button
-        size="s"
-        onClick={() =>
-          props.subGroupsActionsTypes === SubGroupsActionsTypes.NewInspections
-            ? props.handleDeleteNewInspectionButtonClick(index)
-            : props.handleDeleteSentButtonClick(inspection.id ?? "")
-        }
-        view="ghost"
-        iconRight={IconTrash}
-        onlyIcon
-      />
     </div>
   );
   const rows = useMemo(
@@ -265,43 +271,43 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
         />
       )}
       <Table
-          isResizable
-          rows={rows}
-          stickyHeader
-          ref={tableRef}
-          stickyColumns={1}
-          columns={columns}
-          className={style.table}
-          onSortBy={props.handleSort}
-          onCellClick={handleCellClick}
-          filters={filters}
+        isResizable
+        rows={rows}
+        stickyHeader
+        ref={tableRef}
+        stickyColumns={1}
+        columns={columns}
+        className={style.table}
+        onSortBy={props.handleSort}
+        onCellClick={handleCellClick}
+        filters={filters}
       />
 
-      {props.inspectionsCount &&
-        props.inspectionsCount > INSPECTIONS_ON_PAGE ?
-        isSentInspectionsCondition() &&
-        props.inspections.length && (
-          <Pagination
-            showFirstPage
-            showLastPage
-            visibleCount={8}
-            className={style.pagination}
-            items={Math.ceil(props.inspectionsCount / INSPECTIONS_ON_PAGE)}
-            value={page}
-            onChange={handlePaginationChange}
-            arrows={[{ label: t("back") }, { label: t("forward") }]}
-            hotKeys={[
-              {
-                label: "← Shift",
-                keys: ["Shift", "ArrowLeft"],
-              },
-              {
-                label: "Shift →",
-                keys: ["Shift", "ArrowRight"],
-              },
-            ]}
-          />
-        ) : null}
+      {props.inspectionsCount && props.inspectionsCount > INSPECTIONS_ON_PAGE
+        ? isSentInspectionsCondition() &&
+          props.inspections.length && (
+            <Pagination
+              showFirstPage
+              showLastPage
+              visibleCount={8}
+              className={style.pagination}
+              items={Math.ceil(props.inspectionsCount / INSPECTIONS_ON_PAGE)}
+              value={page}
+              onChange={handlePaginationChange}
+              arrows={[{ label: t("back") }, { label: t("forward") }]}
+              hotKeys={[
+                {
+                  label: "← Shift",
+                  keys: ["Shift", "ArrowLeft"],
+                },
+                {
+                  label: "Shift →",
+                  keys: ["Shift", "ArrowRight"],
+                },
+              ]}
+            />
+          )
+        : null}
     </div>
   );
 });

@@ -89,13 +89,15 @@ export const getSortFilter = (sortSettings: SortByProps<any> | null) => {
 };
 
 export const getViolationFilters = (formFieldsValues: IInspection) => {
+  console.log('formFieldsValues', toJS(formFieldsValues))
   const dateFrom = formFieldsValues?.date?.[0]
     ? moment(formFieldsValues?.date?.[0]).format("YYYY-MM-DD")
     : undefined;
   const dateTo = formFieldsValues?.date?.[1]
     ? moment(formFieldsValues?.date?.[1]).format("YYYY-MM-DD")
     : undefined;
-  return {
+
+  const result: any = {
     dateFrom: dateFrom,
     dateTo: dateTo,
     passport: formFieldsValues?.passport?.code,
@@ -103,6 +105,10 @@ export const getViolationFilters = (formFieldsValues: IInspection) => {
     oilfield: formFieldsValues?.oilfield?.title,
     doStruct: formFieldsValues?.doStruct?.title,
     doObject: formFieldsValues?.doObject?.title,
-    isResolved: formFieldsValues.isResolved,
+    isResolved: !!formFieldsValues.isResolved,
   };
+  if (formFieldsValues.isResolved === false) {
+    delete result.isResolved
+  }
+  return result
 };

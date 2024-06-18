@@ -108,7 +108,7 @@ const EliminationOfViolationsPage = observer(
     const submitFilter = () => {
       store.eliminationOfViolationsStore.clearViolations();
       if (isDevelop) {
-        // store.eliminationOfViolationsStore.getViolations();
+        store.eliminationOfViolationsStore.getViolations();
         store.eliminationOfViolationsStore.getViolationsDev();
       } else {
         store.eliminationOfViolationsStore.getViolations();
