@@ -21,8 +21,7 @@ import { DragNDropField, FileRejection } from "@consta/uikit/DragNDropField";
 import { ISendKarkasConfirmed } from "../../interfaces/ISendKarkasConfirmed";
 
 interface IViolationCheckForm {
-  clearForm?(): void;
-  saveForm(value: ISendKarkasConfirmed): void;
+   saveForm(value: ISendKarkasConfirmed): void;
   violationId: string;
   comment: string;
 }
@@ -34,6 +33,10 @@ const ViolationCheckForm = observer((props: IViolationCheckForm) => {
   const [commentValue, setCommentValue] = useState<string | null>(props.comment);
 
 
+  const clearForm = () => {
+    setCommentValue(null);
+    setFilesDropped([])
+  };
   const handleChange = (value: string | null) => {
     console.log("QuestionCard handleChange value", value);
     setCommentValue(value);
@@ -121,7 +124,7 @@ const ViolationCheckForm = observer((props: IViolationCheckForm) => {
         </div>
         <div className={style.controlButtonGroup}>
           <Button
-            onClick={props.clearForm}
+            onClick={clearForm}
             iconSize="s"
             view="ghost"
             label={t("clear")}

@@ -22,6 +22,7 @@ import ViolationDetails from "../VioaltionDetails/ViolationDetails";
 import ViolationCheckForm from "../ViolationCheckForm/ViolationCheckForm";
 import { useStore } from "../../hooks/useStore";
 import { ISendKarkasConfirmed } from "../../interfaces/ISendKarkasConfirmed";
+import classNames from "classnames";
 
 interface IViolationsTable {
   violations: IViolation[];
@@ -36,6 +37,10 @@ const ViolationsTable = observer((props: IViolationsTable) => {
   const { t } = useTranslation("violationsDict");
 
   const store = useStore();
+
+  useEffect(() => {
+    setViolationId(null)
+  }, [props.loader])
 
   const rows: any = props.violations.map((item, i) => ({
     id: item?.id,
@@ -57,7 +62,7 @@ const ViolationsTable = observer((props: IViolationsTable) => {
     width: key === "question" ? 350 : 200,
     // maxWidth: 250,
   }));
-  const [violationId, setViolationId] = React.useState<string>();
+  const [violationId, setViolationId] = React.useState<string | null>();
 
   const onRowClick = ({ id, e }: { id: string; e: React.MouseEvent }) => {
     const row = (e.target as HTMLDivElement).closest(".Table-CellsRow");
@@ -97,7 +102,9 @@ const ViolationsTable = observer((props: IViolationsTable) => {
   };
 
   return (
-    <div className={style.ViolationsTable}>
+    <div className={classNames(style.ViolationsTable, {
+      [style.doubleScreen]: violationId
+    })}>
       {props.violations.length ? (
         <Table
           className={style.table}

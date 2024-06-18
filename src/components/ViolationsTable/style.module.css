@@ -2,8 +2,10 @@
   padding: 24px;
   width: 80%;
   display: grid;
-  grid-template-rows: repeat(2, 1fr);
   gap: 24px;
+}
+.doubleScreen {
+  grid-template-rows: repeat(2, 1fr);
 }
 .details {
   width: 100px;
