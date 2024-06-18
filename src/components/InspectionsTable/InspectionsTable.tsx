@@ -15,6 +15,7 @@ import { Pagination } from "@consta/uikit/Pagination";
 import moment from "moment";
 import { Button } from "@consta/uikit/Button";
 import { IconEdit } from "@consta/icons/IconEdit";
+import { IconEye } from "@consta/icons/IconEye";
 import { IconTrash } from "@consta/icons/IconTrash";
 import { IconMail } from "@consta/icons/IconMail";
 import {
@@ -115,7 +116,7 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
         size="s"
         onClick={() => handleEditInspection(index, inspection)}
         view="ghost"
-        iconRight={IconEdit}
+        iconRight={props.subGroupsActionsTypes === SubGroupsActionsTypes.Sent ? IconEye : IconEdit}
         onlyIcon
       />
 
