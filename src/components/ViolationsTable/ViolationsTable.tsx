@@ -38,9 +38,13 @@ const ViolationsTable = observer((props: IViolationsTable) => {
 
   const store = useStore();
 
+ /* useEffect(() => {
+    setViolationId(null);
+  }, [props.loader]);*/
+
   useEffect(() => {
-    setViolationId(null)
-  }, [props.loader])
+    console.log('ViolationsTable props.violations', toJS(props.violations))
+  }, [props.violations])
 
   const rows: any = props.violations.map((item, i) => ({
     id: item?.id,
@@ -67,6 +71,7 @@ const ViolationsTable = observer((props: IViolationsTable) => {
   const onRowClick = ({ id, e }: { id: string; e: React.MouseEvent }) => {
     const row = (e.target as HTMLDivElement).closest(".Table-CellsRow");
     setViolationId(id);
+    console.log("onRowClick id", id);
     document
       .querySelectorAll(".activeRow")
       .forEach((item) => item.classList.remove("activeRow"));
@@ -74,6 +79,9 @@ const ViolationsTable = observer((props: IViolationsTable) => {
       (child as HTMLElement).classList.add("activeRow"),
     );
   };
+  useEffect(() => {
+    console.log("violationId", violationId);
+  }, [violationId]);
 
   const renderLoader = () => {
     if (props.loader === "wait") {
@@ -102,9 +110,11 @@ const ViolationsTable = observer((props: IViolationsTable) => {
   };
 
   return (
-    <div className={classNames(style.ViolationsTable, {
-      [style.doubleScreen]: violationId
-    })}>
+    <div
+      className={classNames(style.ViolationsTable, {
+        [style.doubleScreen]: violationId,
+      })}
+    >
       {props.violations.length ? (
         <Table
           className={style.table}
