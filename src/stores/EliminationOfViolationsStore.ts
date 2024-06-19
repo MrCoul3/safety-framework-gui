@@ -111,9 +111,12 @@ export class EliminationOfViolationsStore {
     // value.uploadFile.forEach((file) => form.append("uploadFile", file));
     form.append("uploadFile", value.uploadFile)
     try {
-      await violationsInstance.post("violations", {
+     const response = await violationsInstance.post("violations", {
         ...value,
       });
+     if (response.data) {
+       return response.data;
+     }
     } catch (e) {
       console.error(e);
     }

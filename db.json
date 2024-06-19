@@ -47266,26 +47266,17 @@
       "resolvedOn": null
     },
     {
-      "id": "1654912",
-      "comment": "Не указано в плане работasdasd",
-      "uploadFile": [
-        {
-          "path": "Пример GET запроса OData4-v6-20240513_095023.docx"
-        }
-      ]
-    },
-    {
-      "id": "1654912",
-      "comment": "Не указано в плане работ",
+      "id": "1656217",
+      "comment": "ffgfgf",
       "uploadFile": {
         "path": "Пример GET запроса OData4-v6-20240513_095023.docx"
       }
     },
     {
       "id": "1654912",
-      "comment": "Не указано в плане работ",
+      "comment": "Test",
       "uploadFile": {
-        "path": "Поля ЧЛ (3) (2).xlsx"
+        "path": "Пример GET запроса OData4-v6-20240513_095023.docx"
       }
     }
   ]

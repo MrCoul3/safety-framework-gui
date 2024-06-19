@@ -253,6 +253,7 @@ export const ru = {
       "Перейти на главную ? Все несохраненные данные будут потеряны.",
 
     snackBarSuccessSave: "Инспекция успешно сохранена",
+
     snackBarSuccessSaveBarrier:
       "“Инспекция успешно сохранена и добавлена в неотправленные инспекции",
     snackBarSuccessSend: "Инспекция успешно отправлена",
@@ -279,7 +280,8 @@ export const ru = {
     oilfieldPlaceholder: "Выберите месторождение",
     doStructPlaceholder: "Выберите цех",
     doObjectPlaceholder: "Выберите объект",
-
+    snackBarSuccessEliminated: "Нарушение успешно устранено",
+    snackBarErrorEliminated: "Ошибка запроса",
     violationsEmptyDescription:
       "Задайте данные для поиска, чтобы посмотреть необходимые нарушения",
   },

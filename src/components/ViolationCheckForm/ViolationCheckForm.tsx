@@ -22,7 +22,7 @@ import { ISendKarkasConfirmed } from "../../interfaces/ISendKarkasConfirmed";
 
 interface IViolationCheckForm {
    saveForm(value: ISendKarkasConfirmed): void;
-  violationId: string;
+  violationId: number;
   comment: string;
 }
 
@@ -36,6 +36,7 @@ const ViolationCheckForm = observer((props: IViolationCheckForm) => {
   const clearForm = () => {
     setCommentValue(null);
     setFilesDropped(null)
+    setFilesSize(0)
   };
   const handleChange = (value: string | null) => {
     console.log("QuestionCard handleChange value", value);
@@ -44,7 +45,7 @@ const ViolationCheckForm = observer((props: IViolationCheckForm) => {
   const saveForm = () => {
     if (filesDropped) {
       const result: ISendKarkasConfirmed = {
-        id: props.violationId,
+        id: props.violationId.toString(),
         comment: commentValue ?? "",
         uploadFile: filesDropped,
       };

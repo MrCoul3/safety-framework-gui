@@ -66,11 +66,11 @@ const ViolationsTable = observer((props: IViolationsTable) => {
     width: key === "question" ? 350 : 200,
     // maxWidth: 250,
   }));
-  const [violationId, setViolationId] = React.useState<string | null>();
+  const [violationId, setViolationId] = React.useState<number | null>();
 
   const onRowClick = ({ id, e }: { id: string; e: React.MouseEvent }) => {
     const row = (e.target as HTMLDivElement).closest(".Table-CellsRow");
-    setViolationId(id);
+    setViolationId(+id);
     console.log("onRowClick id", id, typeof id);
     document
       .querySelectorAll(".activeRow")
@@ -83,11 +83,15 @@ const ViolationsTable = observer((props: IViolationsTable) => {
     console.log("violationId", violationId, typeof violationId);
     if (violationId) {
       const violation = props.violations.find(
-          (violation) => +violation.id === +violationId,
+        (violation) => +violation.id === +violationId,
       );
-      console.log("violation!!!!", violation, violation?.id, typeof violation?.id);
+      console.log(
+        "violation!!!!",
+        violation,
+        violation?.id,
+        typeof violation?.id,
+      );
     }
-
   }, [violationId]);
 
   const renderLoader = () => {
@@ -103,14 +107,24 @@ const ViolationsTable = observer((props: IViolationsTable) => {
     }
   };
 
-  const handleSaveForm = (value: ISendKarkasConfirmed) => {
-    console.log("handleChangeComment", value);
-    store.eliminationOfViolationsStore.sendViolationForm(value);
+  const handleSaveForm = async (value: ISendKarkasConfirmed) => {
+    console.log("handleSaveForm", value);
+    const result =
+      await store.eliminationOfViolationsStore.sendViolationForm(value);
+    if (result) {
+      console.log("handleSaveForm result", toJS(result));
+      store.snackBarStore.successSnackBar(t("snackBarSuccessEliminated"));
+      setViolationId(null)
+      store.eliminationOfViolationsStore.getViolations();
+      store.eliminationOfViolationsStore.getViolationsDev();
+    } else {
+      store.snackBarStore.alertSnackBar(t("snackBarErrorEliminated"));
+    }
   };
 
   const getSelectedViolation = () => {
     const violation = props.violations.find(
-      (item) => item?.id.toString() === violationId,
+      (item) => +item?.id === violationId,
     );
     console.log("violation", toJS(violation));
     return violation;
