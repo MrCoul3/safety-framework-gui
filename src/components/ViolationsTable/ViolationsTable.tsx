@@ -38,13 +38,13 @@ const ViolationsTable = observer((props: IViolationsTable) => {
 
   const store = useStore();
 
- /* useEffect(() => {
+  useEffect(() => {
     setViolationId(null);
-  }, [props.loader]);*/
+  }, [props.loader]);
 
   useEffect(() => {
-    console.log('ViolationsTable props.violations', toJS(props.violations))
-  }, [props.violations])
+    console.log("ViolationsTable props.violations", toJS(props.violations));
+  }, [props.violations]);
 
   const rows: any = props.violations.map((item, i) => ({
     id: item?.id,
@@ -71,7 +71,7 @@ const ViolationsTable = observer((props: IViolationsTable) => {
   const onRowClick = ({ id, e }: { id: string; e: React.MouseEvent }) => {
     const row = (e.target as HTMLDivElement).closest(".Table-CellsRow");
     setViolationId(id);
-    console.log("onRowClick id", id);
+    console.log("onRowClick id", id, typeof id);
     document
       .querySelectorAll(".activeRow")
       .forEach((item) => item.classList.remove("activeRow"));
@@ -80,7 +80,14 @@ const ViolationsTable = observer((props: IViolationsTable) => {
     );
   };
   useEffect(() => {
-    console.log("violationId", violationId);
+    console.log("violationId", violationId, typeof violationId);
+    if (violationId) {
+      const violation = props.violations.find(
+          (violation) => +violation.id === +violationId,
+      );
+      console.log("violation!!!!", violation, violation?.id, typeof violation?.id);
+    }
+
   }, [violationId]);
 
   const renderLoader = () => {
@@ -129,7 +136,7 @@ const ViolationsTable = observer((props: IViolationsTable) => {
       )}
       {violationId
         ? props.violations.map((violation) =>
-            violation.id.toString() === violationId ? (
+            +violation.id === +violationId ? (
               <div className={style.details}>
                 <ViolationDetails violation={getSelectedViolation()} />
                 <ViolationCheckForm
