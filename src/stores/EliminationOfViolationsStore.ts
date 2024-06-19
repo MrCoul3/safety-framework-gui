@@ -108,9 +108,10 @@ export class EliminationOfViolationsStore {
   }
   async sendViolationForm(value: ISendKarkasConfirmed) {
     const form = new FormData();
-    value.uploadFile.forEach((file) => form.append("uploadFile", file));
+    // value.uploadFile.forEach((file) => form.append("uploadFile", file));
+    form.append("uploadFile", value.uploadFile)
     try {
-      await instance.post("karkasConfirm/sendKarkasConfirmed", {
+      await violationsInstance.post("violations", {
         ...value,
       });
     } catch (e) {

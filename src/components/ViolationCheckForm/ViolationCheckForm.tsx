@@ -28,35 +28,35 @@ interface IViolationCheckForm {
 
 const ViolationCheckForm = observer((props: IViolationCheckForm) => {
   const { t } = useTranslation("dict");
-  const [filesDropped, setFilesDropped] = useState<File[]>([]);
+  const [filesDropped, setFilesDropped] = useState<File | null>();
   const [filesSize, setFilesSize] = useState<number>(0);
   const [commentValue, setCommentValue] = useState<string | null>(props.comment);
 
 
   const clearForm = () => {
     setCommentValue(null);
-    setFilesDropped([])
+    setFilesDropped(null)
   };
   const handleChange = (value: string | null) => {
     console.log("QuestionCard handleChange value", value);
     setCommentValue(value);
   };
   const saveForm = () => {
-    const result: ISendKarkasConfirmed = {
-      id: props.violationId,
-      comment: commentValue ?? "",
-      uploadFile: filesDropped,
-    };
-    props.saveForm(result);
+    if (filesDropped) {
+      const result: ISendKarkasConfirmed = {
+        id: props.violationId,
+        comment: commentValue ?? "",
+        uploadFile: filesDropped,
+      };
+      props.saveForm(result);
+    }
   };
 
   const handleDrop = (acceptedFiles: File[]) => {
     const files = acceptedFiles;
-    setFilesDropped((prevState) => [...prevState, ...acceptedFiles]);
+    setFilesDropped(files[0]);
     const size =
-      files.reduce((acc, obj) => {
-        return acc + obj.size;
-      }, 0) /
+        files[0].size /
       (1024 * 1024);
     setFilesSize(+size.toFixed(2));
   };
@@ -67,12 +67,12 @@ const ViolationCheckForm = observer((props: IViolationCheckForm) => {
 
   switch (status) {
     case "default":
-      text = `Файлов загружено: ${filesDropped.length} (${filesSize}Мб)`;
+      text = `Файлов загружено: ${filesDropped ? 1 : 0} (${filesSize}Мб)`;
       break;
   }
 
   const isDisabledSave = () => {
-    return commentValue && filesDropped.length;
+    return commentValue && filesDropped;
   };
   return (
     <div className={style.ViolationCheckForm}>
@@ -95,7 +95,6 @@ const ViolationCheckForm = observer((props: IViolationCheckForm) => {
           </div>
           <DragNDropField
             className={style.DragNDropField}
-            multiple
             maxSize={20 * 1024 * 1024}
             onDropFiles={handleDrop}
           >
