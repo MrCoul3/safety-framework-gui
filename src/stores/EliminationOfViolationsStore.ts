@@ -72,7 +72,7 @@ export class EliminationOfViolationsStore {
     }
   }
   async getViolations() {
-    this.violationListController.abort()
+    console.log('this.violationListController', this.violationListController)
     const formFieldsValues = this.store.inspectionStore
       .formFieldsValues as IInspection;
     console.log(
@@ -96,7 +96,6 @@ export class EliminationOfViolationsStore {
     }
   }
   async getPassports() {
-    this.passportsController.abort();
     this.store.loaderStore.setLoader("wait");
     try {
       const response = await instance.get(

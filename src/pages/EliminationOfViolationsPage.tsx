@@ -109,7 +109,7 @@ const EliminationOfViolationsPage = observer(
       store.eliminationOfViolationsStore.clearViolations();
       if (isDevelop) {
         store.eliminationOfViolationsStore.getViolations();
-        store.eliminationOfViolationsStore.getViolationsDev();
+        // store.eliminationOfViolationsStore.getViolationsDev();
       } else {
         store.eliminationOfViolationsStore.getViolations();
       }
