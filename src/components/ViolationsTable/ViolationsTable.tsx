@@ -114,9 +114,8 @@ const ViolationsTable = observer((props: IViolationsTable) => {
     if (result) {
       console.log("handleSaveForm result", toJS(result));
       store.snackBarStore.successSnackBar(t("snackBarSuccessEliminated"));
-      setViolationId(null)
+      setViolationId(null);
       store.eliminationOfViolationsStore.getViolations();
-      store.eliminationOfViolationsStore.getViolationsDev();
     } else {
       store.snackBarStore.alertSnackBar(t("snackBarErrorEliminated"));
     }
