@@ -10,6 +10,7 @@ import { IViolation } from "../interfaces/IViolation";
 import { getViolationFilters } from "../constants/filters";
 import { IInspection } from "../interfaces/IInspection";
 import { ISendKarkasConfirmed } from "../interfaces/ISendKarkasConfirmed";
+import {Axios} from "axios";
 
 export class EliminationOfViolationsStore {
   private store: AppStore;
@@ -18,6 +19,10 @@ export class EliminationOfViolationsStore {
     this.store = store;
     makeAutoObservable(this);
   }
+
+  violationListController = new AbortController();
+  passportsController = new AbortController();
+
   passports: IPassport[] = [];
   violations: IViolation[] = [];
   setPassports(value: IPassport[]) {
@@ -67,6 +72,7 @@ export class EliminationOfViolationsStore {
     }
   }
   async getViolations() {
+    this.violationListController.abort()
     const formFieldsValues = this.store.inspectionStore
       .formFieldsValues as IInspection;
     console.log(
@@ -76,6 +82,7 @@ export class EliminationOfViolationsStore {
     this.store.loaderStore.setLoader("wait");
     try {
       const response = await violationsInstance.get("violations", {
+        signal: this.violationListController.signal,
         params: getViolationFilters(formFieldsValues),
       });
       if (!response.data.error) {
@@ -89,10 +96,14 @@ export class EliminationOfViolationsStore {
     }
   }
   async getPassports() {
+    this.passportsController.abort();
     this.store.loaderStore.setLoader("wait");
     try {
       const response = await instance.get(
         "passports?$filter=IsActual eq true&$expand=barriers&$count=true",
+          {
+            signal: this.passportsController.signal
+          }
       );
       if (!response.data.error) {
         if (response.data.value) {
