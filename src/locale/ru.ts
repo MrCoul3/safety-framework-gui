@@ -274,6 +274,7 @@ export const ru = {
     question: "Предмет проверки",
     [InspectionFormTypes.Auditor]: "Проверяющий",
     [InspectionFormTypes.Auditee]: "Проверяемый",
+    app: "Приложение",
 
     passportPlaceholder: "Выберите тип чек-листа",
     contractorPlaceholder: "Выберите ДО/ПО",

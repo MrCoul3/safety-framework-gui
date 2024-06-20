@@ -40,7 +40,7 @@ const ViolationsTable = observer((props: IViolationsTable) => {
   useEffect(() => {
     setViolationId(null);
   }, [props.loader]);
-/*
+  /*
   useEffect(() => {
     console.log("ViolationsTable props.violations", toJS(props.violations));
   }, [props.violations]);*/
@@ -58,19 +58,6 @@ const ViolationsTable = observer((props: IViolationsTable) => {
     auditee: item?.auditee,
     [InspectionFormTypes.DoStruct]: item?.doStruct,
   }));
- /* useEffect(() => {
-    rows.sort((a, b) => {
-      if (sortSetting?.sortingBy === InspectionFormTypes.AuditDate) {
-        const [firstDate, secondDate] =
-          sortSetting.sortOrder === "asc"
-            ? [a.auditDate, b.auditDate]
-            : [b.auditDate, a.auditDate];
-        return moment(firstDate).valueOf() - moment(secondDate).valueOf();
-      }
-      return 0;
-    });
-  }, [sortSetting]);*/
-
 
   const columns: TableColumn<(typeof rows)[number]>[] =
     VIOLATIONS_COMMON_FIELDS.map((key: any) => {
@@ -112,7 +99,7 @@ const ViolationsTable = observer((props: IViolationsTable) => {
       (child as HTMLElement).classList.add("activeRow"),
     );
   };
- /* useEffect(() => {
+  /* useEffect(() => {
     console.log("violationId", violationId, typeof violationId);
     if (violationId) {
       const violation = props.violations.find(
@@ -178,11 +165,13 @@ const ViolationsTable = observer((props: IViolationsTable) => {
             +violation.id === +violationId ? (
               <div className={style.details}>
                 <ViolationDetails violation={getSelectedViolation()} />
-                <ViolationCheckForm
-                  violationId={violationId}
-                  saveForm={handleSaveForm}
-                  comment={getSelectedViolation()?.comment ?? ""}
-                />
+                {!violation.isResolved && (
+                  <ViolationCheckForm
+                    violationId={violationId}
+                    saveForm={handleSaveForm}
+                    comment={getSelectedViolation()?.comment ?? ""}
+                  />
+                )}
               </div>
             ) : null,
           )
