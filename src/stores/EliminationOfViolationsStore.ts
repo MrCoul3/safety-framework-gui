@@ -72,7 +72,6 @@ export class EliminationOfViolationsStore {
     }
   }
   async getViolations() {
-    console.log('this.violationListController', this.violationListController)
     const formFieldsValues = this.store.inspectionStore
       .formFieldsValues as IInspection;
     console.log(

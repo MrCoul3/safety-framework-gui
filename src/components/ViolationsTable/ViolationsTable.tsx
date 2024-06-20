@@ -1,7 +1,7 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
-import { Table, TableColumn } from "@consta/uikit/Table";
+import { SortByProps, Table, TableColumn } from "@consta/uikit/Table";
 import { InspectionFormTypes } from "../../enums/InspectionFormTypes";
 import { VIOLATIONS_COMMON_FIELDS } from "../../enums/ViolationFilterTypes";
 import { IViolation } from "../../interfaces/IViolation";
@@ -26,11 +26,17 @@ import classNames from "classnames";
 
 interface IViolationsTable {
   violations: IViolation[];
-
   loader?: LoaderType;
+}
 
-  /*  handleChangeComment(value: string | null): void;
-  comment: string | null;*/
+interface IRow {
+  id: string;
+  [InspectionFormTypes.AuditDate]: string | null;
+  passport: string | null;
+  question: string | null;
+  auditor: string | null;
+  auditee: string | null;
+  [InspectionFormTypes.DoStruct]: string | null;
 }
 
 const ViolationsTable = observer((props: IViolationsTable) => {
@@ -46,19 +52,35 @@ const ViolationsTable = observer((props: IViolationsTable) => {
     console.log("ViolationsTable props.violations", toJS(props.violations));
   }, [props.violations]);
 
-  const rows: any = props.violations.map((item, i) => ({
-    id: item?.id,
-    [InspectionFormTypes.AuditDate]: moment(item?.auditDate).format(
-      "DD.MM.YYYY",
-    ),
-    passport: item?.passport,
-    question: item?.question,
-    auditor: item?.auditor,
-    auditee: item?.auditee,
-    [InspectionFormTypes.DoStruct]: item?.doStruct,
-  }));
+  const [sortSetting, setSortSetting] = useState<SortByProps<any> | null>(null);
+  const rows: IRow[] = props.violations
+    .map((item, i) => ({
+      id: item?.id.toString(),
+      [InspectionFormTypes.AuditDate]: moment(item?.auditDate).format(
+        "DD.MM.YYYY",
+      ),
+      passport: item?.passport,
+      question: item?.question,
+      auditor: item?.auditor,
+      auditee: item?.auditee,
+      [InspectionFormTypes.DoStruct]: item?.doStruct,
+    }))
+    .sort((a, b) => {
+      if (sortSetting?.sortingBy === InspectionFormTypes.AuditDate) {
+        const [firstDate, secondDate] =
+          sortSetting.sortOrder === "asc"
+            ? [a.auditDate, b.auditDate]
+            : [b.auditDate, a.auditDate];
+        return moment(firstDate).valueOf() - moment(secondDate).valueOf();
+      }
+      return 0;
+    });
 
-  const columns: any = VIOLATIONS_COMMON_FIELDS.map((key: any) => ({
+  useEffect(() => {
+    console.log("rows!!", rows);
+  }, [sortSetting]);
+
+  const columns: TableColumn<typeof rows[number]>[] = VIOLATIONS_COMMON_FIELDS.map((key: any) => ({
     title: <span className={style.colTitle}>{t(key)}</span>,
     accessor: key,
     sortable: true,
@@ -66,6 +88,7 @@ const ViolationsTable = observer((props: IViolationsTable) => {
     width: key === "question" ? 350 : 200,
     // maxWidth: 250,
   }));
+
   const [violationId, setViolationId] = React.useState<number | null>();
 
   const onRowClick = ({ id, e }: { id: string; e: React.MouseEvent }) => {
@@ -137,6 +160,7 @@ const ViolationsTable = observer((props: IViolationsTable) => {
     >
       {props.violations.length ? (
         <Table
+          onSortBy={setSortSetting}
           className={style.table}
           onRowClick={onRowClick}
           rows={rows}

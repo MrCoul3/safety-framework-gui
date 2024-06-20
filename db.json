@@ -46946,7 +46946,7 @@
   ],
   "violations": [
     {
-      "auditDate": "Tue, 11 Jun 2024 00:00:00 GMT",
+      "auditDate": "Tue, 09 July 2024 00:00:00 GMT",
       "auditee": "Содиков Улугбек Умед угли",
       "auditor": "Аверкиев Андрей Николаевич",
       "comment": "Не указано в плане работ",
@@ -46966,7 +46966,7 @@
       "resolvedOn": "Thu, 13 Jun 2024 14:19:32 GMT"
     },
     {
-      "auditDate": "Tue, 11 Jun 2024 00:00:00 GMT",
+      "auditDate": "Tue, 11 August 2024 00:00:00 GMT",
       "auditee": "Гаффоров Абдушамс Абдушохинович",
       "auditor": "Анохин Олег Валентинович",
       "comment": "Скв. 1 категории, установлен превентор с мех.приводом",
@@ -47264,20 +47264,6 @@
       "resolveFilepath": null,
       "resolvedBy": null,
       "resolvedOn": null
-    },
-    {
-      "id": "1656217",
-      "comment": "ffgfgf",
-      "uploadFile": {
-        "path": "Пример GET запроса OData4-v6-20240513_095023.docx"
-      }
-    },
-    {
-      "id": "1654912",
-      "comment": "Test",
-      "uploadFile": {
-        "path": "Пример GET запроса OData4-v6-20240513_095023.docx"
-      }
     }
   ]
 }

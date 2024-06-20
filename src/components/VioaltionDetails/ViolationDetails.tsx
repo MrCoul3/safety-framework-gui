@@ -22,8 +22,8 @@ const ViolationDetails = observer((props: IViolationDetails) => {
 
   const name = title?.replace(code ?? "", "");
 
-  const getValue = (value?: string) => (value ? value : t("noFilled"));
-  const getComment = (value?: string) => (value ? value : "-");
+  const getValue = (value?: string | null) => (value ? value : t("noFilled"));
+  const getComment = (value?: string | null) => (value ? value : "-");
   const getDate = (date?: Date) =>
     date ? moment(date).format("DD.MM.YYYY") : t("noFilled");
   return (
