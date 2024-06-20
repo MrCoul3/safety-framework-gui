@@ -9,15 +9,8 @@ import { useTranslation } from "react-i18next";
 import EmptyBoxPage from "../EmptyBoxPage/EmptyBoxPage";
 import { LoaderType } from "../../interfaces/LoaderType";
 import LoaderPage from "../LoaderPage/LoaderPage";
-import { toJS } from "mobx";
+import { keys, toJS } from "mobx";
 import moment from "moment";
-import {
-  CellClickType,
-  onCellClick,
-} from "@consta/uikit/__internal__/src/components/Table/Table";
-import { Button } from "@consta/uikit/Button";
-import { Modal } from "@consta/uikit/Modal";
-import { Card } from "@consta/uikit/Card";
 import ViolationDetails from "../VioaltionDetails/ViolationDetails";
 import ViolationCheckForm from "../ViolationCheckForm/ViolationCheckForm";
 import { useStore } from "../../hooks/useStore";
@@ -47,25 +40,26 @@ const ViolationsTable = observer((props: IViolationsTable) => {
   useEffect(() => {
     setViolationId(null);
   }, [props.loader]);
-
+/*
   useEffect(() => {
     console.log("ViolationsTable props.violations", toJS(props.violations));
-  }, [props.violations]);
+  }, [props.violations]);*/
 
   const [sortSetting, setSortSetting] = useState<SortByProps<any> | null>(null);
-  const rows: IRow[] = props.violations
-    .map((item, i) => ({
-      id: item?.id.toString(),
-      [InspectionFormTypes.AuditDate]: moment(item?.auditDate).format(
-        "DD.MM.YYYY",
-      ),
-      passport: item?.passport,
-      question: item?.question,
-      auditor: item?.auditor,
-      auditee: item?.auditee,
-      [InspectionFormTypes.DoStruct]: item?.doStruct,
-    }))
-    .sort((a, b) => {
+
+  const rows: IRow[] = props.violations.map((item, i) => ({
+    id: item?.id.toString(),
+    [InspectionFormTypes.AuditDate]: moment(item?.auditDate)
+      .valueOf()
+      .toString(),
+    passport: item?.passport,
+    question: item?.question,
+    auditor: item?.auditor,
+    auditee: item?.auditee,
+    [InspectionFormTypes.DoStruct]: item?.doStruct,
+  }));
+ /* useEffect(() => {
+    rows.sort((a, b) => {
       if (sortSetting?.sortingBy === InspectionFormTypes.AuditDate) {
         const [firstDate, secondDate] =
           sortSetting.sortOrder === "asc"
@@ -75,19 +69,35 @@ const ViolationsTable = observer((props: IViolationsTable) => {
       }
       return 0;
     });
+  }, [sortSetting]);*/
 
-  useEffect(() => {
-    console.log("rows!!", rows);
-  }, [sortSetting]);
 
-  const columns: TableColumn<typeof rows[number]>[] = VIOLATIONS_COMMON_FIELDS.map((key: any) => ({
-    title: <span className={style.colTitle}>{t(key)}</span>,
-    accessor: key,
-    sortable: true,
-    align: "left",
-    width: key === "question" ? 350 : 200,
-    // maxWidth: 250,
-  }));
+  const columns: TableColumn<(typeof rows)[number]>[] =
+    VIOLATIONS_COMMON_FIELDS.map((key: any) => {
+      if (key === InspectionFormTypes.AuditDate) {
+        return {
+          title: <span className={style.colTitle}>{t(key)}</span>,
+          accessor: key,
+          sortable: true,
+          align: "left",
+          width: key === "question" ? 350 : 200,
+          renderCell: (row) => {
+            return key === InspectionFormTypes.AuditDate
+              ? row?.auditDate
+                ? moment(+row?.auditDate).format("DD.MM.YYYY")
+                : ""
+              : null;
+          },
+        };
+      }
+      return {
+        title: <span className={style.colTitle}>{t(key)}</span>,
+        accessor: key,
+        sortable: true,
+        align: "left",
+        width: key === "question" ? 350 : 200,
+      };
+    });
 
   const [violationId, setViolationId] = React.useState<number | null>();
 
@@ -102,20 +112,14 @@ const ViolationsTable = observer((props: IViolationsTable) => {
       (child as HTMLElement).classList.add("activeRow"),
     );
   };
-  useEffect(() => {
+ /* useEffect(() => {
     console.log("violationId", violationId, typeof violationId);
     if (violationId) {
       const violation = props.violations.find(
         (violation) => +violation.id === +violationId,
       );
-      console.log(
-        "violation!!!!",
-        violation,
-        violation?.id,
-        typeof violation?.id,
-      );
     }
-  }, [violationId]);
+  }, [violationId]);*/
 
   const renderLoader = () => {
     if (props.loader === "wait") {
@@ -160,11 +164,9 @@ const ViolationsTable = observer((props: IViolationsTable) => {
     >
       {props.violations.length ? (
         <Table
-          onSortBy={setSortSetting}
           className={style.table}
           onRowClick={onRowClick}
           rows={rows}
-          isResizable
           stickyHeader
           columns={columns}
         />
