@@ -179,9 +179,9 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
         [InspectionFormTypes.Supervisor]:
           item[InspectionFormTypes.Supervisor]?.personFio,
         actions: renderActions(index.toString(), item),
-        [InspectionFormTypes.AuditDate]: moment(item.auditDate).format(
-          "DD.MM.YYYY",
-        ),
+        [InspectionFormTypes.AuditDate]: moment(item.auditDate)
+          .valueOf()
+          .toString(),
       })),
     [props.inspections],
   );
@@ -190,13 +190,32 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
 
   const columns: TableColumn<(typeof rows)[number]>[] = keys
     .filter((key) => !excludeFields.includes(key))
-    .map((key: any) => ({
-      title: <span className={style.colTitle}>{t(key)}</span>,
-      accessor: key,
-      sortable: true,
-      align: "left",
-      width: 200,
-    }));
+    .map((key: any) => {
+      if (key === InspectionFormTypes.AuditDate) {
+        return {
+          title: <span className={style.colTitle}>{t(key)}</span>,
+          accessor: key,
+          sortable: true,
+          align: "left",
+          width: 200,
+          renderCell: (row) => {
+            return key === InspectionFormTypes.AuditDate
+              ? row?.auditDate
+                ? moment(+row?.auditDate).format("DD.MM.YYYY")
+                : ""
+              : null;
+          },
+        };
+      }
+
+      return {
+        title: <span className={style.colTitle}>{t(key)}</span>,
+        accessor: key,
+        sortable: true,
+        align: "left",
+        width: 200,
+      };
+    });
 
   columns.unshift({
     title: <span className={style.colTitle}>{t("actions")}</span>,
@@ -204,8 +223,6 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
     align: "left",
     width: 150,
   });
-
-  console.log("columns!!!", columns);
 
   const handleOpenFilter = (field: InspectionFormTypes) => {
     console.log("onopen", field);
@@ -243,45 +260,55 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
     setPage(val);
     props.handlePaginationChange(val);
   };
-  const sentInspectionsCondition = (subGroup: SubGroupsActionsTypes) =>
-    subGroup === SubGroupsActionsTypes.Sent;
-  const renderLoader = (subGroup: SubGroupsActionsTypes) => {
-    if (props.loader === "wait") {
-      return <LoaderPage />;
-    } else {
-      return (
-        <NothingFound
-          info={
-            sentInspectionsCondition(subGroup)
-              ? t("emptySentInspections")
-              : t("emptyNewInspections")
-          }
-        />
-      );
-    }
+
+  const removeFilterButtons = () => {
+    const buttonFilters = document.querySelectorAll(
+      ".TableHeader-Icon_type_filter",
+    );
+    buttonFilters.forEach((item) => item.remove());
   };
+
+  useEffect(() => {
+    if (!isSentInspectionsCondition()) {
+      removeFilterButtons();
+    }
+  }, [location]);
 
   return (
     <div ref={tableContainerRef} className={style.InspectionsTable}>
-      {isSentInspectionsCondition() && (
-        <FilterTags
-          resetFilters={props.resetFilters}
-          handleDeleteFilter={props.handleDeleteFilter}
-          filterFieldsValues={props.filterFieldsValues}
+      {isSentInspectionsCondition() ? (
+        <>
+          <FilterTags
+            resetFilters={props.resetFilters}
+            handleDeleteFilter={props.handleDeleteFilter}
+            filterFieldsValues={props.filterFieldsValues}
+          />
+          <Table
+            isResizable
+            rows={rows}
+            stickyHeader
+            ref={tableRef}
+            stickyColumns={1}
+            columns={columns}
+            className={style.table}
+            onSortBy={props.handleSort}
+            onCellClick={handleCellClick}
+            filters={filters}
+          />
+        </>
+      ) : (
+        <Table
+          isResizable
+          rows={rows}
+          stickyHeader
+          ref={tableRef}
+          stickyColumns={1}
+          columns={columns}
+          className={style.table}
+          onCellClick={handleCellClick}
+          filters={filters}
         />
       )}
-      <Table
-        isResizable
-        rows={rows}
-        stickyHeader
-        ref={tableRef}
-        stickyColumns={1}
-        columns={columns}
-        className={style.table}
-        onSortBy={props.handleSort}
-        onCellClick={handleCellClick}
-        filters={filters}
-      />
 
       {props.inspectionsCount && props.inspectionsCount > INSPECTIONS_ON_PAGE
         ? isSentInspectionsCondition() &&

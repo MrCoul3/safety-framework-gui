@@ -99,14 +99,6 @@ const ViolationsTable = observer((props: IViolationsTable) => {
       (child as HTMLElement).classList.add("activeRow"),
     );
   };
-  /* useEffect(() => {
-    console.log("violationId", violationId, typeof violationId);
-    if (violationId) {
-      const violation = props.violations.find(
-        (violation) => +violation.id === +violationId,
-      );
-    }
-  }, [violationId]);*/
 
   const renderLoader = () => {
     if (props.loader === "wait") {
