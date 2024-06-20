@@ -169,7 +169,7 @@ const ViolationsTable = observer((props: IViolationsTable) => {
                   <ViolationCheckForm
                     violationId={violationId}
                     saveForm={handleSaveForm}
-                    comment={getSelectedViolation()?.comment ?? ""}
+                    comment={getSelectedViolation()?.resolveComment ?? ""}
                   />
                 )}
               </div>
