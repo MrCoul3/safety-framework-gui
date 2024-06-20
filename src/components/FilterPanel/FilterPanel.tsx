@@ -136,7 +136,7 @@ const FilterPanel = observer((props: IFilterPanel) => {
       </div>
 
       <div className={style.controlButtonGroup}>
-        <Button
+        <Button disabled={!Object.values(props.formFieldsValues ?? {}).length}
           onClick={props.resetFilters}
           iconSize="s"
           view="secondary"

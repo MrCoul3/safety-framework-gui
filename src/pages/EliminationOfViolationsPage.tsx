@@ -104,6 +104,7 @@ const EliminationOfViolationsPage = observer(
     };
     const handleResetFilters = () => {
       store.inspectionStore.clearInspectionForm();
+      submitFilter();
     };
     const submitFilter = () => {
       store.eliminationOfViolationsStore.clearViolations();
@@ -114,7 +115,6 @@ const EliminationOfViolationsPage = observer(
         store.eliminationOfViolationsStore.getViolations();
       }
     };
-
 
     return (
       <ViolationsLayout
