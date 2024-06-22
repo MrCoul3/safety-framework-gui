@@ -73,7 +73,7 @@ const ViolationCheckForm = observer((props: IViolationCheckForm) => {
 
   switch (status) {
     case "default":
-      text = `${t("loadedFile")} ${filesDropped?.name} (${filesSize}Мб)`;
+      text = filesDropped ? `${t("loadedFile")} ${filesDropped?.name} (${filesSize}Мб)` : "";
       break;
   }
 
