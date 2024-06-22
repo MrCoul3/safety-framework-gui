@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
 import { SortByProps, Table, TableColumn } from "@consta/uikit/Table";
@@ -117,21 +117,20 @@ const ViolationsTable = observer((props: IViolationsTable) => {
     console.log("handleSaveForm", value);
     const result =
       await store.eliminationOfViolationsStore.sendViolationForm(value);
-    /*if (result) {
+    if (result) {
       console.log("handleSaveForm result", toJS(result));
       store.snackBarStore.successSnackBar(t("snackBarSuccessEliminated"));
       setViolationId(null);
       store.eliminationOfViolationsStore.getViolations();
     } else {
       store.snackBarStore.alertSnackBar(t("snackBarErrorEliminated"));
-    }*/
+    }
   };
 
   const getSelectedViolation = () => {
     const violation = props.violations.find(
       (item) => +item?.id === violationId,
     );
-    console.log("violation", toJS(violation));
     return violation;
   };
 
@@ -158,7 +157,10 @@ const ViolationsTable = observer((props: IViolationsTable) => {
               <div className={style.details}>
                 <ViolationDetails violation={getSelectedViolation()} />
                 {!violation.isResolved && (
-                  <ViolationCheckForm onLoadFile={(value) => store.snackBarStore.successSnackBar(value)}
+                  <ViolationCheckForm
+                    onLoadFile={(value) =>
+                      store.snackBarStore.successSnackBar(value)
+                    }
                     violationId={violationId}
                     saveForm={handleSaveForm}
                     comment={getSelectedViolation()?.resolveComment ?? ""}

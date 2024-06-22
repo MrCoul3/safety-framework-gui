@@ -1,8 +1,10 @@
 .ViolationsTable {
   padding: 24px;
   width: 80%;
-  display: grid;
   gap: 24px;
+  height: 100%;
+  overflow: auto;
+  box-sizing: border-box;
 }
 .doubleScreen {
   grid-template-rows: repeat(2, 1fr);
@@ -22,3 +24,4 @@
   height: 100%;
   gap: 12px;
 }
+
