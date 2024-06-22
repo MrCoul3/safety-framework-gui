@@ -10,7 +10,7 @@ import { IViolation } from "../interfaces/IViolation";
 import { getViolationFilters } from "../constants/filters";
 import { IInspection } from "../interfaces/IInspection";
 import { ISendKarkasConfirmed } from "../interfaces/ISendKarkasConfirmed";
-import {Axios} from "axios";
+import { Axios } from "axios";
 
 export class EliminationOfViolationsStore {
   private store: AppStore;
@@ -99,9 +99,9 @@ export class EliminationOfViolationsStore {
     try {
       const response = await instance.get(
         "passports?$filter=IsActual eq true&$expand=barriers&$count=true",
-          {
-            signal: this.passportsController.signal
-          }
+        {
+          signal: this.passportsController.signal,
+        },
       );
       if (!response.data.error) {
         if (response.data.value) {
@@ -117,15 +117,14 @@ export class EliminationOfViolationsStore {
   }
   async sendViolationForm(value: ISendKarkasConfirmed) {
     const form = new FormData();
-    // value.uploadFile.forEach((file) => form.append("uploadFile", file));
-    form.append("uploadFile", value.uploadFile)
+    form.append("uploadFile", value.uploadFile);
+    form.append("comment", value.comment);
+    form.append("id", value.id);
     try {
-     const response = await violationsInstance.post("violations", {
-        ...value,
-      });
-     if (response.data) {
-       return response.data;
-     }
+      const response = await violationsInstance.post("violations", form);
+      if (response.data) {
+        return response.data;
+      }
     } catch (e) {
       console.error(e);
     }

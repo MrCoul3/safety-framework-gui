@@ -117,14 +117,14 @@ const ViolationsTable = observer((props: IViolationsTable) => {
     console.log("handleSaveForm", value);
     const result =
       await store.eliminationOfViolationsStore.sendViolationForm(value);
-    if (result) {
+    /*if (result) {
       console.log("handleSaveForm result", toJS(result));
       store.snackBarStore.successSnackBar(t("snackBarSuccessEliminated"));
       setViolationId(null);
       store.eliminationOfViolationsStore.getViolations();
     } else {
       store.snackBarStore.alertSnackBar(t("snackBarErrorEliminated"));
-    }
+    }*/
   };
 
   const getSelectedViolation = () => {
