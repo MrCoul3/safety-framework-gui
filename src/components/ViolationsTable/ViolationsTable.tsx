@@ -40,24 +40,23 @@ const ViolationsTable = observer((props: IViolationsTable) => {
   useEffect(() => {
     setViolationId(null);
   }, [props.loader]);
-  /*
-  useEffect(() => {
-    console.log("ViolationsTable props.violations", toJS(props.violations));
-  }, [props.violations]);*/
 
-  const [sortSetting, setSortSetting] = useState<SortByProps<any> | null>(null);
-
-  const rows: IRow[] = props.violations.map((item, i) => ({
-    id: item?.id.toString(),
-    [InspectionFormTypes.AuditDate]: moment(item?.auditDate)
-      .valueOf()
-      .toString(),
-    passport: item?.passport,
-    question: item?.question,
-    auditor: item?.auditor,
-    auditee: item?.auditee,
-    [InspectionFormTypes.DoStruct]: item?.doStruct,
-  }));
+  const rows: IRow[] = props.violations
+    .slice()
+    .sort((a, b) =>
+      moment(a.auditDate).valueOf() > moment(b.auditDate).valueOf() ? -1 : 1,
+    )
+    .map((item, i) => ({
+      id: item?.id.toString(),
+      [InspectionFormTypes.AuditDate]: moment(item?.auditDate)
+        .valueOf()
+        .toString(),
+      passport: item?.passport,
+      question: item?.question,
+      auditor: item?.auditor,
+      auditee: item?.auditee,
+      [InspectionFormTypes.DoStruct]: item?.doStruct,
+    }));
 
   const columns: TableColumn<(typeof rows)[number]>[] =
     VIOLATIONS_COMMON_FIELDS.map((key: any) => {
