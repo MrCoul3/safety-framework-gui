@@ -158,7 +158,7 @@ const ViolationsTable = observer((props: IViolationsTable) => {
               <div className={style.details}>
                 <ViolationDetails violation={getSelectedViolation()} />
                 {!violation.isResolved && (
-                  <ViolationCheckForm
+                  <ViolationCheckForm onLoadFile={(value) => store.snackBarStore.successSnackBar(value)}
                     violationId={violationId}
                     saveForm={handleSaveForm}
                     comment={getSelectedViolation()?.resolveComment ?? ""}

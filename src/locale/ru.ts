@@ -263,6 +263,9 @@ export const ru = {
     barriersSelect: "Выбрано барьеров",
 
     hideFixedViolations: "Скрыть устраненные нарушения",
+    loadedFile: "Загруженный файл: ",
+    file: "Файл",
+    successLoaded: "успешно загружен"
   },
   violationsDict: {
     passport: "Тип чек-листа",
@@ -285,5 +288,6 @@ export const ru = {
     snackBarErrorEliminated: "Ошибка запроса",
     violationsEmptyDescription:
       "Задайте данные для поиска, чтобы посмотреть необходимые нарушения",
+
   },
 };

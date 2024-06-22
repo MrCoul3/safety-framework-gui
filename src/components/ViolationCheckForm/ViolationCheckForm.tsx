@@ -19,9 +19,11 @@ import {
 } from "@consta/uikit/DragNDropFieldCanary";
 import { DragNDropField, FileRejection } from "@consta/uikit/DragNDropField";
 import { ISendKarkasConfirmed } from "../../interfaces/ISendKarkasConfirmed";
+import classNames from "classnames";
 
 interface IViolationCheckForm {
-   saveForm(value: ISendKarkasConfirmed): void;
+  saveForm(value: ISendKarkasConfirmed): void;
+  onLoadFile(value: string): void;
   violationId: number;
   comment: string;
 }
@@ -30,13 +32,14 @@ const ViolationCheckForm = observer((props: IViolationCheckForm) => {
   const { t } = useTranslation("dict");
   const [filesDropped, setFilesDropped] = useState<File | null>();
   const [filesSize, setFilesSize] = useState<number>(0);
-  const [commentValue, setCommentValue] = useState<string | null>(props.comment);
-
+  const [commentValue, setCommentValue] = useState<string | null>(
+    props.comment,
+  );
 
   const clearForm = () => {
     setCommentValue(null);
-    setFilesDropped(null)
-    setFilesSize(0)
+    setFilesDropped(null);
+    setFilesSize(0);
   };
   const handleChange = (value: string | null) => {
     console.log("QuestionCard handleChange value", value);
@@ -54,12 +57,14 @@ const ViolationCheckForm = observer((props: IViolationCheckForm) => {
   };
 
   const handleDrop = (acceptedFiles: File[]) => {
-    const files = acceptedFiles;
-    setFilesDropped(files[0]);
-    const size =
-        files[0].size /
-      (1024 * 1024);
-    setFilesSize(+size.toFixed(2));
+    console.log("handleDrop");
+    const file = acceptedFiles[0];
+    if (file) {
+      setFilesDropped(file);
+      const size = file.size / (1024 * 1024);
+      setFilesSize(+size.toFixed(2));
+      props.onLoadFile(`${t("file")} ${file.name} ${t("successLoaded")}`);
+    }
   };
 
   let status: DragNDropFieldInformerPropStatus = "default";
@@ -68,7 +73,7 @@ const ViolationCheckForm = observer((props: IViolationCheckForm) => {
 
   switch (status) {
     case "default":
-      text = `Файлов загружено: ${filesDropped ? 1 : 0} (${filesSize}Мб)`;
+      text = `${t("loadedFile")} ${filesDropped?.name} (${filesSize}Мб)`;
       break;
   }
 
@@ -80,6 +85,7 @@ const ViolationCheckForm = observer((props: IViolationCheckForm) => {
       <Card className={style.card}>
         <div className={style.title}>{t("checkForm")}</div>
         <TextField
+          status={commentValue ? "success" : undefined}
           required
           minRows={3}
           cols={200}
@@ -95,7 +101,9 @@ const ViolationCheckForm = observer((props: IViolationCheckForm) => {
             <span style={{ color: "red" }}> *</span>
           </div>
           <DragNDropField
-            className={style.DragNDropField}
+            className={classNames(style.DragNDropField, {
+              [style.successLoaded]: !!filesDropped,
+            })}
             maxSize={20 * 1024 * 1024}
             onDropFiles={handleDrop}
           >
