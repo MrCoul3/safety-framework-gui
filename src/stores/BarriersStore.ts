@@ -314,10 +314,10 @@ export class BarriersStore {
     );
     console.log("checkFilledQuestions questions", toJS(questions));
     return questions.every(
-        (q) =>
-            q[FilledQuestionTypes.FulfillmentId] &&
-            q[FilledQuestionTypes.InapplicableReasonId] &&
-            q[FilledQuestionTypes.PlannedResolveDate],
+      (q) =>
+        q[FilledQuestionTypes.FulfillmentId] &&
+        q[FilledQuestionTypes.InapplicableReasonId] &&
+        q[FilledQuestionTypes.PlannedResolveDate],
     );
   }
   checkIsBarrierFormSuccess(passportId?: string) {
@@ -327,11 +327,10 @@ export class BarriersStore {
         toJS(this.filledBarriers),
       );
       return this.filledBarriers.every((bar) => {
-        this.checkFilledQuestions(bar)
+        this.checkFilledQuestions(bar);
         return (
           bar[BarrierFieldTypes.Mub] &&
           bar[BarrierFieldTypes.Mub]?.trim() !== "" &&
-
           this.checkComment(bar) &&
           this.checkExtraFields(bar, passportId)
         );
