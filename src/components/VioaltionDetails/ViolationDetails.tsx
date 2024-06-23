@@ -115,6 +115,16 @@ const ViolationDetails = observer((props: IViolationDetails) => {
                 {getComment(props.violation?.comment)}
               </span>
             </div>
+            {props.violation?.resolveComment && (
+              <div className={style.extraInfoValue}>
+                {t("resolveComment")}
+                <span className={style.value}>
+                  {" "}
+                  {getComment(props.violation?.resolveComment)}
+                </span>
+              </div>
+            )}
+
             <div className={style.extraInfoValue}>
               {t("app")}
               <span className={style.value}>

@@ -137,15 +137,6 @@ const BarrierForm = observer((props: IBarrierForm) => {
     }
     return "success";
   };
-  /*  const getStatusForExtraFields = (type: BarrierFieldTypes | BarrierExtraFieldTypes) => {
-    if (props.formFields) {
-      const condition = props.formFields[type];
-      if (!condition) {
-        return "alert";
-      }
-    }
-    return "success";
-  };*/
 
   const questions = useMemo(
     () =>
