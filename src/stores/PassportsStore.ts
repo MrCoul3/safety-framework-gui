@@ -38,7 +38,7 @@ export class PassportsStore {
     this.store.loaderStore.setLoader("wait");
     try {
       const response = await instance.get(
-        "passports?$filter=IsActual eq true&$expand=barriers&$expand=icon$count=true",
+        "passports?$filter=IsActual eq true&$expand=barriers&$expand=icon&$count=true",
       );
       if (!response.data.error) {
         if (response.data.value) {
