@@ -172,12 +172,12 @@ const PassportsPage = observer((props: IPassportsPage) => {
                   getFilledBarriersForPassport(passport.id),
                   passport.id,
                 )}
-                barriersCount={getBarriersCount(passport.id)}
                 id={passport.id}
+                key={passport.id}
                 title={passport.title}
                 onClick={handlePassportClick}
-                key={passport.id}
-                icon={passport.iconString}
+                icon={passport?.icon?.iconString}
+                barriersCount={getBarriersCount(passport.id)}
               />
             ))}
         />
