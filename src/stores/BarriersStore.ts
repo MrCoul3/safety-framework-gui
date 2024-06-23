@@ -10,11 +10,7 @@ import { IFilledQuestions } from "../interfaces/IFilledQuestions";
 import { FilledQuestionTypes } from "../enums/FilledQuestionTypes";
 import { IFilledRequirements } from "../interfaces/IFilledRequirements";
 import { IInapplicableReasons } from "../interfaces/IInapplicableReasons";
-import { IFreeForm } from "../interfaces/IFreeForm";
-import { filterByRequiredFields } from "../utils/filterByRequiredFields";
 import { BarrierFieldTypes } from "../enums/BarrierTypes";
-import { IRequirement } from "../interfaces/IRequirement";
-import { IQuestion } from "../interfaces/IQuestion";
 
 export class BarriersStore {
   private store: AppStore;
@@ -198,13 +194,26 @@ export class BarriersStore {
     index: number,
   ) {
     const foundBarriersById = this.getFoundBarriersById(barrierId);
+    console.log(
+      "updateFilledQuestions foundBarriersById",
+      toJS(foundBarriersById),
+    );
     const activeBarrier = foundBarriersById[index];
+    console.log("updateFilledQuestions activeBarrier", toJS(activeBarrier));
+
     let filledRequirements = activeBarrier?.filledRequirements;
+    console.log(
+      "updateFilledQuestions filledRequirements",
+      toJS(filledRequirements),
+    );
+
     const filledQuestions = filledRequirements?.find(
       (fillReq) =>
         fillReq.requirementId ===
         value[FilledQuestionTypes.FilledRequirementId],
     )?.filledQuestions;
+
+    console.log("updateFilledQuestions filledQuestions", toJS(filledQuestions));
 
     const newFilledQuestions = filledQuestions?.map((fillQ) => {
       if (
@@ -215,6 +224,10 @@ export class BarriersStore {
       }
       return fillQ;
     });
+    console.log(
+      "updateFilledQuestions newFilledQuestions",
+      toJS(newFilledQuestions),
+    );
 
     filledRequirements
       ? filledRequirements?.map((fillReq) => {
@@ -227,6 +240,11 @@ export class BarriersStore {
           return fillReq;
         })
       : [];
+
+    console.log(
+      "updateFilledQuestions filledRequirements",
+      toJS(filledRequirements),
+    );
 
     console.log(
       "updateFilledQuestions this.filledBarriers",
@@ -288,12 +306,32 @@ export class BarriersStore {
     }
   }
 
+  checkFilledQuestions(bar: IFilledBarrier) {
+    const questions: IFilledQuestions[] = [];
+
+    bar.filledRequirements?.forEach((fillReq) =>
+      questions.push(...fillReq.filledQuestions),
+    );
+    console.log("checkFilledQuestions questions", toJS(questions));
+    return questions.every(
+        (q) =>
+            q[FilledQuestionTypes.FulfillmentId] &&
+            q[FilledQuestionTypes.InapplicableReasonId] &&
+            q[FilledQuestionTypes.PlannedResolveDate],
+    );
+  }
   checkIsBarrierFormSuccess(passportId?: string) {
     if (this.filledBarriers.length) {
+      console.log(
+        "checkIsBarrierFormSuccess this.filledBarriers",
+        toJS(this.filledBarriers),
+      );
       return this.filledBarriers.every((bar) => {
+        this.checkFilledQuestions(bar)
         return (
           bar[BarrierFieldTypes.Mub] &&
           bar[BarrierFieldTypes.Mub]?.trim() !== "" &&
+
           this.checkComment(bar) &&
           this.checkExtraFields(bar, passportId)
         );

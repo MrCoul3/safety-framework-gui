@@ -164,20 +164,6 @@ const BarriersPage = observer((props: IBarriersPage) => {
       key: "1",
       status: "success",
     });
-    /*if (editInspectionId) {
-      store.barriersStore.saveFilledBarrierToLocalStorage(
-        editInspectionId,
-        barrierId,
-        barrierIndex,
-      );
-      store.snackBarStore.setSnackBarItem({
-        message: t("snackBarSuccessSave"),
-        key: "1",
-        status: "success",
-      });
-    } else {
-      handleSaveInspection();
-    }*/
   };
 
   const [searchText, setSearchText] = useState<string | null>(null);
@@ -203,9 +189,9 @@ const BarriersPage = observer((props: IBarriersPage) => {
       [FilledQuestionTypes.FilledRequirementId]: quest.requirementId,
       [FilledQuestionTypes.QuestionId]: quest.id,
       [FilledQuestionTypes.InapplicableReasonId]: 1,
-      [FilledQuestionTypes.FulfillmentId]: 1,
-      [FilledQuestionTypes.WorkStopped]: false,
-      [FilledQuestionTypes.ResolvedInPlace]: false,
+      [FilledQuestionTypes.FulfillmentId]: null,
+      [FilledQuestionTypes.WorkStopped]: null,
+      [FilledQuestionTypes.ResolvedInPlace]: null,
     }));
   };
 
