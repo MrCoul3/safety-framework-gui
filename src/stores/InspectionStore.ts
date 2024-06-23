@@ -19,7 +19,8 @@ import { joinObjectValues } from "../utils/joinObjectValues";
 import { expandFilter } from "../constants/filters";
 import {
   IFieldsData,
-  IFormDateFieldValue,
+  IFilterDateRangeFieldValue,
+  IFormDateFieldValue, IFormFieldBoolValue,
   IFormFieldValue,
   Item,
 } from "../interfaces/IFieldInterfaces";
@@ -32,6 +33,10 @@ import {
 } from "../enums/FreeFormTypes";
 import { RoutesTypes } from "../enums/RoutesTypes";
 import { filterByRequiredFields } from "../utils/filterByRequiredFields";
+import { ViolationFilterTypes } from "../enums/ViolationFilterTypes";
+import { IFilledBarrier } from "../interfaces/IFilledBarrier";
+import i18next from "i18next";
+import {IViolation} from "../interfaces/IViolation";
 
 export class InspectionStore {
   private store: AppStore;
@@ -39,6 +44,13 @@ export class InspectionStore {
   constructor(store: AppStore) {
     this.store = store;
     makeAutoObservable(this);
+  }
+  savingState: boolean = false;
+  setSavingState(val: boolean) {
+    this.savingState = val;
+  }
+  clearSavingState() {
+    this.savingState = false;
   }
   fieldsData: IFieldsData[] = [];
   isValidate: boolean = false;
@@ -50,7 +62,7 @@ export class InspectionStore {
     this.searchFieldValue = value;
     console.log("this.searchFieldValue", this.searchFieldValue);
   }
-  formFieldsValues: IInspection | {} = {};
+  formFieldsValues: IInspection | IViolation | {} = {};
 
   async sendInspection() {
     try {
@@ -70,6 +82,8 @@ export class InspectionStore {
   async getFieldDataDev(type: InspectionFormTypes | FreeFormFieldTypes) {
     let requestType: any = type;
 
+    console.log("getFieldDataDev requestType", requestType);
+
     if (INSPECTION_FORM_COMMON_FIELDS.includes(type as InspectionFormTypes)) {
       requestType = inspectionFieldsDictNames[type as InspectionFormTypes];
     }
@@ -83,20 +97,30 @@ export class InspectionStore {
     }
 
     try {
-      const response = await instance.get(requestType);
-      this.setFieldsData({
-        [type + "Count"]: 321,
-      });
-      if (!response.data.error) {
-        this.setFieldsData({ [type]: response.data });
-      }
+
+        const response = await instance.get(requestType);
+        this.setFieldsData({
+          [type + "Count"]: 321,
+        });
+        if (!response.data.error) {
+          this.setFieldsData({ [type]: response.data });
+        }
+
     } catch (e) {
       console.error(e);
     }
   }
 
-  async getFieldData(type: InspectionFormTypes | FreeFormFieldTypes) {
+  async getFieldData(
+    type:
+      | InspectionFormTypes
+      | FreeFormFieldTypes
+      | ViolationFilterTypes
+      | string,
+  ) {
     let requestType: any = type;
+
+    console.log('getFieldData requestType', requestType)
 
     const searchFieldValue = this.searchFieldValue ?? "";
 
@@ -148,6 +172,7 @@ export class InspectionStore {
   }
 
   setFieldsData(value: IFieldsData) {
+    this.fieldsData = [];
     console.log("setFieldsData value", value);
     const keyValue = Object.keys(value)[0];
     console.log("setFieldsData keyValue", keyValue);
@@ -187,11 +212,38 @@ export class InspectionStore {
     this.formFieldsValues = value;
     console.debug("formFieldsValues: ", toJS(this.formFieldsValues));
   }
-  updateFormFieldsValues(value: IFormFieldValue | IFormDateFieldValue) {
+
+  setFilledBarriers(filledBarriers: IFilledBarrier[]) {
+    this.formFieldsValues = {
+      ...this.formFieldsValues,
+      filledBarriers: filledBarriers,
+    };
+  }
+
+  setFilledFreeForms(filledFreeForms: (IFreeForm | {})[]) {
+    this.formFieldsValues = {
+      ...this.formFieldsValues,
+      filledFreeForms: filledFreeForms,
+    };
+    console.log(
+      "setFilledFreeForms this.formFieldsValues",
+      toJS(this.formFieldsValues),
+    );
+  }
+
+  updateFormFieldsValues(
+    value: IFormFieldValue | IFormDateFieldValue | IFilterDateRangeFieldValue | IFormFieldBoolValue,
+  ) {
     console.log("updateFormFieldsValues", value);
     if (this.formFieldsValues) {
       const key = Object.keys(value)[0];
-      if (key !== InspectionFormTypes.AuditDate) {
+      const excluded = [
+        ViolationFilterTypes.Date,
+        InspectionFormTypes.AuditDate,
+      ];
+      if (
+        !excluded.includes(key as ViolationFilterTypes | InspectionFormTypes)
+      ) {
         const values = Object.values(value)[0] as Item;
         const valueId = {
           [key + "Id"]: values ? (values.id ? +values.id : values.id) : null,
@@ -219,18 +271,24 @@ export class InspectionStore {
   }
 
   async getInspectionDev(editInspectionId: string) {
+    this.store.loaderStore.setLoader("wait");
+
     try {
-      const response = await instance.get(`inspections/${editInspectionId}`);
-      if (!response.data.error) {
-        const result = response.data;
-        const inspection = {
-          ...result,
-          auditDate: moment(result.auditDate).toDate(),
-        };
-        this.setFormFieldsValues(inspection);
-        console.log("getInspectionDev");
-      }
+      setTimeout(async () => {
+        const response = await instance.get(`inspections/${editInspectionId}`);
+        if (!response.data.error) {
+          const result = response.data;
+          const inspection = {
+            ...result,
+            auditDate: moment(result.auditDate).toDate(),
+          };
+          this.setFormFieldsValues(inspection);
+          console.log("getInspectionDev");
+        }
+        this.store.loaderStore.setLoader("ready");
+      }, 200);
     } catch (e) {
+      this.store.loaderStore.setLoader("ready");
       console.error(e);
     }
   }
@@ -264,6 +322,8 @@ export class InspectionStore {
   }
 
   async getInspectionById(editInspectionId: string) {
+    this.store.loaderStore.setLoader("wait");
+
     try {
       const response = await instance.get(
         `Inspections?$filter=(id eq ${editInspectionId})&$expand=${expandFilter}`,
@@ -278,7 +338,9 @@ export class InspectionStore {
           this.setFormFieldsValues(inspection);
         }
       }
+      this.store.loaderStore.setLoader("ready");
     } catch (e) {
+      this.store.loaderStore.setLoader("ready");
       console.error(e);
     }
   }
@@ -375,7 +437,7 @@ export class InspectionStore {
   }
 
   loadInspectionFromLocalStorage(id: string) {
-    console.log("loadInspectionFromLocalStorage");
+    console.log("loadInspectionFromLocalStorage", id);
     const localInspections = localStorage.getItem(LOCAL_STORE_INSPECTIONS);
     if (localInspections) {
       const localInspectionsParsed = JSON.parse(localInspections);
@@ -399,7 +461,7 @@ export class InspectionStore {
   }
 
   async loadInspection(editInspectionId: string) {
-    console.log("loadInspection");
+    console.log("loadInspection", editInspectionId);
     if (location.pathname.includes(RoutesTypes.EditLocalInspection)) {
       this.loadInspectionFromLocalStorage(editInspectionId);
     }
@@ -410,6 +472,19 @@ export class InspectionStore {
       } else {
         await this.getInspectionById(editInspectionId);
       }
+    }
+  }
+
+  handleSearchValueChange(
+    value: string | null,
+    openFilterType: InspectionFormTypes | ViolationFilterTypes | null | string,
+  ) {
+    this.setSearchFieldValue(value);
+    if (!value || value === "") {
+      this.clearOffset();
+    }
+    if ((value || value === "") && openFilterType) {
+      this.getFieldData(openFilterType);
     }
   }
 }

@@ -106,6 +106,7 @@ export class MainPageStore {
     this.updateSubGroupsState(SubGroupsActionsTypes.MainList);
   }
   updateSubGroupsState(value: SubGroupsActionsTypes) {
+    console.log("updateSubGroupsState", value);
     this.subGroupsState = this.subGroupsState.map((item) => {
       const foundAction = item.actions.find((action) => action.label === value);
       const foundActive = item.actions.find((action) => action.active);
@@ -272,18 +273,23 @@ export class MainPageStore {
       const filledBarriers: IFilledBarrier[] =
         inspection["filledBarriers"] ?? [];
       console.log("checkIsInspectionReadyToSend freeForms", toJS(freeForms));
-      console.log("checkIsInspectionReadyToSend filledBarriers", toJS(filledBarriers));
+      console.log(
+        "checkIsInspectionReadyToSend filledBarriers",
+        toJS(filledBarriers),
+      );
       console.log("checkIsInspectionReadyToSend formType", toJS(formTypeId));
 
-      if (formTypeId?.toString() === '1' && filledBarriers.length) {
-       return  filledBarriers.every(
-          (bar) =>
-            bar[BarrierFieldTypes.Mub] &&
-            bar[BarrierFieldTypes.Mub]?.trim() !== "",
-        ) && this.store.inspectionStore.checkIsFormSuccess(inspection)
+      if (filledBarriers.length) {
+        return (
+          filledBarriers.every(
+            (bar) =>
+              bar[BarrierFieldTypes.Mub] &&
+              bar[BarrierFieldTypes.Mub]?.trim() !== "",
+          ) && this.store.inspectionStore.checkIsFormSuccess(inspection)
+        );
       }
 
-      if (formTypeId?.toString() === "2" && freeForms.length) {
+      if (freeForms.length) {
         const filteredCommonFields = filterByRequiredFields(
           inspection,
           INSPECTION_FORM_REQUIRED_FIELDS,
@@ -319,7 +325,9 @@ export class MainPageStore {
           (val) => val,
         );
         console.log("checkIsInspectionReadyToSend result", index, toJS(result));
-        return result && this.store.inspectionStore.checkIsFormSuccess(inspection);
+        return (
+          result && this.store.inspectionStore.checkIsFormSuccess(inspection)
+        );
       }
     }
   }
@@ -339,6 +347,16 @@ export class MainPageStore {
 
   login: { login: string; title: string } | null = null;
   responseStatus: number | null = null;
+
+  isAllowedToUseViolationsResolve: boolean | null = null;
+
+  setIsAllowedToUseViolationsResolve(value: boolean) {
+    this.isAllowedToUseViolationsResolve = value;
+    console.debug(
+      "setIsAllowedToUseViolationsResolve isAllowedToUseViolationsResolve: ",
+      this.isAllowedToUseViolationsResolve,
+    );
+  }
   setLogin(value: { login: string; title: string }) {
     this.login = value;
     console.debug("login: ", toJS(this.login));
@@ -350,10 +368,21 @@ export class MainPageStore {
   async getMemberInfo() {
     this.store.loaderStore.setLoader("wait");
     try {
-      const response = await instance.get(`MemberInfo`);
-      console.log("response!!", response);
+      const response = await instance.get<{
+        error?: string;
+        login: string;
+        title: string;
+        email: "vedingmur1@intechnol.com";
+        permissions: {
+          isAllowedToUseViolationsResolve: true;
+        };
+      }>(`MemberInfo`);
+      console.log("getMemberInfo", response.data);
       if (!response.data.error) {
         this.setLogin(response.data);
+        this.setIsAllowedToUseViolationsResolve(
+          response.data?.permissions?.isAllowedToUseViolationsResolve,
+        );
         this.store.loaderStore.setLoader("ready");
       }
     } catch (e: any) {

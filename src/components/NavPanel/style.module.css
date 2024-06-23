@@ -2,6 +2,10 @@
   padding: 24px;
   height: var(--navPanelHeight);
   box-sizing: border-box;
+  background-color: white;
+}
+.minSize {
+  height: var(--minSizeNavPanelHeight);
 }
 .flexCol {
   display: flex;

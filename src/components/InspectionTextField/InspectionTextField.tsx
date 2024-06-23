@@ -12,29 +12,51 @@ import { PropStatus } from "@consta/uikit/__internal__/src/components/SelectComp
 import { toJS } from "mobx";
 import { ELEMENTS_ON_FIELD } from "../../constants/config";
 import { useDebounce } from "@consta/uikit/useDebounce";
-import {IFieldsData, IFormFieldValue, Item} from "../../interfaces/IFieldInterfaces";
-import {FreeFormFieldTypes, FreeFormTypes} from "../../enums/FreeFormTypes";
+import {
+  IFieldsData,
+  IFormFieldValue,
+  Item,
+} from "../../interfaces/IFieldInterfaces";
+import { FreeFormFieldTypes, FreeFormTypes } from "../../enums/FreeFormTypes";
+import {ViolationFilterTypes, violationsDictionaryOfConformity} from "../../enums/ViolationFilterTypes";
+import classNames from "classnames";
 
 interface IFieldInspectionType {
   onClose?(): void;
-  handleOpenField(type: InspectionFormTypes | FreeFormFieldTypes): void;
+  handleOpenField(
+    type: InspectionFormTypes | FreeFormFieldTypes | ViolationFilterTypes | string,
+  ): void;
   handleChange(value: IFormFieldValue): void;
-  onScrollToBottom?(inspectionType: InspectionFormTypes | FreeFormFieldTypes): void;
+  onScrollToBottom?(
+    inspectionType:
+      | InspectionFormTypes
+      | FreeFormFieldTypes
+      | ViolationFilterTypes | string,
+  ): void;
   onSearchValueChange?(value: string | null): void;
-  status: PropStatus | undefined;
+  status?: PropStatus | undefined;
   fieldsData: IFieldsData[];
   value?: string;
   disabled?: boolean;
   required?: boolean;
-  inspectionType: InspectionFormTypes | FreeFormFieldTypes;
+  inspectionType:
+    | InspectionFormTypes
+    | FreeFormFieldTypes
+    | ViolationFilterTypes | string;
+  labelPosition?: "left" | "top";
+  className?: string;
+
+  translationDict?: string
 }
 
 const InspectionTextField = observer((props: IFieldInspectionType) => {
-  const { t } = useTranslation("dict");
+  const { t } = useTranslation( props.translationDict ?? "dict");
 
   const [open, setOpen] = useFlag();
 
   const [searchValue, setSearchValue] = useState<string | null>(null);
+
+  const [isLoading, setIsLoading] = useFlag();
 
   const onDropdownOpen = useCallback((open: boolean) => {
     setOpen.set(open);
@@ -43,6 +65,7 @@ const InspectionTextField = observer((props: IFieldInspectionType) => {
 
   useEffect(() => {
     if (open) {
+      setIsLoading.on()
       props.handleOpenField(props.inspectionType);
     } else {
       props.onSearchValueChange?.(null);
@@ -52,9 +75,11 @@ const InspectionTextField = observer((props: IFieldInspectionType) => {
   }, [open]);
 
   useEffect(() => {
-    console.log("props.fieldsData", toJS(props.fieldsData));
-    console.log("props.value", toJS(props.value));
-  }, [props.value]);
+    if (props.fieldsData.length) {
+      setIsLoading.off();
+    }
+    setTimeout(() => setIsLoading.off(), 10000)
+  }, [props.fieldsData]);
 
   const handleChange = (value: Item | null) => {
     props.handleChange({
@@ -62,7 +87,9 @@ const InspectionTextField = observer((props: IFieldInspectionType) => {
     });
   };
 
-  const getItems = (type: InspectionFormTypes | FreeFormFieldTypes) => {
+  const getItems = (
+    type: InspectionFormTypes | FreeFormFieldTypes | ViolationFilterTypes | string,
+  ) => {
     const found = props.fieldsData.find((data) =>
       Object.keys(data).includes(props.inspectionType),
     );
@@ -75,13 +102,18 @@ const InspectionTextField = observer((props: IFieldInspectionType) => {
   const combobox = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const fieldBody = combobox.current?.parentElement;
-    fieldBody?.classList.add("customField");
+    if (!props.className) {
+      const fieldBody = combobox.current?.parentElement;
+      fieldBody?.classList.add("customField");
+    }
   }, [combobox]);
 
   const getItemLabel = (item: Item) => {
     if (EMPLOYEES.includes(props.inspectionType as InspectionFormTypes)) {
       return item.personFio ?? "";
+    }
+    if (item.ruleNumber) {
+      return item.ruleNumber + '. ' + item.title;
     }
     return item.title;
   };
@@ -126,13 +158,17 @@ const InspectionTextField = observer((props: IFieldInspectionType) => {
     setSearchValue(value);
   };
 
+  useEffect(() => {
+    console.log('props.value', toJS(props.value))
+  }, [props.value])
+
   return (
-    <Combobox
+    <Combobox isLoading={isLoading}
       ref={combobox}
       dropdownOpen={open}
-      labelPosition="left"
+      labelPosition={props.labelPosition ?? "left"}
       status={props.status}
-      className={style.field}
+      className={classNames(style.field, props.className)}
       onChange={handleChange}
       disabled={props.disabled}
       required={props.required}

@@ -1,22 +1,26 @@
 import React from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
-import { IPassport } from "../../interfaces/IPassport";
 import { useTranslation } from "react-i18next";
 import { Badge } from "@consta/uikit/Badge";
-import { icon3 } from "../../assets/icons";
+import { icon13 } from "../../assets/icons";
+import classNames from "classnames";
 
 interface IPassportElement {
-  code: string;
+  title: string;
   id: string;
+  isValid: boolean;
   barriersCount: number;
-  icon?: string;
-  data: IPassport;
+  icon?: string | null;
   onClick(id: string): void;
 }
 
 const PassportElement = observer((props: IPassportElement) => {
   const { t } = useTranslation("dict");
+
+  const getStatus = () => {
+    return props.isValid ? "success" : "warning";
+  };
 
   return (
     <div
@@ -24,18 +28,26 @@ const PassportElement = observer((props: IPassportElement) => {
       className={style.PassportElement}
     >
       <div className={style.logo}>
-        <img className={style.logoIcon} src={props.icon ?? icon3} alt="" />
-      </div>
-      <span className={style.name}>{props.code}</span>
-      <span className={style.barriersCount}>
-        {t("barriersSelect")}
-        <Badge
-          size={"s"}
-          label={props.barriersCount.toString()}
-          status={props.barriersCount > 0 ? "warning" : "system"}
-          form={"round"}
+        <img
+          className={classNames(style.logoIcon, {
+            [style.plug]: !props.icon,
+          })}
+          src={props.icon ?? icon13}
+          alt=""
         />
-      </span>
+      </div>
+      <div className={style.flexCol}>
+        <span className={style.name}>{props.title}</span>
+        <span className={style.barriersCount}>
+          {t("barriersSelect")}
+          <Badge
+            size={"s"}
+            label={props.barriersCount.toString()}
+            status={props.barriersCount > 0 ? getStatus() : "system"}
+            form={"round"}
+          />
+        </span>
+      </div>
     </div>
   );
 });

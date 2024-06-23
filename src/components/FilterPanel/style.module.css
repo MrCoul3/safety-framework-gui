@@ -1,0 +1,26 @@
+.FilterPanel {
+  min-width: 300px;
+  width: 20%;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  margin: 24px;
+  padding: 24px;
+  height: auto;
+  justify-content: space-between;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.controlButtonGroup {
+  display: flex;
+  justify-content: end;
+  gap: 10px;
+}
+
+.flexCol {
+  display: flex;
+  flex-direction: column;
+}
+.Checkbox {
+  margin: 10px 0;
+}

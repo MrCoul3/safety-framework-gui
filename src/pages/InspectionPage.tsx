@@ -32,18 +32,18 @@ const InspectionPage = observer((props: IInspectionPage) => {
 
   const location = useLocation();
 
-  const [savingState, setSavingState] = useState(false);
-
   const [openFilterType, setOpenFilterType] =
     useState<InspectionFormTypes | null>(null);
 
-  const loadInspection = () => {
+  const loadInspection = async () => {
     if (editInspectionId) {
       store.inspectionStore.loadInspection(editInspectionId);
     }
   };
-  const init = () => {
-    loadInspection();
+  const init = async () => {
+    if (!Object.keys(store.inspectionStore.formFieldsValues).length) {
+      await loadInspection();
+    }
   };
 
   useEffect(() => {
@@ -66,14 +66,14 @@ const InspectionPage = observer((props: IInspectionPage) => {
   const handleChange = (value: IFormFieldValue) => {
     console.log("handleChange", value);
     store.inspectionStore.updateFormFieldsValues(value);
-    setSavingState(true);
+    store.inspectionStore.setSavingState(true);
     store.inspectionStore.checkIsFormSuccess();
   };
 
   const handleDateChange = (value: IFormDateFieldValue) => {
     console.log("handleDateChange", value);
     store.inspectionStore.updateFormFieldsValues(value);
-    setSavingState(true);
+    store.inspectionStore.setSavingState(true);
     store.inspectionStore.checkIsFormSuccess();
   };
 
@@ -102,7 +102,7 @@ const InspectionPage = observer((props: IInspectionPage) => {
   };
 
   const handleSaveInspection = () => {
-    setSavingState(false);
+    store.inspectionStore.setSavingState(false);
     saveInspection();
     navigate(-1);
     renderSaveSnackBar();
@@ -143,14 +143,7 @@ const InspectionPage = observer((props: IInspectionPage) => {
   ];
 
   const handleSearchValueChange = (value: string | null) => {
-    console.log("handleSearchValueChange value!!!", value);
-    store.inspectionStore.setSearchFieldValue(value);
-    if (!value || value === "") {
-      store.inspectionStore.clearOffset();
-    }
-    if ((value || value === "") && openFilterType) {
-      store.inspectionStore.getFieldData(openFilterType);
-    }
+    store.inspectionStore.handleSearchValueChange(value, openFilterType);
   };
 
   const handleScrollFieldToBottom = (inspectionType: InspectionFormTypes) => {
@@ -164,16 +157,30 @@ const InspectionPage = observer((props: IInspectionPage) => {
     store.inspectionStore.clearFieldsData();
   };
 
+  const isEditSentInspectionPage = () => {
+    return (
+      location.pathname.includes(RoutesTypes.EditInspection) && editInspectionId
+    );
+  };
+
   return (
     <>
       <Layout
         navPanel={
           <NavPanel
             crumbs={crumbs}
-            disableSaveButton={!savingState}
+            disableSaveButton={
+              isEditSentInspectionPage()
+                ? false
+                : !store.inspectionStore.savingState
+            }
             handleEditPassports={handleEditPassports}
             handleSaveInspection={handleSaveInspection}
-            description={t("addInspectionDescription")}
+            description={t(
+              isEditSentInspectionPage()
+                ? "editInspectionDescription"
+                : "addInspectionDescription",
+            )}
             title={
               !editInspectionId
                 ? t("addInspectionTitle")
@@ -183,6 +190,7 @@ const InspectionPage = observer((props: IInspectionPage) => {
         }
         content={
           <InspectionForm
+            loader={store.loaderStore.loader}
             onInspectionTextFieldClose={handleInspectionTextFieldClose}
             onScrollToBottom={handleScrollFieldToBottom}
             onSearchValueChange={handleSearchValueChange}
@@ -193,7 +201,7 @@ const InspectionPage = observer((props: IInspectionPage) => {
               !!Object.values(store.inspectionStore.formFieldsValues).length
             }
             handleClearInspectionForm={() => {
-              setSavingState(true);
+              store.inspectionStore.setSavingState(true);
               store.inspectionStore.clearInspectionForm();
               store.inspectionStore.setIsValidate(false);
             }}

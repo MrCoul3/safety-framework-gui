@@ -64,7 +64,6 @@ const InspectionTextArea = observer((props: IInspectionTextArea) => {
         [style.show]: props.display,
       })}
       ref={textField}
-      // labelPosition={props.labelPos ?? "top"}
       labelPosition={"top"}
       label={props.disabledLabel ? "" : t(props.type)}
       onChange={handleChange}

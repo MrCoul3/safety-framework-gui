@@ -15,6 +15,7 @@ import { Pagination } from "@consta/uikit/Pagination";
 import moment from "moment";
 import { Button } from "@consta/uikit/Button";
 import { IconEdit } from "@consta/icons/IconEdit";
+import { IconEye } from "@consta/icons/IconEye";
 import { IconTrash } from "@consta/icons/IconTrash";
 import { IconMail } from "@consta/icons/IconMail";
 import {
@@ -93,21 +94,19 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
   };
 
   useEffect(() => {
-    console.log("inspections!!!", toJS(props.inspections));
-  }, [props.inspections]);
-
-  useEffect(() => {
     getTableSize();
   }, [tableRef, tableContainerRef]);
 
   const excludeFields = ["id"];
 
   const handleEditInspection = (index: string, inspection: IInspection) => {
+    const ind = +index + 1;
+    console.log("handleEditInspection inspection", inspection.id);
     if (location.pathname.includes(SubGroupsActionsTypes.Sent)) {
       props.handleEditInspection(inspection.id ?? "");
     }
     if (location.pathname.includes(SubGroupsActionsTypes.NewInspections)) {
-      props.handleEditLocalInspection(index);
+      props.handleEditLocalInspection(ind.toString());
     }
   };
 
@@ -117,32 +116,38 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
         size="s"
         onClick={() => handleEditInspection(index, inspection)}
         view="ghost"
-        iconRight={IconEdit}
+        iconRight={
+          props.subGroupsActionsTypes === SubGroupsActionsTypes.Sent
+            ? IconEye
+            : IconEdit
+        }
         onlyIcon
       />
 
       {props.subGroupsActionsTypes === SubGroupsActionsTypes.NewInspections && (
-        <Button
-          disabled={!store.mainPageStore.checkIsInspectionReadyToSend(+index)}
-          onClick={() => props.sendInspection(+index)}
-          size="s"
-          view="ghost"
-          iconRight={IconMail}
-          onlyIcon
-        />
+        <>
+          <Button
+            disabled={!store.mainPageStore.checkIsInspectionReadyToSend(+index)}
+            onClick={() => props.sendInspection(+index)}
+            size="s"
+            view="ghost"
+            iconRight={IconMail}
+            onlyIcon
+          />
+          <Button
+            size="s"
+            onClick={() =>
+              props.subGroupsActionsTypes ===
+              SubGroupsActionsTypes.NewInspections
+                ? props.handleDeleteNewInspectionButtonClick(index)
+                : props.handleDeleteSentButtonClick(inspection.id ?? "")
+            }
+            view="ghost"
+            iconRight={IconTrash}
+            onlyIcon
+          />
+        </>
       )}
-
-      <Button
-        size="s"
-        onClick={() =>
-          props.subGroupsActionsTypes === SubGroupsActionsTypes.NewInspections
-            ? props.handleDeleteNewInspectionButtonClick(index)
-            : props.handleDeleteSentButtonClick(inspection.id ?? "")
-        }
-        view="ghost"
-        iconRight={IconTrash}
-        onlyIcon
-      />
     </div>
   );
   const rows = useMemo(
@@ -174,9 +179,9 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
         [InspectionFormTypes.Supervisor]:
           item[InspectionFormTypes.Supervisor]?.personFio,
         actions: renderActions(index.toString(), item),
-        [InspectionFormTypes.AuditDate]: moment(item.auditDate).format(
-          "DD.MM.YYYY",
-        ),
+        [InspectionFormTypes.AuditDate]: moment(item.auditDate)
+          .valueOf()
+          .toString(),
       })),
     [props.inspections],
   );
@@ -185,13 +190,32 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
 
   const columns: TableColumn<(typeof rows)[number]>[] = keys
     .filter((key) => !excludeFields.includes(key))
-    .map((key: any) => ({
-      title: <span className={style.colTitle}>{t(key)}</span>,
-      accessor: key,
-      sortable: true,
-      align: "left",
-      width: 200,
-    }));
+    .map((key: any) => {
+      if (key === InspectionFormTypes.AuditDate) {
+        return {
+          title: <span className={style.colTitle}>{t(key)}</span>,
+          accessor: key,
+          sortable: true,
+          align: "left",
+          width: 200,
+          renderCell: (row) => {
+            return key === InspectionFormTypes.AuditDate
+              ? row?.auditDate
+                ? moment(+row?.auditDate).format("DD.MM.YYYY")
+                : ""
+              : null;
+          },
+        };
+      }
+
+      return {
+        title: <span className={style.colTitle}>{t(key)}</span>,
+        accessor: key,
+        sortable: true,
+        align: "left",
+        width: 200,
+      };
+    });
 
   columns.unshift({
     title: <span className={style.colTitle}>{t("actions")}</span>,
@@ -199,8 +223,6 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
     align: "left",
     width: 150,
   });
-
-  console.log("columns!!!", columns);
 
   const handleOpenFilter = (field: InspectionFormTypes) => {
     console.log("onopen", field);
@@ -238,34 +260,44 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
     setPage(val);
     props.handlePaginationChange(val);
   };
-  const sentInspectionsCondition = (subGroup: SubGroupsActionsTypes) =>
-    subGroup === SubGroupsActionsTypes.Sent;
-  const renderLoader = (subGroup: SubGroupsActionsTypes) => {
-    if (props.loader === "wait") {
-      return <LoaderPage />;
-    } else {
-      return (
-        <NothingFound
-          info={
-            sentInspectionsCondition(subGroup)
-              ? t("emptySentInspections")
-              : t("emptyNewInspections")
-          }
-        />
-      );
-    }
+
+  const removeFilterButtons = () => {
+    const buttonFilters = document.querySelectorAll(
+      ".TableHeader-Icon_type_filter",
+    );
+    buttonFilters.forEach((item) => item.remove());
   };
+
+  useEffect(() => {
+    if (!isSentInspectionsCondition()) {
+      removeFilterButtons();
+    }
+  }, [location]);
 
   return (
     <div ref={tableContainerRef} className={style.InspectionsTable}>
-      {isSentInspectionsCondition() && (
-        <FilterTags
-          resetFilters={props.resetFilters}
-          handleDeleteFilter={props.handleDeleteFilter}
-          filterFieldsValues={props.filterFieldsValues}
-        />
-      )}
-      <Table
+      {isSentInspectionsCondition() ? (
+        <>
+          <FilterTags
+            resetFilters={props.resetFilters}
+            handleDeleteFilter={props.handleDeleteFilter}
+            filterFieldsValues={props.filterFieldsValues}
+          />
+          <Table
+            isResizable
+            rows={rows}
+            stickyHeader
+            ref={tableRef}
+            stickyColumns={1}
+            columns={columns}
+            className={style.table}
+            onSortBy={props.handleSort}
+            onCellClick={handleCellClick}
+            filters={filters}
+          />
+        </>
+      ) : (
+        <Table
           isResizable
           rows={rows}
           stickyHeader
@@ -273,36 +305,36 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
           stickyColumns={1}
           columns={columns}
           className={style.table}
-          onSortBy={props.handleSort}
           onCellClick={handleCellClick}
           filters={filters}
-      />
+        />
+      )}
 
-      {props.inspectionsCount &&
-        props.inspectionsCount > INSPECTIONS_ON_PAGE ?
-        isSentInspectionsCondition() &&
-        props.inspections.length && (
-          <Pagination
-            showFirstPage
-            showLastPage
-            visibleCount={8}
-            className={style.pagination}
-            items={Math.ceil(props.inspectionsCount / INSPECTIONS_ON_PAGE)}
-            value={page}
-            onChange={handlePaginationChange}
-            arrows={[{ label: t("back") }, { label: t("forward") }]}
-            hotKeys={[
-              {
-                label: "← Shift",
-                keys: ["Shift", "ArrowLeft"],
-              },
-              {
-                label: "Shift →",
-                keys: ["Shift", "ArrowRight"],
-              },
-            ]}
-          />
-        ) : null}
+      {props.inspectionsCount && props.inspectionsCount > INSPECTIONS_ON_PAGE
+        ? isSentInspectionsCondition() &&
+          props.inspections.length && (
+            <Pagination
+              showFirstPage
+              showLastPage
+              visibleCount={8}
+              className={style.pagination}
+              items={Math.ceil(props.inspectionsCount / INSPECTIONS_ON_PAGE)}
+              value={page}
+              onChange={handlePaginationChange}
+              arrows={[{ label: t("back") }, { label: t("forward") }]}
+              hotKeys={[
+                {
+                  label: "← Shift",
+                  keys: ["Shift", "ArrowLeft"],
+                },
+                {
+                  label: "Shift →",
+                  keys: ["Shift", "ArrowRight"],
+                },
+              ]}
+            />
+          )
+        : null}
     </div>
   );
 });

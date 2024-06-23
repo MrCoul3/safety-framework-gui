@@ -1,4 +1,4 @@
-import {IBarrier} from "./IBarrier";
+import { IBarrier } from "./IBarrier";
 
 export interface IPassport {
   code: string;
@@ -9,7 +9,11 @@ export interface IPassport {
   sortOrder: null;
   title: string;
 
-  barriers: IBarrier[],
+  barriers: IBarrier[];
   uniqueId: string;
-  icon: null | string
+  icon?: {
+    iconString: string;
+    passportId: number
+    id: number;
+  };
 }

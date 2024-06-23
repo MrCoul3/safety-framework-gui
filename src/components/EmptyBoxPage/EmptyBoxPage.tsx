@@ -8,6 +8,7 @@ import { useNavigate } from "react-router";
 import style from './style.module.css'
 interface IEmptyBoxPage {
   text?: string;
+  description?: string;
   disableActions?: boolean;
 }
 
@@ -23,7 +24,7 @@ const EmptyBoxPage = observer((props: IEmptyBoxPage) => {
   };
   return (
     <ResponsesEmptyBox className={style.ResponsesEmptyBox}
-      description={" "}
+      description={props.description ? props.description : " "}
       title={props.text ?? ""}
       actions={
         !props.disableActions ? (

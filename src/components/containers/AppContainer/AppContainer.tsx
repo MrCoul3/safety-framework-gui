@@ -21,6 +21,7 @@ import { Responses500 } from "@consta/uikit/Responses500";
 import { Responses503 } from "@consta/uikit/Responses503";
 import { isDevelop } from "../../../constants/config";
 import LoaderPage from "../../LoaderPage/LoaderPage";
+import EliminationOfViolationsPage from "../../../pages/EliminationOfViolationsPage";
 export const AppContainer = observer(() => {
   const { t } = useTranslation("dict");
 
@@ -36,15 +37,20 @@ export const AppContainer = observer(() => {
     const path = decodeURIComponent(window.location.pathname).replace("/", "");
     if (path) {
       store.mainPageStore.updateSubGroupsState(path as SubGroupsActionsTypes);
+    } else {
+      store.mainPageStore.resetSideBarToHome();
     }
   };
 
   useEffect(() => {
     init();
-    getSideBarState();
   }, []);
 
-   const toHome = () => {
+  useEffect(() => {
+    getSideBarState();
+  }, [window.location.pathname]);
+
+  const toHome = () => {
     store.mainPageStore.resetSideBarToHome();
     navigate(`/`);
   };
@@ -58,7 +64,9 @@ export const AppContainer = observer(() => {
   );
   const render403 = () => (
     <div className={style.container}>
-      <Responses403 actions={" "} />
+      <Responses403
+        actions={<Button onClick={toHome} view="ghost" label={t("toHome")} />}
+      />
     </div>
   );
   const render500 = () => (
@@ -73,7 +81,7 @@ export const AppContainer = observer(() => {
   );
   const renderResponses = () => {
     if (store.loaderStore.loader === "wait") {
-      return <LoaderPage />;
+      return <LoaderPage info={t("auth")} />;
     } else {
       if (store.mainPageStore.responseStatus === 403) {
         return render403();
@@ -87,120 +95,134 @@ export const AppContainer = observer(() => {
       return render500();
     }
   };
-  return store.mainPageStore.login ? (
+  return (
     <>
       <MainHeader
         handleLogoClick={toHome}
-        login={store.mainPageStore.login.login}
-        info={store.mainPageStore.login.title}
+        login={store.mainPageStore.login?.login}
+        info={store.mainPageStore.login?.title}
       />
-      <SnackBarCustom
-        onItemClose={() => store.snackBarStore.clearSnackBar()}
-        item={store.snackBarStore.snackBarItem}
-      />
-      <Routes>
-        <Route index element={<MainPage />} />
-        <Route path={"/*"} element={<MainPage />} />
+      {store.mainPageStore.login ? (
+        <>
+          <SnackBarCustom
+            onItemClose={() => store.snackBarStore.clearSnackBar()}
+            item={store.snackBarStore.snackBarItem}
+          />
+          <Routes>
 
-        <Route
-          element={<EmptyBoxPage />}
-          path={SubGroupsActionsTypes.EliminationOfViolations}
-        />
+            <Route index element={<MainPage />} />
 
-        <Route path={RoutesTypes.NewInspection} element={<InspectionPage />} />
-        <Route
-          path={RoutesTypes.EditInspection + "/:editInspectionId"}
-          element={<InspectionPage />}
-        />
-        <Route
-          path={RoutesTypes.EditLocalInspection + "/:editInspectionId"}
-          element={<InspectionPage />}
-        />
+            <Route path={"/*"} element={<MainPage />} />
 
-        <Route
-          path={
-            RoutesTypes.EditInspection +
-            "/:editInspectionId/" +
-            RoutesTypes.Passports
-          }
-          element={<PassportsPage />}
-        />
-        <Route
-          path={
-            RoutesTypes.EditLocalInspection +
-            "/:editInspectionId/" +
-            RoutesTypes.Passports
-          }
-          element={<PassportsPage />}
-        />
-        <Route
-          path={RoutesTypes.NewInspection + "/" + RoutesTypes.Passports}
-          element={<PassportsPage />}
-        />
+            <Route
+              element={
+                store.mainPageStore.isAllowedToUseViolationsResolve ? (
+                  <EliminationOfViolationsPage />
+                ) : (
+                  render403()
+                )
+              }
+              path={SubGroupsActionsTypes.EliminationOfViolations}
+            />
 
-        <Route
-          path={
-            RoutesTypes.NewInspection +
-            "/" +
-            RoutesTypes.Passports +
-            "/" +
-            RoutesTypes.Barriers +
-            "/:passportId"
-          }
-          element={<BarriersPage />}
-        />
+            <Route
+              path={RoutesTypes.NewInspection}
+              element={<InspectionPage />}
+            />
+            <Route
+              path={RoutesTypes.EditInspection + "/:editInspectionId"}
+              element={<InspectionPage />}
+            />
+            <Route
+              path={RoutesTypes.EditLocalInspection + "/:editInspectionId"}
+              element={<InspectionPage />}
+            />
 
-        <Route
-          path={
-            RoutesTypes.EditInspection +
-            "/:editInspectionId/" +
-            RoutesTypes.Passports +
-            "/" +
-            RoutesTypes.Barriers +
-            "/:passportId"
-          }
-          element={<BarriersPage />}
-        />
+            <Route
+              path={
+                RoutesTypes.EditInspection +
+                "/:editInspectionId/" +
+                RoutesTypes.Passports
+              }
+              element={<PassportsPage />}
+            />
+            <Route
+              path={
+                RoutesTypes.EditLocalInspection +
+                "/:editInspectionId/" +
+                RoutesTypes.Passports
+              }
+              element={<PassportsPage />}
+            />
+            <Route
+              path={RoutesTypes.NewInspection + "/" + RoutesTypes.Passports}
+              element={<PassportsPage />}
+            />
 
-        <Route
-          path={
-            RoutesTypes.EditLocalInspection +
-            "/:editInspectionId/" +
-            RoutesTypes.Passports +
-            "/" +
-            RoutesTypes.Barriers +
-            "/:passportId"
-          }
-          element={<BarriersPage />}
-        />
+            <Route
+              path={
+                RoutesTypes.NewInspection +
+                "/" +
+                RoutesTypes.Passports +
+                "/" +
+                RoutesTypes.Barriers +
+                "/:passportId"
+              }
+              element={<BarriersPage />}
+            />
 
-        <Route
-          path={RoutesTypes.NewInspection + "/" + RoutesTypes.FreeForm}
-          element={<FreeFormPage />}
-        />
-        <Route
-          path={
-            RoutesTypes.EditInspection +
-            "/:editInspectionId" +
-            "/" +
-            RoutesTypes.FreeForm
-          }
-          element={<FreeFormPage />}
-        />
-        <Route
-          path={
-            RoutesTypes.EditLocalInspection +
-            "/:editInspectionId" +
-            "/" +
-            RoutesTypes.FreeForm
-          }
-          element={<FreeFormPage />}
-        />
+            <Route
+              path={
+                RoutesTypes.EditInspection +
+                "/:editInspectionId/" +
+                RoutesTypes.Passports +
+                "/" +
+                RoutesTypes.Barriers +
+                "/:passportId"
+              }
+              element={<BarriersPage />}
+            />
 
-        <Route path="*" element={render404()} />
-      </Routes>
+            <Route
+              path={
+                RoutesTypes.EditLocalInspection +
+                "/:editInspectionId/" +
+                RoutesTypes.Passports +
+                "/" +
+                RoutesTypes.Barriers +
+                "/:passportId"
+              }
+              element={<BarriersPage />}
+            />
+
+            <Route
+              path={RoutesTypes.NewInspection + "/" + RoutesTypes.FreeForm}
+              element={<FreeFormPage />}
+            />
+            <Route
+              path={
+                RoutesTypes.EditInspection +
+                "/:editInspectionId" +
+                "/" +
+                RoutesTypes.FreeForm
+              }
+              element={<FreeFormPage />}
+            />
+            <Route
+              path={
+                RoutesTypes.EditLocalInspection +
+                "/:editInspectionId" +
+                "/" +
+                RoutesTypes.FreeForm
+              }
+              element={<FreeFormPage />}
+            />
+
+          </Routes>
+        </>
+      ) : (
+        renderResponses()
+      )}
     </>
-  ) : (
-    renderResponses()
   );
 });

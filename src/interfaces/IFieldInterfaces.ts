@@ -2,12 +2,17 @@ export type Item = {
     title: string;
     id?: string;
     personFio?: string;
+    code?:string
+    ruleNumber?:string
 };
 export interface IFieldsData {
     [key: string]: Item[] | number;
 }
 export interface IFormFieldValue {
     [key: string]: Item | null;
+}
+export interface IFormFieldBoolValue {
+    [key: string]: boolean;
 }
 export interface IFormFieldTextValue {
     [key: string]: string | null;

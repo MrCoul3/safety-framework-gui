@@ -50,12 +50,13 @@ const PassportsPage = observer((props: IPassportsPage) => {
       await loadInspection();
     }
     getFilledBarriersFromFieldsData();
-
-    if (isDevelop) {
-      store.passportsStore.getPassportsDev();
-      store.passportsStore.getPassports();
-    } else {
-      store.passportsStore.getPassports();
+    if (!store.passportsStore.passports.length) {
+      if (isDevelop) {
+        store.passportsStore.getPassportsDev();
+        store.passportsStore.getPassports();
+      } else {
+        store.passportsStore.getPassports();
+      }
     }
   };
 
@@ -92,9 +93,19 @@ const PassportsPage = observer((props: IPassportsPage) => {
     },
   ];
   const saveInspection = () => {
-    editInspectionId
-      ? store.inspectionStore.updateInspectionToLocalStorage(editInspectionId)
-      : store.inspectionStore.setInspectionToLocalStorage();
+    if (
+      location.pathname.includes(RoutesTypes.EditLocalInspection) &&
+      editInspectionId
+    ) {
+      store.inspectionStore.updateInspectionToLocalStorage(editInspectionId);
+    }
+    if (location.pathname.includes(RoutesTypes.NewInspection)) {
+      store.inspectionStore.setInspectionToLocalStorage();
+    }
+    if (location.pathname.includes(RoutesTypes.EditInspection)) {
+      store.inspectionStore.setInspectionToLocalStorage();
+    }
+    store.inspectionStore.setIsValidate(false);
   };
 
   const handleSaveInspection = () => {
@@ -107,14 +118,11 @@ const PassportsPage = observer((props: IPassportsPage) => {
     });
   };
 
-  const getBarriersCount = (passportId: string) => {
-    console.log("getBarriersCount filledBarriers", toJS(filledBarriers)); // [{barrierId: }]
+  const getFilledBarriersForPassport = (passportId: string) => {
     const passportById = store.passportsStore.passports.find(
       (pass) => pass.id === passportId,
     );
     const passportBarriers = passportById?.["barriers"];
-    console.log("getBarriersCount passportById", toJS(passportById));
-    console.log("getBarriersCount passportBarriers", toJS(passportBarriers));
     if (filledBarriers && filledBarriers.length) {
       const filledBarriersByPassId = filledBarriers.filter((fillBar) => {
         const fillBarId = fillBar.barrierId.toString();
@@ -125,13 +133,13 @@ const PassportsPage = observer((props: IPassportsPage) => {
         })?.id;
         return fillBarId === passBarId?.toString();
       });
-      console.log(
-        "getBarriersCount filledBarriersByPassId",
-        toJS(filledBarriersByPassId.length),
-      );
-      return filledBarriersByPassId.length;
+      return filledBarriersByPassId;
     }
-    return 0;
+  };
+
+  const getBarriersCount = (passportId: string) => {
+    const filledBarriersByPassId = getFilledBarriersForPassport(passportId);
+    return filledBarriersByPassId?.length ? filledBarriersByPassId.length : 0;
   };
 
   return (
@@ -145,6 +153,7 @@ const PassportsPage = observer((props: IPassportsPage) => {
               view={"secondary"}
             />
           }
+          disableSaveButton={!store.inspectionStore.savingState}
           crumbs={crumbs}
           handleSaveInspection={handleSaveInspection}
           title={t("selectPassport")}
@@ -153,16 +162,22 @@ const PassportsPage = observer((props: IPassportsPage) => {
       }
       content={
         <PassportsList
+          isPassportLength={!!store.passportsStore.passports.length}
+          loader={store.loaderStore.loader}
           content={store.passportsStore.passports
             .filter((passport) => passport.code)
             .map((passport) => (
               <PassportElement
-                barriersCount={getBarriersCount(passport.id)}
+                isValid={store.barriersStore.checkIsBarrierFormSuccessForPassport(
+                  getFilledBarriersForPassport(passport.id),
+                  passport.id,
+                )}
                 id={passport.id}
-                code={passport.code}
-                onClick={handlePassportClick}
                 key={passport.id}
-                data={passport}
+                title={passport.title}
+                onClick={handlePassportClick}
+                icon={passport?.icon?.iconString}
+                barriersCount={getBarriersCount(passport.id)}
               />
             ))}
         />

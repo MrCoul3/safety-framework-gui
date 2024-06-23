@@ -12,6 +12,8 @@ import {
   FREE_FORM_COMMON_FIELDS,
   FreeFormFieldTypes,
 } from "../enums/FreeFormTypes";
+import { IViolation } from "../interfaces/IViolation";
+import {IInspection} from "../interfaces/IInspection";
 
 const excludedFields = [InspectionFormTypes.AuditDate];
 
@@ -23,12 +25,12 @@ const expandFreeFormValues = FREE_FORM_COMMON_FIELDS.filter(
 
 const expandFilledFreeForms = `filledFreeForms($expand=${expandFreeFormValues})`;
 
-const expandBarriers = `filledBarriers($expand=${expandFreeFormValues})`;
+const expandFilledBarriers = `filledBarriers($expand=filledRequirements($expand=filledQuestions))`;
 
 const expandFilterValues =
   INSPECTION_FORM_COMMON_FIELDS.filter(
     (val) => !excludedFields.includes(val),
-  ).join(",") + `,${expandFilledFreeForms},filledBarriers`;
+  ).join(",") + `,${expandFilledFreeForms},${expandFilledBarriers}`;
 
 export const expandFilter = `${expandFilterValues}`;
 
@@ -84,4 +86,29 @@ export const getSortFilter = (sortSettings: SortByProps<any> | null) => {
   if (sortSettings?.sortingBy && sortSettings?.sortOrder) {
     return `${sortSettings?.sortingBy as string}/title ${sortSettings?.sortOrder}`;
   }
+};
+
+export const getViolationFilters = (formFieldsValues: IInspection) => {
+  console.log('formFieldsValues', toJS(formFieldsValues))
+  const dateFrom = formFieldsValues?.date?.[0]
+    ? moment(formFieldsValues?.date?.[0]).format("YYYY-MM-DD")
+    : undefined;
+  const dateTo = formFieldsValues?.date?.[1]
+    ? moment(formFieldsValues?.date?.[1]).format("YYYY-MM-DD")
+    : undefined;
+
+  const result: any = {
+    dateFrom: dateFrom,
+    dateTo: dateTo,
+    passport: formFieldsValues?.passport?.code,
+    contractor: formFieldsValues?.contractor?.title,
+    oilfield: formFieldsValues?.oilfield?.title,
+    doStruct: formFieldsValues?.doStruct?.title,
+    doObject: formFieldsValues?.doObject?.title,
+    isResolved: !!formFieldsValues.isResolved,
+  };
+  if (formFieldsValues.isResolved === false) {
+    delete result.isResolved
+  }
+  return result
 };

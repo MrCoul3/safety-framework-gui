@@ -5,9 +5,14 @@ import {
   InspectionFormGroups,
   InspectionFormTypes,
 } from "../enums/InspectionFormTypes";
-import {FreeFormFieldTypes, FreeFormTypes} from "../enums/FreeFormTypes";
-import {BarrierExtraFieldTypes, BarrierFieldTypes} from "../enums/BarrierTypes";
-import {FilledQuestionTypes} from "../enums/FilledQuestionTypes";
+import { FreeFormFieldTypes, FreeFormTypes } from "../enums/FreeFormTypes";
+import EliminationOfViolationsPage from "../pages/EliminationOfViolationsPage";
+import { ViolationFilterTypes } from "../enums/ViolationFilterTypes";
+import {
+  BarrierExtraFieldTypes,
+  BarrierFieldTypes,
+} from "../enums/BarrierTypes";
+import { FilledQuestionTypes } from "../enums/FilledQuestionTypes";
 
 export const ru = {
   dict: {
@@ -21,6 +26,7 @@ export const ru = {
     resetFilter: "Сбросить фильтр",
     farther: "Дальше",
     edit: "Редактировать",
+    view: "Просмотр",
     recover: "Восстановить",
     delete: "Удалить",
     go: "Перейти",
@@ -39,7 +45,7 @@ export const ru = {
     back: "Назад",
     forward: "Вперёд",
 
-
+    auth: "Авторизация",
     // breadcrumbs
     mainPage: "Главная",
     inspectionData: "Данные инспекции",
@@ -53,9 +59,11 @@ export const ru = {
     toPassports: "К паспортам",
     toInspectionForm: "К данным инспекции",
     saveChanges: "Сохранить изменения",
+    saveAsTemplate: "Сохранить как шаблон",
     editPassports: "Редактировать паспорта инспекции",
     completionBarrier: "Заполнение барьера по паспорту",
     completionFreeForm: "Заполнение свободной формы",
+    eliminationOfViolationsTitle: "Устранение нарушений",
 
     toHome: "На главную",
 
@@ -134,8 +142,22 @@ export const ru = {
 
     freeForm: "Свободная форма",
 
+    [ViolationFilterTypes.Date]: "Дата",
+    [ViolationFilterTypes.TypeList]: "Тип чек-листа",
+    [ViolationFilterTypes.Orgs]: "ДО/ПО",
+    [ViolationFilterTypes.Oilfields]: "Месторождение",
+    [ViolationFilterTypes.Struct]: "Цех",
+    [ViolationFilterTypes.Obj]: "Объект",
+    "comment": "Комментарий",
+
+    checkForm: "Форма проверки",
+
     barrier: "Барьер",
 
+    fileFormTitle: "Перетащите файлы сюда или нажмите, чтобы загрузить",
+    maxFileSizeDescription: "Максимальный размер файлов: 20 MB",
+    uploadFile: "Загрузить файл",
+    app: "Приложение",
     [FilledQuestionTypes.WorkStopped]: "Работа остановлена",
     [FilledQuestionTypes.ResolvedInPlace]: "Устранено на месте",
     withoutWorkStopped: "Без остановки работы",
@@ -150,15 +172,24 @@ export const ru = {
     mubTitle: "МУБ",
     mubHintTitle: "Как заполнять МУБ:",
 
+    passport: "Паспорт барьера",
+    passportPlaceholder: "Выберите паспорт барьера",
+
     addInspectionTitle: "Заполнение данных инспекции",
     editInspectionTitle: "Редактирование данных инспекции",
     addInspectionDescription:
       "Заполните все ключевые поля, чтобы перейти дальше.",
+    editInspectionDescription:
+      "Нажмите на кнопку “Использовать как шаблон”, чтобы перейти к возможности редактирования.",
     selectPassport: "Выбор паспорта барьера",
-    selectPassportDescription: "Выберите необходимый паспорт для заполнения. В этом окне будут отображаться все выбранные паспорта.",
-    completionBarrierDescription: "Выберите необходимые паспорта, нажав на кнопку “Добавить барьер +” и заполните требуемые поля, чтобы отправить инспекцию.",
-    completionFreeFormDescription: "Заполните свободную форму, чтобы отправить инспекцию. Добавить новые свободные форму можно нажав на кнопку “Добавить свободную форму”.",
-
+    selectPassportDescription:
+      "Выберите необходимый паспорт для заполнения. В этом окне будут отображаться все выбранные паспорта.",
+    completionBarrierDescription:
+      "Выберите необходимые паспорта, нажав на кнопку “Добавить барьер +” и заполните требуемые поля, чтобы отправить инспекцию.",
+    completionFreeFormDescription:
+      "Заполните свободную форму, чтобы отправить инспекцию. Добавить новые свободные форму можно нажав на кнопку “Добавить свободную форму”.",
+    violationsEmptyDescription:
+      "Задайте данные для поиска, чтобы посмотреть необходимые нарушения",
 
     [InspectionFormTypes.InspectionForm + "Placeholder"]:
       "Введите форму проверки",
@@ -170,45 +201,93 @@ export const ru = {
       "Введите структурное подразделение ДО",
     [InspectionFormTypes.DoObject + "Placeholder"]:
       "Введите объект ДО, где проводилась проверка",
-    [InspectionFormTypes.Contractor + "Placeholder"]:
-      "Введите наименование ПО",
+    [InspectionFormTypes.Contractor + "Placeholder"]: "Введите наименование ПО",
     [InspectionFormTypes.ContractorStruct + "Placeholder"]:
       "Введите номер бригады ПО",
     [InspectionFormTypes.SubContractor + "Placeholder"]:
       "Введите наименование субподрядной организации",
-    [InspectionFormTypes.Auditor + "Placeholder"]: "введите ФИО составителя акта",
+    [InspectionFormTypes.Auditor + "Placeholder"]:
+      "введите ФИО составителя акта",
     [InspectionFormTypes.Auditee + "Placeholder"]: "введите ФИО проверяемого",
-    [InspectionFormTypes.Supervisor + "Placeholder"]: "введите ФИО супервайзера",
+    [InspectionFormTypes.Supervisor + "Placeholder"]:
+      "введите ФИО супервайзера",
 
-    [FreeFormFieldTypes.ViolationCategory + "Placeholder"]: "Введите категорию нарушения",
-    [FreeFormFieldTypes.ViolationType + "Placeholder"]: "Введите типовое нарушение",
-    [FreeFormFieldTypes.Violation + "Placeholder"]: "Введите описание по справочнику",
+    [FreeFormFieldTypes.ViolationCategory + "Placeholder"]:
+      "Введите категорию нарушения",
+    [FreeFormFieldTypes.ViolationType + "Placeholder"]:
+      "Введите типовое нарушение",
+    [FreeFormFieldTypes.Violation + "Placeholder"]:
+      "Введите описание по справочнику",
     [FreeFormFieldTypes.ViolationManual + "Placeholder"]: "Введите описание",
-    [FreeFormFieldTypes.WorkType + "Placeholder"]: "Введите вид работ нарушения",
+    [FreeFormFieldTypes.WorkType + "Placeholder"]:
+      "Введите вид работ нарушения",
     [FreeFormFieldTypes.Nmd + "Placeholder"]: "Введите НМД",
     [FreeFormFieldTypes.NmdRule + "Placeholder"]: "Введите пункт правил НМД",
-    [FreeFormFieldTypes.OdOuCategory + "Placeholder"]: "Введите категорию ОД/ОУ",
+    [FreeFormFieldTypes.OdOuCategory + "Placeholder"]:
+      "Введите категорию ОД/ОУ",
     [FreeFormFieldTypes.RiskLevel + "Placeholder"]: "Введите степень риска",
 
     [BarrierFieldTypes.Mub + "Placeholder"]: "Укажите место установки барьера",
     [FilledQuestionTypes.Comment + "Placeholder"]: "Комментарий",
-    [FilledQuestionTypes.PlannedResolveDate + "Placeholder"]: "Дата планируемого устранения",
+    [FilledQuestionTypes.PlannedResolveDate + "Placeholder"]:
+      "Дата планируемого устранения",
 
-    [BarrierExtraFieldTypes.VehicleType + "Placeholder"]: "Введите тип транспортного средства ",
-    [BarrierExtraFieldTypes.LicencePlate + "Placeholder"]: "Введите гос. номер ТС",
+    [BarrierExtraFieldTypes.VehicleType + "Placeholder"]:
+      "Введите тип транспортного средства ",
+    [BarrierExtraFieldTypes.LicencePlate + "Placeholder"]:
+      "Введите гос. номер ТС",
     [BarrierExtraFieldTypes.DriverFio + "Placeholder"]: "Введите ФИО водителя",
+
+    [ViolationFilterTypes.Date + "Placeholder"]: "Выберите дату",
+    [ViolationFilterTypes.TypeList + "Placeholder"]: "Выберите тип чек-листа",
+    [ViolationFilterTypes.Orgs + "Placeholder"]: "Выберите ДО/ПО",
+    [ViolationFilterTypes.Oilfields + "Placeholder"]: "Выберите месторождение",
+    [ViolationFilterTypes.Struct + "Placeholder"]: "Выберите цех",
+    [ViolationFilterTypes.Obj + "Placeholder"]: "Выберите объект",
 
     dialogClearFields: "Очистить все заполненные поля?",
     dialogDeleteFreeForm: "Удалить свободную форму?",
     dialogDeleteNewInspection: "Удалить неотправленную инспекцию?",
     dialogDeleteSentInspection: "Удалить отправленную инспекцию?",
-    dialogGoToMain: "Перейти на главную ? Все несохраненные данные будут потеряны.",
+    dialogGoToMain:
+      "Перейти на главную ? Все несохраненные данные будут потеряны.",
 
     snackBarSuccessSave: "Инспекция успешно сохранена",
-    snackBarSuccessSaveBarrier: "“Инспекция успешно сохранена и добавлена в неотправленные инспекции",
+
+    snackBarSuccessSaveBarrier:
+      "“Инспекция успешно сохранена и добавлена в неотправленные инспекции",
     snackBarSuccessSend: "Инспекция успешно отправлена",
+    snackBarSuccessDelete: "Инспекция успешно удалена",
     snackBarErrorSend: "Ошибка отправки инспекции",
 
     barriersSelect: "Выбрано барьеров",
+
+    hideFixedViolations: "Скрыть устраненные нарушения",
+    loadedFile: "Загруженный файл: ",
+    file: "Файл",
+    successLoaded: "успешно загружен"
+  },
+  violationsDict: {
+    passport: "Тип чек-листа",
+    contractor: "ДО/ПО",
+    oilfield: "Месторождение",
+    doStruct: "Цех",
+    doObject: "Объект",
+    [InspectionFormTypes.AuditDate]: "Дата проверки",
+    question: "Предмет проверки",
+    [InspectionFormTypes.Auditor]: "Проверяющий",
+    [InspectionFormTypes.Auditee]: "Проверяемый",
+    app: "Приложение",
+
+    passportPlaceholder: "Выберите тип чек-листа",
+    contractorPlaceholder: "Выберите ДО/ПО",
+    oilfieldPlaceholder: "Выберите месторождение",
+    doStructPlaceholder: "Выберите цех",
+    doObjectPlaceholder: "Выберите объект",
+    snackBarSuccessEliminated: "Нарушение успешно устранено",
+    snackBarErrorEliminated: "Ошибка запроса",
+    violationsEmptyDescription:
+      "Задайте данные для поиска, чтобы посмотреть необходимые нарушения",
+
   },
 };

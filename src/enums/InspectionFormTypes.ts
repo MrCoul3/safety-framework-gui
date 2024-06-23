@@ -66,6 +66,7 @@ export const INSPECTION_FORM_NOT_REQUIRED_FIELDS = [
   InspectionFormTypes.Contractor,
   InspectionFormTypes.SubContractor,
   InspectionFormTypes.Supervisor,
+  InspectionFormTypes.ContractorStruct,
 ];
 export const INSPECTION_FORM_REQUIRED_FIELDS =
   INSPECTION_FORM_COMMON_FIELDS.filter(

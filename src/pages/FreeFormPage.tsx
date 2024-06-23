@@ -18,7 +18,9 @@ import CollapseElement from "../components/CollapseElement/CollapseElement";
 import FreeFormElementLabel from "../components/FreeFormElementLabel/FreeFormElementLabel";
 import { IInspection } from "../interfaces/IInspection";
 import SnackBarCustom from "../components/SnackBarCustom/SnackBarCustom";
-import {toJS} from "mobx";
+import { toJS } from "mobx";
+import { RoutesTypes } from "../enums/RoutesTypes";
+import i18next from "i18next/index";
 
 interface IFreeFormPage {}
 
@@ -30,6 +32,13 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
   const navigate = useNavigate();
 
   let { editInspectionId } = useParams();
+
+  useEffect(() => {
+    console.log(
+      "FreeFormPage formFieldsValues",
+      toJS(store.inspectionStore.formFieldsValues),
+    );
+  }, []);
 
   const crumbs: IBreadCrumbs[] = [
     {
@@ -47,7 +56,10 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
     },
   ];
   const getFreeFormsFromFieldsData = () => {
-    console.log('getFreeFormsFromFormFieldsData', toJS(store.inspectionStore.formFieldsValues))
+    console.log(
+      "getFreeFormsFromFormFieldsData",
+      toJS(store.inspectionStore.formFieldsValues),
+    );
     const freeForms = (store.inspectionStore.formFieldsValues as IInspection)[
       "filledFreeForms"
     ];
@@ -56,13 +68,15 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
     }
   };
 
-  const loadInspection = () => {
+  const loadInspection = async () => {
     if (editInspectionId) {
       store.inspectionStore.loadInspection(editInspectionId);
     }
   };
-  const init = () => {
-    loadInspection();
+  const init = async () => {
+    if (!Object.keys(store.inspectionStore.formFieldsValues).length) {
+      await loadInspection();
+    }
     getFreeFormsFromFieldsData();
     setIsFormsValidForSending(store.freeFormStore.checkIsFreeFormSuccess());
   };
@@ -72,61 +86,81 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
   }, []);
 
   const saveInspection = () => {
-    editInspectionId
-      ? store.freeFormStore.updateInspectionToLocalStorage(editInspectionId)
-      : store.inspectionStore.setInspectionToLocalStorage();
+    if (
+      location.pathname.includes(RoutesTypes.EditLocalInspection) &&
+      editInspectionId
+    ) {
+      store.freeFormStore.updateInspectionToLocalStorage(editInspectionId);
+      store.snackBarStore.setSnackBarItem({
+        message: t("snackBarSuccessSave"),
+        key: "1",
+        status: "success",
+      });
+    }
+    if (
+      location.pathname.includes(RoutesTypes.NewInspection) ||
+      location.pathname.includes(RoutesTypes.EditInspection)
+    ) {
+      store.inspectionStore.setInspectionToLocalStorage();
+      store.snackBarStore.setSnackBarItem({
+        message: t("snackBarSuccessSaveBarrier"),
+        key: "1",
+        status: "success",
+      });
+    }
+    store.inspectionStore.setIsValidate(false);
   };
-
-  const handleSaveForm = (index: number) => {
-    console.log("handleSaveForm", index);
-    editInspectionId
-      ? store.freeFormStore.saveEditInspectionFreeFormToLocalStorage(
-          editInspectionId,
-          index,
-        )
-      : handleSaveInspection();
+  const handleSaveForm = () => {
+    store.inspectionStore.setSavingState(false);
+    saveInspection();
   };
 
   const handleSaveInspection = () => {
-    setSavingState(false);
+    store.inspectionStore.setSavingState(false);
     saveInspection();
     navigate(-2);
-    store.snackBarStore.setSnackBarItem({
-      message: t("snackBarSuccessSave"),
-      key: "1",
-      status: "success",
-    });
   };
 
   const handleAddFreeForm = () => {
     store.freeFormStore.addFreeForm();
-    setSavingState(true);
+    store.inspectionStore.setFilledFreeForms(
+      store.freeFormStore.filledFreeForms,
+    );
+    store.inspectionStore.setSavingState(true);
   };
-
-  const [savingState, setSavingState] = useState(false);
 
   const [isFormsValidForSending, setIsFormsValidForSending] = useState(false);
 
   const handleChange = (value: IFormFieldValue, index: number) => {
     console.log("handleChange", value);
-    setSavingState(true);
+    store.inspectionStore.setSavingState(true);
     store.freeFormStore.updateFormFieldsValues(value, index);
     const isValid = store.freeFormStore.checkIsFreeFormSuccess();
+    store.inspectionStore.setFilledFreeForms(
+      store.freeFormStore.filledFreeForms,
+    );
     console.log("handleSendInspection isValid", isValid);
     setIsFormsValidForSending(isValid);
   };
 
   const handleOpenField = (type: InspectionFormTypes) => {
     store.inspectionStore.handleOpenField(type);
+    setOpenFilterType(type);
   };
   const handleClearForm = (index: number) => {
     store.freeFormStore.clearFreeForm(index);
-    setSavingState(true);
+    store.inspectionStore.setFilledFreeForms(
+      store.freeFormStore.filledFreeForms,
+    );
+    store.inspectionStore.setSavingState(true);
   };
 
   const handleDelete = (index: number) => {
     store.freeFormStore.deleteFreeForm(index);
-    setSavingState(true);
+    store.inspectionStore.setFilledFreeForms(
+      store.freeFormStore.filledFreeForms,
+    );
+    store.inspectionStore.setSavingState(true);
   };
   const handleSendInspection = async () => {
     const isValid = store.freeFormStore.checkIsFreeFormSuccess();
@@ -156,6 +190,24 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
     }
   };
 
+  const [openFilterType, setOpenFilterType] =
+    useState<InspectionFormTypes | null>(null);
+
+  const handleSearchValueChange = (value: string | null) => {
+    store.inspectionStore.handleSearchValueChange(value, openFilterType);
+  };
+
+  const handleScrollFieldToBottom = (inspectionType: InspectionFormTypes) => {
+    store.inspectionStore.increaseOffset();
+    store.inspectionStore.getFieldData(inspectionType);
+  };
+
+  const handleInspectionTextFieldClose = () => {
+    setOpenFilterType(null);
+    store.inspectionStore.clearOffset();
+    store.inspectionStore.clearFieldsData();
+  };
+
   return (
     <Layout
       navPanel={
@@ -167,7 +219,7 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
               label={t("sendInspection")}
             />
           }
-          disableSaveButton={!savingState}
+          disableSaveButton={!store.inspectionStore.savingState}
           actions={
             <Button
               onClick={() => navigate(-1)}
@@ -201,6 +253,13 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
                 key={index}
                 content={
                   <FreeForm
+                    setSavingState={(value) =>
+                      store.inspectionStore.setSavingState(value)
+                    }
+                    savingState={store.inspectionStore.savingState}
+                    onScrollToBottom={handleScrollFieldToBottom}
+                    onInspectionTextFieldClose={handleInspectionTextFieldClose}
+                    onSearchValueChange={handleSearchValueChange}
                     isOtherCondition={store.freeFormStore.isOtherCondition(
                       formFieldsValues as IFreeForm,
                     )}
@@ -208,7 +267,7 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
                     setIsValidate={() =>
                       store.inspectionStore.setIsValidate(true)
                     }
-                    handleSaveForm={() => handleSaveForm(index)}
+                    handleSaveForm={handleSaveForm}
                     onInit={() => store.inspectionStore.setIsValidate(false)}
                     handleChange={(value: IFormFieldValue) =>
                       handleChange(value, index)

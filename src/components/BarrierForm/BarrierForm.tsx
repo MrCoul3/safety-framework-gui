@@ -48,6 +48,7 @@ interface IBarrierForm {
   handleSaveForm?(): void;
 
   handleDelete?(): void;
+
 }
 
 const BarrierForm = observer((props: IBarrierForm) => {
@@ -105,20 +106,22 @@ const BarrierForm = observer((props: IBarrierForm) => {
 
   useEffect(() => {
     console.log("handleExtraFieldsChange vehicleFieldValue", vehicleFieldValue);
+    console.log("handleExtraFieldsChange driverFioFieldValue", driverFioFieldValue);
+    console.log("handleExtraFieldsChange licencePlateFieldValue", licencePlateFieldValue);
     if (
       vehicleFieldValue !== null &&
       licencePlateFieldValue !== null &&
       driverFioFieldValue !== null
     ) {
-      const vehicleVal = vehicleFieldValue ? `${vehicleFieldValue}` : "";
+      const vehicleVal = vehicleFieldValue ? `${vehicleFieldValue},` : "";
       const licencePlateVal = licencePlateFieldValue
-        ? `${licencePlateFieldValue}`
+        ? `${licencePlateFieldValue},`
         : "";
       const driverFioVal = driverFioFieldValue
         ? `${driverFioFieldValue}`
         : "";
       const result = {
-        [BarrierFieldTypes.Mub]: `${vehicleVal},${licencePlateVal},${driverFioVal}`,
+        [BarrierFieldTypes.Mub]: `${vehicleVal}${licencePlateVal}${driverFioVal}`,
       };
       props.handleChange(result);
       setSavingState(true);

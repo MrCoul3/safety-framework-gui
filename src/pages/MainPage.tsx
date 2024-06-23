@@ -28,6 +28,9 @@ import {
 import { SortByProps } from "@consta/uikit/Table";
 import InspectionCard from "../components/InspectionCard/InspectionCard";
 import { IconWarning } from "@consta/icons/IconWarning";
+import style from "../components/containers/AppContainer/style.module.css";
+import { Responses404 } from "@consta/uikit/Responses404";
+import { Button } from "@consta/uikit/Button";
 
 interface IMainPage {}
 
@@ -43,6 +46,10 @@ export const MainPage = observer((props: IMainPage) => {
   const init = () => {
     store.mainPageStore.clearInspectionOffset();
     store.freeFormStore.clearFreeForms();
+    store.barriersStore.clearBarriers();
+    store.inspectionStore.clearInspectionForm();
+    store.inspectionStore.clearSavingState();
+    store.eliminationOfViolationsStore.clearViolations();
     getLocalInspections();
     if (isDevelop) {
       store.mainPageStore.getInspectionsDev();
@@ -52,6 +59,10 @@ export const MainPage = observer((props: IMainPage) => {
   };
 
   useEffect(() => {
+    console.log(
+      "mainPage store.barriersStore.filledBarriers",
+      toJS(store.barriersStore.filledBarriers),
+    );
     init();
   }, []);
 
@@ -88,6 +99,11 @@ export const MainPage = observer((props: IMainPage) => {
         +store.mainPageStore.deletingInspectionType?.id - 1,
       );
       getLocalInspections();
+      store.snackBarStore.setSnackBarItem({
+        message: t("snackBarSuccessDelete"),
+        key: "1",
+        status: "success",
+      });
     }
   };
   const handleDeleteSentInspection = async () => {
@@ -149,14 +165,7 @@ export const MainPage = observer((props: IMainPage) => {
   };
 
   const handleSearchValueChange = (value: string | null) => {
-    console.log("handleSearchValueChange value!!!", value);
-    store.inspectionStore.setSearchFieldValue(value);
-    if (!value || value === "") {
-      store.inspectionStore.clearOffset();
-    }
-    if ((value || value === "") && openFilterType) {
-      store.inspectionStore.getFieldData(openFilterType);
-    }
+    store.inspectionStore.handleSearchValueChange(value, openFilterType);
   };
   const handleInspectionTextFieldClose = () => {
     setOpenFilterType(null);
@@ -216,6 +225,12 @@ export const MainPage = observer((props: IMainPage) => {
     const inspections = sentInspectionsCondition(subGroup)
       ? store.mainPageStore.inspections
       : store.mainPageStore.localInspections;
+    console.log(
+      "renderInspections sentInspectionsCondition(subGroup)",
+      toJS(sentInspectionsCondition(subGroup)),
+    );
+    console.log("renderInspections subGroup", toJS(subGroup));
+    console.log("renderInspections inspections", toJS(inspections));
     return inspections.length ? (
       inspections.map((item, index) => (
         <InspectionCard
@@ -223,7 +238,7 @@ export const MainPage = observer((props: IMainPage) => {
             newInspectionCondition(subGroup) &&
             store.mainPageStore.checkIsInspectionReadyToSend(
               index,
-              item[InspectionFormTypes.InspectionForm]?.id,
+              item?.[InspectionFormTypes.InspectionForm]?.id,
             )
           }
           sendInspection={handleSendInspection}
@@ -233,16 +248,16 @@ export const MainPage = observer((props: IMainPage) => {
               ? handleEditInspection
               : handleEditLocalInspection
           }
-          id={item.id ?? ""}
+          id={item?.id ?? ""}
           key={index}
           subGroup={subGroup}
-          checkVerifyDate={item[InspectionFormTypes.AuditDate]}
-          oilfield={item[InspectionFormTypes.OilField]?.title}
-          doObject={item[InspectionFormTypes.DoObject]?.title}
-          contractor={item[InspectionFormTypes.Contractor]?.title}
-          contractorStruct={item[InspectionFormTypes.ContractorStruct]?.title}
-          inspectionType={item[InspectionFormTypes.InspectionType]?.title}
-          inspectionForm={item[InspectionFormTypes.InspectionForm]?.title}
+          checkVerifyDate={item?.[InspectionFormTypes.AuditDate]}
+          oilfield={item?.[InspectionFormTypes.OilField]?.title}
+          doObject={item?.[InspectionFormTypes.DoObject]?.title}
+          contractor={item?.[InspectionFormTypes.Contractor]?.title}
+          contractorStruct={item?.[InspectionFormTypes.ContractorStruct]?.title}
+          inspectionType={item?.[InspectionFormTypes.InspectionType]?.title}
+          inspectionForm={item?.[InspectionFormTypes.InspectionForm]?.title}
           index={index + 1}
         />
       ))
@@ -258,6 +273,12 @@ export const MainPage = observer((props: IMainPage) => {
       />
     );
   };
+
+  const render404 = () => (
+    <div className={style.container}>
+      <Responses404 actions={" "} />
+    </div>
+  );
 
   const contentRoutes = () => {
     return (
@@ -283,7 +304,7 @@ export const MainPage = observer((props: IMainPage) => {
           }
           path="/"
         />
-        {/*Sent and new inspections table on main page*/}
+        {/*Sent and don't send table on main page*/}
         {[
           store.mainPageStore.localInspections,
           store.mainPageStore.inspections,
@@ -340,6 +361,9 @@ export const MainPage = observer((props: IMainPage) => {
           element={<EmptyBoxPage />}
           path={SubGroupsActionsTypes.BarriersApps}
         />
+
+
+        <Route path="/*" element={render404()} />
       </Routes>
     );
   };

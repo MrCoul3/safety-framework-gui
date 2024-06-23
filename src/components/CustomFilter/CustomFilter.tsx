@@ -11,14 +11,12 @@ import { IconCalendar } from "@consta/icons/IconCalendar";
 import { useFlag } from "@consta/uikit/useFlag";
 import { useTranslation } from "react-i18next";
 import { toJS } from "mobx";
-import { Button } from "@consta/uikit/Button";
 import { useDebounce } from "@consta/uikit/useDebounce";
 import { ELEMENTS_ON_FIELD } from "../../constants/config";
 import {
   IFieldsData,
   IFilterDateRangeFieldValue,
   IFilterFieldValue,
-  IFormDateFieldValue,
   Item,
 } from "../../interfaces/IFieldInterfaces";
 

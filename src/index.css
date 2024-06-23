@@ -37,6 +37,7 @@ code {
   --lightGray: #ecf1f4;
   --lightText: #fafafa;
   --blue: #32b4ff;
+  --tableRowBlue: #0078D24D;
   --blueDeep: #0071B2;
   --awaitOrange: #f38b00;
   --successGreen: #22c38e;
@@ -46,6 +47,7 @@ code {
   --sideBarWidth: 244px;
   --fieldWidth: 610px;
   --navPanelHeight: 214px;
+  --minSizeNavPanelHeight: 130px;
   --normalGap: 16px;
   --mainHeaderHeight: 76px;
   --paginatorHeight: 75px;
@@ -67,4 +69,7 @@ code {
 }
 .searchBarriersField {
   /*width: 100% !important;*/
+}
+.activeRow {
+  background-color: var(--tableRowBlue) !important;
 }

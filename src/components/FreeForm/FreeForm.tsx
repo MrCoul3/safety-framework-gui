@@ -17,6 +17,7 @@ import { Button } from "@consta/uikit/Button";
 import { useTranslation } from "react-i18next";
 import ConfirmDialog from "../ConfirmDialog/ConfirmDialog";
 import InspectionTextArea from "../InspectionTextArea/InspectionTextArea";
+import { toJS } from "mobx";
 
 interface IFreeFormProps {
   onInspectionTextFieldClose?(): void;
@@ -35,6 +36,7 @@ interface IFreeFormProps {
   handleSaveForm(): void;
 
   handleDelete?(): void;
+  setSavingState?(val: boolean): void;
 
   setIsValidate(value: boolean): void;
 
@@ -43,6 +45,8 @@ interface IFreeFormProps {
   formFieldsValues: IFreeForm | null;
   formFieldsValuesLength?: boolean;
   isOtherCondition?: boolean;
+
+  savingState?: boolean
 }
 
 const FreeForm = observer((props: IFreeFormProps) => {
@@ -54,7 +58,6 @@ const FreeForm = observer((props: IFreeFormProps) => {
     props.onInit?.();
   }, []);
 
-  const [savingState, setSavingState] = useState(false);
 
   const requiredConditions = (field: FreeFormFieldTypes) => {
     const notReqFields = [""];
@@ -79,7 +82,7 @@ const FreeForm = observer((props: IFreeFormProps) => {
   const [isClearModalOpen, setIsClearModalOpen] = React.useState(false);
   const [isDelModalOpen, setIsDelModalOpen] = React.useState(false);
   const handleSave = () => {
-    setSavingState(false);
+    props.setSavingState?.(false);
     props.handleSaveForm();
   };
 
@@ -87,6 +90,24 @@ const FreeForm = observer((props: IFreeFormProps) => {
     if (props.formFieldsValues) {
       if (field === FreeFormFieldTypes.ViolationManual) {
         return props.formFieldsValues[field] as string;
+      }
+      if (
+        (field === FreeFormFieldTypes.NmdRule ||
+          field === FreeFormFieldTypes.Nmd) &&
+        props.formFieldsValues[field]?.ruleNumber &&
+        props.formFieldsValues[field]?.title
+      ) {
+        console.log(
+          "props.formFieldsValues[field]",
+          toJS(
+            (props.formFieldsValues[field]?.ruleNumber +
+              ". " +
+              props.formFieldsValues[field]?.title) as string,
+          ),
+        );
+        return (props.formFieldsValues[field]?.ruleNumber +
+          ". " +
+          props.formFieldsValues[field]?.title) as string;
       }
       return props.formFieldsValues[field]?.title as string;
     }
@@ -96,7 +117,7 @@ const FreeForm = observer((props: IFreeFormProps) => {
   const handleChange = (value: IFormFieldValue | IFormFieldTextValue) => {
     console.log("handleChange", value);
     props.handleChange(value);
-    setSavingState(true);
+    props.setSavingState?.(true);
   };
 
   useEffect(() => {
@@ -151,7 +172,7 @@ const FreeForm = observer((props: IFreeFormProps) => {
             label={t("clear")}
           />
           <Button
-            disabled={!savingState}
+            disabled={!props.savingState}
             onClick={handleSave}
             type="submit"
             label={t("save")}

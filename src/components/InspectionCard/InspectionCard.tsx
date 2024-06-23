@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { IconTrash } from "@consta/icons/IconTrash";
 import { IconMail } from "@consta/icons/IconMail";
 import { IconEdit } from "@consta/icons/IconEdit";
+import { IconEye } from "@consta/icons/IconEye";
 import { Card } from "@consta/uikit/Card";
 import { Badge } from "@consta/uikit/Badge";
 import { Button } from "@consta/uikit/Button";
@@ -160,8 +161,12 @@ const InspectionCard = observer((props: IInspectionCard) => {
           size={"s"}
           className={style.editButton}
           iconSize="s"
-          label={t("edit")}
-          iconLeft={IconEdit}
+          label={t(
+            props.subGroup === SubGroupsActionsTypes.Sent ? "view" : "edit",
+          )}
+          iconLeft={
+            props.subGroup === SubGroupsActionsTypes.Sent ? IconEye : IconEdit
+          }
         />
       </div>
     </Card>

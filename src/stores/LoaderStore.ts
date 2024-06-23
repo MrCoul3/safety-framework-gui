@@ -11,9 +11,14 @@ export class LoaderStore {
     }
 
     loader: LoaderType = "wait";
+    barriersLoader: LoaderType = "wait";
 
     setLoader(val: LoaderType) {
         this.loader = val;
         console.log('loader', this.loader)
+    }
+    setBarriersLoader(val: LoaderType) {
+        this.barriersLoader = val;
+        console.log('barriersLoader', this.barriersLoader)
     }
 }

@@ -29,6 +29,7 @@ export class FreeFormStore {
   filledFreeForms: (IFreeForm | {})[] = [];
   setFreeForm(value: IFreeForm[]) {
     this.filledFreeForms = value;
+    console.log('setFreeForm this.filledFreeForms', toJS(this.filledFreeForms))
   }
   addFreeForm() {
     this.filledFreeForms = [
@@ -75,6 +76,7 @@ export class FreeFormStore {
           "saveFreeFormToLocalStorage targetInspection",
           toJS(targetInspection),
         );
+        targetInspection.filledBarriers = [];
         if (
           targetInspection.filledFreeForms && targetInspection.filledFreeForms.length &&
           targetInspection.filledFreeForms[freeFormIndex]
@@ -103,8 +105,9 @@ export class FreeFormStore {
         localInspectionsParsed[index] = this.store.inspectionStore.formFieldsValues
         const targetInspection = localInspectionsParsed[index];
         targetInspection.filledFreeForms = this.filledFreeForms;
+        targetInspection.filledBarriers = [];
         localInspectionsParsed.splice(index, 1);
-        localInspectionsParsed.push(targetInspection);
+        localInspectionsParsed.unshift(targetInspection);
         const newInspectionsJson = JSON.stringify(localInspectionsParsed);
         localStorage.setItem(LOCAL_STORE_INSPECTIONS, newInspectionsJson);
       }

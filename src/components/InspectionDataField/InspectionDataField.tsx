@@ -7,10 +7,17 @@ import { DatePicker, DatePickerPropOnChange } from "@consta/uikit/DatePicker";
 import { IconCalendar } from "@consta/icons/IconCalendar";
 import { PropStatus } from "@consta/uikit/__internal__/src/components/SelectComponents/types";
 import {IFormDateFieldValue} from "../../interfaces/IFieldInterfaces";
+import {ViolationFilterTypes} from "../../enums/ViolationFilterTypes";
+import classNames from "classnames";
 
 interface IInspectionDataField {
-  inspectionType: InspectionFormTypes;
+  inspectionType: InspectionFormTypes | ViolationFilterTypes;
   disableLabel?: boolean;
+  required?: boolean;
+
+  labelPosition?: "left" | "top"
+
+  className?: string
 
   status?: PropStatus | undefined;
   value?: Date | null;
@@ -27,8 +34,10 @@ const InspectionDataField = observer((props: IInspectionDataField) => {
   const picker = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const fieldBody = picker.current?.parentElement;
-    fieldBody?.classList.add("customField");
+    if (!props.className) {
+      const fieldBody = picker.current?.parentElement;
+      fieldBody?.classList.add("customField");
+    }
   }, [picker]);
 
   useEffect(() => {
@@ -44,14 +53,14 @@ const InspectionDataField = observer((props: IInspectionDataField) => {
       type={"date"}
       ref={picker}
       status={props.status}
-      className={style.field}
+      className={classNames(style.field, props.className)}
       label={!props.disableLabel ? t(props.inspectionType) : ""}
       onChange={(value) =>
         props.handleChange({ [props.inspectionType]: value })
       }
-      required
+      required={props.required}
       rightSide={IconCalendar}
-      labelPosition="left"
+      labelPosition={props.labelPosition ?? "left"}
       value={val}
     />
   );
