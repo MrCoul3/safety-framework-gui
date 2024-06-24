@@ -20,7 +20,8 @@ import { expandFilter } from "../constants/filters";
 import {
   IFieldsData,
   IFilterDateRangeFieldValue,
-  IFormDateFieldValue, IFormFieldBoolValue,
+  IFormDateFieldValue,
+  IFormFieldBoolValue,
   IFormFieldValue,
   Item,
 } from "../interfaces/IFieldInterfaces";
@@ -36,7 +37,7 @@ import { filterByRequiredFields } from "../utils/filterByRequiredFields";
 import { ViolationFilterTypes } from "../enums/ViolationFilterTypes";
 import { IFilledBarrier } from "../interfaces/IFilledBarrier";
 import i18next from "i18next";
-import {IViolation} from "../interfaces/IViolation";
+import { IViolation } from "../interfaces/IViolation";
 
 export class InspectionStore {
   private store: AppStore;
@@ -97,15 +98,13 @@ export class InspectionStore {
     }
 
     try {
-
-        const response = await instance.get(requestType);
-        this.setFieldsData({
-          [type + "Count"]: 321,
-        });
-        if (!response.data.error) {
-          this.setFieldsData({ [type]: response.data });
-        }
-
+      const response = await instance.get(requestType);
+      this.setFieldsData({
+        [type + "Count"]: 321,
+      });
+      if (!response.data.error) {
+        this.setFieldsData({ [type]: response.data });
+      }
     } catch (e) {
       console.error(e);
     }
@@ -120,7 +119,7 @@ export class InspectionStore {
   ) {
     let requestType: any = type;
 
-    console.log('getFieldData requestType', requestType)
+    console.log("getFieldData requestType", requestType);
 
     const searchFieldValue = this.searchFieldValue ?? "";
 
@@ -232,7 +231,11 @@ export class InspectionStore {
   }
 
   updateFormFieldsValues(
-    value: IFormFieldValue | IFormDateFieldValue | IFilterDateRangeFieldValue | IFormFieldBoolValue,
+    value:
+      | IFormFieldValue
+      | IFormDateFieldValue
+      | IFilterDateRangeFieldValue
+      | IFormFieldBoolValue,
   ) {
     console.log("updateFormFieldsValues", value);
     if (this.formFieldsValues) {
@@ -272,21 +275,19 @@ export class InspectionStore {
 
   async getInspectionDev(editInspectionId: string) {
     this.store.loaderStore.setLoader("wait");
+    console.log("getInspectionDev", editInspectionId);
 
     try {
-      setTimeout(async () => {
-        const response = await instance.get(`inspections/${editInspectionId}`);
-        if (!response.data.error) {
-          const result = response.data;
-          const inspection = {
-            ...result,
-            auditDate: moment(result.auditDate).toDate(),
-          };
-          this.setFormFieldsValues(inspection);
-          console.log("getInspectionDev");
-        }
-        this.store.loaderStore.setLoader("ready");
-      }, 200);
+      const response = await instance.get(`inspections/${editInspectionId}`);
+      if (!response.data.error) {
+        const result = response.data;
+        const inspection = {
+          ...result,
+          auditDate: moment(result.auditDate).toDate(),
+        };
+        this.setFormFieldsValues(inspection);
+      }
+      this.store.loaderStore.setLoader("ready");
     } catch (e) {
       this.store.loaderStore.setLoader("ready");
       console.error(e);

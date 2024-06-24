@@ -28,11 +28,13 @@ export class BarriersStore {
   clearBarriers() {
     this.filledBarriers = [];
   }
-  async getBarriersDev() {
+  async getBarriersDev(passportId: string) {
     this.store.loaderStore.setBarriersLoader("wait");
     try {
       setTimeout(async () => {
-        const response = await localDevInstance.get(`barriers`);
+        const response = await localDevInstance.get(
+          `barriers?passportId=${passportId}`,
+        );
         if (!response.data.error) {
           this.setBarriers(response.data);
         }
@@ -112,7 +114,7 @@ export class BarriersStore {
 
   getFoundBarriersById(barrierId: number) {
     return this.filledBarriers.filter(
-      (barrier) => barrier.barrierId === barrierId,
+      (barrier) => barrier.barrierId.toString() === barrierId.toString(),
     );
   }
   filterBarriersFromBarrierId(barrierId: number) {
@@ -189,68 +191,37 @@ export class BarriersStore {
   }
 
   updateFilledQuestions(
-    value: IFilledQuestions,
-    barrierId: number,
-    index: number,
+      value: IFilledQuestions,
+      barrierId: number,
+      index: number,
+      requirementId: number,
   ) {
     const foundBarriersById = this.getFoundBarriersById(barrierId);
-    console.log(
-      "updateFilledQuestions foundBarriersById",
-      toJS(foundBarriersById),
-    );
     const activeBarrier = foundBarriersById[index];
-    console.log("updateFilledQuestions activeBarrier", toJS(activeBarrier));
 
-    let filledRequirements = activeBarrier?.filledRequirements;
-    console.log(
-      "updateFilledQuestions filledRequirements",
-      toJS(filledRequirements),
-    );
+    if (activeBarrier) {
+      const filledRequirement = activeBarrier.filledRequirements?.find(
+          (fillReq) => fillReq.requirementId === requirementId,
+      );
 
-    const filledQuestions = filledRequirements?.find(
-      (fillReq) =>
-        fillReq.requirementId ===
-        value[FilledQuestionTypes.FilledRequirementId],
-    )?.filledQuestions;
-
-    console.log("updateFilledQuestions filledQuestions", toJS(filledQuestions));
-
-    const newFilledQuestions = filledQuestions?.map((fillQ) => {
-      if (
-        fillQ[FilledQuestionTypes.QuestionId] ===
-        value[FilledQuestionTypes.QuestionId]
-      ) {
-        return value;
+      if (filledRequirement) {
+        // Update existing filled questions
+        filledRequirement.filledQuestions = filledRequirement.filledQuestions?.map((fillQ) =>
+            fillQ[FilledQuestionTypes.QuestionId] === value[FilledQuestionTypes.QuestionId]
+                ? value
+                : fillQ
+        ) ?? [];
+      } else {
+        // Create a new filled requirement if it doesn't exist
+        const newFilledRequirement = {
+          requirementId,
+          filledQuestions: [value],
+        };
+        activeBarrier.filledRequirements?.push(newFilledRequirement);
       }
-      return fillQ;
-    });
-    console.log(
-      "updateFilledQuestions newFilledQuestions",
-      toJS(newFilledQuestions),
-    );
-
-    filledRequirements
-      ? filledRequirements?.map((fillReq) => {
-          if (newFilledQuestions && newFilledQuestions.length) {
-            const fillQReqId = newFilledQuestions[0].filledRequirementId;
-            if (fillReq.requirementId === fillQReqId) {
-              fillReq.filledQuestions = newFilledQuestions;
-            }
-          }
-          return fillReq;
-        })
-      : [];
-
-    console.log(
-      "updateFilledQuestions filledRequirements",
-      toJS(filledRequirements),
-    );
-
-    console.log(
-      "updateFilledQuestions this.filledBarriers",
-      toJS(this.filledBarriers),
-    );
+    }
   }
+
 
   updateInspectionToLocalStorage(editInspectionId: string) {
     const index = +editInspectionId - 1;

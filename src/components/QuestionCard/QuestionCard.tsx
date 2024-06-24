@@ -16,12 +16,13 @@ import {IInapplicableReasons} from "../../interfaces/IInapplicableReasons";
 
 interface IQuestionCard {
   title: string;
+  requirementId: number;
   fulfillments: IFulfillment[];
   inapplicableReasons: IInapplicableReasons[];
 
   filledQuestion?: IFilledQuestions;
 
-  handleChange(value: IFilledQuestions): void;
+  handleChange(value: IFilledQuestions, requirementId: number): void;
 }
 
 const QuestionCard = observer((props: IQuestionCard) => {
@@ -48,7 +49,7 @@ const QuestionCard = observer((props: IQuestionCard) => {
       delete resultValue[FilledQuestionTypes.Comment]
     }
     console.log("QuestionCard handleChange resultValue", toJS(resultValue));
-    props.handleChange(resultValue);
+    props.handleChange(resultValue, props.requirementId);
   };
 
   const handleInapplicableReasonsChange = (value: IInapplicableReasons) => {
@@ -63,7 +64,7 @@ const QuestionCard = observer((props: IQuestionCard) => {
     }
 
     console.log("QuestionCard handleChange resultValue", toJS(resultValue));
-    props.handleChange(resultValue);
+    props.handleChange(resultValue, props.requirementId);
   };
   const handleCommentChange = (value: IFormFieldTextValue) => {
     console.log("QuestionCard handleChange value", {
@@ -71,7 +72,7 @@ const QuestionCard = observer((props: IQuestionCard) => {
       ...value,
     });
     const result = { ...props.filledQuestion, ...value };
-    props.handleChange(result);
+    props.handleChange(result, props.requirementId);
   };
   const handleNoFulfillmentChange = (value: {
     title: string;
@@ -84,14 +85,14 @@ const QuestionCard = observer((props: IQuestionCard) => {
     const result = { ...props.filledQuestion, ...val };
 
     console.log("handleNoFulfillmentChange result", result);
-    props.handleChange(result);
+    props.handleChange(result, props.requirementId);
   };
   const handleDateChange = (value: Date | null) => {
     console.log("handleDateChange value", value);
     const val = { [FilledQuestionTypes.PlannedResolveDate]: value };
     const result = { ...props.filledQuestion, ...val };
 
-    props.handleChange(result);
+    props.handleChange(result, props.requirementId);
     console.log("handleDateChange result", result);
   };
 

@@ -41,20 +41,23 @@ interface IBarrierForm {
 
   handleChange(value: IFormFieldTextValue): void;
 
-  handleFulfillmentChange(value: IFilledQuestions): void;
+  handleFulfillmentChange(value: IFilledQuestions, requirementId: number): void;
 
   handleClearForm?(): void;
 
   handleSaveForm?(): void;
 
   handleDelete?(): void;
-
 }
 
 const BarrierForm = observer((props: IBarrierForm) => {
   const { t } = useTranslation("dict");
 
   const [savingState, setSavingState] = useState(false);
+
+  useEffect(() => {
+    console.log("BarrierForm formFields", toJS(props.formFields));
+  }, [props.formFields]);
 
   const getValue = (type: BarrierFieldTypes): string => {
     if (props.formFields) {
@@ -102,12 +105,16 @@ const BarrierForm = observer((props: IBarrierForm) => {
     mub?.[2] ?? "",
   );
 
-
-
   useEffect(() => {
     console.log("handleExtraFieldsChange vehicleFieldValue", vehicleFieldValue);
-    console.log("handleExtraFieldsChange driverFioFieldValue", driverFioFieldValue);
-    console.log("handleExtraFieldsChange licencePlateFieldValue", licencePlateFieldValue);
+    console.log(
+      "handleExtraFieldsChange driverFioFieldValue",
+      driverFioFieldValue,
+    );
+    console.log(
+      "handleExtraFieldsChange licencePlateFieldValue",
+      licencePlateFieldValue,
+    );
     if (
       vehicleFieldValue !== null &&
       licencePlateFieldValue !== null &&
@@ -117,9 +124,7 @@ const BarrierForm = observer((props: IBarrierForm) => {
       const licencePlateVal = licencePlateFieldValue
         ? `${licencePlateFieldValue},`
         : "";
-      const driverFioVal = driverFioFieldValue
-        ? `${driverFioFieldValue}`
-        : "";
+      const driverFioVal = driverFioFieldValue ? `${driverFioFieldValue}` : "";
       const result = {
         [BarrierFieldTypes.Mub]: `${vehicleVal}${licencePlateVal}${driverFioVal}`,
       };
@@ -157,7 +162,6 @@ const BarrierForm = observer((props: IBarrierForm) => {
 
   const [isClearModalOpen, setIsClearModalOpen] = React.useState(false);
   const [isDelModalOpen, setIsDelModalOpen] = React.useState(false);
-
 
   const renderMubFields = () => {
     if (props.isExtraFieldsCondition) {
@@ -204,19 +208,27 @@ const BarrierForm = observer((props: IBarrierForm) => {
     }
   };
 
-  const handleFulfillmentChange = (value: IFilledQuestions) => {
+  const handleFulfillmentChange = (value: IFilledQuestions, requirementId: number) => {
     console.log("QuestionCard handleChange", toJS(value));
-    props.handleFulfillmentChange(value);
+    props.handleFulfillmentChange(value, requirementId);
     setSavingState(true);
   };
 
   const filledRequirements = props.formFields?.filledRequirements;
 
+  const getQuestions = () => {
+    const result = filledRequirements
+      ?.map((req) => {
+        return req.filledQuestions;
+      })
+      .flat();
+    return result;
+  };
+
   const getFilledQuestion = (question: IQuestion) => {
-    const filledRequirement = filledRequirements?.find(
-      (fillReq) => fillReq.requirementId === question.requirementId,
-    );
-    const filledQuestion = filledRequirement?.filledQuestions.find(
+    console.log("getFilledQuestion question.id", toJS(question.id));
+    const filledQuestions = getQuestions();
+    const filledQuestion = filledQuestions?.find(
       (fillQuest) => fillQuest[FilledQuestionTypes.QuestionId] === question.id,
     );
     console.log("getFilledQuestion filledQuestion", toJS(filledQuestion));
@@ -232,6 +244,7 @@ const BarrierForm = observer((props: IBarrierForm) => {
             <MubCards mub={props.barrier.mub} mubHint={props.barrier.mubHint} />
             {questions?.map((question) => (
               <QuestionCard
+                requirementId={question.requirementId}
                 filledQuestion={getFilledQuestion(question)}
                 handleChange={handleFulfillmentChange}
                 fulfillments={props.fulfillments}
