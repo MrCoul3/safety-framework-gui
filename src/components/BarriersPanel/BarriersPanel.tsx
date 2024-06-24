@@ -5,6 +5,8 @@ import { IFilledBarrier } from "../../interfaces/IFilledBarrier";
 import { useTranslation } from "react-i18next";
 import classNames from "classnames";
 import { BarrierFieldTypes } from "../../enums/BarrierTypes";
+import { useStore } from "../../hooks/useStore";
+import { useParams } from "react-router";
 
 interface IBarriersPanel {
   filledBarriers: IFilledBarrier[];
@@ -13,12 +15,24 @@ interface IBarriersPanel {
 }
 
 const BarriersPanel = observer((props: IBarriersPanel) => {
+  const store = useStore();
+
+  const { passportId } = useParams();
+
   const code = (title: string) => title?.split(" ")[0];
   const { t } = useTranslation("dict");
 
   const [isActiveIndex, setIsActiveIndex] = useState(0);
   const onItemClick = (item: IFilledBarrier, index: number) => {
     setIsActiveIndex(index);
+  };
+
+  const getIsValid = (index: number, barrierId: number) => {
+    return store.barriersStore.checkIsFilledBarrierSuccess(
+      barrierId,
+      index,
+      passportId,
+    );
   };
 
   return (
@@ -34,12 +48,11 @@ const BarriersPanel = observer((props: IBarriersPanel) => {
                     [style.panelElementActive]: isActiveIndex === index,
                   })}
                 >
-                  {/* {t("barrier")}*/} {code(props.barrierTitle ?? "")} -{" "}
-                  {index + 1}{" "}
+                  {code(props.barrierTitle ?? "")} - {index + 1}{" "}
                   <span
                     className={classNames({
-                      [style.success]: barrier[BarrierFieldTypes.Mub],
-                      [style.warning]: !barrier[BarrierFieldTypes.Mub],
+                      [style.success]: getIsValid(index, barrier.barrierId),
+                      [style.warning]: !getIsValid(index, barrier.barrierId),
                     })}
                   >
                     &#8226;

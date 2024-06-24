@@ -191,26 +191,28 @@ export class BarriersStore {
   }
 
   updateFilledQuestions(
-      value: IFilledQuestions,
-      barrierId: number,
-      index: number,
-      requirementId: number,
+    value: IFilledQuestions,
+    barrierId: number,
+    index: number,
+    requirementId: number,
   ) {
     const foundBarriersById = this.getFoundBarriersById(barrierId);
     const activeBarrier = foundBarriersById[index];
 
     if (activeBarrier) {
       const filledRequirement = activeBarrier.filledRequirements?.find(
-          (fillReq) => fillReq.requirementId === requirementId,
+        (fillReq) => fillReq.requirementId === requirementId,
       );
 
       if (filledRequirement) {
         // Update existing filled questions
-        filledRequirement.filledQuestions = filledRequirement.filledQuestions?.map((fillQ) =>
-            fillQ[FilledQuestionTypes.QuestionId] === value[FilledQuestionTypes.QuestionId]
-                ? value
-                : fillQ
-        ) ?? [];
+        filledRequirement.filledQuestions =
+          filledRequirement.filledQuestions?.map((fillQ) =>
+            fillQ[FilledQuestionTypes.QuestionId] ===
+            value[FilledQuestionTypes.QuestionId]
+              ? value
+              : fillQ,
+          ) ?? [];
       } else {
         // Create a new filled requirement if it doesn't exist
         const newFilledRequirement = {
@@ -221,7 +223,6 @@ export class BarriersStore {
       }
     }
   }
-
 
   updateInspectionToLocalStorage(editInspectionId: string) {
     const index = +editInspectionId - 1;
@@ -283,13 +284,23 @@ export class BarriersStore {
     bar.filledRequirements?.forEach((fillReq) =>
       questions.push(...fillReq.filledQuestions),
     );
+    console.log("checkFilledQuestions bar", toJS(bar));
     console.log("checkFilledQuestions questions", toJS(questions));
-    return questions.every(
-      (q) =>
-        q[FilledQuestionTypes.FulfillmentId] &&
-        q[FilledQuestionTypes.InapplicableReasonId] &&
-        q[FilledQuestionTypes.PlannedResolveDate],
+
+    const result = questions.every(
+      (question) =>
+        question[FilledQuestionTypes.FulfillmentId] &&
+        (question[FilledQuestionTypes.FulfillmentId] === 2 &&
+        !question[FilledQuestionTypes.ResolvedInPlace]
+          ? question[FilledQuestionTypes.PlannedResolveDate]
+          : true) &&
+        (question[FilledQuestionTypes.FulfillmentId] === 3
+          ? question[FilledQuestionTypes.InapplicableReasonId]
+          : true),
     );
+    console.log("checkFilledQuestions result", toJS(result));
+
+    return result;
   }
   checkIsBarrierFormSuccess(passportId?: string) {
     if (this.filledBarriers.length) {
@@ -298,10 +309,10 @@ export class BarriersStore {
         toJS(this.filledBarriers),
       );
       return this.filledBarriers.every((bar) => {
-        this.checkFilledQuestions(bar);
         return (
           bar[BarrierFieldTypes.Mub] &&
           bar[BarrierFieldTypes.Mub]?.trim() !== "" &&
+          this.checkFilledQuestions(bar) &&
           this.checkComment(bar) &&
           this.checkExtraFields(bar, passportId)
         );
@@ -320,6 +331,7 @@ export class BarriersStore {
           bar[BarrierFieldTypes.Mub] &&
           bar[BarrierFieldTypes.Mub]?.trim() !== "" &&
           this.checkComment(bar) &&
+          this.checkFilledQuestions(bar) &&
           this.checkExtraFields(bar, passportId)
         );
       });
@@ -386,9 +398,34 @@ export class BarriersStore {
           bar[BarrierFieldTypes.Mub] &&
           bar[BarrierFieldTypes.Mub]?.trim() !== "" &&
           this.checkComment(bar) &&
+          this.checkFilledQuestions(bar) &&
           this.checkExtraFields(bar, passportId),
       );
     }
     return false;
+  }
+
+  checkCondition(filledBarrier: IFilledBarrier, passportId?: string) {
+    return (
+      filledBarrier[BarrierFieldTypes.Mub] &&
+      filledBarrier[BarrierFieldTypes.Mub]?.trim() !== "" &&
+      this.checkComment(filledBarrier) &&
+      this.checkExtraFields(filledBarrier, passportId) &&
+      this.checkFilledQuestions(filledBarrier)
+    );
+  }
+  checkIsFilledBarrierSuccess(
+    barrierId: number,
+    barIndex: number,
+    passportId?: string,
+  ) {
+    const filteredFilledBarriers = this.getFoundBarriersById(barrierId);
+    const filledBarrier = filteredFilledBarriers[barIndex];
+
+    console.log(
+      "checkIsFilledBarrierSuccess filledBarrier",
+      toJS(filledBarrier),
+    );
+    return !!this.checkCondition(filledBarrier, passportId);
   }
 }

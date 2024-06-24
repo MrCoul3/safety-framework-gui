@@ -192,7 +192,7 @@ const BarriersPage = observer((props: IBarriersPage) => {
   const getFilledQuestions = (questions: IQuestion[]) => {
     return questions.map((quest) => ({
       [FilledQuestionTypes.QuestionId]: quest.id,
-      [FilledQuestionTypes.InapplicableReasonId]: 1,
+      [FilledQuestionTypes.InapplicableReasonId]: null,
       [FilledQuestionTypes.FulfillmentId]: null,
       [FilledQuestionTypes.WorkStopped]: null,
       [FilledQuestionTypes.ResolvedInPlace]: null,
@@ -251,12 +251,17 @@ const BarriersPage = observer((props: IBarriersPage) => {
     value: IFilledQuestions,
     barrierId: number,
     index: number,
-    requirementId: number
+    requirementId: number,
   ) => {
     console.log("QuestionCard handleChange", toJS(value));
     console.log("QuestionCard handleChange requirementId", toJS(requirementId));
     // {filledRequirementId,  fulfillmentId, questionId}
-    store.barriersStore.updateFilledQuestions(value, barrierId, index, requirementId);
+    store.barriersStore.updateFilledQuestions(
+      value,
+      barrierId,
+      index,
+      requirementId,
+    );
     store.inspectionStore.setFilledBarriers(store.barriersStore.filledBarriers);
     const isValid = store.barriersStore.checkIsBarrierFormSuccess(passportId);
     setIsFormsValidForSending(isValid);
@@ -398,6 +403,7 @@ const BarriersPage = observer((props: IBarriersPage) => {
                     content={
                       <>
                         <BarriersPanel
+
                           barrierTitle={barrier.title}
                           filledBarriers={getFilledBarriersById(barrier.id)}
                           renderForm={(index: number) =>
@@ -420,12 +426,15 @@ const BarriersPage = observer((props: IBarriersPage) => {
                                       handleSaveForm={() =>
                                         handleSaveForm(barrier.id, barrierIndex)
                                       }
-                                      handleFulfillmentChange={(value, requirementId) =>
+                                      handleFulfillmentChange={(
+                                        value,
+                                        requirementId,
+                                      ) =>
                                         handleFulfillmentChange(
                                           value,
                                           barrier.id,
                                           index,
-                                            requirementId
+                                          requirementId,
                                         )
                                       }
                                       fulfillments={
