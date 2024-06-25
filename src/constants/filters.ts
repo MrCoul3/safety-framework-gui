@@ -12,8 +12,8 @@ import {
   FREE_FORM_COMMON_FIELDS,
   FreeFormFieldTypes,
 } from "../enums/FreeFormTypes";
-import { IViolation } from "../interfaces/IViolation";
-import {IInspection} from "../interfaces/IInspection";
+import { IInspection } from "../interfaces/IInspection";
+import { IFreeForm } from "../interfaces/IFreeForm";
 
 const excludedFields = [InspectionFormTypes.AuditDate];
 
@@ -33,6 +33,62 @@ const expandFilterValues =
   ).join(",") + `,${expandFilledFreeForms},${expandFilledBarriers}`;
 
 export const expandFilter = `${expandFilterValues}`;
+
+export const getCrossFilter = (
+  formFieldsValues: (IFreeForm | {})[],
+  requestType: FreeFormFieldTypes,
+) => {
+  const formFields = formFieldsValues[0] as IFreeForm;
+  console.log("getCrossFilter requestType", requestType);
+  if (
+    requestType === FreeFormFieldTypes.NmdRule &&
+    formFields?.[FreeFormFieldTypes.Nmd]
+  ) {
+    return `$filter=(ffNmdId eq ${formFields?.[FreeFormFieldTypes.Nmd].id})`;
+  }
+  if (requestType === FreeFormFieldTypes.Violation) {
+    let filter = [];
+    if (
+      formFields?.[FreeFormFieldTypes.ViolationCategory] &&
+      formFields?.[FreeFormFieldTypes.ViolationCategory]?.id.toString() !== "1"
+    ) {
+      filter.push(
+        `(ffViolationCategoryId eq ${formFields?.[FreeFormFieldTypes.ViolationCategory].id})`,
+      );
+    }
+    if (
+      formFields?.[FreeFormFieldTypes.ViolationType] &&
+      formFields?.[FreeFormFieldTypes.ViolationType]?.id.toString() !== "1"
+    ) {
+      filter.push(
+        `(ffViolationTypeId eq ${formFields?.[FreeFormFieldTypes.ViolationType].id})`,
+      );
+    }
+    if (formFields?.[FreeFormFieldTypes.NmdRule]) {
+      filter.push(
+        `(ffNmdRuleId eq ${formFields?.[FreeFormFieldTypes.NmdRule].id})`,
+      );
+    }
+    return filter.length
+      ? `$filter=${filter.map((item) => item).join("and")}`
+      : "";
+  }
+  if (
+    requestType === FreeFormFieldTypes.ViolationType &&
+    formFields?.[FreeFormFieldTypes.ViolationCategory] &&
+    formFields?.[FreeFormFieldTypes.ViolationCategory]?.id.toString() !== "1"
+  ) {
+    return `$expand=ffViolationCategories&$filter=ffViolationCategories/any(c:c/id eq ${formFields?.[FreeFormFieldTypes.ViolationCategory]?.id})`;
+  }
+  if (
+    requestType === FreeFormFieldTypes.ViolationCategory &&
+    formFields?.[FreeFormFieldTypes.ViolationType] &&
+    formFields?.[FreeFormFieldTypes.ViolationType]?.id.toString() !== "1"
+  ) {
+    return `$expand=ViolationTypes&$filter=ViolationTypes/any(c:c/id eq ${formFields?.[FreeFormFieldTypes.ViolationType]?.id})`;
+  }
+  return "";
+};
 
 export const getTableFilters = (filterFieldsValues: {
   [key: string]: Item[] | [Date?, Date?];
@@ -89,7 +145,7 @@ export const getSortFilter = (sortSettings: SortByProps<any> | null) => {
 };
 
 export const getViolationFilters = (formFieldsValues: IInspection) => {
-  console.log('formFieldsValues', toJS(formFieldsValues))
+  console.log("formFieldsValues", toJS(formFieldsValues));
   const dateFrom = formFieldsValues?.date?.[0]
     ? moment(formFieldsValues?.date?.[0]).format("YYYY-MM-DD")
     : undefined;
@@ -108,7 +164,7 @@ export const getViolationFilters = (formFieldsValues: IInspection) => {
     isResolved: !!formFieldsValues.isResolved,
   };
   if (formFieldsValues.isResolved === false) {
-    delete result.isResolved
+    delete result.isResolved;
   }
-  return result
+  return result;
 };

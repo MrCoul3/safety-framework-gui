@@ -16,7 +16,7 @@ import {
 import moment from "moment/moment";
 import { IInspection } from "../interfaces/IInspection";
 import { joinObjectValues } from "../utils/joinObjectValues";
-import { expandFilter } from "../constants/filters";
+import { expandFilter, getCrossFilter } from "../constants/filters";
 import {
   IFieldsData,
   IFilterDateRangeFieldValue,
@@ -138,9 +138,14 @@ export class InspectionStore {
       itemValue = item.personFio as string;
     }
 
-    let filter = searchFieldValue
+    let searchFilter = searchFieldValue
       ? `$filter=contains(${itemValue},'${searchFieldValue}')`
       : "";
+
+    let crossFilter = getCrossFilter(
+      this.store.freeFormStore.filledFreeForms,
+        type as FreeFormFieldTypes,
+    );
 
     let offset = searchFieldValue
       ? ""
@@ -150,7 +155,7 @@ export class InspectionStore {
 
     try {
       const response = await instance.get(
-        `${requestType}?${filter}${offset}${countFilter}`,
+        `${requestType}?${searchFilter}${crossFilter}${offset}${countFilter}`,
       );
       if (!response.data.error) {
         const count = response.data["@odata.count"];
