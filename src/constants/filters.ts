@@ -85,7 +85,7 @@ export const getCrossFilter = (
     formFields?.[FreeFormFieldTypes.ViolationType] &&
     formFields?.[FreeFormFieldTypes.ViolationType]?.id.toString() !== "1"
   ) {
-    return `$expand=ViolationTypes&$filter=ViolationTypes/any(c:c/id eq ${formFields?.[FreeFormFieldTypes.ViolationType]?.id})`;
+    return `$expand=ffViolationTypes&$filter=ViolationTypes/any(c:c/id eq ${formFields?.[FreeFormFieldTypes.ViolationType]?.id})`;
   }
   return "";
 };
