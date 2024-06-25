@@ -137,12 +137,10 @@ export class FreeFormStore {
 
   isOtherCondition(formFieldsValues: IFreeForm) {
     const isViolationTypeOther =
-      formFieldsValues?.[FreeFormFieldTypes.ViolationType]?.id.toString() ===
-      "1";
+      formFieldsValues?.[FreeFormFieldTypes.ViolationType]?.id
     const isViolationCategoryOther =
-      formFieldsValues[FreeFormFieldTypes.ViolationCategory]?.id.toString() ===
-      "1";
-    return isViolationTypeOther && isViolationCategoryOther;
+      formFieldsValues[FreeFormFieldTypes.ViolationCategory]?.id
+    return !isViolationTypeOther && !isViolationCategoryOther;
   }
 
   getFreeFormRequireFields(formFieldsValues?: IFreeForm) {

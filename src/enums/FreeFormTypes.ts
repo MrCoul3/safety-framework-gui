@@ -21,18 +21,32 @@ export enum FreeFormFieldTypes {
   RiskLevel = "ffRiskLevel",
 }
 export const FREE_FORM_COMMON_FIELDS = Object.values(FreeFormFieldTypes);
-export const FREE_FORM_NOT_REQUIRED_FIELDS = [""];
-export const OTHER_COND_FREE_FORM_NOT_REQUIRED_FIELDS = [FreeFormFieldTypes.Violation];
-export const NOT_OTHER_COND_FREE_FORM_NOT_REQUIRED_FIELDS = [FreeFormFieldTypes.ViolationManual];
+export const FREE_FORM_NOT_REQUIRED_FIELDS = [
+  FreeFormFieldTypes.ViolationType,
+  FreeFormFieldTypes.ViolationCategory,
+];
+
+export const OTHER_COND_FREE_FORM_NOT_REQUIRED_FIELDS = [
+  FreeFormFieldTypes.Violation,
+  FreeFormFieldTypes.ViolationType,
+  FreeFormFieldTypes.ViolationCategory,
+];
+export const NOT_OTHER_COND_FREE_FORM_NOT_REQUIRED_FIELDS = [
+  FreeFormFieldTypes.ViolationManual,
+  FreeFormFieldTypes.ViolationType,
+  FreeFormFieldTypes.ViolationCategory,
+];
 export const FREE_FORM_REQUIRED_FIELDS = FREE_FORM_COMMON_FIELDS.filter(
   (field) => !FREE_FORM_NOT_REQUIRED_FIELDS.includes(field),
 );
-export const OTHER_COND_FREE_FORM_REQUIRED_FIELDS = FREE_FORM_COMMON_FIELDS.filter(
-  (field) => !OTHER_COND_FREE_FORM_NOT_REQUIRED_FIELDS.includes(field),
-);
-export const NOT_OTHER_COND_FREE_FORM_REQUIRED_FIELDS = FREE_FORM_COMMON_FIELDS.filter(
-  (field) => !NOT_OTHER_COND_FREE_FORM_NOT_REQUIRED_FIELDS.includes(field),
-);
+export const OTHER_COND_FREE_FORM_REQUIRED_FIELDS =
+  FREE_FORM_COMMON_FIELDS.filter(
+    (field) => !OTHER_COND_FREE_FORM_NOT_REQUIRED_FIELDS.includes(field),
+  );
+export const NOT_OTHER_COND_FREE_FORM_REQUIRED_FIELDS =
+  FREE_FORM_COMMON_FIELDS.filter(
+    (field) => !NOT_OTHER_COND_FREE_FORM_NOT_REQUIRED_FIELDS.includes(field),
+  );
 
 export const freeFormDictNames = {
   [FreeFormFieldTypes.ViolationCategory]: FreeFormTypes.ViolationCategories,
@@ -45,4 +59,4 @@ export const freeFormDictNames = {
   [FreeFormFieldTypes.NmdRule]: FreeFormTypes.NmdRules,
   [FreeFormFieldTypes.OdOuCategory]: FreeFormTypes.OdOuCategories,
   [FreeFormFieldTypes.RiskLevel]: FreeFormTypes.RiskLevels,
-}
+};
