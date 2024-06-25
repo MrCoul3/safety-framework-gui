@@ -11,9 +11,11 @@ import { SortByProps } from "@consta/uikit/Table";
 import {
   FREE_FORM_COMMON_FIELDS,
   FreeFormFieldTypes,
+  FreeFormTypes,
 } from "../enums/FreeFormTypes";
-import { IViolation } from "../interfaces/IViolation";
-import {IInspection} from "../interfaces/IInspection";
+import { IInspection } from "../interfaces/IInspection";
+import { IFreeForm } from "../interfaces/IFreeForm";
+import { IEntity } from "../interfaces/IEntity";
 
 const excludedFields = [InspectionFormTypes.AuditDate];
 
@@ -33,6 +35,47 @@ const expandFilterValues =
   ).join(",") + `,${expandFilledFreeForms},${expandFilledBarriers}`;
 
 export const expandFilter = `${expandFilterValues}`;
+
+export const getCrossFilter = (
+  formFieldsValues: (IFreeForm | {})[],
+  requestType: FreeFormFieldTypes,
+) => {
+  const formFields = formFieldsValues[0] as IFreeForm;
+
+  const includedFields = [
+    FreeFormFieldTypes.ViolationCategory,
+    FreeFormFieldTypes.ViolationType,
+    FreeFormFieldTypes.Violation,
+    FreeFormFieldTypes.NmdRule,
+    FreeFormFieldTypes.Nmd,
+  ];
+  const categoryId = formFields?.[FreeFormFieldTypes.ViolationCategory]?.id;
+  const typeId = formFields?.[FreeFormFieldTypes.ViolationType]?.id;
+  const violationId = formFields?.[FreeFormFieldTypes.Violation]?.id;
+  const nmdId = formFields?.[FreeFormFieldTypes.Nmd]?.id;
+  const nmdRuleId = formFields?.[FreeFormFieldTypes.NmdRule]?.id;
+  const filters = [
+    categoryId ? `categoryId=${categoryId}` : undefined,
+    typeId ? `typeId=${typeId}` : undefined,
+    violationId ? `violationId=${violationId}` : undefined,
+    nmdId ? `nmdId=${nmdId}` : undefined,
+    nmdRuleId ? `nmdRuleId=${nmdRuleId}` : undefined,
+  ];
+
+  const result = filters.filter((item) => item).join("&");
+
+  console.log(
+    "getCrossFilter requestType",
+    toJS(formFieldsValues),
+    requestType,
+    result,
+  );
+  if (includedFields.includes(requestType)) {
+    return result;
+  }
+  return "";
+
+};
 
 export const getTableFilters = (filterFieldsValues: {
   [key: string]: Item[] | [Date?, Date?];
@@ -89,7 +132,7 @@ export const getSortFilter = (sortSettings: SortByProps<any> | null) => {
 };
 
 export const getViolationFilters = (formFieldsValues: IInspection) => {
-  console.log('formFieldsValues', toJS(formFieldsValues))
+  console.log("formFieldsValues", toJS(formFieldsValues));
   const dateFrom = formFieldsValues?.date?.[0]
     ? moment(formFieldsValues?.date?.[0]).format("YYYY-MM-DD")
     : undefined;
@@ -108,7 +151,7 @@ export const getViolationFilters = (formFieldsValues: IInspection) => {
     isResolved: !!formFieldsValues.isResolved,
   };
   if (formFieldsValues.isResolved === false) {
-    delete result.isResolved
+    delete result.isResolved;
   }
-  return result
+  return result;
 };

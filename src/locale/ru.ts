@@ -148,7 +148,8 @@ export const ru = {
     [ViolationFilterTypes.Oilfields]: "Месторождение",
     [ViolationFilterTypes.Struct]: "Цех",
     [ViolationFilterTypes.Obj]: "Объект",
-    "comment": "Комментарий",
+    "comment": "Комментарий к нарушению",
+    "resolveComment": "Комментарий к устранению",
 
     checkForm: "Форма проверки",
 

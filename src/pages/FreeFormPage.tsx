@@ -17,10 +17,8 @@ import { IFreeForm } from "../interfaces/IFreeForm";
 import CollapseElement from "../components/CollapseElement/CollapseElement";
 import FreeFormElementLabel from "../components/FreeFormElementLabel/FreeFormElementLabel";
 import { IInspection } from "../interfaces/IInspection";
-import SnackBarCustom from "../components/SnackBarCustom/SnackBarCustom";
 import { toJS } from "mobx";
 import { RoutesTypes } from "../enums/RoutesTypes";
-import i18next from "i18next/index";
 
 interface IFreeFormPage {}
 

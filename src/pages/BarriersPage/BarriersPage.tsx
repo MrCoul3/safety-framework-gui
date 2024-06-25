@@ -58,13 +58,18 @@ const BarriersPage = observer((props: IBarriersPage) => {
     [passportId],
   );
 
-  const loadInspection = () => {
+  const loadInspection = async () => {
+    console.log("loadInspection");
     if (editInspectionId) {
-      store.inspectionStore.loadInspection(editInspectionId);
+      await store.inspectionStore.loadInspection(editInspectionId);
     }
   };
 
   const getFilledBarriersFromFieldsData = () => {
+    console.log(
+      "getFilledBarriersFromFieldsData formFieldsValues",
+      toJS(store.inspectionStore.formFieldsValues),
+    );
     const filledBarriers = (
       store.inspectionStore.formFieldsValues as IInspection
     )["filledBarriers"];
@@ -82,7 +87,7 @@ const BarriersPage = observer((props: IBarriersPage) => {
     if (passportId) {
       console.log("passport", toJS(passport));
       if (isDevelop) {
-        store.barriersStore.getBarriersDev();
+        store.barriersStore.getBarriersDev(passportId);
         store.barriersStore.getFulfillmentsDev();
         // store.barriersStore.getBarriers(passportId);
         store.barriersStore.getFulfillments();
@@ -164,20 +169,6 @@ const BarriersPage = observer((props: IBarriersPage) => {
       key: "1",
       status: "success",
     });
-    /*if (editInspectionId) {
-      store.barriersStore.saveFilledBarrierToLocalStorage(
-        editInspectionId,
-        barrierId,
-        barrierIndex,
-      );
-      store.snackBarStore.setSnackBarItem({
-        message: t("snackBarSuccessSave"),
-        key: "1",
-        status: "success",
-      });
-    } else {
-      handleSaveInspection();
-    }*/
   };
 
   const [searchText, setSearchText] = useState<string | null>(null);
@@ -200,12 +191,11 @@ const BarriersPage = observer((props: IBarriersPage) => {
 
   const getFilledQuestions = (questions: IQuestion[]) => {
     return questions.map((quest) => ({
-      [FilledQuestionTypes.FilledRequirementId]: quest.requirementId,
       [FilledQuestionTypes.QuestionId]: quest.id,
-      [FilledQuestionTypes.InapplicableReasonId]: 1,
-      [FilledQuestionTypes.FulfillmentId]: 1,
-      [FilledQuestionTypes.WorkStopped]: false,
-      [FilledQuestionTypes.ResolvedInPlace]: false,
+      [FilledQuestionTypes.InapplicableReasonId]: null,
+      [FilledQuestionTypes.FulfillmentId]: null,
+      [FilledQuestionTypes.WorkStopped]: null,
+      [FilledQuestionTypes.ResolvedInPlace]: null,
     }));
   };
 
@@ -261,10 +251,17 @@ const BarriersPage = observer((props: IBarriersPage) => {
     value: IFilledQuestions,
     barrierId: number,
     index: number,
+    requirementId: number,
   ) => {
     console.log("QuestionCard handleChange", toJS(value));
+    console.log("QuestionCard handleChange requirementId", toJS(requirementId));
     // {filledRequirementId,  fulfillmentId, questionId}
-    store.barriersStore.updateFilledQuestions(value, barrierId, index);
+    store.barriersStore.updateFilledQuestions(
+      value,
+      barrierId,
+      index,
+      requirementId,
+    );
     store.inspectionStore.setFilledBarriers(store.barriersStore.filledBarriers);
     const isValid = store.barriersStore.checkIsBarrierFormSuccess(passportId);
     setIsFormsValidForSending(isValid);
@@ -272,8 +269,13 @@ const BarriersPage = observer((props: IBarriersPage) => {
   };
 
   const getFilledBarriersById = (barrierId: number) => {
+    console.log(
+      "getFilledBarriersById barrierId",
+      barrierId,
+      toJS(store.barriersStore.filledBarriers),
+    );
     return store.barriersStore.filledBarriers?.filter(
-      (item) => item?.barrierId === barrierId,
+      (item) => item?.barrierId.toString() === barrierId.toString(),
     );
   };
 
@@ -333,7 +335,10 @@ const BarriersPage = observer((props: IBarriersPage) => {
   };
 
   const renderLoader = () => {
-    console.log('renderLoader store.loaderStore.barriersLoader', store.loaderStore.barriersLoader)
+    console.log(
+      "renderLoader store.loaderStore.barriersLoader",
+      store.loaderStore.barriersLoader,
+    );
     if (store.loaderStore.barriersLoader === "wait") {
       return <LoaderPage />;
     } else {
@@ -398,6 +403,7 @@ const BarriersPage = observer((props: IBarriersPage) => {
                     content={
                       <>
                         <BarriersPanel
+
                           barrierTitle={barrier.title}
                           filledBarriers={getFilledBarriersById(barrier.id)}
                           renderForm={(index: number) =>
@@ -406,6 +412,9 @@ const BarriersPage = observer((props: IBarriersPage) => {
                                 if (index === barIndex) {
                                   return (
                                     <BarrierForm
+                                      formFields={
+                                        getFilledBarriersById(barrier.id)[index]
+                                      }
                                       isExtraFieldsCondition={store.barriersStore.isExtraFieldsCondition(
                                         passportId,
                                       )}
@@ -417,11 +426,15 @@ const BarriersPage = observer((props: IBarriersPage) => {
                                       handleSaveForm={() =>
                                         handleSaveForm(barrier.id, barrierIndex)
                                       }
-                                      handleFulfillmentChange={(value) =>
+                                      handleFulfillmentChange={(
+                                        value,
+                                        requirementId,
+                                      ) =>
                                         handleFulfillmentChange(
                                           value,
                                           barrier.id,
                                           index,
+                                          requirementId,
                                         )
                                       }
                                       fulfillments={
@@ -437,9 +450,6 @@ const BarriersPage = observer((props: IBarriersPage) => {
                                       }
                                       handleDelete={() =>
                                         handleDeleteBarrier(barrier.id, index)
-                                      }
-                                      formFields={
-                                        getFilledBarriersById(barrier.id)[index]
                                       }
                                       handleChange={(
                                         value: IFormFieldTextValue,

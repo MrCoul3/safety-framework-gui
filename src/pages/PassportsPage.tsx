@@ -122,6 +122,10 @@ const PassportsPage = observer((props: IPassportsPage) => {
     const passportById = store.passportsStore.passports.find(
       (pass) => pass.id === passportId,
     );
+    console.log(
+      "getFilledBarriersForPassport passportById",
+      toJS(passportById),
+    );
     const passportBarriers = passportById?.["barriers"];
     if (filledBarriers && filledBarriers.length) {
       const filledBarriersByPassId = filledBarriers.filter((fillBar) => {
@@ -139,6 +143,10 @@ const PassportsPage = observer((props: IPassportsPage) => {
 
   const getBarriersCount = (passportId: string) => {
     const filledBarriersByPassId = getFilledBarriersForPassport(passportId);
+    console.log(
+      "getBarriersCount filledBarriersByPassId",
+      toJS(filledBarriersByPassId),
+    );
     return filledBarriersByPassId?.length ? filledBarriersByPassId.length : 0;
   };
 

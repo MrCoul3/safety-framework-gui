@@ -24,11 +24,8 @@ const ViolationDetails = observer((props: IViolationDetails) => {
 
   const getValue = (value?: string | null) => (value ? value : t("noFilled"));
   const getComment = (value?: string | null) => (value ? value : "-");
-  const getLink = (url?: string | null, fileName?: string | null) => (
-    <a target="_blank" href={url ?? ""}>
-      {fileName ?? "-"}
-    </a>
-  );
+  const getLink = (url?: string | null, fileName?: string | null) =>
+    url && fileName ? <a href={url ?? ""}>{fileName ?? "-"}</a> : '-';
   const getDate = (date?: Date) =>
     date ? moment(date).format("DD.MM.YYYY") : t("noFilled");
   return (
@@ -115,6 +112,16 @@ const ViolationDetails = observer((props: IViolationDetails) => {
                 {getComment(props.violation?.comment)}
               </span>
             </div>
+            {props.violation?.resolveComment && (
+              <div className={style.extraInfoValue}>
+                {t("resolveComment")}
+                <span className={style.value}>
+                  {" "}
+                  {getComment(props.violation?.resolveComment)}
+                </span>
+              </div>
+            )}
+
             <div className={style.extraInfoValue}>
               {t("app")}
               <span className={style.value}>

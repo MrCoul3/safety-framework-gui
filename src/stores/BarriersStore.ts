@@ -10,11 +10,7 @@ import { IFilledQuestions } from "../interfaces/IFilledQuestions";
 import { FilledQuestionTypes } from "../enums/FilledQuestionTypes";
 import { IFilledRequirements } from "../interfaces/IFilledRequirements";
 import { IInapplicableReasons } from "../interfaces/IInapplicableReasons";
-import { IFreeForm } from "../interfaces/IFreeForm";
-import { filterByRequiredFields } from "../utils/filterByRequiredFields";
 import { BarrierFieldTypes } from "../enums/BarrierTypes";
-import { IRequirement } from "../interfaces/IRequirement";
-import { IQuestion } from "../interfaces/IQuestion";
 
 export class BarriersStore {
   private store: AppStore;
@@ -32,11 +28,13 @@ export class BarriersStore {
   clearBarriers() {
     this.filledBarriers = [];
   }
-  async getBarriersDev() {
+  async getBarriersDev(passportId: string) {
     this.store.loaderStore.setBarriersLoader("wait");
     try {
       setTimeout(async () => {
-        const response = await localDevInstance.get(`barriers`);
+        const response = await localDevInstance.get(
+          `barriers?passportId=${passportId}`,
+        );
         if (!response.data.error) {
           this.setBarriers(response.data);
         }
@@ -116,7 +114,7 @@ export class BarriersStore {
 
   getFoundBarriersById(barrierId: number) {
     return this.filledBarriers.filter(
-      (barrier) => barrier.barrierId === barrierId,
+      (barrier) => barrier.barrierId.toString() === barrierId.toString(),
     );
   }
   filterBarriersFromBarrierId(barrierId: number) {
@@ -196,42 +194,34 @@ export class BarriersStore {
     value: IFilledQuestions,
     barrierId: number,
     index: number,
+    requirementId: number,
   ) {
     const foundBarriersById = this.getFoundBarriersById(barrierId);
     const activeBarrier = foundBarriersById[index];
-    let filledRequirements = activeBarrier?.filledRequirements;
-    const filledQuestions = filledRequirements?.find(
-      (fillReq) =>
-        fillReq.requirementId ===
-        value[FilledQuestionTypes.FilledRequirementId],
-    )?.filledQuestions;
 
-    const newFilledQuestions = filledQuestions?.map((fillQ) => {
-      if (
-        fillQ[FilledQuestionTypes.QuestionId] ===
-        value[FilledQuestionTypes.QuestionId]
-      ) {
-        return value;
+    if (activeBarrier) {
+      const filledRequirement = activeBarrier.filledRequirements?.find(
+        (fillReq) => fillReq.requirementId === requirementId,
+      );
+
+      if (filledRequirement) {
+        // Update existing filled questions
+        filledRequirement.filledQuestions =
+          filledRequirement.filledQuestions?.map((fillQ) =>
+            fillQ[FilledQuestionTypes.QuestionId] ===
+            value[FilledQuestionTypes.QuestionId]
+              ? value
+              : fillQ,
+          ) ?? [];
+      } else {
+        // Create a new filled requirement if it doesn't exist
+        const newFilledRequirement = {
+          requirementId,
+          filledQuestions: [value],
+        };
+        activeBarrier.filledRequirements?.push(newFilledRequirement);
       }
-      return fillQ;
-    });
-
-    filledRequirements
-      ? filledRequirements?.map((fillReq) => {
-          if (newFilledQuestions && newFilledQuestions.length) {
-            const fillQReqId = newFilledQuestions[0].filledRequirementId;
-            if (fillReq.requirementId === fillQReqId) {
-              fillReq.filledQuestions = newFilledQuestions;
-            }
-          }
-          return fillReq;
-        })
-      : [];
-
-    console.log(
-      "updateFilledQuestions this.filledBarriers",
-      toJS(this.filledBarriers),
-    );
+    }
   }
 
   updateInspectionToLocalStorage(editInspectionId: string) {
@@ -288,12 +278,41 @@ export class BarriersStore {
     }
   }
 
+  checkFilledQuestions(bar: IFilledBarrier) {
+    const questions: IFilledQuestions[] = [];
+
+    bar.filledRequirements?.forEach((fillReq) =>
+      questions.push(...fillReq.filledQuestions),
+    );
+    console.log("checkFilledQuestions bar", toJS(bar));
+    console.log("checkFilledQuestions questions", toJS(questions));
+
+    const result = questions.every(
+      (question) =>
+        question[FilledQuestionTypes.FulfillmentId] &&
+        (question[FilledQuestionTypes.FulfillmentId] === 2 &&
+        !question[FilledQuestionTypes.ResolvedInPlace]
+          ? question[FilledQuestionTypes.PlannedResolveDate]
+          : true) &&
+        (question[FilledQuestionTypes.FulfillmentId] === 3
+          ? question[FilledQuestionTypes.InapplicableReasonId]
+          : true),
+    );
+    console.log("checkFilledQuestions result", toJS(result));
+
+    return result;
+  }
   checkIsBarrierFormSuccess(passportId?: string) {
     if (this.filledBarriers.length) {
+      console.log(
+        "checkIsBarrierFormSuccess this.filledBarriers",
+        toJS(this.filledBarriers),
+      );
       return this.filledBarriers.every((bar) => {
         return (
           bar[BarrierFieldTypes.Mub] &&
           bar[BarrierFieldTypes.Mub]?.trim() !== "" &&
+          this.checkFilledQuestions(bar) &&
           this.checkComment(bar) &&
           this.checkExtraFields(bar, passportId)
         );
@@ -312,6 +331,7 @@ export class BarriersStore {
           bar[BarrierFieldTypes.Mub] &&
           bar[BarrierFieldTypes.Mub]?.trim() !== "" &&
           this.checkComment(bar) &&
+          this.checkFilledQuestions(bar) &&
           this.checkExtraFields(bar, passportId)
         );
       });
@@ -378,9 +398,34 @@ export class BarriersStore {
           bar[BarrierFieldTypes.Mub] &&
           bar[BarrierFieldTypes.Mub]?.trim() !== "" &&
           this.checkComment(bar) &&
+          this.checkFilledQuestions(bar) &&
           this.checkExtraFields(bar, passportId),
       );
     }
     return false;
+  }
+
+  checkCondition(filledBarrier: IFilledBarrier, passportId?: string) {
+    return (
+      filledBarrier[BarrierFieldTypes.Mub] &&
+      filledBarrier[BarrierFieldTypes.Mub]?.trim() !== "" &&
+      this.checkComment(filledBarrier) &&
+      this.checkExtraFields(filledBarrier, passportId) &&
+      this.checkFilledQuestions(filledBarrier)
+    );
+  }
+  checkIsFilledBarrierSuccess(
+    barrierId: number,
+    barIndex: number,
+    passportId?: string,
+  ) {
+    const filteredFilledBarriers = this.getFoundBarriersById(barrierId);
+    const filledBarrier = filteredFilledBarriers[barIndex];
+
+    console.log(
+      "checkIsFilledBarrierSuccess filledBarrier",
+      toJS(filledBarrier),
+    );
+    return !!this.checkCondition(filledBarrier, passportId);
   }
 }

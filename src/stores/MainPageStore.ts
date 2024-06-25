@@ -284,7 +284,10 @@ export class MainPageStore {
           filledBarriers.every(
             (bar) =>
               bar[BarrierFieldTypes.Mub] &&
-              bar[BarrierFieldTypes.Mub]?.trim() !== "",
+              bar[BarrierFieldTypes.Mub]?.trim() !== "" &&
+              this.store.barriersStore.checkComment(bar) &&
+              this.store.barriersStore.checkFilledQuestions(bar)
+
           ) && this.store.inspectionStore.checkIsFormSuccess(inspection)
         );
       }
