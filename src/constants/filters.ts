@@ -10,7 +10,7 @@ import moment from "moment";
 import { SortByProps } from "@consta/uikit/Table";
 import {
   FREE_FORM_COMMON_FIELDS,
-  FreeFormFieldTypes,
+  FreeFormFieldTypes, FreeFormTypes,
 } from "../enums/FreeFormTypes";
 import { IInspection } from "../interfaces/IInspection";
 import { IFreeForm } from "../interfaces/IFreeForm";
@@ -78,14 +78,14 @@ export const getCrossFilter = (
     formFields?.[FreeFormFieldTypes.ViolationCategory] &&
     formFields?.[FreeFormFieldTypes.ViolationCategory]?.id.toString() !== "1"
   ) {
-    return `$expand=ffViolationCategories&$filter=ffViolationCategories/any(c:c/id eq ${formFields?.[FreeFormFieldTypes.ViolationCategory]?.id})`;
+    return `$expand=${FreeFormTypes.ViolationCategories}&$filter=${FreeFormTypes.ViolationCategories}/any(c:c/id eq ${formFields?.[FreeFormFieldTypes.ViolationCategory]?.id})`;
   }
   if (
     requestType === FreeFormFieldTypes.ViolationCategory &&
     formFields?.[FreeFormFieldTypes.ViolationType] &&
     formFields?.[FreeFormFieldTypes.ViolationType]?.id.toString() !== "1"
   ) {
-    return `$expand=ffViolationTypes&$filter=ViolationTypes/any(c:c/id eq ${formFields?.[FreeFormFieldTypes.ViolationType]?.id})`;
+    return `$expand=${FreeFormTypes.ViolationTypes}&$filter=${FreeFormTypes.ViolationTypes}/any(c:c/id eq ${formFields?.[FreeFormFieldTypes.ViolationType]?.id})`;
   }
   return "";
 };
