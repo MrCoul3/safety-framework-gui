@@ -11,4 +11,5 @@ export interface IFreeForm {
   [FreeFormFieldTypes.NmdRule]: IEntity | null;
   [FreeFormFieldTypes.OdOuCategory]: IEntity | null;
   [FreeFormFieldTypes.RiskLevel]: IEntity | null;
+  [key: string]:  IEntity | null | string
 }

@@ -119,8 +119,6 @@ export class InspectionStore {
   ) {
     let requestType: any = type;
 
-    console.log("getFieldData requestType", requestType);
-
     const searchFieldValue = this.searchFieldValue ?? "";
 
     const item: Item = { title: "title", personFio: "personFio" };

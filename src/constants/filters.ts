@@ -10,10 +10,12 @@ import moment from "moment";
 import { SortByProps } from "@consta/uikit/Table";
 import {
   FREE_FORM_COMMON_FIELDS,
-  FreeFormFieldTypes, FreeFormTypes,
+  FreeFormFieldTypes,
+  FreeFormTypes,
 } from "../enums/FreeFormTypes";
 import { IInspection } from "../interfaces/IInspection";
 import { IFreeForm } from "../interfaces/IFreeForm";
+import { IEntity } from "../interfaces/IEntity";
 
 const excludedFields = [InspectionFormTypes.AuditDate];
 
@@ -39,55 +41,40 @@ export const getCrossFilter = (
   requestType: FreeFormFieldTypes,
 ) => {
   const formFields = formFieldsValues[0] as IFreeForm;
-  console.log("getCrossFilter requestType", requestType);
-  if (
-    requestType === FreeFormFieldTypes.NmdRule &&
-    formFields?.[FreeFormFieldTypes.Nmd]
-  ) {
-    return `$filter=(ffNmdId eq ${formFields?.[FreeFormFieldTypes.Nmd].id})`;
-  }
-  if (requestType === FreeFormFieldTypes.Violation) {
-    let filter = [];
-    if (
-      formFields?.[FreeFormFieldTypes.ViolationCategory] &&
-      formFields?.[FreeFormFieldTypes.ViolationCategory]?.id.toString() !== "1"
-    ) {
-      filter.push(
-        `(ffViolationCategoryId eq ${formFields?.[FreeFormFieldTypes.ViolationCategory].id})`,
-      );
-    }
-    if (
-      formFields?.[FreeFormFieldTypes.ViolationType] &&
-      formFields?.[FreeFormFieldTypes.ViolationType]?.id.toString() !== "1"
-    ) {
-      filter.push(
-        `(ffViolationTypeId eq ${formFields?.[FreeFormFieldTypes.ViolationType].id})`,
-      );
-    }
-    if (formFields?.[FreeFormFieldTypes.NmdRule]) {
-      filter.push(
-        `(ffNmdRuleId eq ${formFields?.[FreeFormFieldTypes.NmdRule].id})`,
-      );
-    }
-    return filter.length
-      ? `$filter=${filter.map((item) => item).join("and")}`
-      : "";
-  }
-  if (
-    requestType === FreeFormFieldTypes.ViolationType &&
-    formFields?.[FreeFormFieldTypes.ViolationCategory] &&
-    formFields?.[FreeFormFieldTypes.ViolationCategory]?.id.toString() !== "1"
-  ) {
-    return `$expand=${FreeFormTypes.ViolationCategories}&$filter=${FreeFormTypes.ViolationCategories}/any(c:c/id eq ${formFields?.[FreeFormFieldTypes.ViolationCategory]?.id})`;
-  }
-  if (
-    requestType === FreeFormFieldTypes.ViolationCategory &&
-    formFields?.[FreeFormFieldTypes.ViolationType] &&
-    formFields?.[FreeFormFieldTypes.ViolationType]?.id.toString() !== "1"
-  ) {
-    return `$expand=${FreeFormTypes.ViolationTypes}&$filter=${FreeFormTypes.ViolationTypes}/any(c:c/id eq ${formFields?.[FreeFormFieldTypes.ViolationType]?.id})`;
+
+  const includedFields = [
+    FreeFormFieldTypes.ViolationCategory,
+    FreeFormFieldTypes.ViolationType,
+    FreeFormFieldTypes.Violation,
+    FreeFormFieldTypes.NmdRule,
+    FreeFormFieldTypes.Nmd,
+  ];
+  const categoryId = formFields?.[FreeFormFieldTypes.ViolationCategory]?.id;
+  const typeId = formFields?.[FreeFormFieldTypes.ViolationType]?.id;
+  const violationId = formFields?.[FreeFormFieldTypes.Violation]?.id;
+  const nmdId = formFields?.[FreeFormFieldTypes.Nmd]?.id;
+  const nmdRuleId = formFields?.[FreeFormFieldTypes.NmdRule]?.id;
+  const filters = [
+    categoryId ? `categoryId=${categoryId}` : undefined,
+    typeId ? `typeId=${typeId}` : undefined,
+    violationId ? `violationId=${violationId}` : undefined,
+    nmdId ? `nmdId=${nmdId}` : undefined,
+    nmdRuleId ? `nmdRuleId=${nmdRuleId}` : undefined,
+  ];
+
+  const result = filters.filter((item) => item).join("&");
+
+  console.log(
+    "getCrossFilter requestType",
+    toJS(formFieldsValues),
+    requestType,
+    result,
+  );
+  if (includedFields.includes(requestType)) {
+    return result;
   }
   return "";
+
 };
 
 export const getTableFilters = (filterFieldsValues: {
