@@ -19,6 +19,7 @@ import FreeFormElementLabel from "../components/FreeFormElementLabel/FreeFormEle
 import { IInspection } from "../interfaces/IInspection";
 import { toJS } from "mobx";
 import { RoutesTypes } from "../enums/RoutesTypes";
+import { FreeFormFieldTypes } from "../enums/FreeFormTypes";
 
 interface IFreeFormPage {}
 
@@ -141,7 +142,8 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
     setIsFormsValidForSending(isValid);
   };
 
-  const handleOpenField = (type: InspectionFormTypes) => {
+  const handleOpenField = (type: FreeFormFieldTypes, index: number) => {
+    store.inspectionStore.setCrossFilter(index, type);
     store.inspectionStore.handleOpenField(type);
     setOpenFilterType(type);
   };
@@ -188,8 +190,9 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
     }
   };
 
-  const [openFilterType, setOpenFilterType] =
-    useState<InspectionFormTypes | null>(null);
+  const [openFilterType, setOpenFilterType] = useState<
+    InspectionFormTypes | FreeFormFieldTypes | null
+  >(null);
 
   const handleSearchValueChange = (value: string | null) => {
     store.inspectionStore.handleSearchValueChange(value, openFilterType);
@@ -270,7 +273,9 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
                     handleChange={(value: IFormFieldValue) =>
                       handleChange(value, index)
                     }
-                    handleOpenField={handleOpenField}
+                    handleOpenField={(type) =>
+                      handleOpenField(type as FreeFormFieldTypes, index)
+                    }
                     handleClearForm={() => handleClearForm(index)}
                     formFieldsValuesLength={
                       !!Object.values(formFieldsValues).length

@@ -29,7 +29,7 @@ interface IFreeFormProps {
   handleChange(value: IFormFieldValue | IFormFieldTextValue): void;
   handleClearForm?(): void;
 
-  handleOpenField(type: InspectionFormTypes): void;
+  handleOpenField(type: InspectionFormTypes | FreeFormFieldTypes): void;
 
   onInit?(): void;
 

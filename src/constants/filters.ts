@@ -37,10 +37,11 @@ const expandFilterValues =
 export const expandFilter = `${expandFilterValues}`;
 
 export const getCrossFilter = (
-  formFieldsValues: (IFreeForm | {})[],
+  formFieldsValues: (IFreeForm | {}),
   requestType: FreeFormFieldTypes,
 ) => {
-  const formFields = formFieldsValues[0] as IFreeForm;
+  console.log('getCrossFilter formFieldsValues', toJS(formFieldsValues))
+  const formFields = formFieldsValues as IFreeForm;
 
   const includedFields = [
     FreeFormFieldTypes.ViolationCategory,

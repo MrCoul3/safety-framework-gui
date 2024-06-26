@@ -110,6 +110,15 @@ export class InspectionStore {
     }
   }
 
+  crossFilter: string | null = null;
+
+  setCrossFilter(index: number, type: FreeFormFieldTypes) {
+    this.crossFilter = getCrossFilter(
+        this.store.freeFormStore.filledFreeForms[index],
+        type as FreeFormFieldTypes,
+    );
+  }
+
   async getFieldData(
     type:
       | InspectionFormTypes
@@ -140,10 +149,7 @@ export class InspectionStore {
       ? `$filter=contains(${itemValue},'${searchFieldValue}')`
       : "";
 
-    let crossFilter = getCrossFilter(
-      this.store.freeFormStore.filledFreeForms,
-        type as FreeFormFieldTypes,
-    );
+    let crossFilter = this.crossFilter
 
     let offset = searchFieldValue
       ? ""
@@ -455,7 +461,7 @@ export class InspectionStore {
     }
   }
 
-  handleOpenField(type: InspectionFormTypes) {
+  handleOpenField(type: InspectionFormTypes | FreeFormFieldTypes) {
     if (isDevelop) {
       this.getFieldDataDev(type);
       this.getFieldData(type);
