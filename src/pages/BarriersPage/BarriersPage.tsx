@@ -100,9 +100,7 @@ const BarriersPage = observer((props: IBarriersPage) => {
       }
     }
 
-    setIsFormsValidForSending(
-      store.barriersStore.checkIsBarrierFormSuccess(passportId),
-    );
+    setIsFormsValidForSending(store.barriersStore.checkIsBarrierFormSuccess());
   };
 
   useEffect(() => {
@@ -226,9 +224,7 @@ const BarriersPage = observer((props: IBarriersPage) => {
 
     store.inspectionStore.setFilledBarriers(store.barriersStore.filledBarriers);
 
-    setIsFormsValidForSending(
-      store.barriersStore.checkIsBarrierFormSuccess(passportId),
-    );
+    setIsFormsValidForSending(store.barriersStore.checkIsBarrierFormSuccess());
   };
 
   const [isFormsValidForSending, setIsFormsValidForSending] = useState(false);
@@ -238,12 +234,10 @@ const BarriersPage = observer((props: IBarriersPage) => {
     index: number,
   ) => {
     console.log("barrier page handleChange", value, barrierId);
-
     store.inspectionStore.setSavingState(true);
-
     store.barriersStore.changeFormFieldsValues(value, barrierId, index);
     store.inspectionStore.setFilledBarriers(store.barriersStore.filledBarriers);
-    const isValid = store.barriersStore.checkIsBarrierFormSuccess(passportId);
+    const isValid = store.barriersStore.checkIsBarrierFormSuccess();
     setIsFormsValidForSending(isValid);
   };
 
@@ -263,7 +257,7 @@ const BarriersPage = observer((props: IBarriersPage) => {
       requirementId,
     );
     store.inspectionStore.setFilledBarriers(store.barriersStore.filledBarriers);
-    const isValid = store.barriersStore.checkIsBarrierFormSuccess(passportId);
+    const isValid = store.barriersStore.checkIsBarrierFormSuccess();
     setIsFormsValidForSending(isValid);
     store.inspectionStore.setSavingState(true);
   };
@@ -283,9 +277,7 @@ const BarriersPage = observer((props: IBarriersPage) => {
     store.barriersStore.deleteFilledBarrier(barrierId, index);
     store.inspectionStore.setSavingState(true);
     store.inspectionStore.setFilledBarriers(store.barriersStore.filledBarriers);
-    setIsFormsValidForSending(
-      store.barriersStore.checkIsBarrierFormSuccess(passportId),
-    );
+    setIsFormsValidForSending(store.barriersStore.checkIsBarrierFormSuccess());
   };
 
   const handleClearForm = (barrier: IBarrier, index: number) => {
@@ -301,13 +293,11 @@ const BarriersPage = observer((props: IBarriersPage) => {
     store.barriersStore.clearFilledBarrier(barrier.id, index, value);
     store.inspectionStore.setFilledBarriers(store.barriersStore.filledBarriers);
     store.inspectionStore.setSavingState(true);
-    setIsFormsValidForSending(
-      store.barriersStore.checkIsBarrierFormSuccess(passportId),
-    );
+    setIsFormsValidForSending(store.barriersStore.checkIsBarrierFormSuccess());
   };
 
   const handleSendInspection = async () => {
-    const isValid = store.barriersStore.checkIsBarrierFormSuccess(passportId);
+    const isValid = store.barriersStore.checkIsBarrierFormSuccess();
     store.inspectionStore.setIsValidate(true);
     console.log("handleSendInspection isValid", isValid);
     if (isValid) {
@@ -318,18 +308,9 @@ const BarriersPage = observer((props: IBarriersPage) => {
             +editInspectionId - 1,
           );
         navigate(-2);
-        store.snackBarStore.setSnackBarItem({
-          message: t("snackBarSuccessSend"),
-          key: "1",
-          status: "success",
-        });
+        store.snackBarStore.successSnackBar(t("snackBarSuccessSend"));
       } else {
-        store.snackBarStore.setSnackBarItem({
-          message: t("snackBarErrorSend"),
-          key: "1",
-          status: "alert",
-          icon: IconWarning,
-        });
+        store.snackBarStore.alertSnackBar(t("snackBarErrorSend"));
       }
     }
   };
@@ -403,7 +384,6 @@ const BarriersPage = observer((props: IBarriersPage) => {
                     content={
                       <>
                         <BarriersPanel
-
                           barrierTitle={barrier.title}
                           filledBarriers={getFilledBarriersById(barrier.id)}
                           renderForm={(index: number) =>

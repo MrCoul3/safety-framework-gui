@@ -45,6 +45,8 @@ export const ru = {
     back: "Назад",
     forward: "Вперёд",
 
+    captionFiveSymbols: "Не менее 5 символов",
+
     auth: "Авторизация",
     // breadcrumbs
     mainPage: "Главная",

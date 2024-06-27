@@ -281,13 +281,8 @@ export class MainPageStore {
 
       if (filledBarriers.length) {
         return (
-          filledBarriers.every(
-            (bar) =>
-              bar[BarrierFieldTypes.Mub] &&
-              bar[BarrierFieldTypes.Mub]?.trim() !== "" &&
-              this.store.barriersStore.checkComment(bar) &&
-              this.store.barriersStore.checkFilledQuestions(bar)
-
+          filledBarriers.every((bar) =>
+            this.store.barriersStore.getConditions(bar),
           ) && this.store.inspectionStore.checkIsFormSuccess(inspection)
         );
       }

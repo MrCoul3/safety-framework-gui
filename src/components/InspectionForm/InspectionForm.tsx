@@ -128,21 +128,21 @@ const InspectionForm = observer((props: IInspectionForm) => {
     props.setIsValidate(true);
   };
   const disabledConditions = (inspectionType: InspectionFormTypes) => {
-    /*const ifContractor =
+    const ifNoContractor =
       props.formFieldsValues &&
       !props.formFieldsValues[InspectionFormTypes.Contractor];
-    /!* enable doStruct if contractor enabled *!/
-    if (inspectionType === InspectionFormTypes.DoStruct) {
-      if (ifContractor) {
+    /* enable doStruct if contractor enabled */
+    if (inspectionType === InspectionFormTypes.ContractorStruct) {
+      if (ifNoContractor) {
         return true;
       }
     }
-    /!* enable doStruct if contractor enabled *!/
+    /* enable doStruct if contractor enabled */
     if (inspectionType === InspectionFormTypes.Supervisor) {
-      if (ifContractor) {
+      if (ifNoContractor) {
         return true;
       }
-    }*/
+    }
     return false;
   };
 

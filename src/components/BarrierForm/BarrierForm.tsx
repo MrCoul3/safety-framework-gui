@@ -166,7 +166,7 @@ const BarrierForm = observer((props: IBarrierForm) => {
   const renderMubFields = () => {
     if (props.isExtraFieldsCondition) {
       return BARRIER_EXTRA_FIELDS_VALUES.map((extraField) => (
-        <InspectionTextArea
+        <InspectionTextArea caption={t("captionFiveSymbols")}
           minRows={1}
           display={true}
           required={true}
@@ -189,7 +189,7 @@ const BarrierForm = observer((props: IBarrierForm) => {
       ));
     } else {
       return (
-        <InspectionTextArea
+        <InspectionTextArea caption={t("captionFiveSymbols")}
           minRows={5}
           display={true}
           required={true}
