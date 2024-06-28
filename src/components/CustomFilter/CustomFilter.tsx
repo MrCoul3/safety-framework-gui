@@ -112,7 +112,6 @@ const CustomFilter = (props: ICustomFilter) => {
   useEffect(() => debounceSetSearchValue(searchValue), [searchValue]);
 
   const onSearchValueChange = (value: string | null) => {
-    console.log("onSearchValueChange", value);
     setSearchValue(value);
   };
 

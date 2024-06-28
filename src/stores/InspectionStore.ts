@@ -61,7 +61,6 @@ export class InspectionStore {
   }
   setSearchFieldValue(value: string | null) {
     this.searchFieldValue = value;
-    console.log("this.searchFieldValue", this.searchFieldValue);
   }
   formFieldsValues: IInspection | IViolation | {} = {};
 
@@ -213,9 +212,7 @@ export class InspectionStore {
   }
   clearFieldsData() {
     this.fieldsData = [];
-    console.log("this.fieldsData", toJS(this.fieldsData));
   }
-
   setFormFieldsValues(value: IInspection) {
     this.formFieldsValues = value;
     console.debug("formFieldsValues: ", toJS(this.formFieldsValues));
@@ -271,15 +268,12 @@ export class InspectionStore {
   offset: number = 0;
   setOffset(value: number) {
     this.offset = value;
-    console.log("field offset", this.offset);
   }
   increaseOffset() {
     this.offset = this.offset + ELEMENTS_ON_FIELD;
-    console.log("field offset", this.offset);
   }
   clearOffset() {
     this.offset = 0;
-    console.log("field offset", this.offset);
   }
 
   async getInspectionDev(editInspectionId: string) {

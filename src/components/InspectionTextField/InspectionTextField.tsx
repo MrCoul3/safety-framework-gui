@@ -154,7 +154,6 @@ const InspectionTextField = observer((props: IFieldInspectionType) => {
   useEffect(() => debounceSetSearchValue(searchValue), [searchValue]);
 
   const onSearchValueChange = (value: string | null) => {
-    console.log("onSearchValueChange", value);
     setSearchValue(value);
   };
 
