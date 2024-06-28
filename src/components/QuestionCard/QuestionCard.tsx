@@ -34,9 +34,7 @@ const QuestionCard = observer((props: IQuestionCard) => {
 
   const name = title?.replace(code ?? "", "");
 
-  useEffect(() => {
-    console.log("QuestionCard filledQuestion", toJS(props.filledQuestion));
-  }, [props.filledQuestion]);
+
 
   const handleFulfilmentChange = (value: IFulfillment) => {
     console.log("QuestionCard handleChange value", toJS(value));

@@ -106,15 +106,6 @@ const BarrierForm = observer((props: IBarrierForm) => {
   );
 
   useEffect(() => {
-    console.log("handleExtraFieldsChange vehicleFieldValue", vehicleFieldValue);
-    console.log(
-      "handleExtraFieldsChange driverFioFieldValue",
-      driverFioFieldValue,
-    );
-    console.log(
-      "handleExtraFieldsChange licencePlateFieldValue",
-      licencePlateFieldValue,
-    );
     if (
       vehicleFieldValue !== null &&
       licencePlateFieldValue !== null &&
@@ -134,7 +125,6 @@ const BarrierForm = observer((props: IBarrierForm) => {
   }, [vehicleFieldValue, licencePlateFieldValue, driverFioFieldValue]);
 
   const getStatus = (type: BarrierFieldTypes | BarrierExtraFieldTypes) => {
-    console.log("getStatus", type);
     if (props.formFields) {
       const condition =
         type === BarrierFieldTypes.Mub
@@ -232,12 +222,10 @@ const BarrierForm = observer((props: IBarrierForm) => {
   };
 
   const getFilledQuestion = (question: IQuestion) => {
-    console.log("getFilledQuestion question.id", toJS(question.id));
     const filledQuestions = getQuestions();
     const filledQuestion = filledQuestions?.find(
       (fillQuest) => fillQuest[FilledQuestionTypes.QuestionId] === question.id,
     );
-    console.log("getFilledQuestion filledQuestion", toJS(filledQuestion));
     return filledQuestion;
   };
 

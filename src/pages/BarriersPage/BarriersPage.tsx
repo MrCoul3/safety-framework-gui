@@ -263,11 +263,6 @@ const BarriersPage = observer((props: IBarriersPage) => {
   };
 
   const getFilledBarriersById = (barrierId: number) => {
-    console.log(
-      "getFilledBarriersById barrierId",
-      barrierId,
-      toJS(store.barriersStore.filledBarriers),
-    );
     return store.barriersStore.filledBarriers?.filter(
       (item) => item?.barrierId.toString() === barrierId.toString(),
     );
