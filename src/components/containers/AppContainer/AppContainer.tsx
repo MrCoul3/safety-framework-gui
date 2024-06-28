@@ -217,7 +217,15 @@ export const AppContainer = observer(() => {
               }
               element={<FreeFormPage />}
             />
-
+            {/*BarriersCarts and BarriersApps on main page*/}
+            <Route
+                element={<EmptyBoxPage maxHeight />}
+                path={SubGroupsActionsTypes.BarriersCarts}
+            />
+            <Route
+                element={<EmptyBoxPage maxHeight />}
+                path={SubGroupsActionsTypes.BarriersApps}
+            />
           </Routes>
         </>
       ) : (

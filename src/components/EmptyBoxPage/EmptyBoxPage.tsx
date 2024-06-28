@@ -6,10 +6,12 @@ import { useTranslation } from "react-i18next";
 import { useStore } from "../../hooks/useStore";
 import { useNavigate } from "react-router";
 import style from './style.module.css'
+import classNames from "classnames";
 interface IEmptyBoxPage {
   text?: string;
   description?: string;
   disableActions?: boolean;
+    maxHeight?:boolean
 }
 
 const EmptyBoxPage = observer((props: IEmptyBoxPage) => {
@@ -23,7 +25,9 @@ const EmptyBoxPage = observer((props: IEmptyBoxPage) => {
     navigate(`/`);
   };
   return (
-    <ResponsesEmptyBox className={style.ResponsesEmptyBox}
+    <ResponsesEmptyBox className={classNames(style.ResponsesEmptyBox, {
+        [style.maxHeight]: props.maxHeight
+    })}
       description={props.description ? props.description : " "}
       title={props.text ?? ""}
       actions={

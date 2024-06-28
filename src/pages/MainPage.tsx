@@ -180,9 +180,7 @@ export const MainPage = observer((props: IMainPage) => {
 
   const handleSendInspection = async (ind: number) => {
     const index = ind - 1;
-    console.log("handleSendInspection index", index);
     const isValid = store.mainPageStore.checkIsInspectionReadyToSend(index);
-    console.log("handleSendInspection isValid", isValid);
     if (isValid) {
       const result = await store.mainPageStore.sendInspection(index);
       if (result) {
@@ -193,7 +191,6 @@ export const MainPage = observer((props: IMainPage) => {
         store.snackBarStore.alertSnackBar(t("snackBarErrorSend"));
       }
     }
-    console.log("isValid", isValid);
   };
   const sentInspectionsCondition = (subGroup: SubGroupsActionsTypes) =>
     subGroup === SubGroupsActionsTypes.Sent;
@@ -343,16 +340,6 @@ export const MainPage = observer((props: IMainPage) => {
             />
           );
         })}
-        {/*BarriersCarts and BarriersApps on main page*/}
-        <Route
-          element={<EmptyBoxPage />}
-          path={SubGroupsActionsTypes.BarriersCarts}
-        />
-        <Route
-          element={<EmptyBoxPage />}
-          path={SubGroupsActionsTypes.BarriersApps}
-        />
-
         <Route path="/*" element={render404()} />
       </Routes>
     );
