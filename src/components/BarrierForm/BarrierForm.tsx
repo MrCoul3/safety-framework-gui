@@ -134,8 +134,12 @@ const BarrierForm = observer((props: IBarrierForm) => {
   }, [vehicleFieldValue, licencePlateFieldValue, driverFioFieldValue]);
 
   const getStatus = (type: BarrierFieldTypes | BarrierExtraFieldTypes) => {
+    console.log("getStatus", type);
     if (props.formFields) {
-      const condition = props.formFields[type];
+      const condition =
+        type === BarrierFieldTypes.Mub
+          ? props.formFields[type] && props.formFields[type].length > 5
+          : props.formFields[type];
       if (!condition) {
         return "alert";
       }
@@ -166,7 +170,7 @@ const BarrierForm = observer((props: IBarrierForm) => {
   const renderMubFields = () => {
     if (props.isExtraFieldsCondition) {
       return BARRIER_EXTRA_FIELDS_VALUES.map((extraField) => (
-        <InspectionTextArea caption={t("captionFiveSymbols")}
+        <InspectionTextArea
           minRows={1}
           display={true}
           required={true}
@@ -183,13 +187,16 @@ const BarrierForm = observer((props: IBarrierForm) => {
           type={extraField}
           value={getExtraFieldValue(extraField)}
           status={
-            props.isValidate ? (getStatus(extraField) as PropStatus) : undefined
+            props.isValidate
+              ? (getStatus(BarrierFieldTypes.Mub) as PropStatus)
+              : undefined
           }
         />
       ));
     } else {
       return (
-        <InspectionTextArea caption={t("captionFiveSymbols")}
+        <InspectionTextArea
+          caption={t("captionFiveSymbols")}
           minRows={5}
           display={true}
           required={true}
@@ -198,17 +205,16 @@ const BarrierForm = observer((props: IBarrierForm) => {
           handleChange={handleChange}
           type={BarrierFieldTypes.Mub}
           value={getValue(BarrierFieldTypes.Mub)}
-          status={
-            props.isValidate
-              ? (getStatus(BarrierFieldTypes.Mub) as PropStatus)
-              : undefined
-          }
+          status={getStatus(BarrierFieldTypes.Mub) as PropStatus}
         />
       );
     }
   };
 
-  const handleFulfillmentChange = (value: IFilledQuestions, requirementId: number) => {
+  const handleFulfillmentChange = (
+    value: IFilledQuestions,
+    requirementId: number,
+  ) => {
     console.log("QuestionCard handleChange", toJS(value));
     props.handleFulfillmentChange(value, requirementId);
     setSavingState(true);

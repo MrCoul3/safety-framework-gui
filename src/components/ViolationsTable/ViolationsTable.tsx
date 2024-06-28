@@ -66,7 +66,7 @@ const ViolationsTable = observer((props: IViolationsTable) => {
           accessor: key,
           sortable: true,
           align: "left",
-          width: key === "question" ? 350 : 200,
+          width:  200,
           renderCell: (row) => {
             return key === InspectionFormTypes.AuditDate
               ? row?.auditDate
@@ -81,9 +81,15 @@ const ViolationsTable = observer((props: IViolationsTable) => {
         accessor: key,
         sortable: true,
         align: "left",
-        width: key === "question" ? 350 : 200,
       };
     });
+
+  columns.push({
+    title: <span className={style.colTitle}>{t("id")}</span>,
+    accessor: "id",
+    align: "left",
+    width: 100,
+  });
 
   const [violationId, setViolationId] = React.useState<number | null>();
 

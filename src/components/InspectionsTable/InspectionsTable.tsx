@@ -224,6 +224,15 @@ const InspectionsTable = observer((props: IInspectionsTable) => {
     width: 150,
   });
 
+  if (!location.pathname.includes(SubGroupsActionsTypes.NewInspections)) {
+    columns.push({
+      title: <span className={style.colTitle}>{t("id")}</span>,
+      accessor: "id",
+      align: "left",
+      width: 150,
+    });
+  }
+
   const handleOpenFilter = (field: InspectionFormTypes) => {
     console.log("onopen", field);
     props.handleOpenFilter(field);

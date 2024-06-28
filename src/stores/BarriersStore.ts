@@ -346,16 +346,16 @@ export class BarriersStore {
   }
 
   checkExtraFields(barrier: IFilledBarrier) {
-    console.log('BARRIERS_WITH_EXTRA_FIELDS.includes(barrier.barrierId)', BARRIERS_WITH_EXTRA_FIELDS.includes(+barrier.barrierId))
+    console.log(
+      "BARRIERS_WITH_EXTRA_FIELDS.includes(barrier.barrierId)",
+      BARRIERS_WITH_EXTRA_FIELDS.includes(+barrier.barrierId),
+    );
     if (BARRIERS_WITH_EXTRA_FIELDS.includes(+barrier.barrierId)) {
       const mubValuesArray = barrier?.[BarrierFieldTypes.Mub]?.split(",");
       return (
         mubValuesArray.length &&
         mubValuesArray.length === 3 &&
-        mubValuesArray.every(
-          (extraVal) =>
-            extraVal && extraVal.trim() !== "" && extraVal.trim().length > 5,
-        )
+        mubValuesArray.every((extraVal) => extraVal && extraVal.trim() !== "")
       );
     }
     return true;
