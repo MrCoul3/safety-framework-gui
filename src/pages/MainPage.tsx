@@ -188,18 +188,9 @@ export const MainPage = observer((props: IMainPage) => {
       if (result) {
         store.inspectionStore.deleteInspectionFromLocalStorage(index);
         getLocalInspections();
-        store.snackBarStore.setSnackBarItem({
-          message: t("snackBarSuccessSend"),
-          key: "1",
-          status: "success",
-        });
+        store.snackBarStore.successSnackBar(t("snackBarSuccessSend"));
       } else {
-        store.snackBarStore.setSnackBarItem({
-          message: t("snackBarErrorSend"),
-          key: "1",
-          status: "alert",
-          icon: IconWarning,
-        });
+        store.snackBarStore.alertSnackBar(t("snackBarErrorSend"));
       }
     }
     console.log("isValid", isValid);
@@ -361,7 +352,6 @@ export const MainPage = observer((props: IMainPage) => {
           element={<EmptyBoxPage />}
           path={SubGroupsActionsTypes.BarriersApps}
         />
-
 
         <Route path="/*" element={render404()} />
       </Routes>
