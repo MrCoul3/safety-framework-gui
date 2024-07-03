@@ -133,11 +133,14 @@ export class InspectionStore {
 
     let itemValue = item.title;
 
+    let crossFilter = "";
+
     if (INSPECTION_FORM_COMMON_FIELDS.includes(type as InspectionFormTypes)) {
       requestType = inspectionFieldsDictNames[type as InspectionFormTypes];
     }
     if (FREE_FORM_COMMON_FIELDS.includes(type as FreeFormFieldTypes)) {
       requestType = freeFormDictNames[type as FreeFormFieldTypes];
+      crossFilter = this.crossFilter ? this.crossFilter : ""
     }
     if (EMPLOYEES.includes(type as InspectionFormTypes)) {
       requestType = employeesEndpoint;
@@ -148,13 +151,17 @@ export class InspectionStore {
       ? `$filter=contains(${itemValue},'${searchFieldValue}')`
       : "";
 
-    let crossFilter = this.crossFilter
 
     let offset = searchFieldValue
       ? ""
       : `&$skip=${this.offset}&$top=${ELEMENTS_ON_FIELD}`;
 
     const countFilter = this.searchFieldValue ? "" : `&$count=true`;
+
+    console.log('getFieldData searchFilter', searchFilter)
+    console.log('getFieldData crossFilter', crossFilter)
+    console.log('getFieldData offset', offset)
+    console.log('getFieldData countFilter', countFilter)
 
     try {
       const response = await instance.get(
