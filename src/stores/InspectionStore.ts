@@ -476,6 +476,7 @@ export class InspectionStore {
       this.getFieldDataDev(type);
       this.getFieldData(type);
     } else {
+      this.setCrossFilterInspectionForm(type as InspectionFormTypes)
       this.getFieldData(type);
     }
   }
