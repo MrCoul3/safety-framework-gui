@@ -292,8 +292,8 @@ export class BarriersStore {
       filledBarrier[BarrierFieldTypes.Mub]?.trim() !== "" &&
       filledBarrier[BarrierFieldTypes.Mub]?.trim().length > 5 &&
       this.checkComments(filledBarrier) &&
-      this.checkFilledQuestions(filledBarrier) &&
-      this.checkExtraFields(filledBarrier)
+      this.checkFilledQuestions(filledBarrier)
+      // && this.checkExtraFields(filledBarrier)
     );
   }
 

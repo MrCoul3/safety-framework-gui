@@ -158,7 +158,7 @@ const BarrierForm = observer((props: IBarrierForm) => {
   const [isDelModalOpen, setIsDelModalOpen] = React.useState(false);
 
   const renderMubFields = () => {
-    if (props.isExtraFieldsCondition) {
+    if (props.barrier.mubTypeId === 2) {
       return BARRIER_EXTRA_FIELDS_VALUES.map((extraField) => (
         <InspectionTextArea
           minRows={1}
