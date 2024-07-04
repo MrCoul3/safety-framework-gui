@@ -161,7 +161,7 @@ const InspectionForm = observer((props: IInspectionForm) => {
                 {fields[key].map((inspectionType) => {
                   if (inspectionType === InspectionFormTypes.AuditDate) {
                     return (
-                      <InspectionDataField
+                      <InspectionDataField required
                         key={inspectionType}
                         inspectionType={inspectionType}
                         handleChange={props.handleDateChange}

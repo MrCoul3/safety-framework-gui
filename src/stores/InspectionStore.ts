@@ -16,7 +16,7 @@ import {
 import moment from "moment/moment";
 import { IInspection } from "../interfaces/IInspection";
 import { joinObjectValues } from "../utils/joinObjectValues";
-import { expandFilter, getCrossFilter } from "../constants/filters";
+import {expandFilter, getCrossFilter, getCrossFilterInspectionForm} from "../constants/filters";
 import {
   IFieldsData,
   IFilterDateRangeFieldValue,
@@ -117,6 +117,13 @@ export class InspectionStore {
         type as FreeFormFieldTypes,
     );
   }
+  setCrossFilterInspectionForm( type: InspectionFormTypes) {
+    this.crossFilter = getCrossFilterInspectionForm(
+        this.formFieldsValues as IInspection,
+        type ,
+    );
+    console.log('setCrossFilterInspectionForm this.crossFilter', this.crossFilter)
+  }
 
   async getFieldData(
     type:
@@ -137,6 +144,7 @@ export class InspectionStore {
 
     if (INSPECTION_FORM_COMMON_FIELDS.includes(type as InspectionFormTypes)) {
       requestType = inspectionFieldsDictNames[type as InspectionFormTypes];
+      crossFilter = this.crossFilter ? this.crossFilter : ""
     }
     if (FREE_FORM_COMMON_FIELDS.includes(type as FreeFormFieldTypes)) {
       requestType = freeFormDictNames[type as FreeFormFieldTypes];
@@ -464,6 +472,7 @@ export class InspectionStore {
 
   handleOpenField(type: InspectionFormTypes | FreeFormFieldTypes) {
     if (isDevelop) {
+      this.setCrossFilterInspectionForm(type as InspectionFormTypes)
       this.getFieldDataDev(type);
       this.getFieldData(type);
     } else {

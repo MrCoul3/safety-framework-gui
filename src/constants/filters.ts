@@ -1,6 +1,7 @@
 import {
   EMPLOYEES,
   INSPECTION_FORM_COMMON_FIELDS,
+  inspectionFieldsDictNames,
   InspectionFormTypes,
 } from "../enums/InspectionFormTypes";
 import { toJS } from "mobx";
@@ -11,11 +12,9 @@ import { SortByProps } from "@consta/uikit/Table";
 import {
   FREE_FORM_COMMON_FIELDS,
   FreeFormFieldTypes,
-  FreeFormTypes,
 } from "../enums/FreeFormTypes";
 import { IInspection } from "../interfaces/IInspection";
 import { IFreeForm } from "../interfaces/IFreeForm";
-import { IEntity } from "../interfaces/IEntity";
 
 const excludedFields = [InspectionFormTypes.AuditDate];
 
@@ -37,10 +36,10 @@ const expandFilterValues =
 export const expandFilter = `${expandFilterValues}`;
 
 export const getCrossFilter = (
-  formFieldsValues: (IFreeForm | {}),
+  formFieldsValues: IFreeForm | {},
   requestType: FreeFormFieldTypes,
 ) => {
-  console.log('getCrossFilter formFieldsValues', toJS(formFieldsValues))
+  console.log("getCrossFilter formFieldsValues", toJS(formFieldsValues));
   const formFields = formFieldsValues as IFreeForm;
 
   const includedFields = [
@@ -75,7 +74,6 @@ export const getCrossFilter = (
     return result;
   }
   return "";
-
 };
 
 export const getTableFilters = (filterFieldsValues: {
@@ -155,4 +153,21 @@ export const getViolationFilters = (formFieldsValues: IInspection) => {
     delete result.isResolved;
   }
   return result;
+};
+
+export const getCrossFilterInspectionForm = (
+  formFieldsValues: IInspection,
+  type: InspectionFormTypes,
+) => {
+  if (type === InspectionFormTypes.DoStruct && formFieldsValues[InspectionFormTypes.OilField + "Id"]) {
+    return `&$expand=${inspectionFieldsDictNames[InspectionFormTypes.OilField]}
+    &$filter=${inspectionFieldsDictNames[InspectionFormTypes.OilField]}
+    /any(c:c/id eq ${formFieldsValues[InspectionFormTypes.OilField + "Id"]})`;
+  }
+  if (type === InspectionFormTypes.OilField && formFieldsValues[InspectionFormTypes.DoStruct + "Id"]) {
+    return `&$expand=${inspectionFieldsDictNames[InspectionFormTypes.DoStruct]}
+    &$filter=${inspectionFieldsDictNames[InspectionFormTypes.DoStruct]}
+    /any(c:c/id eq ${formFieldsValues[InspectionFormTypes.DoStruct + "Id"]})`;
+  }
+  return "";
 };
