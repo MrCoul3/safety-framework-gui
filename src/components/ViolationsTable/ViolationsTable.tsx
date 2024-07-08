@@ -66,7 +66,7 @@ const ViolationsTable = observer((props: IViolationsTable) => {
           accessor: key,
           sortable: true,
           align: "left",
-          width:  200,
+          width: 200,
           renderCell: (row) => {
             return key === InspectionFormTypes.AuditDate
               ? row?.auditDate
@@ -157,23 +157,26 @@ const ViolationsTable = observer((props: IViolationsTable) => {
         renderLoader()
       )}
       {violationId
-        ? props.violations.map((violation) =>
-            +violation.id === +violationId ? (
-              <div className={style.details}>
-                <ViolationDetails violation={getSelectedViolation()} />
-                {!violation.isResolved && (
-                  <ViolationCheckForm
-                    onLoadFile={(value) =>
-                      store.snackBarStore.successSnackBar(value)
-                    }
-                    violationId={violationId}
-                    saveForm={handleSaveForm}
-                    comment={getSelectedViolation()?.resolveComment ?? ""}
-                  />
-                )}
-              </div>
-            ) : null,
-          )
+        ? props.violations
+            .filter((violation) => +violation.id === +violationId)
+            .map((violation, index) => {
+              console.log("render violations index",violation.id, +violationId, index);
+              return +violation.id === +violationId && index === 0 ? (
+                <div className={style.details}>
+                  <ViolationDetails violation={getSelectedViolation()} />
+                  {!violation.isResolved && (
+                    <ViolationCheckForm
+                      onLoadFile={(value) =>
+                        store.snackBarStore.successSnackBar(value)
+                      }
+                      violationId={violationId}
+                      saveForm={handleSaveForm}
+                      comment={getSelectedViolation()?.resolveComment ?? ""}
+                    />
+                  )}
+                </div>
+              ) : null;
+            })
         : null}
     </div>
   );
