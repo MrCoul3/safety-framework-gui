@@ -243,6 +243,7 @@ export const ru = {
 
     dialogClearFields: "Очистить все заполненные поля?",
     dialogDeleteFreeForm: "Удалить свободную форму?",
+    dialogDeleteBarrier: "Вы действительно хотите удалить барьер?",
     dialogDeleteNewInspection: "Удалить неотправленную инспекцию?",
     dialogDeleteSentInspection: "Удалить отправленную инспекцию?",
     dialogGoToMain:

@@ -326,6 +326,7 @@ const BarriersPage = observer((props: IBarriersPage) => {
     }
   };
 
+
   return (
     <Layout
       navPanel={
@@ -378,7 +379,11 @@ const BarriersPage = observer((props: IBarriersPage) => {
                     key={barrier.id}
                     content={
                       <>
+                        <AddBarrierButton
+                          onClick={() => handleAddBarrier(barrier)}
+                        />
                         <BarriersPanel
+                          handleDeleteBarrier={handleDeleteBarrier}
                           barrierTitle={barrier.title}
                           filledBarriers={getFilledBarriersById(barrier.id)}
                           renderForm={(index: number) =>
@@ -440,9 +445,6 @@ const BarriersPage = observer((props: IBarriersPage) => {
                               },
                             )
                           }
-                        />
-                        <AddBarrierButton
-                          onClick={() => handleAddBarrier(barrier)}
                         />
                       </>
                     }

@@ -38,3 +38,15 @@
 .warning {
     color: var(--awaitOrange);
 }
+.deleteIcon {
+    color: var(--gray60);
+    width: 14px;
+}
+.deleteIcon:hover {
+    color: #0aa5ff;
+}
+
+.flexRow {
+    display: flex;
+    flex-direction: row;
+}

@@ -7,11 +7,14 @@ import classNames from "classnames";
 import { BarrierFieldTypes } from "../../enums/BarrierTypes";
 import { useStore } from "../../hooks/useStore";
 import { useParams } from "react-router";
+import { IconClose } from "@consta/icons/IconClose";
+import ConfirmDialog from "../ConfirmDialog/ConfirmDialog";
 
 interface IBarriersPanel {
   filledBarriers: IFilledBarrier[];
   renderForm(index: number): ReactNode;
   barrierTitle: string | null;
+  handleDeleteBarrier?(id?: number, index?: number): void;
 }
 
 const BarriersPanel = observer((props: IBarriersPanel) => {
@@ -35,6 +38,11 @@ const BarriersPanel = observer((props: IBarriersPanel) => {
     );
   };
 
+  const [isDelModalOpen, setIsDelModalOpen] = React.useState<{
+    index: number;
+    barrierId: number;
+  } | null>(null);
+
   return (
     <div>
       <div className={style.BarriersPanelWrap}>
@@ -43,12 +51,13 @@ const BarriersPanel = observer((props: IBarriersPanel) => {
             <div className={style.barriersPanel}>
               {props.filledBarriers.map((barrier, index) => (
                 <div
-                  onClick={() => onItemClick(barrier, index)}
                   className={classNames(style.panelElement, {
                     [style.panelElementActive]: isActiveIndex === index,
                   })}
                 >
-                  {code(props.barrierTitle ?? "")} - {index + 1}{" "}
+                  <span onClick={() => onItemClick(barrier, index)}>
+                    {code(props.barrierTitle ?? "")} - {index + 1}{" "}
+                  </span>
                   <span
                     className={classNames({
                       [style.success]: getIsValid(index, barrier.barrierId),
@@ -57,6 +66,16 @@ const BarriersPanel = observer((props: IBarriersPanel) => {
                   >
                     &#8226;
                   </span>
+                  <IconClose
+                    onClick={() =>
+                      setIsDelModalOpen({
+                        barrierId: barrier.barrierId,
+                        index: index,
+                      })
+                    }
+                    className={style.deleteIcon}
+                    size={"s"}
+                  />
                 </div>
               ))}
             </div>
@@ -67,6 +86,14 @@ const BarriersPanel = observer((props: IBarriersPanel) => {
         )*/
         }
       </div>
+      <ConfirmDialog
+        cancelActionLabel={t("cancel")}
+        confirmActionLabel={t("delete")}
+        title={t("dialogDeleteBarrier")}
+        action={() => props.handleDeleteBarrier?.(isDelModalOpen?.barrierId, isDelModalOpen?.index)}
+        onClose={() => setIsDelModalOpen(null)}
+        open={!!isDelModalOpen}
+      />
       {props.renderForm(isActiveIndex)}
     </div>
   );

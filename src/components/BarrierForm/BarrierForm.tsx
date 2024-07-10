@@ -282,7 +282,7 @@ const BarrierForm = observer((props: IBarrierForm) => {
       <ConfirmDialog
         cancelActionLabel={t("cancel")}
         confirmActionLabel={t("delete")}
-        title={t("dialogDeleteFreeForm")}
+        title={t("dialogDeleteBarrier")}
         action={() => props.handleDelete?.()}
         onClose={() => setIsDelModalOpen(false)}
         open={isDelModalOpen}
