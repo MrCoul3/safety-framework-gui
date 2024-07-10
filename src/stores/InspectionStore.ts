@@ -110,6 +110,7 @@ export class InspectionStore {
   }
 
   crossFilter: string | null = null;
+  crossFilterForInspectionForm: string | null = null;
 
   setCrossFilter(index: number, type: FreeFormFieldTypes) {
     this.crossFilter = getCrossFilter(
@@ -118,11 +119,10 @@ export class InspectionStore {
     );
   }
   setCrossFilterInspectionForm( type: InspectionFormTypes) {
-    this.crossFilter = getCrossFilterInspectionForm(
+    this.crossFilterForInspectionForm = getCrossFilterInspectionForm(
         this.formFieldsValues as IInspection,
         type ,
     );
-    console.log('setCrossFilterInspectionForm this.crossFilter', this.crossFilter)
   }
 
   async getFieldData(
@@ -144,7 +144,7 @@ export class InspectionStore {
 
     if (INSPECTION_FORM_COMMON_FIELDS.includes(type as InspectionFormTypes)) {
       requestType = inspectionFieldsDictNames[type as InspectionFormTypes];
-      crossFilter = this.crossFilter ? this.crossFilter : ""
+      crossFilter = this.crossFilterForInspectionForm ? this.crossFilterForInspectionForm : ""
     }
     if (FREE_FORM_COMMON_FIELDS.includes(type as FreeFormFieldTypes)) {
       requestType = freeFormDictNames[type as FreeFormFieldTypes];
