@@ -14,7 +14,7 @@ interface IViolationDetails {
 }
 
 const ViolationDetails = observer((props: IViolationDetails) => {
-  const { t } = useTranslation("dict");
+  const { t } = useTranslation("violationsDict");
 
   const title = props.violation?.question;
 

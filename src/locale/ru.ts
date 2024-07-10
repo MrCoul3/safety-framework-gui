@@ -144,14 +144,7 @@ export const ru = {
 
     freeForm: "Свободная форма",
 
-    [ViolationFilterTypes.Date]: "Дата",
-    [ViolationFilterTypes.TypeList]: "Тип чек-листа",
-    [ViolationFilterTypes.Orgs]: "ДО/ПО",
-    [ViolationFilterTypes.Oilfields]: "Месторождение",
-    [ViolationFilterTypes.Struct]: "Цех",
-    [ViolationFilterTypes.Obj]: "Объект",
-    "comment": "Комментарий к нарушению",
-    "resolveComment": "Комментарий к устранению",
+
 
     checkForm: "Форма проверки",
 
@@ -265,22 +258,29 @@ export const ru = {
 
     barriersSelect: "Выбрано барьеров",
 
-    hideFixedViolations: "Скрыть устраненные нарушения",
     loadedFile: "Загруженный файл: ",
     file: "Файл",
-    successLoaded: "успешно загружен"
+    successLoaded: "успешно загружен",
   },
   violationsDict: {
-    passport: "Тип чек-листа",
-    contractor: "ДО/ПО",
+    passport: "Паспорт КБ",
+    contractor: "Наименование ПО",
     oilfield: "Месторождение",
-    doStruct: "Цех",
-    doObject: "Объект",
+    doStruct: "Структурное подразделение ДО",
+    doObject: "Объект ДО",
     [InspectionFormTypes.AuditDate]: "Дата проверки",
-    question: "Предмет проверки",
+    question: "Вопрос барьера",
     [InspectionFormTypes.Auditor]: "Проверяющий",
     [InspectionFormTypes.Auditee]: "Проверяемый",
     app: "Приложение",
+
+    [ViolationFilterTypes.Date]: "Дата проверки",
+    [ViolationFilterTypes.TypeList]: "Паспорт КБ",
+    [ViolationFilterTypes.Orgs]: "Наименование ПО",
+    [ViolationFilterTypes.Oilfields]: "Месторождение",
+    [ViolationFilterTypes.Struct]: "Структурное подразделение ДО",
+    [ViolationFilterTypes.Obj]: "Объект ДО",
+    [InspectionFormTypes.InspectionType]: "Тип проверки",
 
     passportPlaceholder: "Выберите тип чек-листа",
     contractorPlaceholder: "Выберите ДО/ПО",
@@ -291,6 +291,13 @@ export const ru = {
     snackBarErrorEliminated: "Ошибка запроса",
     violationsEmptyDescription:
       "Задайте данные для поиска, чтобы посмотреть необходимые нарушения",
-
+    hideFixedViolations: "Скрыть устраненные нарушения",
+    reset: "Сбросить",
+    apply: "Применить",
+    comment: "Комментарий к нарушению",
+    resolveComment: "Комментарий к устранению",
+    noFilled: "Не заполнено",
+    checkVerifyDate: "Дата выполнения проверки",
+    checkDetails: "Детали проверки",
   },
 };

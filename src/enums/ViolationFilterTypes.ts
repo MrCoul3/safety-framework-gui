@@ -15,6 +15,7 @@ export const VIOLATIONS_COMMON_FIELDS = [
   "auditee",
   InspectionFormTypes.DoStruct,
   "question",
+    'comment'
 ];
 
 export const violationsDictionaryOfConformity = {

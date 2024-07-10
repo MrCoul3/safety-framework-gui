@@ -3,7 +3,7 @@ import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
 import { SortByProps, Table, TableColumn } from "@consta/uikit/Table";
 import { InspectionFormTypes } from "../../enums/InspectionFormTypes";
-import { VIOLATIONS_COMMON_FIELDS } from "../../enums/ViolationFilterTypes";
+import {ViolationFilterTypes, VIOLATIONS_COMMON_FIELDS} from "../../enums/ViolationFilterTypes";
 import { IViolation } from "../../interfaces/IViolation";
 import { useTranslation } from "react-i18next";
 import EmptyBoxPage from "../EmptyBoxPage/EmptyBoxPage";
@@ -52,10 +52,11 @@ const ViolationsTable = observer((props: IViolationsTable) => {
         .valueOf()
         .toString(),
       passport: item?.passport,
-      question: item?.question,
+      question: item?.question?.split(' ')[0] ?? null,
       auditor: item?.auditor,
       auditee: item?.auditee,
       [InspectionFormTypes.DoStruct]: item?.doStruct,
+      comment: item?.comment
     }));
 
   const columns: TableColumn<(typeof rows)[number]>[] =

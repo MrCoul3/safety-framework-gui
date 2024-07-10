@@ -46,7 +46,7 @@ interface IFilterPanel {
 }
 
 const FilterPanel = observer((props: IFilterPanel) => {
-  const { t } = useTranslation("dict");
+  const { t } = useTranslation("violationsDict");
 
   const fields = [
     ViolationFilterTypes.TypeList,

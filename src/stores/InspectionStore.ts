@@ -16,7 +16,11 @@ import {
 import moment from "moment/moment";
 import { IInspection } from "../interfaces/IInspection";
 import { joinObjectValues } from "../utils/joinObjectValues";
-import {expandFilter, getCrossFilter, getCrossFilterInspectionForm} from "../constants/filters";
+import {
+  expandFilter,
+  getCrossFilter,
+  getCrossFilterInspectionForm,
+} from "../constants/filters";
 import {
   IFieldsData,
   IFilterDateRangeFieldValue,
@@ -114,14 +118,14 @@ export class InspectionStore {
 
   setCrossFilter(index: number, type: FreeFormFieldTypes) {
     this.crossFilter = getCrossFilter(
-        this.store.freeFormStore.filledFreeForms[index],
-        type as FreeFormFieldTypes,
+      this.store.freeFormStore.filledFreeForms[index],
+      type as FreeFormFieldTypes,
     );
   }
-  setCrossFilterInspectionForm( type: InspectionFormTypes) {
+  setCrossFilterInspectionForm(type: InspectionFormTypes) {
     this.crossFilterForInspectionForm = getCrossFilterInspectionForm(
-        this.formFieldsValues as IInspection,
-        type ,
+      this.formFieldsValues as IInspection,
+      type,
     );
   }
 
@@ -144,11 +148,13 @@ export class InspectionStore {
 
     if (INSPECTION_FORM_COMMON_FIELDS.includes(type as InspectionFormTypes)) {
       requestType = inspectionFieldsDictNames[type as InspectionFormTypes];
-      crossFilter = this.crossFilterForInspectionForm ? this.crossFilterForInspectionForm : ""
+      crossFilter = this.crossFilterForInspectionForm
+        ? this.crossFilterForInspectionForm
+        : "";
     }
     if (FREE_FORM_COMMON_FIELDS.includes(type as FreeFormFieldTypes)) {
       requestType = freeFormDictNames[type as FreeFormFieldTypes];
-      crossFilter = this.crossFilter ? this.crossFilter : ""
+      crossFilter = this.crossFilter ? this.crossFilter : "";
     }
     if (EMPLOYEES.includes(type as InspectionFormTypes)) {
       requestType = employeesEndpoint;
@@ -156,9 +162,15 @@ export class InspectionStore {
     }
 
     let searchFilter = searchFieldValue
-      ? `$filter=contains(${itemValue},'${searchFieldValue}')`
-      : "";
+        ? `$filter=contains(${itemValue},'${searchFieldValue}')`
+        : "";
 
+    if (
+      [FreeFormFieldTypes.Nmd, FreeFormFieldTypes.NmdRule].includes(
+        type as FreeFormFieldTypes,
+      )
+    ) {
+    }
 
     let offset = searchFieldValue
       ? ""
@@ -166,10 +178,11 @@ export class InspectionStore {
 
     const countFilter = this.searchFieldValue ? "" : `&$count=true`;
 
-    console.log('getFieldData searchFilter', searchFilter)
-    console.log('getFieldData crossFilter', crossFilter)
-    console.log('getFieldData offset', offset)
-    console.log('getFieldData countFilter', countFilter)
+    console.log("getFieldData searchFilter", searchFilter);
+    console.log("getFieldData type", type);
+    console.log("getFieldData crossFilter", crossFilter);
+    console.log("getFieldData offset", offset);
+    console.log("getFieldData countFilter", countFilter);
 
     try {
       const response = await instance.get(
@@ -472,11 +485,11 @@ export class InspectionStore {
 
   handleOpenField(type: InspectionFormTypes | FreeFormFieldTypes) {
     if (isDevelop) {
-      this.setCrossFilterInspectionForm(type as InspectionFormTypes)
+      this.setCrossFilterInspectionForm(type as InspectionFormTypes);
       this.getFieldDataDev(type);
       this.getFieldData(type);
     } else {
-      this.setCrossFilterInspectionForm(type as InspectionFormTypes)
+      this.setCrossFilterInspectionForm(type as InspectionFormTypes);
       this.getFieldData(type);
     }
   }
