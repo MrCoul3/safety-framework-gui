@@ -170,6 +170,9 @@ export class InspectionStore {
         type as FreeFormFieldTypes,
       )
     ) {
+      searchFilter = searchFieldValue
+          ? `$filter=contains(concat(RuleNumber, title),'${searchFieldValue}')`
+          : "";
     }
 
     let offset = searchFieldValue

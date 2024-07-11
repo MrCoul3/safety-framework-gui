@@ -71,7 +71,7 @@ export const getCrossFilter = (
     result,
   );
   if (includedFields.includes(requestType)) {
-    return result;
+    return `&${result}`;
   }
   return "";
 };
