@@ -131,14 +131,15 @@ const InspectionForm = observer((props: IInspectionForm) => {
     const ifNoContractor =
       props.formFieldsValues &&
       !props.formFieldsValues[InspectionFormTypes.Contractor];
+
+    const includedContractorFields = [
+      InspectionFormTypes.Supervisor,
+      InspectionFormTypes.ContractorStruct,
+      InspectionFormTypes.SubContractor,
+    ];
+
     /* enable doStruct if contractor enabled */
-    if (inspectionType === InspectionFormTypes.ContractorStruct) {
-      if (ifNoContractor) {
-        return true;
-      }
-    }
-    /* enable doStruct if contractor enabled */
-    if (inspectionType === InspectionFormTypes.Supervisor) {
+    if (includedContractorFields.includes(inspectionType)) {
       if (ifNoContractor) {
         return true;
       }
@@ -161,7 +162,8 @@ const InspectionForm = observer((props: IInspectionForm) => {
                 {fields[key].map((inspectionType) => {
                   if (inspectionType === InspectionFormTypes.AuditDate) {
                     return (
-                      <InspectionDataField required
+                      <InspectionDataField
+                        required
                         key={inspectionType}
                         inspectionType={inspectionType}
                         handleChange={props.handleDateChange}
