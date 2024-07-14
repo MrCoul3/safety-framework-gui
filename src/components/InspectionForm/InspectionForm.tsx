@@ -2,9 +2,9 @@ import React, { useEffect } from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
 import {
+  INSPECTION_FORM_NOT_REQUIRED_FIELDS,
   InspectionFormGroups,
   InspectionFormTypes,
-  INSPECTION_FORM_NOT_REQUIRED_FIELDS,
 } from "../../enums/InspectionFormTypes";
 import { useTranslation } from "react-i18next";
 import { Button } from "@consta/uikit/Button";
@@ -23,6 +23,10 @@ import {
 } from "../../interfaces/IFieldInterfaces";
 import { LoaderType } from "../../interfaces/LoaderType";
 import LoaderPage from "../LoaderPage/LoaderPage";
+import {
+  includedFunctionTitlesForContractorStruct,
+  includedFunctionTitlesForSupervisor
+} from "../../constants/constants";
 
 interface IInspectionForm {
   handleOpenField(type: InspectionFormTypes): void;
@@ -148,7 +152,27 @@ const InspectionForm = observer((props: IInspectionForm) => {
   };
 
   const requiredConditions = (inspectionType: InspectionFormTypes) => {
-    return !INSPECTION_FORM_NOT_REQUIRED_FIELDS.includes(inspectionType);
+
+    const functionTitle =
+      props.formFieldsValues?.[InspectionFormTypes.Function]?.title;
+
+    if (
+      inspectionType === InspectionFormTypes.ContractorStruct &&
+      functionTitle &&
+      includedFunctionTitlesForContractorStruct.includes(functionTitle)
+    ) {
+      return true;
+    }
+    if (
+      inspectionType === InspectionFormTypes.Supervisor &&
+      functionTitle &&
+      includedFunctionTitlesForSupervisor.includes(functionTitle)
+    ) {
+      return true;
+    }
+    if (!INSPECTION_FORM_NOT_REQUIRED_FIELDS.includes(inspectionType)) {
+      return true;
+    }
   };
 
   return (

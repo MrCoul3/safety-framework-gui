@@ -42,6 +42,10 @@ import { ViolationFilterTypes } from "../enums/ViolationFilterTypes";
 import { IFilledBarrier } from "../interfaces/IFilledBarrier";
 import i18next from "i18next";
 import { IViolation } from "../interfaces/IViolation";
+import {
+  includedFunctionTitlesForContractorStruct,
+  includedFunctionTitlesForSupervisor,
+} from "../constants/constants";
 
 export class InspectionStore {
   private store: AppStore;
@@ -162,8 +166,8 @@ export class InspectionStore {
     }
 
     let searchFilter = searchFieldValue
-        ? `$filter=contains(${itemValue},'${searchFieldValue}')`
-        : "";
+      ? `$filter=contains(${itemValue},'${searchFieldValue}')`
+      : "";
 
     if (
       [FreeFormFieldTypes.Nmd, FreeFormFieldTypes.NmdRule].includes(
@@ -171,8 +175,8 @@ export class InspectionStore {
       )
     ) {
       searchFilter = searchFieldValue
-          ? `$filter=contains(concat(RuleNumber, title),'${searchFieldValue}')`
-          : "";
+        ? `$filter=contains(concat(RuleNumber, title),'${searchFieldValue}')`
+        : "";
     }
 
     let offset = searchFieldValue
@@ -388,6 +392,32 @@ export class InspectionStore {
     );
   }
 
+  extraRequiredConditions(formFieldsValues: { [key: string]: any }) {
+    const functionTitle = (formFieldsValues as IInspection)?.[
+      InspectionFormTypes.Function
+    ]?.title;
+    const supervisorTitle = (formFieldsValues as IInspection)?.[
+      InspectionFormTypes.Supervisor
+    ]?.personFio;
+    const contractorStructTitle = (formFieldsValues as IInspection)?.[
+      InspectionFormTypes.ContractorStruct
+    ]?.title;
+    const result = []
+    if (
+      functionTitle &&
+      includedFunctionTitlesForContractorStruct.includes(functionTitle)
+    ) {
+      result.push(!!contractorStructTitle)
+    }
+    if (
+      functionTitle &&
+      includedFunctionTitlesForSupervisor.includes(functionTitle)
+    ) {
+      result.push(!!supervisorTitle)
+    }
+    return  result.every((val) => val);
+  }
+
   checkIsFormSuccess(inspection?: IInspection) {
     const formFieldsValues: { [key: string]: any } = inspection
       ? inspection
@@ -399,7 +429,7 @@ export class InspectionStore {
     return (
       filtered.every((value) => {
         return Object.values(value ?? {})[0];
-      }) && filtered.length === INSPECTION_FORM_REQUIRED_FIELDS.length
+      }) && filtered.length === INSPECTION_FORM_REQUIRED_FIELDS.length && this.extraRequiredConditions(formFieldsValues)
     );
   }
 
