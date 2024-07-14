@@ -1,25 +1,29 @@
-import React, {useEffect} from "react";
-import {observer} from "mobx-react-lite";
+import React, { useEffect } from "react";
+import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
-import {useTranslation} from "react-i18next";
-import {RadioGroup} from "@consta/uikit/RadioGroup";
-import {IFulfillment} from "../../interfaces/IFulfillment";
-import {toJS} from "mobx";
-import {IFilledQuestions} from "../../interfaces/IFilledQuestions";
-import {FilledQuestionTypes} from "../../enums/FilledQuestionTypes";
+import { useTranslation } from "react-i18next";
+import { RadioGroup } from "@consta/uikit/RadioGroup";
+import { IFulfillment } from "../../interfaces/IFulfillment";
+import { toJS } from "mobx";
+import { IFilledQuestions } from "../../interfaces/IFilledQuestions";
+import { FilledQuestionTypes } from "../../enums/FilledQuestionTypes";
 import InspectionTextArea from "../InspectionTextArea/InspectionTextArea";
-import {IFormFieldTextValue} from "../../interfaces/IFieldInterfaces";
-import {DatePicker} from "@consta/uikit/DatePicker";
-import {IconCalendar} from "@consta/icons/IconCalendar";
+import { IFormFieldTextValue } from "../../interfaces/IFieldInterfaces";
+import { DatePicker } from "@consta/uikit/DatePicker";
+import { IconCalendar } from "@consta/icons/IconCalendar";
 import moment from "moment";
-import {IInapplicableReasons} from "../../interfaces/IInapplicableReasons";
+import { IInapplicableReasons } from "../../interfaces/IInapplicableReasons";
+import {
+  BarrierExtraFieldTypes,
+  BarrierFieldTypes,
+} from "../../enums/BarrierTypes";
+import { PropStatus } from "@consta/uikit/__internal__/src/components/SelectComponents/types";
 
 interface IQuestionCard {
   title: string;
   requirementId: number;
   fulfillments: IFulfillment[];
   inapplicableReasons: IInapplicableReasons[];
-
   filledQuestion?: IFilledQuestions;
 
   handleChange(value: IFilledQuestions, requirementId: number): void;
@@ -34,8 +38,6 @@ const QuestionCard = observer((props: IQuestionCard) => {
 
   const name = title?.replace(code ?? "", "");
 
-
-
   const handleFulfilmentChange = (value: IFulfillment) => {
     console.log("QuestionCard handleChange value", toJS(value));
     let resultValue: IFilledQuestions = {
@@ -44,7 +46,7 @@ const QuestionCard = observer((props: IQuestionCard) => {
       [FilledQuestionTypes.Comment]: "",
     };
     if (value.id.toString() !== "2") {
-      delete resultValue[FilledQuestionTypes.Comment]
+      delete resultValue[FilledQuestionTypes.Comment];
     }
     console.log("QuestionCard handleChange resultValue", toJS(resultValue));
     props.handleChange(resultValue, props.requirementId);
@@ -58,7 +60,7 @@ const QuestionCard = observer((props: IQuestionCard) => {
       [FilledQuestionTypes.Comment]: "",
     };
     if (value.id.toString() !== "3") {
-      delete resultValue[FilledQuestionTypes.Comment]
+      delete resultValue[FilledQuestionTypes.Comment];
     }
 
     console.log("QuestionCard handleChange resultValue", toJS(resultValue));
@@ -220,6 +222,13 @@ const QuestionCard = observer((props: IQuestionCard) => {
     return !props.filledQuestion?.[FilledQuestionTypes.ResolvedInPlace];
   };
 
+  const getStatus = (value?: string) => {
+    if (!value) {
+      return "alert";
+    }
+    return "success";
+  };
+
   return (
     <div className={style.QuestionCard}>
       <div className={style.title}>
@@ -235,6 +244,7 @@ const QuestionCard = observer((props: IQuestionCard) => {
       {noFulfillmentCondition() && (
         <>
           <InspectionTextArea
+            caption={t("requiredHint")}
             required
             disabledLabel
             minRows={1}
@@ -242,7 +252,9 @@ const QuestionCard = observer((props: IQuestionCard) => {
             handleChange={handleCommentChange}
             type={FilledQuestionTypes.Comment}
             value={props.filledQuestion?.[FilledQuestionTypes.Comment]}
-            status={undefined}
+            status={getStatus(
+              props.filledQuestion?.[FilledQuestionTypes.Comment],
+            )}
           />
           <div className={style.flexRow}>
             <RadioGroup
@@ -262,6 +274,7 @@ const QuestionCard = observer((props: IQuestionCard) => {
           </div>
           {plannedResolveDateCondition() && (
             <DatePicker
+              caption={t("requiredHint")}
               placeholder={t([
                 FilledQuestionTypes.PlannedResolveDate + "Placeholder",
               ])}
@@ -269,6 +282,7 @@ const QuestionCard = observer((props: IQuestionCard) => {
               value={getDateValue()}
               rightSide={IconCalendar}
               onChange={handleDateChange}
+              status={getStatus(getDateValue()?.toDateString())}
             />
           )}
         </>
@@ -284,6 +298,7 @@ const QuestionCard = observer((props: IQuestionCard) => {
             />
             {inapplicableReasonConditionOther() && (
               <InspectionTextArea
+                caption={t("requiredHint")}
                 required
                 disabledLabel
                 minRows={1}
@@ -291,7 +306,9 @@ const QuestionCard = observer((props: IQuestionCard) => {
                 handleChange={handleCommentChange}
                 type={FilledQuestionTypes.Comment}
                 value={props.filledQuestion?.[FilledQuestionTypes.Comment]}
-                status={undefined}
+                status={getStatus(
+                  props.filledQuestion?.[FilledQuestionTypes.Comment],
+                )}
               />
             )}
           </div>

@@ -262,6 +262,9 @@ export const ru = {
     loadedFile: "Загруженный файл: ",
     file: "Файл",
     successLoaded: "успешно загружен",
+
+    requiredHint: "Обязательно для заполнения",
+
   },
   violationsDict: {
     passport: "Паспорт КБ",
