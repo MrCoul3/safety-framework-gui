@@ -159,14 +159,12 @@ const BarriersPage = observer((props: IBarriersPage) => {
     navigate(-3);
   };
 
-  const handleSaveForm = (barrierId: number, barrierIndex: number) => {
+  const handleSaveForm = () => {
     store.inspectionStore.setSavingState(false);
     saveInspection();
-    store.snackBarStore.setSnackBarItem({
-      message: t("snackBarSuccessSave"),
-      key: "1",
-      status: "success",
-    });
+    if (location.pathname.includes(RoutesTypes.EditInspection)) {
+      navigate(-3);
+    }
   };
 
   const [searchText, setSearchText] = useState<string | null>(null);
@@ -403,9 +401,7 @@ const BarriersPage = observer((props: IBarriersPage) => {
                                           false,
                                         )
                                       }
-                                      handleSaveForm={() =>
-                                        handleSaveForm(barrier.id, barrierIndex)
-                                      }
+                                      handleSaveForm={handleSaveForm}
                                       handleFulfillmentChange={(
                                         value,
                                         requirementId,

@@ -112,6 +112,9 @@ const FreeFormPage = observer((props: IFreeFormPage) => {
   const handleSaveForm = () => {
     store.inspectionStore.setSavingState(false);
     saveInspection();
+    if (location.pathname.includes(RoutesTypes.EditInspection)) {
+      navigate(-2);
+    }
   };
 
   const handleSaveInspection = () => {
