@@ -155,6 +155,17 @@ const InspectionForm = observer((props: IInspectionForm) => {
     const functionTitle =
       props.formFieldsValues?.[InspectionFormTypes.Function]?.title;
 
+    /*if (
+      inspectionType === InspectionFormTypes.Contractor &&
+      functionTitle &&
+      [
+        ...includedFunctionTitlesForContractorStruct,
+        ...includedFunctionTitlesForSupervisor,
+      ].includes(functionTitle)
+    ) {
+      return true;
+    }*/
+
     if (
       inspectionType === InspectionFormTypes.ContractorStruct &&
       functionTitle &&

@@ -162,7 +162,10 @@ const BarriersPage = observer((props: IBarriersPage) => {
   const handleSaveForm = () => {
     store.inspectionStore.setSavingState(false);
     saveInspection();
-    if (location.pathname.includes(RoutesTypes.EditInspection)) {
+    if (
+      location.pathname.includes(RoutesTypes.EditInspection) ||
+      location.pathname.includes(RoutesTypes.NewInspection)
+    ) {
       navigate(-3);
     }
   };
@@ -323,7 +326,6 @@ const BarriersPage = observer((props: IBarriersPage) => {
       );
     }
   };
-
 
   return (
     <Layout
