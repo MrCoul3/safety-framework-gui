@@ -6,8 +6,8 @@ import { useTranslation } from "react-i18next";
 import { DatePicker, DatePickerPropOnChange } from "@consta/uikit/DatePicker";
 import { IconCalendar } from "@consta/icons/IconCalendar";
 import { PropStatus } from "@consta/uikit/__internal__/src/components/SelectComponents/types";
-import {IFormDateFieldValue} from "../../interfaces/IFieldInterfaces";
-import {ViolationFilterTypes} from "../../enums/ViolationFilterTypes";
+import { IFormDateFieldValue } from "../../interfaces/IFieldInterfaces";
+import { ViolationFilterTypes } from "../../enums/ViolationFilterTypes";
 import classNames from "classnames";
 
 interface IInspectionDataField {
@@ -15,9 +15,9 @@ interface IInspectionDataField {
   disableLabel?: boolean;
   required?: boolean;
 
-  labelPosition?: "left" | "top"
+  labelPosition?: "left" | "top";
 
-  className?: string
+  className?: string;
 
   status?: PropStatus | undefined;
   value?: Date | null;
@@ -43,13 +43,14 @@ const InspectionDataField = observer((props: IInspectionDataField) => {
   useEffect(() => {
     setVal(props.value ?? null);
 
-    console.log('props.value', props.value)
+    console.log("props.value", props.value);
   }, [props.value]);
 
   const [val, setVal] = useState<Date | null>(null);
 
   return (
     <DatePicker
+      caption={props.status === "alert" ? t("requiredHint") : ""}
       type={"date"}
       ref={picker}
       status={props.status}

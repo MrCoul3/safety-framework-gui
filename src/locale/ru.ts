@@ -263,7 +263,7 @@ export const ru = {
     file: "Файл",
     successLoaded: "успешно загружен",
 
-    requiredHint: "Обязательно для заполнения",
+    requiredHint: "Чтобы продолжить необходимо заполнить это поле",
 
   },
   violationsDict: {
