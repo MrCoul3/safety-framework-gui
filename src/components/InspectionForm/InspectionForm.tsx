@@ -25,7 +25,7 @@ import { LoaderType } from "../../interfaces/LoaderType";
 import LoaderPage from "../LoaderPage/LoaderPage";
 import {
   includedFunctionTitlesForContractorStruct,
-  includedFunctionTitlesForSupervisor
+  includedFunctionTitlesForSupervisor,
 } from "../../constants/constants";
 
 interface IInspectionForm {
@@ -152,7 +152,6 @@ const InspectionForm = observer((props: IInspectionForm) => {
   };
 
   const requiredConditions = (inspectionType: InspectionFormTypes) => {
-
     const functionTitle =
       props.formFieldsValues?.[InspectionFormTypes.Function]?.title;
 
@@ -213,7 +212,9 @@ const InspectionForm = observer((props: IInspectionForm) => {
                       handleChange={props.handleChange}
                       handleOpenField={props.handleOpenField}
                       status={
-                        props.isValidate ? getStatus(inspectionType) : undefined
+                        requiredConditions(inspectionType) && props.isValidate
+                          ? getStatus(inspectionType)
+                          : undefined
                       }
                     />
                   );
