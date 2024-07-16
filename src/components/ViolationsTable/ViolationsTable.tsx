@@ -3,7 +3,10 @@ import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
 import { SortByProps, Table, TableColumn } from "@consta/uikit/Table";
 import { InspectionFormTypes } from "../../enums/InspectionFormTypes";
-import {ViolationFilterTypes, VIOLATIONS_COMMON_FIELDS} from "../../enums/ViolationFilterTypes";
+import {
+  ViolationFilterTypes,
+  VIOLATIONS_COMMON_FIELDS,
+} from "../../enums/ViolationFilterTypes";
 import { IViolation } from "../../interfaces/IViolation";
 import { useTranslation } from "react-i18next";
 import EmptyBoxPage from "../EmptyBoxPage/EmptyBoxPage";
@@ -29,6 +32,7 @@ interface IRow {
   question: string | null;
   auditor: string | null;
   auditee: string | null;
+  willResolveBy?: string | null;
   [InspectionFormTypes.DoStruct]: string | null;
 }
 
@@ -52,11 +56,12 @@ const ViolationsTable = observer((props: IViolationsTable) => {
         .valueOf()
         .toString(),
       passport: item?.passport,
-      question: item?.question?.split(' ')[0] ?? null,
+      question: item?.question?.split(" ")[0] ?? null,
       auditor: item?.auditor,
       auditee: item?.auditee,
       [InspectionFormTypes.DoStruct]: item?.doStruct,
-      comment: item?.comment
+      comment: item?.comment,
+      willResolveBy: item?.willResolveBy,
     }));
 
   const columns: TableColumn<(typeof rows)[number]>[] =
@@ -92,12 +97,23 @@ const ViolationsTable = observer((props: IViolationsTable) => {
     width: 100,
   });
 
+  if (
+    !(store.inspectionStore.formFieldsValues as IViolation)?.isResolved &&
+    (store.inspectionStore.formFieldsValues as IViolation)?.isResolved !== false
+  ) {
+    columns.push({
+      title: <span className={style.colTitle}>{t("willResolveBy")}</span>,
+      accessor: "willResolveBy",
+      align: "left",
+      width: 100,
+    });
+  }
+
   const [violationId, setViolationId] = React.useState<number | null>();
 
   const onRowClick = ({ id, e }: { id: string; e: React.MouseEvent }) => {
     const row = (e.target as HTMLDivElement).closest(".Table-CellsRow");
     setViolationId(+id);
-    console.log("onRowClick id", id, typeof id);
     document
       .querySelectorAll(".activeRow")
       .forEach((item) => item.classList.remove("activeRow"));
@@ -161,7 +177,6 @@ const ViolationsTable = observer((props: IViolationsTable) => {
         ? props.violations
             .filter((violation) => +violation.id === +violationId)
             .map((violation, index) => {
-              console.log("render violations index",violation.id, +violationId, index);
               return +violation.id === +violationId && index === 0 ? (
                 <div className={style.details}>
                   <ViolationDetails violation={getSelectedViolation()} />
