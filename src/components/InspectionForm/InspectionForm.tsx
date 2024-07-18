@@ -161,6 +161,15 @@ const InspectionForm = observer((props: IInspectionForm) => {
       secondCaseBOfIncludedFunctionTitles.includes(functionTitle)
     );
   };
+  const secondCaseBDisabledCondition = (
+    inspectionType: InspectionFormTypes,
+  ) => {
+    return (
+      secondCaseBValues.includes(inspectionType) &&
+      functionTitle &&
+      secondCaseBOfIncludedFunctionTitles.includes(functionTitle)
+    );
+  };
   const secondCaseCCondition = (inspectionType: InspectionFormTypes) => {
     return (
       secondCaseCValues.includes(inspectionType) &&
@@ -184,7 +193,8 @@ const InspectionForm = observer((props: IInspectionForm) => {
 
     if (
       defaultDisabledFields.includes(inspectionType) &&
-      !firstCaseCondition(inspectionType)
+      !firstCaseCondition(inspectionType) &&
+      !secondCaseBDisabledCondition(inspectionType)
     ) {
       if (ifNoContractor) {
         return "disabled";

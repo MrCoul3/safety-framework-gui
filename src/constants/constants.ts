@@ -7,8 +7,9 @@ export const includedFunctionTitlesForContractorStruct = [
 ];
 
 // 1.Бурение, ВСР, ГРП, КС:
-//   a.Наим ПО,№ бригады – обязательно.ФИО
-//   супера – обязательно. Поля не блокируются
+//   a.Наим ПО,№ бригады, ФИО супера – обязательно.
+//    Contractor Supervisor ContractorStruct
+//    Поля не блокируются
 export const firstCaseOfIncludedFunctionTitles = [
   "Бурение",
   "Внутрискважинные работы(ВСР)",
@@ -25,6 +26,7 @@ export const secondCaseAOfIncludedFunctionTitles = [
   "Энергетика",
   "Транспортные Компании",
   "Автоматизация, метрология и связь",
+  "Автоматизация и метрология",
 ];
 export const secondCaseBOfIncludedFunctionTitles = [
   "Газ",
@@ -33,6 +35,7 @@ export const secondCaseBOfIncludedFunctionTitles = [
 export const secondCaseCOfIncludedFunctionTitles = [
   "Транспортные Компании",
   "Автоматизация, метрология и связь",
+  "Автоматизация и метрология",
   "Энергетика",
 ];
 
@@ -40,6 +43,7 @@ export const secondCaseDOfIncludedFunctionTitles = [
   "Энергетика",
   "Транспортные Компании",
   "Автоматизация, метрология и связь",
+  "Автоматизация и метрология",
   "Газ",
   "Добыча, инфраструктура и операционная деятельность",
 ];

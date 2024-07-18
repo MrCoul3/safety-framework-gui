@@ -80,6 +80,7 @@ export const ru = {
     [SubGroupsTypes.Information]: "Информация",
     [SubGroupsActionsTypes.BarriersCarts]: "Корзины барьеров",
     [SubGroupsActionsTypes.BarriersApps]: "Приложения к барьерам",
+    [SubGroupsActionsTypes.DashBoard]: "Каркас безопасности",
 
     [InspectionStatusesTypes.Success]: "Успешно отправлено",
     [InspectionStatusesTypes.Error]: "Ошибка отправки",

@@ -43,7 +43,9 @@ import { IFilledBarrier } from "../interfaces/IFilledBarrier";
 import { IViolation } from "../interfaces/IViolation";
 import {
   firstCaseOfIncludedFunctionTitles,
-  includedFunctionTitlesForContractorStruct, secondCaseAOfIncludedFunctionTitles,
+  includedFunctionTitlesForContractorStruct,
+  secondCaseAOfIncludedFunctionTitles,
+  secondCaseBOfIncludedFunctionTitles,
 } from "../constants/constants";
 
 export class InspectionStore {
@@ -421,9 +423,16 @@ export class InspectionStore {
     }
     if (
       functionTitle &&
-        secondCaseAOfIncludedFunctionTitles.includes(functionTitle)
+      secondCaseAOfIncludedFunctionTitles.includes(functionTitle)
     ) {
       result.push(!!contractorTitle);
+    }
+    if (
+      functionTitle &&
+      secondCaseBOfIncludedFunctionTitles.includes(functionTitle) &&
+      contractorTitle
+    ) {
+      result.push(!!contractorStructTitle);
     }
     console.log("extraRequiredConditions result", result);
     /*if (
