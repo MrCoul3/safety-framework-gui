@@ -9,6 +9,7 @@ import { PropStatus } from "@consta/uikit/__internal__/src/components/SelectComp
 import { IFormDateFieldValue } from "../../interfaces/IFieldInterfaces";
 import { ViolationFilterTypes } from "../../enums/ViolationFilterTypes";
 import classNames from "classnames";
+import moment from "moment";
 
 interface IInspectionDataField {
   inspectionType: InspectionFormTypes | ViolationFilterTypes;
@@ -50,6 +51,8 @@ const InspectionDataField = observer((props: IInspectionDataField) => {
 
   return (
     <DatePicker
+      minDate={moment().subtract(4, "days").toDate()}
+      maxDate={new Date()}
       caption={props.status === "alert" ? t("requiredHint") : ""}
       type={"date"}
       ref={picker}

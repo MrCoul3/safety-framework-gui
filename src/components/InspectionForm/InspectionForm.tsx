@@ -177,6 +177,15 @@ const InspectionForm = observer((props: IInspectionForm) => {
       secondCaseCOfIncludedFunctionTitles.includes(functionTitle)
     );
   };
+  const secondCaseCDisabledCondition = (
+    inspectionType: InspectionFormTypes,
+  ) => {
+    return (
+      inspectionType === InspectionFormTypes.ContractorStruct &&
+      functionTitle &&
+      secondCaseCOfIncludedFunctionTitles.includes(functionTitle)
+    );
+  };
   const secondCaseDDisabledCondition = (
     inspectionType: InspectionFormTypes,
   ) => {
@@ -201,12 +210,12 @@ const InspectionForm = observer((props: IInspectionForm) => {
       }
     }
 
-    if (secondCaseDDisabledCondition(inspectionType)) {
+    if (
+      secondCaseDDisabledCondition(inspectionType) ||
+      secondCaseCDisabledCondition(inspectionType)
+    ) {
       return "disabled";
     }
-    /*if (firstCaseCondition(inspectionType)) {
-      return 'enabled'
-    }*/
     return "enabled";
   };
 
