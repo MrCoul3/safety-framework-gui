@@ -98,6 +98,7 @@ const ViolationsTable = observer((props: IViolationsTable) => {
       title: <span className={style.colTitle}>{t("willResolveBy")}</span>,
       accessor: "willResolveBy",
       align: "left",
+      sortable: true,
     });
   }
 
