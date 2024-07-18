@@ -41,7 +41,6 @@ interface IFilterPanel {
   handleOpenField(type: ViolationFilterTypes): void;
   formFieldsValues: IInspection | null;
   fieldsData: IFieldsData[];
-
   isSubmitAvailable?: boolean;
 }
 
@@ -54,11 +53,8 @@ const FilterPanel = observer((props: IFilterPanel) => {
     ViolationFilterTypes.Oilfields,
     ViolationFilterTypes.Struct,
     ViolationFilterTypes.Obj,
+    ViolationFilterTypes.WillResolveBy,
   ];
-
-  useEffect(() => {
-    console.log("FilterPanel props.fieldsData", toJS(props.fieldsData));
-  }, [props.fieldsData]);
 
   const getViolationsDictionaryOfConformity = (type: ViolationFilterTypes) => {
     if (type !== ViolationFilterTypes.Date) {

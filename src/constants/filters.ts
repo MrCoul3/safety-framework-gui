@@ -147,6 +147,7 @@ export const getViolationFilters = (formFieldsValues: IInspection) => {
     oilfield: formFieldsValues?.oilfield?.title,
     doStruct: formFieldsValues?.doStruct?.title,
     doObject: formFieldsValues?.doObject?.title,
+    willResolveBy: formFieldsValues?.willResolveBy?.title,
     isResolved: !!formFieldsValues.isResolved,
   };
   if (formFieldsValues.isResolved === false) {

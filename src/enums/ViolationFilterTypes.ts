@@ -7,6 +7,7 @@ export enum ViolationFilterTypes {
   Oilfields = "oilfields", // месторождения
   Struct = "struct", // doStruct Структурное подразделение ДО
   Obj = "obj", // doObject Объект ДО, где проводилась проверка
+  WillResolveBy = "willResolveBy", // устраняющий
 }
 export const VIOLATIONS_COMMON_FIELDS = [
   InspectionFormTypes.AuditDate,
@@ -24,4 +25,5 @@ export const violationsDictionaryOfConformity = {
   [ViolationFilterTypes.Oilfields]: InspectionFormTypes.OilField,
   [ViolationFilterTypes.Struct]: InspectionFormTypes.DoStruct,
   [ViolationFilterTypes.Obj]: InspectionFormTypes.DoObject,
+  [ViolationFilterTypes.WillResolveBy]: ViolationFilterTypes.WillResolveBy,
 };

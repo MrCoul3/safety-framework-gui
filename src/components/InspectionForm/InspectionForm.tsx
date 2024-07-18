@@ -24,8 +24,18 @@ import {
 import { LoaderType } from "../../interfaces/LoaderType";
 import LoaderPage from "../LoaderPage/LoaderPage";
 import {
+  defaultDisabledFields,
+  firstCaseOfIncludedFunctionTitles,
+  firstCaseValues,
   includedFunctionTitlesForContractorStruct,
-  includedFunctionTitlesForSupervisor,
+  secondCaseAOfIncludedFunctionTitles,
+  secondCaseAValues,
+  secondCaseBOfIncludedFunctionTitles,
+  secondCaseBValues,
+  secondCaseCOfIncludedFunctionTitles,
+  secondCaseCValues,
+  secondCaseDOfIncludedFunctionTitles,
+  secondCaseDValues,
 } from "../../constants/constants";
 
 interface IInspectionForm {
@@ -115,15 +125,8 @@ const InspectionForm = observer((props: IInspectionForm) => {
   };
 
   const handleNextStep = () => {
-    console.log(
-      "handleNextStep props.formFieldsValues",
-      toJS(props.formFieldsValues),
-    );
     const formType =
       props.formFieldsValues?.[InspectionFormTypes.InspectionForm]?.id;
-
-    console.log("handleNextStep formType", formType);
-    // id = 1 barriers, id = 2 freeForm
     if (formType?.toString() === "1") {
       props.handleNextStepToBarriers();
     } else {
@@ -131,29 +134,80 @@ const InspectionForm = observer((props: IInspectionForm) => {
     }
     props.setIsValidate(true);
   };
+
+  const functionTitle =
+    props.formFieldsValues?.[InspectionFormTypes.Function]?.title;
+  const contractorTitle =
+    props.formFieldsValues?.[InspectionFormTypes.Contractor]?.title;
+  const firstCaseCondition = (inspectionType: InspectionFormTypes) => {
+    return (
+      firstCaseValues.includes(inspectionType) &&
+      functionTitle &&
+      firstCaseOfIncludedFunctionTitles.includes(functionTitle)
+    );
+  };
+  const secondCaseACondition = (inspectionType: InspectionFormTypes) => {
+    return (
+      secondCaseAValues.includes(inspectionType) &&
+      functionTitle &&
+      secondCaseAOfIncludedFunctionTitles.includes(functionTitle)
+    );
+  };
+  const secondCaseBCondition = (inspectionType: InspectionFormTypes) => {
+    return (
+      secondCaseBValues.includes(inspectionType) &&
+      functionTitle &&
+      contractorTitle &&
+      secondCaseBOfIncludedFunctionTitles.includes(functionTitle)
+    );
+  };
+  const secondCaseCCondition = (inspectionType: InspectionFormTypes) => {
+    return (
+      secondCaseCValues.includes(inspectionType) &&
+      functionTitle &&
+      secondCaseCOfIncludedFunctionTitles.includes(functionTitle)
+    );
+  };
+  const secondCaseDDisabledCondition = (
+    inspectionType: InspectionFormTypes,
+  ) => {
+    return (
+      secondCaseDValues.includes(inspectionType) &&
+      functionTitle &&
+      secondCaseDOfIncludedFunctionTitles.includes(functionTitle)
+    );
+  };
   const disabledConditions = (inspectionType: InspectionFormTypes) => {
     const ifNoContractor =
       props.formFieldsValues &&
       !props.formFieldsValues[InspectionFormTypes.Contractor];
 
-    const includedContractorFields = [
-      InspectionFormTypes.Supervisor,
-      InspectionFormTypes.ContractorStruct,
-      InspectionFormTypes.SubContractor,
-    ];
-
-    /* enable doStruct if contractor enabled */
-    if (includedContractorFields.includes(inspectionType)) {
+    if (
+      defaultDisabledFields.includes(inspectionType) &&
+      !firstCaseCondition(inspectionType)
+    ) {
       if (ifNoContractor) {
-        return true;
+        return "disabled";
       }
     }
-    return false;
+
+    if (secondCaseDDisabledCondition(inspectionType)) {
+      return "disabled";
+    }
+    /*if (firstCaseCondition(inspectionType)) {
+      return 'enabled'
+    }*/
+    return "enabled";
   };
 
   const requiredConditions = (inspectionType: InspectionFormTypes) => {
-    const functionTitle =
-      props.formFieldsValues?.[InspectionFormTypes.Function]?.title;
+    if (
+      firstCaseCondition(inspectionType) ||
+      secondCaseACondition(inspectionType) ||
+      secondCaseBCondition(inspectionType)
+    ) {
+      return true;
+    }
 
     /*if (
       inspectionType === InspectionFormTypes.Contractor &&
@@ -166,20 +220,14 @@ const InspectionForm = observer((props: IInspectionForm) => {
       return true;
     }*/
 
-    if (
+    /*if (
       inspectionType === InspectionFormTypes.ContractorStruct &&
       functionTitle &&
       includedFunctionTitlesForContractorStruct.includes(functionTitle)
     ) {
       return true;
     }
-    if (
-      inspectionType === InspectionFormTypes.Supervisor &&
-      functionTitle &&
-      includedFunctionTitlesForSupervisor.includes(functionTitle)
-    ) {
-      return true;
-    }
+*/
     if (!INSPECTION_FORM_NOT_REQUIRED_FIELDS.includes(inspectionType)) {
       return true;
     }
@@ -216,7 +264,9 @@ const InspectionForm = observer((props: IInspectionForm) => {
                       onScrollToBottom={props.onScrollToBottom}
                       onSearchValueChange={props.onSearchValueChange}
                       required={requiredConditions(inspectionType)}
-                      disabled={disabledConditions(inspectionType)}
+                      disabled={
+                        !(disabledConditions(inspectionType) === "enabled")
+                      }
                       inspectionType={inspectionType}
                       value={getValue(inspectionType)}
                       fieldsData={props.fieldsData}

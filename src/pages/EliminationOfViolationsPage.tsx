@@ -1,31 +1,18 @@
-import React, { useEffect, useState } from "react";
-import { observer } from "mobx-react-lite";
-import Layout from "../layouts/Layout/Layout";
+import React, {useState} from "react";
+import {observer} from "mobx-react-lite";
 import NavPanel from "../components/NavPanel/NavPanel";
-import { IBreadCrumbs } from "../interfaces/IBreadCrumbs";
-import { useTranslation } from "react-i18next";
+import {IBreadCrumbs} from "../interfaces/IBreadCrumbs";
+import {useTranslation} from "react-i18next";
 import FilterPanel from "../components/FilterPanel/FilterPanel";
-import {
-  IFilterDateRangeFieldValue,
-  IFormDateFieldValue,
-  IFormFieldValue,
-} from "../interfaces/IFieldInterfaces";
-import { useStore } from "../hooks/useStore";
-import { InspectionFormTypes } from "../enums/InspectionFormTypes";
-import {
-  ViolationFilterTypes,
-  VIOLATIONS_COMMON_FIELDS,
-  violationsDictionaryOfConformity,
-} from "../enums/ViolationFilterTypes";
-import { IInspection } from "../interfaces/IInspection";
-import { isDevelop } from "../constants/config";
-import EmptyBoxPage from "../components/EmptyBoxPage/EmptyBoxPage";
+import {IFilterDateRangeFieldValue, IFormFieldValue,} from "../interfaces/IFieldInterfaces";
+import {useStore} from "../hooks/useStore";
+import {InspectionFormTypes} from "../enums/InspectionFormTypes";
+import {ViolationFilterTypes,} from "../enums/ViolationFilterTypes";
+import {IInspection} from "../interfaces/IInspection";
+import {isDevelop} from "../constants/config";
 import ViolationsLayout from "../layouts/ViolationsLayout/ViolationsLayout";
-import { IViolation } from "../interfaces/IViolation";
-import { toJS } from "mobx";
-import { Table, TableColumn } from "@consta/uikit/Table";
-import style from "../components/InspectionsTable/style.module.css";
 import ViolationsTable from "../components/ViolationsTable/ViolationsTable";
+import {WILL_RESOLVE_BY_FILTER_VALUES} from "../constants/constants";
 
 interface IEliminationOfViolationsPage {}
 
@@ -65,6 +52,9 @@ const EliminationOfViolationsPage = observer(
         } else {
           store.eliminationOfViolationsStore.getPassports();
         }
+      }
+      if (type === ViolationFilterTypes.WillResolveBy) {
+          store.inspectionStore.setFieldsData(WILL_RESOLVE_BY_FILTER_VALUES);
       }
       setOpenFilterType(type);
     };

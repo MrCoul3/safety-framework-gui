@@ -40,11 +40,10 @@ import { RoutesTypes } from "../enums/RoutesTypes";
 import { filterByRequiredFields } from "../utils/filterByRequiredFields";
 import { ViolationFilterTypes } from "../enums/ViolationFilterTypes";
 import { IFilledBarrier } from "../interfaces/IFilledBarrier";
-import i18next from "i18next";
 import { IViolation } from "../interfaces/IViolation";
 import {
-  includedFunctionTitlesForContractorStruct,
-  includedFunctionTitlesForSupervisor,
+  firstCaseOfIncludedFunctionTitles,
+  includedFunctionTitlesForContractorStruct, secondCaseAOfIncludedFunctionTitles,
 } from "../constants/constants";
 
 export class InspectionStore {
@@ -393,6 +392,10 @@ export class InspectionStore {
   }
 
   extraRequiredConditions(formFieldsValues: { [key: string]: any }) {
+    console.log(
+      "extraRequiredConditions formFieldsValues",
+      toJS(formFieldsValues),
+    );
     const functionTitle = (formFieldsValues as IInspection)?.[
       InspectionFormTypes.Function
     ]?.title;
@@ -402,20 +405,34 @@ export class InspectionStore {
     const contractorStructTitle = (formFieldsValues as IInspection)?.[
       InspectionFormTypes.ContractorStruct
     ]?.title;
-    const result = []
+    const contractorTitle = (formFieldsValues as IInspection)?.[
+      InspectionFormTypes.Contractor
+    ]?.title;
+
+    const result = [];
+
     if (
       functionTitle &&
-      includedFunctionTitlesForContractorStruct.includes(functionTitle)
+      firstCaseOfIncludedFunctionTitles.includes(functionTitle)
     ) {
-      result.push(!!contractorStructTitle)
+      result.push(!!contractorStructTitle);
+      result.push(!!supervisorTitle);
+      result.push(!!contractorTitle);
     }
     if (
+      functionTitle &&
+        secondCaseAOfIncludedFunctionTitles.includes(functionTitle)
+    ) {
+      result.push(!!contractorTitle);
+    }
+    console.log("extraRequiredConditions result", result);
+    /*if (
       functionTitle &&
       includedFunctionTitlesForSupervisor.includes(functionTitle)
     ) {
       result.push(!!supervisorTitle)
-    }
-    return  result.every((val) => val);
+    }*/
+    return result.every((val) => val);
   }
 
   checkIsFormSuccess(inspection?: IInspection) {
@@ -429,7 +446,9 @@ export class InspectionStore {
     return (
       filtered.every((value) => {
         return Object.values(value ?? {})[0];
-      }) && filtered.length === INSPECTION_FORM_REQUIRED_FIELDS.length && this.extraRequiredConditions(formFieldsValues)
+      }) &&
+      filtered.length === INSPECTION_FORM_REQUIRED_FIELDS.length &&
+      this.extraRequiredConditions(formFieldsValues)
     );
   }
 

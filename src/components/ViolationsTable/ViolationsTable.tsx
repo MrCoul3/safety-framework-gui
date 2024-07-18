@@ -90,6 +90,17 @@ const ViolationsTable = observer((props: IViolationsTable) => {
       };
     });
 
+  if (
+      !(store.inspectionStore.formFieldsValues as IViolation)?.isResolved &&
+      (store.inspectionStore.formFieldsValues as IViolation)?.isResolved !== false
+  ) {
+    columns.push({
+      title: <span className={style.colTitle}>{t("willResolveBy")}</span>,
+      accessor: "willResolveBy",
+      align: "left",
+    });
+  }
+
   columns.push({
     title: <span className={style.colTitle}>{t("id")}</span>,
     accessor: "id",
@@ -97,17 +108,7 @@ const ViolationsTable = observer((props: IViolationsTable) => {
     width: 100,
   });
 
-  if (
-    !(store.inspectionStore.formFieldsValues as IViolation)?.isResolved &&
-    (store.inspectionStore.formFieldsValues as IViolation)?.isResolved !== false
-  ) {
-    columns.push({
-      title: <span className={style.colTitle}>{t("willResolveBy")}</span>,
-      accessor: "willResolveBy",
-      align: "left",
-      width: 100,
-    });
-  }
+
 
   const [violationId, setViolationId] = React.useState<number | null>();
 

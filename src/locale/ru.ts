@@ -288,6 +288,7 @@ export const ru = {
 
     passportPlaceholder: "Выберите тип чек-листа",
     contractorPlaceholder: "Выберите ДО/ПО",
+    willResolveByPlaceholder: "Выберите устраняющего",
     oilfieldPlaceholder: "Выберите месторождение",
     doStructPlaceholder: "Выберите цех",
     doObjectPlaceholder: "Выберите объект",
@@ -303,5 +304,6 @@ export const ru = {
     noFilled: "Не заполнено",
     checkVerifyDate: "Дата выполнения проверки",
     checkDetails: "Детали проверки",
+    willResolveBy: "Устраняющий",
   },
 };
