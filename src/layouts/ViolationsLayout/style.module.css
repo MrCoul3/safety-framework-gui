@@ -1,0 +1,16 @@
+.flexRow {
+  display: flex;
+  height: calc(100vh - var(--mainHeaderHeight) - var(--minSizeNavPanelHeight));
+}
+
+.flexCol {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: var(--contentPaddingTopBottom) var(--contentPaddingLeftRight);
+}
+
+.ViolationsLayout {
+  background-color: var(--lightGray);
+  height: 100%;
+}

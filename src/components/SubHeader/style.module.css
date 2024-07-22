@@ -1,0 +1,42 @@
+.button {
+  max-width: 243px;
+}
+
+.SubHeader {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  width: 100%;
+  gap: 32px;
+  height: var(--subHeaderHeight);
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 28.8px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.autocomplete {
+  max-width: 740px;
+  min-height: 40px !important;
+}
+.textField {
+  font-size: 14px !important;
+  min-height: 24px !important;
+}
+.flexRow {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  align-items: center;
+}
+.fieldGroup {
+  width: 70%;
+}
+
+.combobox {
+  width: 100%;
+}

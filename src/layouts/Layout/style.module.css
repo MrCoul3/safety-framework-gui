@@ -1,0 +1,15 @@
+.flexRow {
+  display: flex;
+  width: 100%;
+}
+
+.flexCol {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: var(--contentPaddingTopBottom) var(--contentPaddingLeftRight);
+}
+
+.NewInspectionPageLayout {
+  background-color: var(--lightGray);
+}

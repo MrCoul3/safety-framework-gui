@@ -1,0 +1,29 @@
+.ViolationsTable {
+  padding: 24px;
+  width: 80%;
+  gap: 24px;
+  height: 100%;
+  overflow: auto;
+  box-sizing: border-box;
+}
+.doubleScreen {
+  display: flex;
+  flex-direction: column;
+}
+.details {
+  width: 100px;
+  height: 100px;
+}
+.table {
+  overflow: auto;
+}
+.details {
+  min-height: 50%;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  overflow: auto;
+  height: 100%;
+  gap: 12px;
+}
+

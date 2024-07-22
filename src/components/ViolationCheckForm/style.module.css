@@ -1,0 +1,52 @@
+.card {
+  padding: 16px;
+  overflow: auto;
+  background-color: white;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.DragNDropField {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.successLoaded {
+  border-color: var(--successGreen) !important;
+  background-color: rgba(78, 232, 104, 0.03) !important;
+}
+.title {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 13px;
+  letter-spacing: 0.003em;
+  text-align: left;
+  color: var(--gray30);
+  text-transform: uppercase;
+}
+.fileFormTitle {
+  color: var(--gray60);
+}
+.fileFormDescription {
+  color: var(--gray30);
+}
+
+.flexCol {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+}
+.label {
+  color: var(--gray60);
+
+  margin-bottom: 10px;
+}
+
+.controlButtonGroup {
+  display: flex;
+  width: 100%;
+  gap: 12px;
+  justify-content: end;
+}

@@ -1,0 +1,33 @@
+.InspectionsTable {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.pagination {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  height: var(--paginatorHeight);
+  padding: 10px 0;
+}
+
+.table {
+  overflow: auto;
+}
+
+.tableHeight {
+  height: var(--tableHeight);
+}
+
+.colTitle {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 200px;
+  overflow: hidden;
+}
+.buttonGroup {
+  display: flex;
+  gap: 5px;
+}

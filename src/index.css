@@ -1,13 +1,71 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    "Roboto",
+    "Oxygen",
+    "Ubuntu",
+    "Cantarell",
+    "Fira Sans",
+    "Droid Sans",
+    "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+
+* {
+  scrollbar-color: #e8e8e8 #fafafa;
+  scrollbar-width: thin;
+}
+
+:root {
+  --gray: #002033;
+  --lightGray7: #00426912;
+  --gray30: #0020334d;
+  --gray60: #00203399;
+  --darkBlue: #00395ccc;
+  --lightGray: #ecf1f4;
+  --lightText: #fafafa;
+  --blue: #32b4ff;
+  --tableRowBlue: #0078D24D;
+  --blueDeep: #0071B2;
+  --awaitOrange: #f38b00;
+  --successGreen: #22c38e;
+  --errorRed: #eb5757;
+  --border: #00416633;
+  --borderLine: 1px solid var(--border);
+  --sideBarWidth: 244px;
+  --fieldWidth: 610px;
+  --navPanelHeight: 214px;
+  --minSizeNavPanelHeight: 130px;
+  --normalGap: 16px;
+  --mainHeaderHeight: 76px;
+  --paginatorHeight: 75px;
+  --inspectionGroupHeader: 48px;
+  --subHeaderHeight: 40px;
+  --contentPaddingTopBottom: 24px;
+  --contentPaddingLeftRight: 20px;
+  --tableHeight: calc(
+    100vh - var(--mainHeaderHeight) - var(--contentPaddingTopBottom) -
+      var(--paginatorHeight)
+  );
+  --inspectionCardWidth: 368px;
+  --inspectionCardMaxHeight: 360px;
+  --inspectionCardMinHeight: 330px;
+}
+.customField {
+  width: var(--fieldWidth) !important;
+}
+.activeRow {
+  background-color: var(--tableRowBlue) !important;
 }

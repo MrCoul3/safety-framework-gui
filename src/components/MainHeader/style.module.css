@@ -1,0 +1,37 @@
+.MainHeader {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    height: var(--mainHeaderHeight);
+    border-bottom: var(--borderLine);
+
+}
+.mainTitle {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    min-width: var(--sideBarWidth);
+    height: 76px;
+    border-right: var(--borderLine);
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 25px;
+    text-align: left;
+    transition: all ease .2s;
+}
+
+.mainTitle:hover {
+    color: var(--darkBlue);
+}
+
+.flexRow {
+    width: 100%;
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    padding: 0 24px 0 16px;
+}
+
+.mainTitleContent {
+    margin-left: 15px;
+}

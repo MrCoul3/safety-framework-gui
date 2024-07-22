@@ -1,0 +1,10 @@
+.ResponsesEmptyBox {
+    height: 100%;
+
+}
+.maxHeight {
+    height: 90vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

@@ -1,0 +1,11 @@
+.combobox {
+    min-width: 300px;
+    max-width: 500px;
+}
+
+.field {
+    max-width: 300px;
+}
+.DatePicker {
+    max-width: 400px;
+}

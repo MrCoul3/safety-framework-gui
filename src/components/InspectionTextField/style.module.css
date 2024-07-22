@@ -1,0 +1,7 @@
+.field {
+  justify-content: end !important;
+  padding: 8px 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
