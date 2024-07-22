@@ -5,7 +5,6 @@ import { IBarrier } from "../interfaces/IBarrier";
 import { IFilledBarrier } from "../interfaces/IFilledBarrier";
 import { IFormFieldTextValue } from "../interfaces/IFieldInterfaces";
 import {
-  BARRIERS_WITH_EXTRA_FIELDS,
   LOCAL_STORE_INSPECTIONS,
 } from "../constants/config";
 import { IFulfillment } from "../interfaces/IFulfillment";
@@ -293,7 +292,6 @@ export class BarriersStore {
       filledBarrier[BarrierFieldTypes.Mub]?.trim().length > 5 &&
       this.checkComments(filledBarrier) &&
       this.checkFilledQuestions(filledBarrier)
-      // && this.checkExtraFields(filledBarrier)
     );
   }
 
@@ -343,22 +341,6 @@ export class BarriersStore {
           })
           .flat()
       : null;
-  }
-
-  checkExtraFields(barrier: IFilledBarrier) {
-    console.log(
-      "BARRIERS_WITH_EXTRA_FIELDS.includes(barrier.barrierId)",
-      BARRIERS_WITH_EXTRA_FIELDS.includes(+barrier.barrierId),
-    );
-    if (BARRIERS_WITH_EXTRA_FIELDS.includes(+barrier.barrierId)) {
-      const mubValuesArray = barrier?.[BarrierFieldTypes.Mub]?.split(",");
-      return (
-        mubValuesArray.length &&
-        mubValuesArray.length === 3 &&
-        mubValuesArray.every((extraVal) => extraVal && extraVal.trim() !== "")
-      );
-    }
-    return true;
   }
 
   checkComments(barrier: IFilledBarrier) {

@@ -7,10 +7,6 @@
     box-sizing: border-box;
 }
 
-.barrierFormWrap {
-    /*width: 70%;*/
-}
-
 .buttonsGroup {
     display: flex;
     gap: 8px;

@@ -4,7 +4,6 @@ import style from "./style.module.css";
 import { IFilledBarrier } from "../../interfaces/IFilledBarrier";
 import { useTranslation } from "react-i18next";
 import classNames from "classnames";
-import { BarrierFieldTypes } from "../../enums/BarrierTypes";
 import { useStore } from "../../hooks/useStore";
 import { useParams } from "react-router";
 import { IconClose } from "@consta/icons/IconClose";
@@ -46,51 +45,50 @@ const BarriersPanel = observer((props: IBarriersPanel) => {
   return (
     <div>
       <div className={style.BarriersPanelWrap}>
-        {
-          props.filledBarriers.length ? (
-            <div className={style.barriersPanel}>
-              {props.filledBarriers.map((barrier, index) => (
-                <div
-                  className={classNames(style.panelElement, {
-                    [style.panelElementActive]: isActiveIndex === index,
+        {props.filledBarriers.length ? (
+          <div className={style.barriersPanel}>
+            {props.filledBarriers.map((barrier, index) => (
+              <div
+                className={classNames(style.panelElement, {
+                  [style.panelElementActive]: isActiveIndex === index,
+                })}
+              >
+                <span onClick={() => onItemClick(barrier, index)}>
+                  {code(props.barrierTitle ?? "")} - {index + 1}{" "}
+                </span>
+                <span
+                  className={classNames({
+                    [style.success]: getIsValid(index, barrier.barrierId),
+                    [style.warning]: !getIsValid(index, barrier.barrierId),
                   })}
                 >
-                  <span onClick={() => onItemClick(barrier, index)}>
-                    {code(props.barrierTitle ?? "")} - {index + 1}{" "}
-                  </span>
-                  <span
-                    className={classNames({
-                      [style.success]: getIsValid(index, barrier.barrierId),
-                      [style.warning]: !getIsValid(index, barrier.barrierId),
-                    })}
-                  >
-                    &#8226;
-                  </span>
-                  <IconClose
-                    onClick={() =>
-                      setIsDelModalOpen({
-                        barrierId: barrier.barrierId,
-                        index: index,
-                      })
-                    }
-                    className={style.deleteIcon}
-                    size={"s"}
-                  />
-                </div>
-              ))}
-            </div>
-          ) : null /*: (
-          <span className={style.noBarrierPanelElements}>
-            {t("noBarrierPanelElements")}
-          </span>
-        )*/
-        }
+                  &#8226;
+                </span>
+                <IconClose
+                  onClick={() =>
+                    setIsDelModalOpen({
+                      barrierId: barrier.barrierId,
+                      index: index,
+                    })
+                  }
+                  className={style.deleteIcon}
+                  size={"s"}
+                />
+              </div>
+            ))}
+          </div>
+        ) : null}
       </div>
       <ConfirmDialog
         cancelActionLabel={t("cancel")}
         confirmActionLabel={t("delete")}
         title={t("dialogDeleteBarrier")}
-        action={() => props.handleDeleteBarrier?.(isDelModalOpen?.barrierId, isDelModalOpen?.index)}
+        action={() =>
+          props.handleDeleteBarrier?.(
+            isDelModalOpen?.barrierId,
+            isDelModalOpen?.index,
+          )
+        }
         onClose={() => setIsDelModalOpen(null)}
         open={!!isDelModalOpen}
       />

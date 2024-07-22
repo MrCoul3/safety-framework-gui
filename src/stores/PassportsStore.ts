@@ -2,7 +2,6 @@ import { AppStore } from "./AppStore";
 import { makeAutoObservable, toJS } from "mobx";
 import { instance, localDevInstance } from "../api/endpoints";
 import { IPassport } from "../interfaces/IPassport";
-import {BarrierFieldTypes} from "../enums/BarrierTypes";
 
 export class PassportsStore {
   private store: AppStore;
@@ -26,7 +25,7 @@ export class PassportsStore {
           this.setPassports(response.data);
         }
         this.store.loaderStore.setLoader("ready");
-      }, 0)
+      }, 0);
     } catch (e) {
       this.store.loaderStore.setLoader("ready");
 

@@ -63,12 +63,8 @@ code {
   --inspectionCardMaxHeight: 360px;
   --inspectionCardMinHeight: 330px;
 }
-
 .customField {
   width: var(--fieldWidth) !important;
-}
-.searchBarriersField {
-  /*width: 100% !important;*/
 }
 .activeRow {
   background-color: var(--tableRowBlue) !important;

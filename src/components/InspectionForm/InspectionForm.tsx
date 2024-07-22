@@ -15,7 +15,6 @@ import InspectionDataField from "../InspectionDataField/InspectionDataField";
 import ItemGroupTitle from "../ItemGroupTitle/ItemGroupTitle";
 import ConfirmDialog from "../ConfirmDialog/ConfirmDialog";
 import { IInspection } from "../../interfaces/IInspection";
-import { toJS } from "mobx";
 import {
   IFieldsData,
   IFormDateFieldValue,

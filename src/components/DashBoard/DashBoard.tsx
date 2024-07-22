@@ -5,9 +5,6 @@ import { SubGroupsActionsTypes } from "enums/SubGroupsTypes";
 import { useTranslation } from "react-i18next";
 import { IInspection } from "../../interfaces/IInspection";
 import classNames from "classnames";
-import { InspectionFormTypes } from "../../enums/InspectionFormTypes";
-import InspectionCard from "../InspectionCard/InspectionCard";
-import { ResponsesNothingFound } from "@consta/uikit/ResponsesNothingFound";
 import InfiniteScroll from "react-infinite-scroller";
 import { ProgressSpin } from "@consta/uikit/ProgressSpin";
 

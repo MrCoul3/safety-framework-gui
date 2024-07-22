@@ -10,6 +10,7 @@
     "skipLibCheck": true,
     "moduleResolution": "node",
     "resolveJsonModule": true,
+    "sourceMap": false,
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",

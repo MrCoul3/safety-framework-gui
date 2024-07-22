@@ -3,7 +3,6 @@ import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
 import { IViolation } from "../../interfaces/IViolation";
 import { Card } from "@consta/uikit/Card";
-import { Badge } from "@consta/uikit/Badge";
 import { InspectionFormTypes } from "../../enums/InspectionFormTypes";
 import { useTranslation } from "react-i18next";
 import moment from "moment/moment";
@@ -25,7 +24,7 @@ const ViolationDetails = observer((props: IViolationDetails) => {
   const getValue = (value?: string | null) => (value ? value : t("noFilled"));
   const getComment = (value?: string | null) => (value ? value : "-");
   const getLink = (url?: string | null, fileName?: string | null) =>
-    url && fileName ? <a href={url ?? ""}>{fileName ?? "-"}</a> : '-';
+    url && fileName ? <a href={url ?? ""}>{fileName ?? "-"}</a> : "-";
   const getDate = (date?: Date) =>
     date ? moment(date).format("DD.MM.YYYY") : t("noFilled");
   return (

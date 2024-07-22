@@ -1,18 +1,15 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect } from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
-import { SortByProps, Table, TableColumn } from "@consta/uikit/Table";
+import { Table, TableColumn } from "@consta/uikit/Table";
 import { InspectionFormTypes } from "../../enums/InspectionFormTypes";
-import {
-  ViolationFilterTypes,
-  VIOLATIONS_COMMON_FIELDS,
-} from "../../enums/ViolationFilterTypes";
+import { VIOLATIONS_COMMON_FIELDS } from "../../enums/ViolationFilterTypes";
 import { IViolation } from "../../interfaces/IViolation";
 import { useTranslation } from "react-i18next";
 import EmptyBoxPage from "../EmptyBoxPage/EmptyBoxPage";
 import { LoaderType } from "../../interfaces/LoaderType";
 import LoaderPage from "../LoaderPage/LoaderPage";
-import { keys, toJS } from "mobx";
+import { toJS } from "mobx";
 import moment from "moment";
 import ViolationDetails from "../VioaltionDetails/ViolationDetails";
 import ViolationCheckForm from "../ViolationCheckForm/ViolationCheckForm";
@@ -91,8 +88,8 @@ const ViolationsTable = observer((props: IViolationsTable) => {
     });
 
   if (
-      !(store.inspectionStore.formFieldsValues as IViolation)?.isResolved &&
-      (store.inspectionStore.formFieldsValues as IViolation)?.isResolved !== false
+    !(store.inspectionStore.formFieldsValues as IViolation)?.isResolved &&
+    (store.inspectionStore.formFieldsValues as IViolation)?.isResolved !== false
   ) {
     columns.push({
       title: <span className={style.colTitle}>{t("willResolveBy")}</span>,
@@ -108,8 +105,6 @@ const ViolationsTable = observer((props: IViolationsTable) => {
     align: "left",
     width: 100,
   });
-
-
 
   const [violationId, setViolationId] = React.useState<number | null>();
 

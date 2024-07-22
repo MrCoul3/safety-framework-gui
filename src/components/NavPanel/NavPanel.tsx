@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect } from "react";
+import React, { ReactNode } from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
 import { Breadcrumbs } from "@consta/uikit/Breadcrumbs";
@@ -6,7 +6,6 @@ import { useLocation, useNavigate, useParams } from "react-router";
 import { IBreadCrumbs } from "interfaces/IBreadCrumbs";
 import { Button } from "@consta/uikit/Button";
 import { useTranslation } from "react-i18next";
-import ConfirmDialog from "../ConfirmDialog/ConfirmDialog";
 import { IconBackward } from "@consta/icons/IconBackward";
 import classNames from "classnames";
 import { RoutesTypes } from "../../enums/RoutesTypes";

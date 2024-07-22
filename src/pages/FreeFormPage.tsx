@@ -5,7 +5,7 @@ import { Button } from "@consta/uikit/Button";
 import Layout from "../layouts/Layout/Layout";
 import { IBreadCrumbs } from "../interfaces/IBreadCrumbs";
 import { useTranslation } from "react-i18next";
-import { useLocation, useNavigate, useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { useStore } from "../hooks/useStore";
 import { IconAdd } from "@consta/icons/IconAdd";
 import { IconWarning } from "@consta/icons/IconWarning";

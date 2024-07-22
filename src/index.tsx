@@ -13,7 +13,6 @@ const root = ReactDOM.createRoot(
 const store = new AppStore();
 
 /** логи отключены в продакшн */
-
 if (process.env.NODE_ENV !== "development") {
   console.log = () => {};
   console.debug = () => {};

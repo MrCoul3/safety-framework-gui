@@ -1,5 +1,4 @@
 import {
-  INSPECTION_FORM_REQUIRED_FIELDS,
   InspectionFormTypes,
 } from "../enums/InspectionFormTypes";
 

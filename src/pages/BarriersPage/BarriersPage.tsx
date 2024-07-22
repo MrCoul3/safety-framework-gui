@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { observer } from "mobx-react-lite";
 import NavPanel from "../../components/NavPanel/NavPanel";
 import Layout from "../../layouts/Layout/Layout";
@@ -18,24 +18,16 @@ import { toJS } from "mobx";
 import { IBarrier } from "../../interfaces/IBarrier";
 import BarrierForm from "../../components/BarrierForm/BarrierForm";
 import BarriersPanel from "../../components/BarriersPanel/BarriersPanel";
-import {
-  IFormFieldTextValue,
-  IFormFieldValue,
-} from "../../interfaces/IFieldInterfaces";
+import { IFormFieldTextValue } from "../../interfaces/IFieldInterfaces";
 import { IFilledBarrier } from "../../interfaces/IFilledBarrier";
 import { BarrierFieldTypes } from "../../enums/BarrierTypes";
 import { IInspection } from "../../interfaces/IInspection";
 import AddBarrierButton from "../../components/AddBarrierButton/AddBarrierButton";
-import { IFulfillment } from "../../interfaces/IFulfillment";
 import { FilledQuestionTypes } from "../../enums/FilledQuestionTypes";
 import { IQuestion } from "../../interfaces/IQuestion";
 import { IFilledQuestions } from "../../interfaces/IFilledQuestions";
-import { IconWarning } from "@consta/icons/IconWarning";
-import { InspectionFormTypes } from "../../enums/InspectionFormTypes";
 import { RoutesTypes } from "../../enums/RoutesTypes";
-import { SubGroupsActionsTypes } from "../../enums/SubGroupsTypes";
 import LoaderPage from "../../components/LoaderPage/LoaderPage";
-import NothingFound from "../../components/NothingFound/NothingFound";
 
 interface IBarriersPage {}
 

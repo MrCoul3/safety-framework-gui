@@ -1,16 +1,11 @@
 import { AppStore } from "./AppStore";
 import { makeAutoObservable, toJS } from "mobx";
 import { IPassport } from "../interfaces/IPassport";
-import {
-  instance,
-  localDevInstance,
-  violationsInstance,
-} from "../api/endpoints";
+import { instance, violationsInstance } from "../api/endpoints";
 import { IViolation } from "../interfaces/IViolation";
 import { getViolationFilters } from "../constants/filters";
 import { IInspection } from "../interfaces/IInspection";
 import { ISendKarkasConfirmed } from "../interfaces/ISendKarkasConfirmed";
-import { Axios } from "axios";
 
 export class EliminationOfViolationsStore {
   private store: AppStore;

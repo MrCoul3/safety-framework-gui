@@ -1,9 +1,6 @@
 import React from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
-import { Button } from "@consta/uikit/Button";
-import { IconRemove } from "@consta/icons/IconRemove";
-import { IconAdd } from "@consta/icons/IconAdd";
 import { Badge } from "@consta/uikit/Badge";
 interface ICounter {
   length?: string;

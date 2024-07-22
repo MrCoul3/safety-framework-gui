@@ -1,8 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect } from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
 import {
-  FREE_FORM_COMMON_FIELDS, FREE_FORM_NOT_REQUIRED_FIELDS,
+  FREE_FORM_COMMON_FIELDS,
+  FREE_FORM_NOT_REQUIRED_FIELDS,
   FreeFormFieldTypes,
 } from "../../enums/FreeFormTypes";
 import InspectionTextField from "../InspectionTextField/InspectionTextField";
@@ -59,7 +60,6 @@ const FreeForm = observer((props: IFreeFormProps) => {
   }, []);
 
   const requiredConditions = (field: FreeFormFieldTypes) => {
-
     if (field === FreeFormFieldTypes.Violation && props.isOtherCondition) {
       return false;
     }
@@ -69,12 +69,12 @@ const FreeForm = observer((props: IFreeFormProps) => {
 
   const getStatus = (type: FreeFormFieldTypes) => {
     if (props.formFieldsValues) {
-       if (!FREE_FORM_NOT_REQUIRED_FIELDS.includes(type)) {
-         const condition = props.formFieldsValues[type];
-         if (!condition) {
-           return "alert";
-         }
-       }
+      if (!FREE_FORM_NOT_REQUIRED_FIELDS.includes(type)) {
+        const condition = props.formFieldsValues[type];
+        if (!condition) {
+          return "alert";
+        }
+      }
     }
     return "success";
   };

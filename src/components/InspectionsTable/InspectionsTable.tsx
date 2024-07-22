@@ -1,14 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
-import {
-  SortByProps,
-  Table,
-  TableColumn,
-  TableFilters,
-  TableNumberFilter,
-  TableTextFilter,
-} from "@consta/uikit/Table";
+import { SortByProps, Table, TableColumn } from "@consta/uikit/Table";
 import { IInspection } from "../../interfaces/IInspection";
 import { useTranslation } from "react-i18next";
 import { Pagination } from "@consta/uikit/Pagination";
@@ -27,21 +20,15 @@ import CustomFilter from "../CustomFilter/CustomFilter";
 import { INSPECTIONS_ON_PAGE } from "../../constants/config";
 import { SubGroupsActionsTypes } from "../../enums/SubGroupsTypes";
 import { useLocation } from "react-router";
-import { toJS } from "mobx";
 import { IInspectionFilters } from "../../interfaces/IInspectionFilters";
 import FilterTags from "../FilterTags/FilterTags";
 import {
   IFieldsData,
   IFilterDateRangeFieldValue,
   IFilterFieldValue,
-  IFormDateFieldValue,
 } from "../../interfaces/IFieldInterfaces";
-import { ISortByParams } from "../../interfaces/ISortByParams";
-import LoaderPage from "../LoaderPage/LoaderPage";
-import { ResponsesNothingFound } from "@consta/uikit/ResponsesNothingFound";
 import { LoaderType } from "../../interfaces/LoaderType";
 import { useStore } from "../../hooks/useStore";
-import NothingFound from "../NothingFound/NothingFound";
 
 interface IInspectionsTable {
   inspections: IInspection[];

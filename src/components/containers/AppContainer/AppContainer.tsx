@@ -19,7 +19,6 @@ import { Responses403 } from "@consta/uikit/Responses403";
 import style from "./style.module.css";
 import { Responses500 } from "@consta/uikit/Responses500";
 import { Responses503 } from "@consta/uikit/Responses503";
-import { isDevelop } from "../../../constants/config";
 import LoaderPage from "../../LoaderPage/LoaderPage";
 import EliminationOfViolationsPage from "../../../pages/EliminationOfViolationsPage";
 import DashboardPage from "../../../pages/DashboardPage";

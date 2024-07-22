@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
 import { Card } from "@consta/uikit/Card";
@@ -8,16 +8,8 @@ import { TextField } from "@consta/uikit/TextField";
 import { Button } from "@consta/uikit/Button";
 import { Text } from "@consta/uikit/Text";
 import { IconAttach } from "@consta/icons/IconAttach";
-import { IconRevert } from "@consta/icons/IconRevert";
-import { IconAlert } from "@consta/icons/IconAlert";
-import { IconAdd } from "@consta/icons/IconAdd";
-import { IconPhoto } from "@consta/icons/IconPhoto";
-import {
-  DragNDropFieldInformer,
-  DragNDropFieldInformerPropStatus,
-  getErrorsList,
-} from "@consta/uikit/DragNDropFieldCanary";
-import { DragNDropField, FileRejection } from "@consta/uikit/DragNDropField";
+import { DragNDropFieldInformerPropStatus } from "@consta/uikit/DragNDropFieldCanary";
+import { DragNDropField } from "@consta/uikit/DragNDropField";
 import { ISendKarkasConfirmed } from "../../interfaces/ISendKarkasConfirmed";
 import classNames from "classnames";
 
@@ -73,7 +65,9 @@ const ViolationCheckForm = observer((props: IViolationCheckForm) => {
 
   switch (status) {
     case "default":
-      text = filesDropped ? `${t("loadedFile")} ${filesDropped?.name} (${filesSize}Мб)` : "";
+      text = filesDropped
+        ? `${t("loadedFile")} ${filesDropped?.name} (${filesSize}Мб)`
+        : "";
       break;
   }
 

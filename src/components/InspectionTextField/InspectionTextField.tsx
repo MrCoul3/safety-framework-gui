@@ -9,7 +9,6 @@ import { Combobox } from "@consta/uikit/Combobox";
 import { useFlag } from "@consta/uikit/useFlag";
 import { useTranslation } from "react-i18next";
 import { PropStatus } from "@consta/uikit/__internal__/src/components/SelectComponents/types";
-import { toJS } from "mobx";
 import { ELEMENTS_ON_FIELD } from "../../constants/config";
 import { useDebounce } from "@consta/uikit/useDebounce";
 import {
@@ -17,11 +16,8 @@ import {
   IFormFieldValue,
   Item,
 } from "../../interfaces/IFieldInterfaces";
-import { FreeFormFieldTypes, FreeFormTypes } from "../../enums/FreeFormTypes";
-import {
-  ViolationFilterTypes,
-  violationsDictionaryOfConformity,
-} from "../../enums/ViolationFilterTypes";
+import { FreeFormFieldTypes } from "../../enums/FreeFormTypes";
+import { ViolationFilterTypes } from "../../enums/ViolationFilterTypes";
 import classNames from "classnames";
 
 interface IFieldInspectionType {
@@ -172,11 +168,7 @@ const InspectionTextField = observer((props: IFieldInspectionType) => {
 
   return (
     <Combobox
-      caption={
-        props.status === "alert"
-          ? t("requiredHint")
-          : ""
-      }
+      caption={props.status === "alert" ? t("requiredHint") : ""}
       isLoading={isLoading}
       ref={combobox}
       dropdownOpen={open}

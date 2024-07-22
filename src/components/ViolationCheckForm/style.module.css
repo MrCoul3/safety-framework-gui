@@ -13,9 +13,8 @@
   gap: 10px;
 }
 .successLoaded {
-  border-color: var(--successGreen)!important;
+  border-color: var(--successGreen) !important;
   background-color: rgba(78, 232, 104, 0.03) !important;
-
 }
 .title {
   font-size: 14px;

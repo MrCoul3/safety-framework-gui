@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
 import { useTranslation } from "react-i18next";
@@ -13,11 +13,6 @@ import { DatePicker } from "@consta/uikit/DatePicker";
 import { IconCalendar } from "@consta/icons/IconCalendar";
 import moment from "moment";
 import { IInapplicableReasons } from "../../interfaces/IInapplicableReasons";
-import {
-  BarrierExtraFieldTypes,
-  BarrierFieldTypes,
-} from "../../enums/BarrierTypes";
-import { PropStatus } from "@consta/uikit/__internal__/src/components/SelectComponents/types";
 
 interface IQuestionCard {
   title: string;

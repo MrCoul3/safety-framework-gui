@@ -8,8 +8,7 @@
   align-items: center;
   width: 100%;
   gap: 32px;
-  height: var(--subHeaderHeight)
-
+  height: var(--subHeaderHeight);
 }
 
 .title {
@@ -22,11 +21,11 @@
 
 .autocomplete {
   max-width: 740px;
-  min-height: 40px!important;
+  min-height: 40px !important;
 }
 .textField {
-  font-size: 14px!important;
-  min-height: 24px!important;
+  font-size: 14px !important;
+  min-height: 24px !important;
 }
 .flexRow {
   display: flex;
