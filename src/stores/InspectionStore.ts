@@ -16,7 +16,11 @@ import {
 import moment from "moment/moment";
 import { IInspection } from "../interfaces/IInspection";
 import { joinObjectValues } from "../utils/joinObjectValues";
-import { expandFilter, getCrossFilter } from "../constants/filters";
+import {
+  expandFilter,
+  getCrossFilter,
+  getCrossFilterInspectionForm,
+} from "../constants/filters";
 import {
   IFieldsData,
   IFilterDateRangeFieldValue,
@@ -36,8 +40,13 @@ import { RoutesTypes } from "../enums/RoutesTypes";
 import { filterByRequiredFields } from "../utils/filterByRequiredFields";
 import { ViolationFilterTypes } from "../enums/ViolationFilterTypes";
 import { IFilledBarrier } from "../interfaces/IFilledBarrier";
-import i18next from "i18next";
 import { IViolation } from "../interfaces/IViolation";
+import {
+  firstCaseOfIncludedFunctionTitles,
+  includedFunctionTitlesForContractorStruct,
+  secondCaseAOfIncludedFunctionTitles,
+  secondCaseBOfIncludedFunctionTitles,
+} from "../constants/constants";
 
 export class InspectionStore {
   private store: AppStore;
@@ -61,7 +70,6 @@ export class InspectionStore {
   }
   setSearchFieldValue(value: string | null) {
     this.searchFieldValue = value;
-    console.log("this.searchFieldValue", this.searchFieldValue);
   }
   formFieldsValues: IInspection | IViolation | {} = {};
 
@@ -110,6 +118,22 @@ export class InspectionStore {
     }
   }
 
+  crossFilter: string | null = null;
+  crossFilterForInspectionForm: string | null = null;
+
+  setCrossFilter(index: number, type: FreeFormFieldTypes) {
+    this.crossFilter = getCrossFilter(
+      this.store.freeFormStore.filledFreeForms[index],
+      type as FreeFormFieldTypes,
+    );
+  }
+  setCrossFilterInspectionForm(type: InspectionFormTypes) {
+    this.crossFilterForInspectionForm = getCrossFilterInspectionForm(
+      this.formFieldsValues as IInspection,
+      type,
+    );
+  }
+
   async getFieldData(
     type:
       | InspectionFormTypes
@@ -125,11 +149,17 @@ export class InspectionStore {
 
     let itemValue = item.title;
 
+    let crossFilter = "";
+
     if (INSPECTION_FORM_COMMON_FIELDS.includes(type as InspectionFormTypes)) {
       requestType = inspectionFieldsDictNames[type as InspectionFormTypes];
+      crossFilter = this.crossFilterForInspectionForm
+        ? this.crossFilterForInspectionForm
+        : "";
     }
     if (FREE_FORM_COMMON_FIELDS.includes(type as FreeFormFieldTypes)) {
       requestType = freeFormDictNames[type as FreeFormFieldTypes];
+      crossFilter = this.crossFilter ? this.crossFilter : "";
     }
     if (EMPLOYEES.includes(type as InspectionFormTypes)) {
       requestType = employeesEndpoint;
@@ -140,16 +170,27 @@ export class InspectionStore {
       ? `$filter=contains(${itemValue},'${searchFieldValue}')`
       : "";
 
-    let crossFilter = getCrossFilter(
-      this.store.freeFormStore.filledFreeForms,
+    if (
+      [FreeFormFieldTypes.Nmd, FreeFormFieldTypes.NmdRule].includes(
         type as FreeFormFieldTypes,
-    );
+      )
+    ) {
+      searchFilter = searchFieldValue
+        ? `$filter=contains(concat(RuleNumber, title),'${searchFieldValue}')`
+        : "";
+    }
 
     let offset = searchFieldValue
       ? ""
       : `&$skip=${this.offset}&$top=${ELEMENTS_ON_FIELD}`;
 
     const countFilter = this.searchFieldValue ? "" : `&$count=true`;
+
+    console.log("getFieldData searchFilter", searchFilter);
+    console.log("getFieldData type", type);
+    console.log("getFieldData crossFilter", crossFilter);
+    console.log("getFieldData offset", offset);
+    console.log("getFieldData countFilter", countFilter);
 
     try {
       const response = await instance.get(
@@ -207,9 +248,7 @@ export class InspectionStore {
   }
   clearFieldsData() {
     this.fieldsData = [];
-    console.log("this.fieldsData", toJS(this.fieldsData));
   }
-
   setFormFieldsValues(value: IInspection) {
     this.formFieldsValues = value;
     console.debug("formFieldsValues: ", toJS(this.formFieldsValues));
@@ -265,15 +304,12 @@ export class InspectionStore {
   offset: number = 0;
   setOffset(value: number) {
     this.offset = value;
-    console.log("field offset", this.offset);
   }
   increaseOffset() {
     this.offset = this.offset + ELEMENTS_ON_FIELD;
-    console.log("field offset", this.offset);
   }
   clearOffset() {
     this.offset = 0;
-    console.log("field offset", this.offset);
   }
 
   async getInspectionDev(editInspectionId: string) {
@@ -357,6 +393,57 @@ export class InspectionStore {
     );
   }
 
+  extraRequiredConditions(formFieldsValues: { [key: string]: any }) {
+    console.log(
+      "extraRequiredConditions formFieldsValues",
+      toJS(formFieldsValues),
+    );
+    const functionTitle = (formFieldsValues as IInspection)?.[
+      InspectionFormTypes.Function
+    ]?.title;
+    const supervisorTitle = (formFieldsValues as IInspection)?.[
+      InspectionFormTypes.Supervisor
+    ]?.personFio;
+    const contractorStructTitle = (formFieldsValues as IInspection)?.[
+      InspectionFormTypes.ContractorStruct
+    ]?.title;
+    const contractorTitle = (formFieldsValues as IInspection)?.[
+      InspectionFormTypes.Contractor
+    ]?.title;
+
+    const result = [];
+
+    if (
+      functionTitle &&
+      firstCaseOfIncludedFunctionTitles.includes(functionTitle)
+    ) {
+      result.push(!!contractorStructTitle);
+      result.push(!!supervisorTitle);
+      result.push(!!contractorTitle);
+    }
+    if (
+      functionTitle &&
+      secondCaseAOfIncludedFunctionTitles.includes(functionTitle)
+    ) {
+      result.push(!!contractorTitle);
+    }
+    if (
+      functionTitle &&
+      secondCaseBOfIncludedFunctionTitles.includes(functionTitle) &&
+      contractorTitle
+    ) {
+      result.push(!!contractorStructTitle);
+    }
+    console.log("extraRequiredConditions result", result);
+    /*if (
+      functionTitle &&
+      includedFunctionTitlesForSupervisor.includes(functionTitle)
+    ) {
+      result.push(!!supervisorTitle)
+    }*/
+    return result.every((val) => val);
+  }
+
   checkIsFormSuccess(inspection?: IInspection) {
     const formFieldsValues: { [key: string]: any } = inspection
       ? inspection
@@ -368,7 +455,9 @@ export class InspectionStore {
     return (
       filtered.every((value) => {
         return Object.values(value ?? {})[0];
-      }) && filtered.length === INSPECTION_FORM_REQUIRED_FIELDS.length
+      }) &&
+      filtered.length === INSPECTION_FORM_REQUIRED_FIELDS.length &&
+      this.extraRequiredConditions(formFieldsValues)
     );
   }
 
@@ -455,11 +544,13 @@ export class InspectionStore {
     }
   }
 
-  handleOpenField(type: InspectionFormTypes) {
+  handleOpenField(type: InspectionFormTypes | FreeFormFieldTypes) {
     if (isDevelop) {
+      this.setCrossFilterInspectionForm(type as InspectionFormTypes);
       this.getFieldDataDev(type);
       this.getFieldData(type);
     } else {
+      this.setCrossFilterInspectionForm(type as InspectionFormTypes);
       this.getFieldData(type);
     }
   }

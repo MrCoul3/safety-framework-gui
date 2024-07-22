@@ -1,6 +1,8 @@
 {
   "name": "safety-framework-gui",
-  "version": "0.1.0",
+  "version": "1.0.0",
+  "author": "Nikolay Ivanov <mr.coul@inbox.ru>",
+  "repository": "https://github.com/MrCoul3/safety-framework-gui",
   "private": true,
   "dependencies": {
     "@consta/header": "^3.0.0",

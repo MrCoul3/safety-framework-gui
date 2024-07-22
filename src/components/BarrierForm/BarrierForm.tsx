@@ -106,15 +106,6 @@ const BarrierForm = observer((props: IBarrierForm) => {
   );
 
   useEffect(() => {
-    console.log("handleExtraFieldsChange vehicleFieldValue", vehicleFieldValue);
-    console.log(
-      "handleExtraFieldsChange driverFioFieldValue",
-      driverFioFieldValue,
-    );
-    console.log(
-      "handleExtraFieldsChange licencePlateFieldValue",
-      licencePlateFieldValue,
-    );
     if (
       vehicleFieldValue !== null &&
       licencePlateFieldValue !== null &&
@@ -135,7 +126,10 @@ const BarrierForm = observer((props: IBarrierForm) => {
 
   const getStatus = (type: BarrierFieldTypes | BarrierExtraFieldTypes) => {
     if (props.formFields) {
-      const condition = props.formFields[type];
+      const condition =
+        type === BarrierFieldTypes.Mub
+          ? props.formFields[type] && props.formFields[type].length > 5
+          : props.formFields[type];
       if (!condition) {
         return "alert";
       }
@@ -164,7 +158,7 @@ const BarrierForm = observer((props: IBarrierForm) => {
   const [isDelModalOpen, setIsDelModalOpen] = React.useState(false);
 
   const renderMubFields = () => {
-    if (props.isExtraFieldsCondition) {
+    if (props.barrier.mubTypeId === 2) {
       return BARRIER_EXTRA_FIELDS_VALUES.map((extraField) => (
         <InspectionTextArea
           minRows={1}
@@ -183,13 +177,16 @@ const BarrierForm = observer((props: IBarrierForm) => {
           type={extraField}
           value={getExtraFieldValue(extraField)}
           status={
-            props.isValidate ? (getStatus(extraField) as PropStatus) : undefined
+            props.isValidate
+              ? (getStatus(BarrierFieldTypes.Mub) as PropStatus)
+              : undefined
           }
         />
       ));
     } else {
       return (
         <InspectionTextArea
+          caption={t("captionFiveSymbols")}
           minRows={5}
           display={true}
           required={true}
@@ -198,17 +195,16 @@ const BarrierForm = observer((props: IBarrierForm) => {
           handleChange={handleChange}
           type={BarrierFieldTypes.Mub}
           value={getValue(BarrierFieldTypes.Mub)}
-          status={
-            props.isValidate
-              ? (getStatus(BarrierFieldTypes.Mub) as PropStatus)
-              : undefined
-          }
+          status={getStatus(BarrierFieldTypes.Mub) as PropStatus}
         />
       );
     }
   };
 
-  const handleFulfillmentChange = (value: IFilledQuestions, requirementId: number) => {
+  const handleFulfillmentChange = (
+    value: IFilledQuestions,
+    requirementId: number,
+  ) => {
     console.log("QuestionCard handleChange", toJS(value));
     props.handleFulfillmentChange(value, requirementId);
     setSavingState(true);
@@ -226,12 +222,10 @@ const BarrierForm = observer((props: IBarrierForm) => {
   };
 
   const getFilledQuestion = (question: IQuestion) => {
-    console.log("getFilledQuestion question.id", toJS(question.id));
     const filledQuestions = getQuestions();
     const filledQuestion = filledQuestions?.find(
       (fillQuest) => fillQuest[FilledQuestionTypes.QuestionId] === question.id,
     );
-    console.log("getFilledQuestion filledQuestion", toJS(filledQuestion));
     return filledQuestion;
   };
 
@@ -288,7 +282,7 @@ const BarrierForm = observer((props: IBarrierForm) => {
       <ConfirmDialog
         cancelActionLabel={t("cancel")}
         confirmActionLabel={t("delete")}
-        title={t("dialogDeleteFreeForm")}
+        title={t("dialogDeleteBarrier")}
         action={() => props.handleDelete?.()}
         onClose={() => setIsDelModalOpen(false)}
         open={isDelModalOpen}

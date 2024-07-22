@@ -5,4 +5,5 @@ export enum RoutesTypes {
     Passports = 'passports',
     Barriers = 'barriers',
     FreeForm = 'freeForm',
+    DashBoard = 'dashboard',
 }

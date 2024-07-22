@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { useState } from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
 import { Card } from "@consta/uikit/Card";
@@ -6,25 +6,18 @@ import {
   ViolationFilterTypes,
   violationsDictionaryOfConformity,
 } from "../../enums/ViolationFilterTypes";
-import InspectionDataField from "../InspectionDataField/InspectionDataField";
 import {
   IFieldsData,
   IFilterDateRangeFieldValue,
-  IFormDateFieldValue,
   IFormFieldValue,
-  Item,
 } from "../../interfaces/IFieldInterfaces";
-import { InspectionFormTypes } from "../../enums/InspectionFormTypes";
-import moment from "moment";
 import InspectionTextField from "../InspectionTextField/InspectionTextField";
-import { toJS } from "mobx";
 import { IInspection } from "../../interfaces/IInspection";
 import { DatePicker } from "@consta/uikit/DatePicker";
 import { IconCalendar } from "@consta/icons/IconCalendar";
 import { useTranslation } from "react-i18next";
 import { IEntity } from "../../interfaces/IEntity";
 import { Checkbox } from "@consta/uikit/Checkbox";
-import { SubGroupsActionsTypes } from "../../enums/SubGroupsTypes";
 import { Button } from "@consta/uikit/Button";
 import { IViolation } from "../../interfaces/IViolation";
 
@@ -41,12 +34,11 @@ interface IFilterPanel {
   handleOpenField(type: ViolationFilterTypes): void;
   formFieldsValues: IInspection | null;
   fieldsData: IFieldsData[];
-
   isSubmitAvailable?: boolean;
 }
 
 const FilterPanel = observer((props: IFilterPanel) => {
-  const { t } = useTranslation("dict");
+  const { t } = useTranslation("violationsDict");
 
   const fields = [
     ViolationFilterTypes.TypeList,
@@ -54,11 +46,8 @@ const FilterPanel = observer((props: IFilterPanel) => {
     ViolationFilterTypes.Oilfields,
     ViolationFilterTypes.Struct,
     ViolationFilterTypes.Obj,
+    ViolationFilterTypes.WillResolveBy,
   ];
-
-  useEffect(() => {
-    console.log("FilterPanel props.fieldsData", toJS(props.fieldsData));
-  }, [props.fieldsData]);
 
   const getViolationsDictionaryOfConformity = (type: ViolationFilterTypes) => {
     if (type !== ViolationFilterTypes.Date) {
@@ -136,7 +125,8 @@ const FilterPanel = observer((props: IFilterPanel) => {
       </div>
 
       <div className={style.controlButtonGroup}>
-        <Button disabled={!Object.values(props.formFieldsValues ?? {}).length}
+        <Button
+          disabled={!Object.values(props.formFieldsValues ?? {}).length}
           onClick={props.resetFilters}
           iconSize="s"
           view="secondary"

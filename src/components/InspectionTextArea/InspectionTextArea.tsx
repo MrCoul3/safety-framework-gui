@@ -2,11 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
 import { TextField } from "@consta/uikit/TextField";
-import {
-  IFormFieldTextValue,
-  IFormFieldValue,
-  Item,
-} from "../../interfaces/IFieldInterfaces";
+import { IFormFieldTextValue } from "../../interfaces/IFieldInterfaces";
 import { InspectionFormTypes } from "../../enums/InspectionFormTypes";
 import { FreeFormFieldTypes } from "../../enums/FreeFormTypes";
 import { PropStatus } from "@consta/uikit/__internal__/src/components/SelectComponents/types";

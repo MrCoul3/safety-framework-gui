@@ -1,11 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
-import { SubGroupsTypes } from "enums/SubGroupsTypes";
 import { Button } from "@consta/uikit/Button";
 import { IconAdd } from "@consta/icons/IconAdd";
 import { useTranslation } from "react-i18next";
-import { Combobox } from "@consta/uikit/Combobox";
 
 interface ISubHeader {
   handleAddInspection(): void;

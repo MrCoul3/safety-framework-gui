@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
 import { useStore } from "../hooks/useStore";
 import PassportElement from "../components/PassportElement/PassportElement";
@@ -21,9 +21,15 @@ const PassportsPage = observer((props: IPassportsPage) => {
 
   let { editInspectionId } = useParams();
 
+  const { passportId } = useParams();
+
   const store = useStore();
 
   const navigate = useNavigate();
+
+  const [isFormsValidForSending] = useState(
+    store.barriersStore.checkIsBarrierFormSuccess(),
+  );
 
   const loadInspection = async () => {
     console.log("PassportsPage loadInspection");
@@ -150,10 +156,35 @@ const PassportsPage = observer((props: IPassportsPage) => {
     return filledBarriersByPassId?.length ? filledBarriersByPassId.length : 0;
   };
 
+  const handleSendInspection = async () => {
+    const isValid = store.barriersStore.checkIsBarrierFormSuccess();
+    store.inspectionStore.setIsValidate(true);
+    if (isValid) {
+      const result = await store.inspectionStore.sendInspection();
+      if (result) {
+        if (editInspectionId)
+          store.inspectionStore.deleteInspectionFromLocalStorage(
+            +editInspectionId - 1,
+          );
+        navigate(-1);
+        store.snackBarStore.successSnackBar(t("snackBarSuccessSend"));
+      } else {
+        store.snackBarStore.alertSnackBar(t("snackBarErrorSend"));
+      }
+    }
+  };
+
   return (
     <Layout
       navPanel={
         <NavPanel
+          sendButton={
+            <Button
+              disabled={!isFormsValidForSending}
+              onClick={handleSendInspection}
+              label={t("sendInspection")}
+            />
+          }
           actions={
             <Button
               onClick={() => navigate(-1)}

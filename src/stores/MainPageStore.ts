@@ -9,6 +9,7 @@ import { IconMail } from "@consta/icons/IconMail";
 import { IconDocFilled } from "@consta/icons/IconDocFilled";
 import { IconStorage } from "@consta/icons/IconStorage";
 import { IconHelmet } from "@consta/icons/IconHelmet";
+import { IconLineAndBarChart } from "@consta/icons/IconLineAndBarChart";
 import { ISubGroupState } from "../interfaces/ISubGroupState";
 import {
   INSPECTIONS_ON_PAGE,
@@ -98,6 +99,15 @@ export class MainPageStore {
         {
           label: SubGroupsActionsTypes.BarriersApps,
           icon: IconDocFilled,
+        },
+      ],
+    },
+    {
+      name: SubGroupsTypes.DashBoard,
+      actions: [
+        {
+          label: SubGroupsActionsTypes.DashBoard,
+          icon: IconLineAndBarChart,
         },
       ],
     },
@@ -281,13 +291,8 @@ export class MainPageStore {
 
       if (filledBarriers.length) {
         return (
-          filledBarriers.every(
-            (bar) =>
-              bar[BarrierFieldTypes.Mub] &&
-              bar[BarrierFieldTypes.Mub]?.trim() !== "" &&
-              this.store.barriersStore.checkComment(bar) &&
-              this.store.barriersStore.checkFilledQuestions(bar)
-
+          filledBarriers.every((bar) =>
+            this.store.barriersStore.getConditions(bar),
           ) && this.store.inspectionStore.checkIsFormSuccess(inspection)
         );
       }

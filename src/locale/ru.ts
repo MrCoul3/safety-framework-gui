@@ -45,6 +45,8 @@ export const ru = {
     back: "Назад",
     forward: "Вперёд",
 
+    captionFiveSymbols: "Не менее 5 символов",
+
     auth: "Авторизация",
     // breadcrumbs
     mainPage: "Главная",
@@ -78,6 +80,7 @@ export const ru = {
     [SubGroupsTypes.Information]: "Информация",
     [SubGroupsActionsTypes.BarriersCarts]: "Корзины барьеров",
     [SubGroupsActionsTypes.BarriersApps]: "Приложения к барьерам",
+    [SubGroupsActionsTypes.DashBoard]: "Каркас безопасности",
 
     [InspectionStatusesTypes.Success]: "Успешно отправлено",
     [InspectionStatusesTypes.Error]: "Ошибка отправки",
@@ -142,14 +145,7 @@ export const ru = {
 
     freeForm: "Свободная форма",
 
-    [ViolationFilterTypes.Date]: "Дата",
-    [ViolationFilterTypes.TypeList]: "Тип чек-листа",
-    [ViolationFilterTypes.Orgs]: "ДО/ПО",
-    [ViolationFilterTypes.Oilfields]: "Месторождение",
-    [ViolationFilterTypes.Struct]: "Цех",
-    [ViolationFilterTypes.Obj]: "Объект",
-    "comment": "Комментарий к нарушению",
-    "resolveComment": "Комментарий к устранению",
+
 
     checkForm: "Форма проверки",
 
@@ -248,6 +244,7 @@ export const ru = {
 
     dialogClearFields: "Очистить все заполненные поля?",
     dialogDeleteFreeForm: "Удалить свободную форму?",
+    dialogDeleteBarrier: "Вы действительно хотите удалить барьер?",
     dialogDeleteNewInspection: "Удалить неотправленную инспекцию?",
     dialogDeleteSentInspection: "Удалить отправленную инспекцию?",
     dialogGoToMain:
@@ -263,25 +260,36 @@ export const ru = {
 
     barriersSelect: "Выбрано барьеров",
 
-    hideFixedViolations: "Скрыть устраненные нарушения",
     loadedFile: "Загруженный файл: ",
     file: "Файл",
-    successLoaded: "успешно загружен"
+    successLoaded: "успешно загружен",
+
+    requiredHint: "Чтобы продолжить необходимо заполнить это поле",
+
   },
   violationsDict: {
-    passport: "Тип чек-листа",
-    contractor: "ДО/ПО",
+    passport: "Паспорт КБ",
+    contractor: "Наименование ПО",
     oilfield: "Месторождение",
-    doStruct: "Цех",
-    doObject: "Объект",
+    doStruct: "Структурное подразделение ДО",
+    doObject: "Объект ДО",
     [InspectionFormTypes.AuditDate]: "Дата проверки",
-    question: "Предмет проверки",
+    question: "Вопрос барьера",
     [InspectionFormTypes.Auditor]: "Проверяющий",
     [InspectionFormTypes.Auditee]: "Проверяемый",
     app: "Приложение",
 
+    [ViolationFilterTypes.Date]: "Дата проверки",
+    [ViolationFilterTypes.TypeList]: "Паспорт КБ",
+    [ViolationFilterTypes.Orgs]: "Наименование ПО",
+    [ViolationFilterTypes.Oilfields]: "Месторождение",
+    [ViolationFilterTypes.Struct]: "Структурное подразделение ДО",
+    [ViolationFilterTypes.Obj]: "Объект ДО",
+    [InspectionFormTypes.InspectionType]: "Тип проверки",
+
     passportPlaceholder: "Выберите тип чек-листа",
     contractorPlaceholder: "Выберите ДО/ПО",
+    willResolveByPlaceholder: "Выберите устраняющего",
     oilfieldPlaceholder: "Выберите месторождение",
     doStructPlaceholder: "Выберите цех",
     doObjectPlaceholder: "Выберите объект",
@@ -289,6 +297,14 @@ export const ru = {
     snackBarErrorEliminated: "Ошибка запроса",
     violationsEmptyDescription:
       "Задайте данные для поиска, чтобы посмотреть необходимые нарушения",
-
+    hideFixedViolations: "Скрыть устраненные нарушения",
+    reset: "Сбросить",
+    apply: "Применить",
+    comment: "Комментарий к нарушению",
+    resolveComment: "Комментарий к устранению",
+    noFilled: "Не заполнено",
+    checkVerifyDate: "Дата выполнения проверки",
+    checkDetails: "Детали проверки",
+    willResolveBy: "Устраняющий",
   },
 };

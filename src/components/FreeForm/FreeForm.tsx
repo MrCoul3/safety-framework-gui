@@ -1,8 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect } from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
 import {
   FREE_FORM_COMMON_FIELDS,
+  FREE_FORM_NOT_REQUIRED_FIELDS,
   FreeFormFieldTypes,
 } from "../../enums/FreeFormTypes";
 import InspectionTextField from "../InspectionTextField/InspectionTextField";
@@ -29,7 +30,7 @@ interface IFreeFormProps {
   handleChange(value: IFormFieldValue | IFormFieldTextValue): void;
   handleClearForm?(): void;
 
-  handleOpenField(type: InspectionFormTypes): void;
+  handleOpenField(type: InspectionFormTypes | FreeFormFieldTypes): void;
 
   onInit?(): void;
 
@@ -46,7 +47,7 @@ interface IFreeFormProps {
   formFieldsValuesLength?: boolean;
   isOtherCondition?: boolean;
 
-  savingState?: boolean
+  savingState?: boolean;
 }
 
 const FreeForm = observer((props: IFreeFormProps) => {
@@ -58,22 +59,21 @@ const FreeForm = observer((props: IFreeFormProps) => {
     props.onInit?.();
   }, []);
 
-
   const requiredConditions = (field: FreeFormFieldTypes) => {
-    const notReqFields = [""];
-
     if (field === FreeFormFieldTypes.Violation && props.isOtherCondition) {
       return false;
     }
 
-    return !notReqFields.includes(field);
+    return !FREE_FORM_NOT_REQUIRED_FIELDS.includes(field);
   };
 
   const getStatus = (type: FreeFormFieldTypes) => {
     if (props.formFieldsValues) {
-      const condition = props.formFieldsValues[type];
-      if (!condition) {
-        return "alert";
+      if (!FREE_FORM_NOT_REQUIRED_FIELDS.includes(type)) {
+        const condition = props.formFieldsValues[type];
+        if (!condition) {
+          return "alert";
+        }
       }
     }
     return "success";
@@ -115,14 +115,9 @@ const FreeForm = observer((props: IFreeFormProps) => {
   };
 
   const handleChange = (value: IFormFieldValue | IFormFieldTextValue) => {
-    console.log("handleChange", value);
     props.handleChange(value);
     props.setSavingState?.(true);
   };
-
-  useEffect(() => {
-    console.log("props.isValidate", props.isValidate);
-  }, [props.isValidate]);
 
   return (
     <div className={style.FreeForm}>

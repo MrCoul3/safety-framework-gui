@@ -1,35 +1,32 @@
-
 .simpleSearch {
-    display: flex;
-    position: relative;
-    width: 260px;
-    height: 40px;
+  display: flex;
+  position: relative;
+  width: 260px;
+  height: 40px;
 }
 
 .input {
-    background-color: white;
-    border-radius: 8px;
-    font-size: 14px!important;
-    color: gray;
-    width: 100%;
+  background-color: white;
+  border-radius: 8px;
+  font-size: 14px !important;
+  color: gray;
+  width: 100%;
 }
 
 .root:before {
-    border: none !important;
+  border: none !important;
 }
-
 
 .searchIcon {
-    z-index: 100;
-    padding-left: 5px;
-    top: 8px;
-    left: 30px;
-    position: absolute;
+  z-index: 100;
+  padding-left: 5px;
+  top: 8px;
+  left: 30px;
+  position: absolute;
 }
 .closeIcon {
-    z-index: 100;
-    position: absolute;
-    /*position: absolute;*/
-    right: 0;
+  z-index: 100;
+  position: absolute;
+  /*position: absolute;*/
+  right: 0;
 }
-

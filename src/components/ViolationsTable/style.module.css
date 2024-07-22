@@ -7,8 +7,6 @@
   box-sizing: border-box;
 }
 .doubleScreen {
-  /*grid-template-rows: repeat(2, 1fr);*/
-  /*display: grid;*/
   display: flex;
   flex-direction: column;
 }

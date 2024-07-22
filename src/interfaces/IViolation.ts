@@ -23,4 +23,5 @@ export interface IViolation {
   resolvedBy: string | null;
   resolvedOn: string | null;
   resolveFileUrl: string | null;
+  willResolveBy: string | null;
 }

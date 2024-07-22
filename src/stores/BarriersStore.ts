@@ -4,7 +4,9 @@ import { instance, localDevInstance } from "../api/endpoints";
 import { IBarrier } from "../interfaces/IBarrier";
 import { IFilledBarrier } from "../interfaces/IFilledBarrier";
 import { IFormFieldTextValue } from "../interfaces/IFieldInterfaces";
-import { LOCAL_STORE_INSPECTIONS } from "../constants/config";
+import {
+  LOCAL_STORE_INSPECTIONS,
+} from "../constants/config";
 import { IFulfillment } from "../interfaces/IFulfillment";
 import { IFilledQuestions } from "../interfaces/IFilledQuestions";
 import { FilledQuestionTypes } from "../enums/FilledQuestionTypes";
@@ -278,14 +280,27 @@ export class BarriersStore {
     }
   }
 
+  /** Валидация барьеров: */
+  isExtraFieldsCondition(passportId?: string) {
+    return passportId === "7" || passportId === "5";
+  }
+
+  getConditions(filledBarrier: IFilledBarrier) {
+    return (
+      filledBarrier[BarrierFieldTypes.Mub] &&
+      filledBarrier[BarrierFieldTypes.Mub]?.trim() !== "" &&
+      filledBarrier[BarrierFieldTypes.Mub]?.trim().length > 5 &&
+      this.checkComments(filledBarrier) &&
+      this.checkFilledQuestions(filledBarrier)
+    );
+  }
+
   checkFilledQuestions(bar: IFilledBarrier) {
     const questions: IFilledQuestions[] = [];
 
     bar.filledRequirements?.forEach((fillReq) =>
       questions.push(...fillReq.filledQuestions),
     );
-    console.log("checkFilledQuestions bar", toJS(bar));
-    console.log("checkFilledQuestions questions", toJS(questions));
 
     const result = questions.every(
       (question) =>
@@ -298,25 +313,12 @@ export class BarriersStore {
           ? question[FilledQuestionTypes.InapplicableReasonId]
           : true),
     );
-    console.log("checkFilledQuestions result", toJS(result));
 
     return result;
   }
-  checkIsBarrierFormSuccess(passportId?: string) {
+  checkIsBarrierFormSuccess() {
     if (this.filledBarriers.length) {
-      console.log(
-        "checkIsBarrierFormSuccess this.filledBarriers",
-        toJS(this.filledBarriers),
-      );
-      return this.filledBarriers.every((bar) => {
-        return (
-          bar[BarrierFieldTypes.Mub] &&
-          bar[BarrierFieldTypes.Mub]?.trim() !== "" &&
-          this.checkFilledQuestions(bar) &&
-          this.checkComment(bar) &&
-          this.checkExtraFields(bar, passportId)
-        );
-      });
+      return this.filledBarriers.every((bar) => this.getConditions(bar));
     }
     return false;
   }
@@ -326,15 +328,7 @@ export class BarriersStore {
     passportId?: string,
   ) {
     if (filledBarriers && filledBarriers.length) {
-      return filledBarriers.every((bar) => {
-        return (
-          bar[BarrierFieldTypes.Mub] &&
-          bar[BarrierFieldTypes.Mub]?.trim() !== "" &&
-          this.checkComment(bar) &&
-          this.checkFilledQuestions(bar) &&
-          this.checkExtraFields(bar, passportId)
-        );
-      });
+      return filledBarriers.every((bar) => this.getConditions(bar));
     }
     return false;
   }
@@ -349,23 +343,7 @@ export class BarriersStore {
       : null;
   }
 
-  isExtraFieldsCondition(passportId?: string) {
-    return passportId === "7" || passportId === "5";
-  }
-
-  checkExtraFields(barrier: IFilledBarrier, passportId?: string) {
-    if (this.isExtraFieldsCondition(passportId)) {
-      const mubValuesArray = barrier?.[BarrierFieldTypes.Mub]?.split(",");
-      return (
-        mubValuesArray.length &&
-        mubValuesArray.length === 3 &&
-        mubValuesArray.every((extraVal) => extraVal && extraVal !== "")
-      );
-    }
-    return true;
-  }
-
-  checkComment(barrier: IFilledBarrier) {
+  checkComments(barrier: IFilledBarrier) {
     return this.getFlatQuestionsFromBarrier(barrier)?.every(
       (q: IFilledQuestions) => {
         if (
@@ -393,27 +371,11 @@ export class BarriersStore {
   ) {
     const filteredFilledBarriers = this.getFoundBarriersById(barrierId);
     if (filteredFilledBarriers.length) {
-      return filteredFilledBarriers.every(
-        (bar) =>
-          bar[BarrierFieldTypes.Mub] &&
-          bar[BarrierFieldTypes.Mub]?.trim() !== "" &&
-          this.checkComment(bar) &&
-          this.checkFilledQuestions(bar) &&
-          this.checkExtraFields(bar, passportId),
-      );
+      return filteredFilledBarriers.every((bar) => this.getConditions(bar));
     }
     return false;
   }
 
-  checkCondition(filledBarrier: IFilledBarrier, passportId?: string) {
-    return (
-      filledBarrier[BarrierFieldTypes.Mub] &&
-      filledBarrier[BarrierFieldTypes.Mub]?.trim() !== "" &&
-      this.checkComment(filledBarrier) &&
-      this.checkExtraFields(filledBarrier, passportId) &&
-      this.checkFilledQuestions(filledBarrier)
-    );
-  }
   checkIsFilledBarrierSuccess(
     barrierId: number,
     barIndex: number,
@@ -421,11 +383,6 @@ export class BarriersStore {
   ) {
     const filteredFilledBarriers = this.getFoundBarriersById(barrierId);
     const filledBarrier = filteredFilledBarriers[barIndex];
-
-    console.log(
-      "checkIsFilledBarrierSuccess filledBarrier",
-      toJS(filledBarrier),
-    );
-    return !!this.checkCondition(filledBarrier, passportId);
+    return !!this.getConditions(filledBarrier);
   }
 }

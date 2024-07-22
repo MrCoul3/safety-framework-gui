@@ -6,6 +6,7 @@ export interface IBarrier {
   passportId: number;
   requiredFrequencyOfChecksInDays: number;
   sortOrder: number;
+  mubTypeId: number,
   isPk: null | boolean;
   countOfCsir: null | number;
   targetPercent: null | number;

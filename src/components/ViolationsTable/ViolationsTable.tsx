@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect } from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
-import { SortByProps, Table, TableColumn } from "@consta/uikit/Table";
+import { Table, TableColumn } from "@consta/uikit/Table";
 import { InspectionFormTypes } from "../../enums/InspectionFormTypes";
 import { VIOLATIONS_COMMON_FIELDS } from "../../enums/ViolationFilterTypes";
 import { IViolation } from "../../interfaces/IViolation";
@@ -9,7 +9,7 @@ import { useTranslation } from "react-i18next";
 import EmptyBoxPage from "../EmptyBoxPage/EmptyBoxPage";
 import { LoaderType } from "../../interfaces/LoaderType";
 import LoaderPage from "../LoaderPage/LoaderPage";
-import { keys, toJS } from "mobx";
+import { toJS } from "mobx";
 import moment from "moment";
 import ViolationDetails from "../VioaltionDetails/ViolationDetails";
 import ViolationCheckForm from "../ViolationCheckForm/ViolationCheckForm";
@@ -29,6 +29,7 @@ interface IRow {
   question: string | null;
   auditor: string | null;
   auditee: string | null;
+  willResolveBy?: string | null;
   [InspectionFormTypes.DoStruct]: string | null;
 }
 
@@ -52,10 +53,12 @@ const ViolationsTable = observer((props: IViolationsTable) => {
         .valueOf()
         .toString(),
       passport: item?.passport,
-      question: item?.question,
+      question: item?.question?.split(" ")[0] ?? null,
       auditor: item?.auditor,
       auditee: item?.auditee,
       [InspectionFormTypes.DoStruct]: item?.doStruct,
+      comment: item?.comment,
+      willResolveBy: item?.willResolveBy,
     }));
 
   const columns: TableColumn<(typeof rows)[number]>[] =
@@ -66,7 +69,7 @@ const ViolationsTable = observer((props: IViolationsTable) => {
           accessor: key,
           sortable: true,
           align: "left",
-          width: key === "question" ? 350 : 200,
+          width: 200,
           renderCell: (row) => {
             return key === InspectionFormTypes.AuditDate
               ? row?.auditDate
@@ -81,16 +84,33 @@ const ViolationsTable = observer((props: IViolationsTable) => {
         accessor: key,
         sortable: true,
         align: "left",
-        width: key === "question" ? 350 : 200,
       };
     });
+
+  if (
+    !(store.inspectionStore.formFieldsValues as IViolation)?.isResolved &&
+    (store.inspectionStore.formFieldsValues as IViolation)?.isResolved !== false
+  ) {
+    columns.push({
+      title: <span className={style.colTitle}>{t("willResolveBy")}</span>,
+      accessor: "willResolveBy",
+      align: "left",
+      sortable: true,
+    });
+  }
+
+  columns.push({
+    title: <span className={style.colTitle}>{t("id")}</span>,
+    accessor: "id",
+    align: "left",
+    width: 100,
+  });
 
   const [violationId, setViolationId] = React.useState<number | null>();
 
   const onRowClick = ({ id, e }: { id: string; e: React.MouseEvent }) => {
     const row = (e.target as HTMLDivElement).closest(".Table-CellsRow");
     setViolationId(+id);
-    console.log("onRowClick id", id, typeof id);
     document
       .querySelectorAll(".activeRow")
       .forEach((item) => item.classList.remove("activeRow"));
@@ -151,23 +171,25 @@ const ViolationsTable = observer((props: IViolationsTable) => {
         renderLoader()
       )}
       {violationId
-        ? props.violations.map((violation) =>
-            +violation.id === +violationId ? (
-              <div className={style.details}>
-                <ViolationDetails violation={getSelectedViolation()} />
-                {!violation.isResolved && (
-                  <ViolationCheckForm
-                    onLoadFile={(value) =>
-                      store.snackBarStore.successSnackBar(value)
-                    }
-                    violationId={violationId}
-                    saveForm={handleSaveForm}
-                    comment={getSelectedViolation()?.resolveComment ?? ""}
-                  />
-                )}
-              </div>
-            ) : null,
-          )
+        ? props.violations
+            .filter((violation) => +violation.id === +violationId)
+            .map((violation, index) => {
+              return +violation.id === +violationId && index === 0 ? (
+                <div className={style.details}>
+                  <ViolationDetails violation={getSelectedViolation()} />
+                  {!violation.isResolved && (
+                    <ViolationCheckForm
+                      onLoadFile={(value) =>
+                        store.snackBarStore.successSnackBar(value)
+                      }
+                      violationId={violationId}
+                      saveForm={handleSaveForm}
+                      comment={getSelectedViolation()?.resolveComment ?? ""}
+                    />
+                  )}
+                </div>
+              ) : null;
+            })
         : null}
     </div>
   );

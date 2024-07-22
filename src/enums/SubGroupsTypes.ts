@@ -2,6 +2,7 @@ export enum SubGroupsTypes {
   Statistic = "statistic",
   Inspections = "inspections",
   Information = "information",
+  DashBoard = "dashboard",
 }
 export enum SubGroupsActionsTypes {
     MainList = "mainList",
@@ -11,4 +12,5 @@ export enum SubGroupsActionsTypes {
     Deleted = "deleted",
     BarriersCarts = "barrierCarts",
     BarriersApps = "barrierApps",
+    DashBoard = "dashboard",
 }

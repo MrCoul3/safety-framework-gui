@@ -19,9 +19,9 @@ import { Responses403 } from "@consta/uikit/Responses403";
 import style from "./style.module.css";
 import { Responses500 } from "@consta/uikit/Responses500";
 import { Responses503 } from "@consta/uikit/Responses503";
-import { isDevelop } from "../../../constants/config";
 import LoaderPage from "../../LoaderPage/LoaderPage";
 import EliminationOfViolationsPage from "../../../pages/EliminationOfViolationsPage";
+import DashboardPage from "../../../pages/DashboardPage";
 export const AppContainer = observer(() => {
   const { t } = useTranslation("dict");
 
@@ -109,7 +109,6 @@ export const AppContainer = observer(() => {
             item={store.snackBarStore.snackBarItem}
           />
           <Routes>
-
             <Route index element={<MainPage />} />
 
             <Route path={"/*"} element={<MainPage />} />
@@ -217,7 +216,17 @@ export const AppContainer = observer(() => {
               }
               element={<FreeFormPage />}
             />
+            {/*BarriersCarts and BarriersApps on main page*/}
+            <Route
+              element={<EmptyBoxPage maxHeight />}
+              path={SubGroupsActionsTypes.BarriersCarts}
+            />
+            <Route
+              element={<EmptyBoxPage maxHeight />}
+              path={SubGroupsActionsTypes.BarriersApps}
+            />
 
+            <Route path={RoutesTypes.DashBoard} element={<DashboardPage />} />
           </Routes>
         </>
       ) : (

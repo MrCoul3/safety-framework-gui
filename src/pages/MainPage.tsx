@@ -180,29 +180,17 @@ export const MainPage = observer((props: IMainPage) => {
 
   const handleSendInspection = async (ind: number) => {
     const index = ind - 1;
-    console.log("handleSendInspection index", index);
     const isValid = store.mainPageStore.checkIsInspectionReadyToSend(index);
-    console.log("handleSendInspection isValid", isValid);
     if (isValid) {
       const result = await store.mainPageStore.sendInspection(index);
       if (result) {
         store.inspectionStore.deleteInspectionFromLocalStorage(index);
         getLocalInspections();
-        store.snackBarStore.setSnackBarItem({
-          message: t("snackBarSuccessSend"),
-          key: "1",
-          status: "success",
-        });
+        store.snackBarStore.successSnackBar(t("snackBarSuccessSend"));
       } else {
-        store.snackBarStore.setSnackBarItem({
-          message: t("snackBarErrorSend"),
-          key: "1",
-          status: "alert",
-          icon: IconWarning,
-        });
+        store.snackBarStore.alertSnackBar(t("snackBarErrorSend"));
       }
     }
-    console.log("isValid", isValid);
   };
   const sentInspectionsCondition = (subGroup: SubGroupsActionsTypes) =>
     subGroup === SubGroupsActionsTypes.Sent;
@@ -352,17 +340,6 @@ export const MainPage = observer((props: IMainPage) => {
             />
           );
         })}
-        {/*BarriersCarts and BarriersApps on main page*/}
-        <Route
-          element={<EmptyBoxPage />}
-          path={SubGroupsActionsTypes.BarriersCarts}
-        />
-        <Route
-          element={<EmptyBoxPage />}
-          path={SubGroupsActionsTypes.BarriersApps}
-        />
-
-
         <Route path="/*" element={render404()} />
       </Routes>
     );

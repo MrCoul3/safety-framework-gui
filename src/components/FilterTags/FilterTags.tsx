@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
 import { IInspectionFilters } from "../../interfaces/IInspectionFilters";
@@ -13,7 +13,6 @@ import moment from "moment";
 import {
   IFilterDateRangeFieldValue,
   IFilterFieldValue,
-  IFormDateFieldValue,
   IFormFieldValue,
   Item,
 } from "../../interfaces/IFieldInterfaces";
@@ -79,7 +78,7 @@ const FilterTags = observer((props: IFilterTags) => {
       const value = values.filter((val) => val)[0];
       return moment(value).format("DD.MM.YYYY");
     } else {
-      return `c ${values.map((value) => moment(value).format("DD.MM.YYYY")).join(' по ')}`
+      return `c ${values.map((value) => moment(value).format("DD.MM.YYYY")).join(" по ")}`;
     }
   };
 

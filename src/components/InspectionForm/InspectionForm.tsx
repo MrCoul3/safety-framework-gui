@@ -2,9 +2,9 @@ import React, { useEffect } from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
 import {
+  INSPECTION_FORM_NOT_REQUIRED_FIELDS,
   InspectionFormGroups,
   InspectionFormTypes,
-  INSPECTION_FORM_NOT_REQUIRED_FIELDS,
 } from "../../enums/InspectionFormTypes";
 import { useTranslation } from "react-i18next";
 import { Button } from "@consta/uikit/Button";
@@ -15,7 +15,6 @@ import InspectionDataField from "../InspectionDataField/InspectionDataField";
 import ItemGroupTitle from "../ItemGroupTitle/ItemGroupTitle";
 import ConfirmDialog from "../ConfirmDialog/ConfirmDialog";
 import { IInspection } from "../../interfaces/IInspection";
-import { toJS } from "mobx";
 import {
   IFieldsData,
   IFormDateFieldValue,
@@ -23,6 +22,20 @@ import {
 } from "../../interfaces/IFieldInterfaces";
 import { LoaderType } from "../../interfaces/LoaderType";
 import LoaderPage from "../LoaderPage/LoaderPage";
+import {
+  defaultDisabledFields,
+  firstCaseOfIncludedFunctionTitles,
+  firstCaseValues,
+  includedFunctionTitlesForContractorStruct,
+  secondCaseAOfIncludedFunctionTitles,
+  secondCaseAValues,
+  secondCaseBOfIncludedFunctionTitles,
+  secondCaseBValues,
+  secondCaseCOfIncludedFunctionTitles,
+  secondCaseCValues,
+  secondCaseDOfIncludedFunctionTitles,
+  secondCaseDValues,
+} from "../../constants/constants";
 
 interface IInspectionForm {
   handleOpenField(type: InspectionFormTypes): void;
@@ -111,15 +124,8 @@ const InspectionForm = observer((props: IInspectionForm) => {
   };
 
   const handleNextStep = () => {
-    console.log(
-      "handleNextStep props.formFieldsValues",
-      toJS(props.formFieldsValues),
-    );
     const formType =
       props.formFieldsValues?.[InspectionFormTypes.InspectionForm]?.id;
-
-    console.log("handleNextStep formType", formType);
-    // id = 1 barriers, id = 2 freeForm
     if (formType?.toString() === "1") {
       props.handleNextStepToBarriers();
     } else {
@@ -127,27 +133,122 @@ const InspectionForm = observer((props: IInspectionForm) => {
     }
     props.setIsValidate(true);
   };
+
+  const functionTitle =
+    props.formFieldsValues?.[InspectionFormTypes.Function]?.title;
+  const contractorTitle =
+    props.formFieldsValues?.[InspectionFormTypes.Contractor]?.title;
+  const firstCaseCondition = (inspectionType: InspectionFormTypes) => {
+    return (
+      firstCaseValues.includes(inspectionType) &&
+      functionTitle &&
+      firstCaseOfIncludedFunctionTitles.includes(functionTitle)
+    );
+  };
+  const secondCaseACondition = (inspectionType: InspectionFormTypes) => {
+    return (
+      secondCaseAValues.includes(inspectionType) &&
+      functionTitle &&
+      secondCaseAOfIncludedFunctionTitles.includes(functionTitle)
+    );
+  };
+  const secondCaseBCondition = (inspectionType: InspectionFormTypes) => {
+    return (
+      secondCaseBValues.includes(inspectionType) &&
+      functionTitle &&
+      contractorTitle &&
+      secondCaseBOfIncludedFunctionTitles.includes(functionTitle)
+    );
+  };
+  const secondCaseBDisabledCondition = (
+    inspectionType: InspectionFormTypes,
+  ) => {
+    return (
+      secondCaseBValues.includes(inspectionType) &&
+      functionTitle &&
+      secondCaseBOfIncludedFunctionTitles.includes(functionTitle)
+    );
+  };
+  const secondCaseCCondition = (inspectionType: InspectionFormTypes) => {
+    return (
+      secondCaseCValues.includes(inspectionType) &&
+      functionTitle &&
+      secondCaseCOfIncludedFunctionTitles.includes(functionTitle)
+    );
+  };
+  const secondCaseCDisabledCondition = (
+    inspectionType: InspectionFormTypes,
+  ) => {
+    return (
+      inspectionType === InspectionFormTypes.ContractorStruct &&
+      functionTitle &&
+      secondCaseCOfIncludedFunctionTitles.includes(functionTitle)
+    );
+  };
+  const secondCaseDDisabledCondition = (
+    inspectionType: InspectionFormTypes,
+  ) => {
+    return (
+      secondCaseDValues.includes(inspectionType) &&
+      functionTitle &&
+      secondCaseDOfIncludedFunctionTitles.includes(functionTitle)
+    );
+  };
   const disabledConditions = (inspectionType: InspectionFormTypes) => {
-    /*const ifContractor =
+    const ifNoContractor =
       props.formFieldsValues &&
       !props.formFieldsValues[InspectionFormTypes.Contractor];
-    /!* enable doStruct if contractor enabled *!/
-    if (inspectionType === InspectionFormTypes.DoStruct) {
-      if (ifContractor) {
-        return true;
+
+    if (
+      defaultDisabledFields.includes(inspectionType) &&
+      !firstCaseCondition(inspectionType) &&
+      !secondCaseBDisabledCondition(inspectionType)
+    ) {
+      if (ifNoContractor) {
+        return "disabled";
       }
     }
-    /!* enable doStruct if contractor enabled *!/
-    if (inspectionType === InspectionFormTypes.Supervisor) {
-      if (ifContractor) {
-        return true;
-      }
-    }*/
-    return false;
+
+    if (
+      secondCaseDDisabledCondition(inspectionType) ||
+      secondCaseCDisabledCondition(inspectionType)
+    ) {
+      return "disabled";
+    }
+    return "enabled";
   };
 
   const requiredConditions = (inspectionType: InspectionFormTypes) => {
-    return !INSPECTION_FORM_NOT_REQUIRED_FIELDS.includes(inspectionType);
+    if (
+      firstCaseCondition(inspectionType) ||
+      secondCaseACondition(inspectionType) ||
+      secondCaseBCondition(inspectionType)
+    ) {
+      return true;
+    }
+
+    /*if (
+      inspectionType === InspectionFormTypes.Contractor &&
+      functionTitle &&
+      [
+        ...includedFunctionTitlesForContractorStruct,
+        ...includedFunctionTitlesForSupervisor,
+      ].includes(functionTitle)
+    ) {
+      return true;
+    }*/
+
+    /*if (
+      inspectionType === InspectionFormTypes.ContractorStruct &&
+      functionTitle &&
+      includedFunctionTitlesForContractorStruct.includes(functionTitle)
+    ) {
+      return true;
+    }
+*/
+    if (!INSPECTION_FORM_NOT_REQUIRED_FIELDS.includes(inspectionType)) {
+      return true;
+    }
   };
 
   return (
@@ -162,6 +263,7 @@ const InspectionForm = observer((props: IInspectionForm) => {
                   if (inspectionType === InspectionFormTypes.AuditDate) {
                     return (
                       <InspectionDataField
+                        required
                         key={inspectionType}
                         inspectionType={inspectionType}
                         handleChange={props.handleDateChange}
@@ -180,14 +282,18 @@ const InspectionForm = observer((props: IInspectionForm) => {
                       onScrollToBottom={props.onScrollToBottom}
                       onSearchValueChange={props.onSearchValueChange}
                       required={requiredConditions(inspectionType)}
-                      disabled={disabledConditions(inspectionType)}
+                      disabled={
+                        !(disabledConditions(inspectionType) === "enabled")
+                      }
                       inspectionType={inspectionType}
                       value={getValue(inspectionType)}
                       fieldsData={props.fieldsData}
                       handleChange={props.handleChange}
                       handleOpenField={props.handleOpenField}
                       status={
-                        props.isValidate ? getStatus(inspectionType) : undefined
+                        requiredConditions(inspectionType) && props.isValidate
+                          ? getStatus(inspectionType)
+                          : undefined
                       }
                     />
                   );

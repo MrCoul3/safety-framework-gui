@@ -1,9 +1,6 @@
 import React from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
-import { IconRing } from "@consta/icons/IconRing";
-import { avatar } from "assets/img";
-import { Button } from "@consta/uikit/Button";
 import { User } from "@consta/uikit/User";
 
 interface IAuthControl {

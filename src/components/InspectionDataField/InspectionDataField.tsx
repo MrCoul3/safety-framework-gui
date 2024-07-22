@@ -3,21 +3,22 @@ import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
 import { InspectionFormTypes } from "../../enums/InspectionFormTypes";
 import { useTranslation } from "react-i18next";
-import { DatePicker, DatePickerPropOnChange } from "@consta/uikit/DatePicker";
+import { DatePicker } from "@consta/uikit/DatePicker";
 import { IconCalendar } from "@consta/icons/IconCalendar";
 import { PropStatus } from "@consta/uikit/__internal__/src/components/SelectComponents/types";
-import {IFormDateFieldValue} from "../../interfaces/IFieldInterfaces";
-import {ViolationFilterTypes} from "../../enums/ViolationFilterTypes";
+import { IFormDateFieldValue } from "../../interfaces/IFieldInterfaces";
+import { ViolationFilterTypes } from "../../enums/ViolationFilterTypes";
 import classNames from "classnames";
+import moment from "moment";
 
 interface IInspectionDataField {
   inspectionType: InspectionFormTypes | ViolationFilterTypes;
   disableLabel?: boolean;
   required?: boolean;
 
-  labelPosition?: "left" | "top"
+  labelPosition?: "left" | "top";
 
-  className?: string
+  className?: string;
 
   status?: PropStatus | undefined;
   value?: Date | null;
@@ -43,13 +44,16 @@ const InspectionDataField = observer((props: IInspectionDataField) => {
   useEffect(() => {
     setVal(props.value ?? null);
 
-    console.log('props.value', props.value)
+    console.log("props.value", props.value);
   }, [props.value]);
 
   const [val, setVal] = useState<Date | null>(null);
 
   return (
     <DatePicker
+      minDate={moment().subtract(4, "days").toDate()}
+      maxDate={new Date()}
+      caption={props.status === "alert" ? t("requiredHint") : ""}
       type={"date"}
       ref={picker}
       status={props.status}

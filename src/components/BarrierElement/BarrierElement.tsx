@@ -1,16 +1,12 @@
-import React, { ReactNode, useEffect, useState } from "react";
+import React from "react";
 import { observer } from "mobx-react-lite";
 import style from "./style.module.css";
-import { IBarrier } from "../../interfaces/IBarrier";
 import Counter from "../Counter/Counter";
-import { Collapse } from "@consta/uikit/Collapse";
 
 interface IBarrierElement {
   title?: string | null;
   barriersLength?: number;
-
   isValid?: boolean;
-  // handleCounterClick(countType: number): void;
 }
 
 const BarrierElement = observer((props: IBarrierElement) => {

@@ -9,15 +9,15 @@ export const language = window.navigator.language.split("-")[0];
 
 export const nodeEnv = process.env.NODE_ENV;
 
-export const isDevelop = nodeEnv === 'development';
+export const isDevelop = nodeEnv === "development";
 
 export const DEVELOPMENT_DOMAIN = "";
 
 export const [, upperLevelDomain] = window.location.hostname.split(".");
 
-console.log('window.location', window.location);
+console.log("window.location", window.location);
 
-console.log('upperLevelDomain', upperLevelDomain)
+console.log("upperLevelDomain", upperLevelDomain);
 
 export const UPPER_LEVEL_DOMAIN =
   nodeEnv === "development" ? DEVELOPMENT_DOMAIN : upperLevelDomain;

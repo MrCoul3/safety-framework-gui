@@ -1,6 +1,5 @@
 .SideBarSubGroup {
   width: 100%;
-
 }
 
 .groupTitle {
@@ -23,7 +22,7 @@
   font-weight: 400;
   text-align: left;
   display: flex;
-  justify-content: start!important;
+  justify-content: start !important;
 }
 
 .buttonGroup {

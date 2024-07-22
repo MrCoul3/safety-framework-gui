@@ -3,14 +3,10 @@ import { makeAutoObservable, toJS } from "mobx";
 import { LOCAL_STORE_INSPECTIONS } from "../constants/config";
 import { IFreeForm } from "../interfaces/IFreeForm";
 import {
-  FREE_FORM_REQUIRED_FIELDS,
   FreeFormFieldTypes,
-  FreeFormTypes,
   NOT_OTHER_COND_FREE_FORM_REQUIRED_FIELDS,
   OTHER_COND_FREE_FORM_REQUIRED_FIELDS,
 } from "../enums/FreeFormTypes";
-import { IEntity } from "../interfaces/IEntity";
-import { IInspection } from "../interfaces/IInspection";
 import {
   IFormDateFieldValue,
   IFormFieldValue,
@@ -29,7 +25,7 @@ export class FreeFormStore {
   filledFreeForms: (IFreeForm | {})[] = [];
   setFreeForm(value: IFreeForm[]) {
     this.filledFreeForms = value;
-    console.log('setFreeForm this.filledFreeForms', toJS(this.filledFreeForms))
+    console.log("setFreeForm this.filledFreeForms", toJS(this.filledFreeForms));
   }
   addFreeForm() {
     this.filledFreeForms = [
@@ -78,13 +74,14 @@ export class FreeFormStore {
         );
         targetInspection.filledBarriers = [];
         if (
-          targetInspection.filledFreeForms && targetInspection.filledFreeForms.length &&
+          targetInspection.filledFreeForms &&
+          targetInspection.filledFreeForms.length &&
           targetInspection.filledFreeForms[freeFormIndex]
         ) {
           targetInspection.filledFreeForms[freeFormIndex] =
             this.filledFreeForms[freeFormIndex];
         } else {
-          targetInspection.filledFreeForms = []
+          targetInspection.filledFreeForms = [];
           targetInspection.filledFreeForms.push(
             this.filledFreeForms[freeFormIndex],
           );
@@ -102,7 +99,8 @@ export class FreeFormStore {
     if (localInspections) {
       const localInspectionsParsed = JSON.parse(localInspections);
       if (localInspectionsParsed.length) {
-        localInspectionsParsed[index] = this.store.inspectionStore.formFieldsValues
+        localInspectionsParsed[index] =
+          this.store.inspectionStore.formFieldsValues;
         const targetInspection = localInspectionsParsed[index];
         targetInspection.filledFreeForms = this.filledFreeForms;
         targetInspection.filledBarriers = [];
@@ -137,12 +135,10 @@ export class FreeFormStore {
 
   isOtherCondition(formFieldsValues: IFreeForm) {
     const isViolationTypeOther =
-      formFieldsValues?.[FreeFormFieldTypes.ViolationType]?.id.toString() ===
-      "1";
+      formFieldsValues?.[FreeFormFieldTypes.ViolationType]?.id;
     const isViolationCategoryOther =
-      formFieldsValues[FreeFormFieldTypes.ViolationCategory]?.id.toString() ===
-      "1";
-    return isViolationTypeOther && isViolationCategoryOther;
+      formFieldsValues[FreeFormFieldTypes.ViolationCategory]?.id;
+    return !isViolationTypeOther && !isViolationCategoryOther;
   }
 
   getFreeFormRequireFields(formFieldsValues?: IFreeForm) {
